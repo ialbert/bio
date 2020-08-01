@@ -6,30 +6,31 @@ import plac
 # Commands names.
 CONVERT, ALIGN = "convert", "align"
 
+from .align import pairwise
+
 # Enabled commands.
 COMMANDS = {
     CONVERT: None,
-    ALIGN: None,
+    ALIGN: pairwise.run,
 }
 
 # Help printed when no command is passed.
 USAGE = f"""
-bioinformatics utilities: {VERSION}
+Bioinformatics utilities: {VERSION}
 
 Usage: bio COMMAND 
 
 Data commands:
 
-    {CONVERT:10s} - convert biological data to different formats
+    {CONVERT:10s} - convert biological data to other formats
     
-Algorithm commands:
+Operations:
 
     {ALIGN:10s} - align sequences with different algorithms
   
 Get more help on each command with:
 
     bio COMMAND -h 
-
 """
 
 @plac.annotations(
@@ -48,10 +49,10 @@ def run(*cmd):
         print(f"{USAGE}", file=sys.stderr)
         sys.exit(1)
 
-    # Handle invalid command.
+    # Handles invalid command.
     if target not in COMMANDS:
         print(f"{USAGE}", file=sys.stderr)
-        print(f"*** Invalid command: {target}", file=sys.stderr)
+        print(f"*** Invalid command: {target}\n", file=sys.stderr)
         sys.exit(127)
 
     try:

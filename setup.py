@@ -21,7 +21,6 @@ setuptools.setup(
     ],
     install_requires=[
         'plac',
-        'biopython',
         'intervaltree',
     ],
 
