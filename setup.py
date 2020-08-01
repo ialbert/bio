@@ -21,10 +21,15 @@ setuptools.setup(
     ],
     install_requires=[
         'plac',
-        'attrs',
         'biopython',
         'intervaltree',
     ],
+
+    entry_points={
+        'console_scripts': [
+            'bio=biorun.__main__:main',
+        ],
+    },
 
     python_requires='>=3.6',
 
