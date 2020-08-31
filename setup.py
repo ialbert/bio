@@ -21,6 +21,7 @@ setuptools.setup(
     ],
     install_requires=[
         'plac',
+        'jinja2',
         'intervaltree',
     ],
 
