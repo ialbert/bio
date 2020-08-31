@@ -1,4 +1,4 @@
-# Bioinformatics Utilites
+# Bioinformatics Utilities
 
 Making bioinformatics great again.
 
@@ -9,7 +9,7 @@ Making bioinformatics great again.
 
 Align the DNA sequence of the `S` protein of two two `SARS-COV-2` genomes:
 
-    bio align NC1:S NC2:A
+    bio align ACC1:S ACC2:S
 
 It prints:
 
@@ -17,7 +17,7 @@ It prints:
 
 Align the `S` protein as peptide sequences:
 
-    bio align --protein NC1:S NC2:A
+    bio align --protein ACC1:S ACC2:S
 
 
 ## Requirements
