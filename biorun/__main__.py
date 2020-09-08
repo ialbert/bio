@@ -3,21 +3,19 @@ The main job runner. Register functions here.
 """
 import os
 import sys
-from biorun import VERSION
 import plac
+from importlib import import_module
+from biorun import VERSION
 from biorun import utils
 
 # Commands names.
 CONVERT, ALIGN, FETCH = "convert", "align", "fetch"
 
-from biorun.align import pairwise
-from biorun.data import fetch
-
 # Enabled commands.
 COMMANDS = {
     CONVERT: None,
-    FETCH: fetch.run,
-    ALIGN: pairwise.run,
+    FETCH: 'biorun.data.fetch',
+    ALIGN: 'biorun.align.pairwise'
 }
 
 # Context for the USAGE help page.
@@ -51,8 +49,11 @@ def run(*cmd):
         sys.exit(127)
 
     try:
-        # Call the targetet function.
-        func = COMMANDS[target]
+        # Import and call the target function.
+        package = COMMANDS[target]
+        module = import_module(name=package)
+        # Target the run function in each package.
+        func = getattr(module, 'run')
         plac.call(func, cmd[1:])
     except KeyboardInterrupt:
         # Breakout from interrupts without a traceback.
