@@ -1,37 +1,32 @@
+"""
+The main job runner. Register functions here.
+"""
 import os
 import sys
-from . import VERSION
+from biorun import VERSION
 import plac
+from biorun import utils
 
 # Commands names.
-CONVERT, ALIGN = "convert", "align"
+CONVERT, ALIGN, FETCH = "convert", "align", "fetch"
 
-from .align import pairwise
+from biorun.align import pairwise
+from biorun.data import fetch
 
 # Enabled commands.
 COMMANDS = {
     CONVERT: None,
+    FETCH: fetch.run,
     ALIGN: pairwise.run,
 }
 
-# Help printed when no command is passed.
-USAGE = f"""
-Bioinformatics utilities: {VERSION}
+# Context for the USAGE help page.
+context = dict(VERSION=VERSION,
+               CONVERT=CONVERT, ALIGN=ALIGN, FETCH=FETCH
+               )
 
-Usage: bio COMMAND 
-
-Data commands:
-
-    {CONVERT:10s} - convert biological data to other formats
-    
-Operations:
-
-    {ALIGN:10s} - align sequences with different algorithms
-  
-Get more help on each command with:
-
-    bio COMMAND -h 
-"""
+# The default help page for the tool.
+USAGE = utils.render_file("usage.txt", context=context)
 
 @plac.annotations(
     cmd="command"

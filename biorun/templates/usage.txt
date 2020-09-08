@@ -1,0 +1,16 @@
+Bioinformatics utilities: {VERSION}
+
+Usage: bio COMMAND
+
+Data commands
+
+    {{ "%-10s" | format(FETCH) }}  - downloads biological data from NCBI or ENSEMBL
+    {{ "%-10s" | format(CONVERT) }}  - converts biological data to different formats
+
+Action commands
+
+    {{ "%-10s" | format(ALIGN) }} - aligns sequences with different algorithms
+
+Get more help on each command with:
+
+    bio COMMAND -h
