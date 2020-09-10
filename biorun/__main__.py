@@ -13,7 +13,7 @@ CONVERT, ALIGN, FETCH = "convert", "align", "fetch"
 
 # Enabled commands.
 COMMANDS = {
-    CONVERT: None,
+    CONVERT: 'biorun.convert.parse',
     FETCH: 'biorun.data.fetch',
     ALIGN: 'biorun.align.pairwise'
 }
