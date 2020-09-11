@@ -1,36 +1,70 @@
 """
 Convert data from Entrez into different formats
 """
+import os
 import plac
+from Bio import SeqIO
+from biorun import utils
+from biorun.data import fetch
+
+EMBL, FASTA, GB = 'embl', 'fasta', 'genbank'
 
 
-def parse_fasta():
-    """
-    Given a file with the GenBank format, parse and return the fasta
-    """
+@utils.timer
+def converter(in_file, in_format, out_file, out_format):
+    SeqIO.convert(in_file=in_file,
+                  in_format=in_format,
+                  out_file=out_file,
+                  out_format=out_format)
     return
 
 
-def parse_gff():
+@utils.timer
+def fasta_converter(in_file, in_format, out_file, verb=0):
     """
-    Given a file with the GenBank format, parse and return the fasta
+    Convert a given file with a format to
     """
-    return
+    # Load and parse the file.
+    input_handle = open(in_file, 'r')
+    stream = SeqIO.parse(input_handle, in_format)
+
+    # Format the fasta file
+    formatter = lambda seq_record: f">{seq_record.id} {seq_record.description}\n{seq_record.seq}\n"
+
+    # Download fasta file into out file
+    utils.download(stream, outname=out_file, buffer=1024, verb=verb, formatter=formatter)
+
+    return out_file
 
 
 @plac.pos('acc', "accession number")
 @plac.opt('db', "target database ")
-@plac.opt('format', "output format")
 @plac.opt('mode', "output mode")
-@plac.opt('directory', "output directory to store data in")
-@plac.opt('overwrite', "overwrite existing data when downloading.")
-def run(acc, db='nuccore', format='gb', mode='text', directory=None, overwrite=False):
+@plac.opt('output_dir', "output directory")
+@plac.opt('frmat', "output data format")
+@plac.flg('update', "overwrite existing data")
+@plac.opt('verbosity', "verbosity level")
+def run(acc, db='nuccore', in_format='gb', mode='text', output_dir=None, frmat=FASTA, update=False,
+        verbosity=0):
 
-    # Check if the file has been downloaded locally first.
+    # Get a local copy of the file or download it using Entrez.
+    in_file = fetch.save_or_get(acc=acc, db=db, format=in_format,
+                                mode=mode,
+                                output_dir=output_dir,
+                                update=update,
+                                verbosity=verbosity)
+
+    # Pass file for further processing.
+    outname = utils.resolve_fname(acc=acc, directory=output_dir, ext=frmat)
+
+    if not update and os.path.isfile(outname):
+        return
+
+    # converted = converter(in_file=in_file, in_format=in_format, out_file=outname, out_format=frmat)
+    converted = fasta_converter(in_file=in_file, in_format=in_format, out_file=outname, verb=0)
+    
+    # if frmat == FASTA:
+    #     converted = fasta_converter(in_file=in_file, in_format=in_format, out_file=outname, verb=0)
+    #     pass
+
     return
-    #stream = efetch(acc=acc, db=db, format=format, mode=mode)
-
-    # Resolve file name from accession number and download.
-    #outname = utils.resolve_fname(acc=acc, directory=directory)
-
-    #utils.download(stream=stream, outname=outname, overwrite=overwrite)

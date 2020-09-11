@@ -43,9 +43,10 @@ def guess_type(path):
     return ftype
 
 
-def print_message(styles=[OKBLUE], msg=''):
+def print_message(styles=[OKBLUE], msg='', verb=0):
     styles = ''.join(styles)
-    print(f"{styles}{msg}{ENDC}")
+    if verb >= 1:
+        print(f"{styles}{msg}{ENDC}")
 
 
 def get_template(fname, dirname=__TMPL_DIR):
@@ -57,8 +58,21 @@ def get_template(fname, dirname=__TMPL_DIR):
     return text
 
 
+def timer(func):
+    """
+    Decorator used to time functions.
+    """
+    def __wrapper__(*args, **kwargs):
 
-def timer_func():
+        t1 = time.time()
+        res = func(*args, **kwargs)
+        delta = time.time() - t1
+        print(f"{func.__name__} : {delta} seconds.")
+        return res
+    return __wrapper__
+
+
+def timer_func(verb):
     """
     Prints progress on inserting elements.
     """
@@ -70,7 +84,7 @@ def timer_func():
         now = time.time()
         sec = round(now - last, 1)
         last = now
-        print_message(styles=[OKGREEN], msg=f"{msg} in {sec} seconds.")
+        print_message(styles=[OKGREEN], msg=f"{msg} in {sec} seconds.", verb=verb)
 
     def progress(index, step=5000, msg=""):
         nonlocal last
@@ -99,43 +113,36 @@ def render_file(fname, context, dirname=__TMPL_DIR):
     return result
 
 
-def resolve_fname(acc, directory=None):
+def resolve_fname(acc, directory=None, ext='gbk'):
     """
     Resolve a file name given an accession number.
     """
-    suffix = f"{acc}.txt"
+    suffix = f"{acc}.{ext}"
     directory = directory or DUMP_DIR
     fname = os.path.abspath(os.path.join(directory, suffix))
     return fname
 
 
-def download(stream, outname, overwrite=False, buffer=1024):
+def download(stream, outname, buffer=1024, verb=0, formatter=lambda x: x):
     """
     Write a input 'stream' into the output filename.
     Overwrite existing file given a flag.
     """
 
-    # Bail out if the output exists and overwrite is False
-    # Check for the size before overwriting.
-    if os.path.isfile(outname) and not overwrite:
-        print_message(msg=f"File already exists at: {outname}", styles=[BOLD])
-        print_message(msg="Use the update flag to overwrite.", styles=[WARNING])
-        return
-
     # Ensure directory exists.
     outdir = os.path.dirname(outname)
     os.makedirs(outdir, exist_ok=True)
-
     stream = islice(zip(count(1), stream), None)
-    elapsed, progress = timer_func()
+    elapsed, progress = timer_func(verb=verb)
 
+    # Write 'stream' into output and print progess
     with open(outname, 'w', buffering=buffer) as output_stream:
         for index, line in stream:
             progress(index, msg="lines", step=500)
-            # Write the stream as it is being read.
-            output_stream.write(line)
+            output_stream.write(formatter(line))
 
-    fsize = ''
-    elapsed(f"COMPLETE: Wrote {fsize} to file")
+    # Show file size in Mb
+    fsize = os.path.getsize(outname) / 1000 / 1000
+    elapsed("Wrote {0:1f} MB to {1}".format(fsize, outname))
     return
 
