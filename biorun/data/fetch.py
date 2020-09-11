@@ -42,7 +42,7 @@ def save_or_get(acc, db='nuccore', format='gb', mode='text', output_dir=None, up
     stream = efetch(acc=acc, db=db, format=format, mode=mode)
 
     # Download into outname.
-    utils.download(stream=stream, outname=outname, verb=verbosity)
+    utils.save_file(stream=stream, outname=outname, verb=verbosity)
 
     return outname
 

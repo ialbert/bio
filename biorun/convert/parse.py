@@ -32,7 +32,7 @@ def fasta_converter(in_file, in_format, out_file, verb=0):
     formatter = lambda seq_record: f">{seq_record.id} {seq_record.description}\n{seq_record.seq}\n"
 
     # Download fasta file into out file
-    utils.download(stream, outname=out_file, verb=verb, formatter=formatter)
+    utils.save_file(stream, outname=out_file, verb=verb, formatter=formatter)
 
     return out_file
 
@@ -47,7 +47,7 @@ def fasta_converter(in_file, in_format, out_file, verb=0):
 def run(acc, db='nuccore', in_format='gb', mode='text', output_dir=None, format=FASTA, update=False,
         verbosity=0):
 
-    # Get a local copy of the genbank file or download it using Entrez.
+    # Get a local copy of the genbank file or save_file it using Entrez.
     in_file = fetch.save_or_get(acc=acc, db=db, format=in_format,
                                 mode=mode,
                                 output_dir=output_dir,
@@ -64,7 +64,7 @@ def run(acc, db='nuccore', in_format='gb', mode='text', output_dir=None, format=
         return
 
     # Convert input file and write into outname.
-    #converted = converter(in_file=in_file, in_format=in_format, out_file=outname, out_format=format)
+    converted = converter(in_file=in_file, in_format=in_format, out_file=outname, out_format=format)
     converted = fasta_converter(in_file=in_file, in_format=in_format, out_file=outname, verb=0)
 
     return

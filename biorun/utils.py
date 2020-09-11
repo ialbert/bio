@@ -123,7 +123,7 @@ def resolve_fname(acc, directory=None, ext='gbk'):
     return fname
 
 
-def download(stream, outname, buffer=1024, verb=0, formatter=lambda x: x):
+def save_file(stream, outname, buffer=1024, verb=0, formatter=lambda x: x):
     """
     Write a input 'stream' into the output filename.
     Overwrite existing file given a flag.

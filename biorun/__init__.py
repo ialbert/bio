@@ -3,7 +3,7 @@ import os
 
 
 __CURRENT_DIR = os.path.dirname(__file__)
-__DUMP = os.path.join(__CURRENT_DIR, '..', 'download')
+__DUMP = os.path.join(__CURRENT_DIR, '..', 'save_file')
 
 VERSION = "0.0.1"
 
