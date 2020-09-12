@@ -1,13 +1,13 @@
 """
 Utilites funcions.
 """
-import os
-import sys
+import sys, os, tempfile, shutil
 from itertools import count, islice
+from functools import wraps
 import time
 import jinja2
-
-from biorun import DUMP_DIR
+import logging
+from os.path import expanduser
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -15,23 +15,36 @@ __CURR_DIR = os.path.dirname(__file__)
 # The default path to templates.
 __TMPL_DIR = os.path.join(__CURR_DIR, "templates")
 
-OKBLUE = '\033[94m'
-OKGREEN = '\033[92m'
-WARNING = '\033[93m'
-FAIL = '\033[91m'
-ENDC = '\033[0m'
-BOLD = '\033[1m'
+DATADIR = os.path.join(expanduser("~"), ".bio")
+
+# Create the cache directory
+os.makedirs(DATADIR, exist_ok=True)
 
 GENBANK, FASTA, GFF, BED, SAM, BAM = "genbank", "fasta", "gff", "bed", "sam", "bam"
 
 TYPE_BY_EXTENSION = {
-    "gb": GENBANK, "gbk": GENBANK, "genbank": GENBANK,
-    "fa": FASTA, "fasta": FASTA,
+    "gb": GENBANK,
+    "gbk": GENBANK,
+    "genbank": GENBANK,
+    "fa": FASTA,
+    "fasta": FASTA,
     "bed": BED,
     "gff": GFF,
     "sam": SAM,
     "bam": BAM,
 }
+
+def time_it(func):
+    @wraps(func)
+    def timer(*args, **kwargs):
+        start = time.time()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            end = time.time()
+            diff = int(round((end-start), 1)) or 0.1
+            logger.info(f"{func.__name__} execution time: {diff} seconds")
+    return timer
 
 def guess_type(path):
     """
@@ -43,12 +56,6 @@ def guess_type(path):
     return ftype
 
 
-def print_message(styles=[OKBLUE], msg='', verb=0):
-    styles = ''.join(styles)
-    if verb >= 1:
-        print(f"{styles}{msg}{ENDC}")
-
-
 def get_template(fname, dirname=__TMPL_DIR):
     """
     Loads and returns the content of a file.
@@ -56,42 +63,6 @@ def get_template(fname, dirname=__TMPL_DIR):
     path = os.path.join(dirname, fname)
     text = open(path).read()
     return text
-
-
-def timer(func):
-    """
-    Decorator used to time functions.
-    """
-    def __wrapper__(*args, **kwargs):
-
-        t1 = time.time()
-        res = func(*args, **kwargs)
-        delta = time.time() - t1
-        print(f"{func.__name__} : {delta} seconds.")
-        return res
-    return __wrapper__
-
-
-def timer_func(verb):
-    """
-    Prints progress on inserting elements.
-    """
-
-    last = time.time()
-
-    def elapsed(msg):
-        nonlocal last
-        now = time.time()
-        sec = round(now - last, 1)
-        last = now
-        print_message(styles=[OKGREEN], msg=f"{msg} in {sec} seconds.", verb=verb)
-
-    def progress(index, step=5000, msg=""):
-        nonlocal last
-        if index % step == 0:
-            elapsed(f"... {index} {msg}")
-
-    return elapsed, progress
 
 
 def render_text(text, context={}):
@@ -113,36 +84,79 @@ def render_file(fname, context, dirname=__TMPL_DIR):
     return result
 
 
-def resolve_fname(acc, directory=None, ext='gbk'):
+def resolve_fname(acc, format='gb'):
     """
     Resolve a file name given an accession number.
     """
-    suffix = f"{acc}.{ext}"
-    directory = directory or DUMP_DIR
-    fname = os.path.abspath(os.path.join(directory, suffix))
+    ext = format.lower()
+    ext = 'fa' if ext == 'fasta' else ext
+    fname = f"{acc}.{ext}"
+    fname = os.path.join(DATADIR, fname)
     return fname
 
 
-def save_file(stream, outname, buffer=1024, verb=0, formatter=lambda x: x):
+def save_stream(stream, fname, trigger=100000, stdout=False):
     """
-    Write a input 'stream' into the output filename.
-    Overwrite existing file given a flag.
+    Write a input 'stream' as the fname filename.
     """
+    # Save a stream into file and print progess.
+    # Use a temporary file in case the process fails.
+    # We don't want a failed cache file.
+    tmp = tempfile.NamedTemporaryFile(mode="w+t")
 
-    # Ensure directory exists.
-    outdir = os.path.dirname(outname)
-    os.makedirs(outdir, exist_ok=True)
-    stream = islice(zip(count(1), stream), None)
-    elapsed, progress = timer_func(verb=verb)
+    sequence = count(1)
+    for index, line in zip(sequence, stream):
+        if (index % trigger) == 0:
+            logger.info(f"processed {index:,d} lines")
+        tmp.write(line)
+        if stdout:
+            print(line, end='')
 
-    # Write 'stream' into output and print progess
-    with open(outname, 'w', buffering=buffer) as output_stream:
-        for index, line in stream:
-            progress(index, msg="lines", step=500)
-            output_stream.write(formatter(line))
+    # Not sure if this is needed. Can't hurt.
+    tmp.flush()
+
+    # Rewind temporary file to beginning
+    tmp.seek(0)
+
+    # Copy over the content from the temporary file to the final destination
+    res = open(fname, 'wt')
+    for line in tmp:
+        res.write(line)
+    res.close()
+    tmp.close()
 
     # Show file size in Mb
-    fsize = os.path.getsize(outname) / 1000 / 1000
-    elapsed("Wrote {0:1f} MB to {1}".format(fsize, outname))
+    fsize = os.path.getsize(fname) / 1024 / 1024
+    logger.info(f"saved {fsize:0.1f} MB data to {fname}")
     return
 
+
+def get_logger(name, hnd=None, fmt=None, terminator='\n'):
+    # Get the logger name.
+    log = logging.getLogger(name)
+
+    # Default logging level.
+    log.setLevel(logging.WARNING)
+
+    # The log handler.
+    hnd = hnd or logging.StreamHandler()
+
+    hnd.terminator = terminator
+
+    # The logging formatter.
+    fmt = fmt or logging.Formatter('*** %(message)s')
+
+    # Add formatter to handler
+    hnd.setFormatter(fmt)
+
+    # Add handler to logger
+    log.addHandler(hnd)
+
+    return log
+
+def set_verbosity(logger, level=1):
+    level = logging.DEBUG if level > 0 else logging.WARNING
+    logger.setLevel(level)
+
+# Initialize the logger.
+logger = get_logger("main")

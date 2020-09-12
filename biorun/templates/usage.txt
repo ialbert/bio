@@ -14,3 +14,8 @@ Action commands
 Get more help on each command with:
 
     bio COMMAND -h
+
+Examples:
+
+    bio fetch NC_045512 > data.gb
+

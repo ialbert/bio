@@ -12,7 +12,7 @@ setuptools.setup(
     description="bio",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    # url="https://github.com/ialbert/bio",
+    url="https://github.com/ialbert/bio",
     packages=["biorun"],
     package_data={'templates': ['templates/*.txt']},
     classifiers=[
@@ -21,9 +21,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'plac',
+        'plac==1.2.0',
         'jinja2',
         'intervaltree',
+        'toml',
     ],
 
     entry_points={

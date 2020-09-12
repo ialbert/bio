@@ -1,7 +1,7 @@
 """
 The main job runner. Register functions here.
 """
-import os
+import os, time
 import sys
 import plac
 from importlib import import_module
@@ -13,7 +13,7 @@ CONVERT, ALIGN, FETCH = "convert", "align", "fetch"
 
 # Enabled commands.
 COMMANDS = {
-    CONVERT: 'biorun.convert.parse',
+    CONVERT: 'biorun.data.convert',
     FETCH: 'biorun.data.fetch',
     ALIGN: 'biorun.align.pairwise'
 }
@@ -52,12 +52,15 @@ def run(*cmd):
         # Import and call the target function.
         package = COMMANDS[target]
         module = import_module(name=package)
-        # Target the run function in each package.
+        # Target the run function in each module.
         func = getattr(module, 'run')
-        plac.call(func, cmd[1:])
+        rest = cmd[1:]
+        rest = rest or [ "-h"]
+        plac.call(func, rest)
     except KeyboardInterrupt:
-        # Breakout from interrupts without a traceback.
+        # Terminate keyboard interrupts without a traceback.
         sys.exit(0)
+
 
 run.add_help = False
 
