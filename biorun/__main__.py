@@ -40,7 +40,9 @@ def run(*cmd):
     # Print usage if no command is seen.
     if target is None or target in ("-h", "--help"):
         print(f"{USAGE}", file=sys.stderr)
-        sys.exit(1)
+
+        # Raise 1 as exit only if it seems the user forgot to pass any flag
+        sys.exit(int(target is None))
 
     # Handles invalid command.
     if target not in COMMANDS:

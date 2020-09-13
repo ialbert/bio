@@ -1,0 +1,17 @@
+bookdown::gitbook:
+  css: []
+  highlight: null
+  includes:
+    in_header: assets/header.html
+    after_body: assets/footer.html
+  number_sections: false
+  split_by: chapter
+  ui:
+    chapter_name: "Chapter "
+  toc_depth: 1
+  config:
+    sharing: null
+    toc:
+      collapse: none
+      before: |
+        <li><a href="index.html">bio: make bioinformatics great again</a></li>

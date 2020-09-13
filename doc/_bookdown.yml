@@ -1,0 +1,13 @@
+rmd_files: [
+
+  # Statistics
+  "index.md",
+  "pages/bio-install.md",
+  "pages/bio-fetch.md",
+  "pages/bio-convert.md",
+
+]
+
+book_filename: bio
+
+delete_merged_file: True
