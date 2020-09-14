@@ -40,13 +40,10 @@ def migrate_db():
 
 
 # Can also give a list of accession numbers or lists.
-@plac.pos('acc', "comma separated list of accession numbers to add to database.")
+@plac.opt('acc', "comma separated list of accession numbers to add to database.")
 @plac.flg('migrate', "migrate the database")
-@plac.opt('input_dir', "directory to get genbank files from.")
-@plac.opt('output_dir', "directory for output files.")
 @plac.opt('db', "database to populate.")
-@plac.opt('target_db', "target database to use for ncbi.")
-def run(acc, migrate=False, input_dir=None, output_dir=None, db=None, target_db=None):
+def run(acc=None, migrate=False, db=None):
     """
     """
 
@@ -54,9 +51,9 @@ def run(acc, migrate=False, input_dir=None, output_dir=None, db=None, target_db=
         migrate_db()
 
     # Get the input files from using accession number
-    fname = fetch.save_or_get(acc=acc, db=db, format="gbk",
-                              mode="text",
-                              output_dir=input_dir)
+    # fname = fetch.get(acc=acc, db=db, format="gbk",
+    #                 mode="text",
+    #                 output_dir=input_dir)
 
     # Insert file into database.
     #insert(input_file=fname)

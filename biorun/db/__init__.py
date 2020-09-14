@@ -1,7 +1,7 @@
 import django
 from django.conf import settings
 
-DATABASE_NAME = "database.db"
+DATABASE_NAME = 'database.db'
 
 # Configure the database and app name
 settings.configure(

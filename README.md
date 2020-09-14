@@ -2,6 +2,8 @@
 
 Making bioinformatics great again.
 
+Series of utility functions that streamline bioinformatics.
+
 
 ## How to use
 

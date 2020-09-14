@@ -37,6 +37,8 @@ class Feature(models.Model):
 
     # Range of integers
     location = models.CharField(max_length=MAX_CHAR)
+    start = ''
+    end = ''
 
     gene = models.CharField(max_length=MAX_CHAR)
 
@@ -81,6 +83,7 @@ class Feature(models.Model):
     lab_host = models.CharField(max_length=MAX_CHAR)
     dev_stage = models.CharField(max_length=MAX_CHAR)
     focus = models.BooleanField(default=False)
+
     rearranged = models.BooleanField(default=False)
     cell_line = models.CharField(max_length=MAX_CHAR)
     cell_type = models.CharField(max_length=MAX_CHAR)
@@ -88,14 +91,19 @@ class Feature(models.Model):
     # Get features associated with locus
     locus = models.ForeignKey(Locus, on_delete=models.SET_NULL, null=True)
 
-    def sources(self, acc):
+    def sources(self):
         return
 
-    def CDS(self, acc):
+    def CDS(self):
         return
 
-    def regulatory(self, acc):
+    def regulatory(self):
         return
+
+    def repeat_region(self):
+        return
+
+
 
 
 

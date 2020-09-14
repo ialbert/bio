@@ -1,7 +1,7 @@
 """
 The main job runner. Register functions here.
 """
-import os
+import os, time
 import sys
 import plac
 from importlib import import_module
@@ -22,8 +22,7 @@ COMMANDS = {
 
 # Context for the USAGE help page.
 context = dict(VERSION=VERSION, POPULATE=POPULATE,
-               CONVERT=CONVERT, ALIGN=ALIGN, FETCH=FETCH
-               )
+               CONVERT=CONVERT, ALIGN=ALIGN, FETCH=FETCH)
 
 # The default help page for the tool.
 USAGE = utils.render_file("usage.txt", context=context)
@@ -42,7 +41,9 @@ def run(*cmd):
     # Print usage if no command is seen.
     if target is None or target in ("-h", "--help"):
         print(f"{USAGE}", file=sys.stderr)
-        sys.exit(1)
+
+        # Raise 1 as exit only if it seems the user forgot to pass any flag
+        sys.exit(int(target is None))
 
     # Handles invalid command.
     if target not in COMMANDS:
@@ -54,12 +55,15 @@ def run(*cmd):
         # Import and call the target function.
         package = COMMANDS[target]
         module = import_module(name=package)
-        # Target the run function in each package.
+        # Target the run function in each module.
         func = getattr(module, 'run')
-        plac.call(func, cmd[1:])
+        rest = cmd[1:]
+        rest = rest or [ "-h"]
+        plac.call(func, rest)
     except KeyboardInterrupt:
-        # Breakout from interrupts without a traceback.
+        # Terminate keyboard interrupts without a traceback.
         sys.exit(0)
+
 
 run.add_help = False
 
