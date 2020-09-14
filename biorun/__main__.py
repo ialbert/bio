@@ -17,7 +17,7 @@ COMMANDS = {
     FETCH: 'biorun.data.fetch',
     ALIGN: 'biorun.align.pairwise',
     POPULATE: 'biorun.db.populate',
-    SEARCH: 'biorun.db.query'
+    #SEARCH: 'biorun.db.query'
 }
 
 # Context for the USAGE help page.
