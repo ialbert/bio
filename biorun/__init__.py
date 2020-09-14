@@ -1,9 +1,10 @@
 
-import os
+import logging.config
+from .logconf import LOGGING
 
 
-__CURRENT_DIR = os.path.dirname(__file__)
-DUMP_DIR = os.path.join(__CURRENT_DIR, '..', 'dump')
+logging.config.BaseConfigurator(LOGGING)
+
 
 VERSION = "0.0.1"
 

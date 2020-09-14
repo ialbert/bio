@@ -10,6 +10,7 @@ Data commands
 Action commands
 
     {{ "%-10s" | format(ALIGN) }} - aligns sequences with different algorithms
+    {{ "%-10s" | format(POPULATE) }} - populate local database with GenBank data
 
 Get more help on each command with:
 
