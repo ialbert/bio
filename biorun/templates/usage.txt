@@ -17,5 +17,5 @@ Get more help on each command with:
 
 Examples:
 
-    bio fetch NC_045512 > data.gb
+    bio fetch AF086833 > data.gb
 

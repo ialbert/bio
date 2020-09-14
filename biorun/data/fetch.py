@@ -11,7 +11,7 @@ from biorun import utils
 # The default logging function.
 logger = utils.logger
 
-Entrez.email = 'A.N.Other@example.com'
+Entrez.email = 'bio@example.com'
 
 def error(msg):
     print(f"ERROR: {msg}", file=sys.stderr)

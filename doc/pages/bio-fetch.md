@@ -14,9 +14,12 @@ All other commands (`convert`, `align` etc) that can operate via accession numbe
     # Get multiple accession numbers into a single file.
     bio fetch NC_045512 AF086833 > results.gb
 
-    # Extract the S protein's DNA sequence from the GenBank file
-    bio fetch NC_045512:S > nucleotide.gb
+    # Extract the S protein's DNA sequence as FASTA
+    bio fetch NC_045512 --name S > nucleotide.fa
 
+    # Extract the S protein's DNA sequence as FASTA
+    bio fetch NC_045512 --name S --range 1-200 > nucleotide.fa
+    
     # Extract the S protein's translated sequence from the GenBank file
     bio fetch NC_045512:S --trans > protein.fa
 

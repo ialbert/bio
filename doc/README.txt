@@ -14,7 +14,7 @@ or as a developer:
 
     python setup.py develop
 
-## Test the documenation
+## Generate the html documenation
 
     make
 
