@@ -1,5 +1,19 @@
 .PHONY: dist build
 
+all: serve
+
+publish: build sync
+
+init:
+	rm -rf _book
+
+serve: init
+	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='doc/_book', port=8000)"
+
+push:
+	-git commit -am `whoami`
+	-git push
+
 clean:
 	rm -rf dist build bio.egg-info
 

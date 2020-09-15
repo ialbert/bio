@@ -2,9 +2,8 @@ rmd_files: [
 
   # Statistics
   "index.md",
-  "pages/bio-install.md",
-  "pages/bio-fetch.md",
-  "pages/bio-convert.md",
+  "bio-install.md",
+  "bio-view.md",
 
 ]
 
