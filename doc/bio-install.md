@@ -14,7 +14,8 @@ You may also have success installing them via `pip`:
     
 Install the package with:
 
-    pip install bio
+    # Also updates the software if it is already installed.
+    pip install bio --upgrade
 
 ## Usage
 
