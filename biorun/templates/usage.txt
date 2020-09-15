@@ -10,7 +10,6 @@ Data commands
 Action commands
 
     {{ "%-10s" | format(ALIGN) }} - aligns sequences with different algorithms
-    {{ "%-10s" | format(POPULATE) }} - populate local database with data from NCBI or ENSEMBL
 
 Get more help on each command with:
 

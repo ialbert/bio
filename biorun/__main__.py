@@ -9,19 +9,17 @@ from biorun import VERSION
 from biorun import utils
 
 # Commands names.
-CONVERT, ALIGN, FETCH, POPULATE, SEARCH = "convert", "align", "fetch", "populate", "search"
+CONVERT, ALIGN, FETCH = "convert", "align", "fetch"
 
 # Enabled commands.
 COMMANDS = {
     CONVERT: 'biorun.data.convert',
     FETCH: 'biorun.data.fetch',
     ALIGN: 'biorun.align.pairwise',
-    POPULATE: 'biorun.db.populate',
-    #SEARCH: 'biorun.db.query'
 }
 
 # Context for the USAGE help page.
-context = dict(VERSION=VERSION, POPULATE=POPULATE,
+context = dict(VERSION=VERSION,
                CONVERT=CONVERT, ALIGN=ALIGN, FETCH=FETCH)
 
 # The default help page for the tool.
