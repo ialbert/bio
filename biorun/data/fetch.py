@@ -55,22 +55,23 @@ def get(acc, db='nuccore', format='gb', mode="text", update=False, stdout=False)
     return stream
 
 
-@plac.pos('acc', "accession number")
+@plac.pos('accs', "accession numbers space separated")
 @plac.opt('db', "target database")
 @plac.opt('format', "data format", choices=["gb", "fasta", "xml"])
 @plac.flg('update', "update cached data if exists")
 @plac.flg('verbose', "verbose mode, progress messages printed")
 @plac.flg('prefetch', "saves data into cache, no output")
-def run(acc, db='nuccore', format='gb', update=False, verbose=False, prefetch=False):
+def run(db='nuccore', format='gb',update=False, verbose=False, prefetch=False, *accs):
 
     utils.set_verbosity(logger, level=int(verbose))
 
     # Should it print output to the standard output
     stdout = not prefetch
-
     mode = "text"
-    stream = get(acc=acc, db=db, format=format, mode=mode, update=update, stdout=stdout)
 
-    stream.close()
+    # Fetch data for each accession number
+    for acc in accs:
+        stream = get(acc=acc, db=db, format=format, mode=mode, update=update, stdout=stdout)
+        stream.close()
 
     return
