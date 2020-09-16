@@ -89,6 +89,7 @@ def resolve_fname(acc, format='gb'):
     Resolve a file name given an accession number.
     """
     ext = format.lower()
+    ext = 'gb' if ext == 'gbwithparts' else ext
     ext = 'fa' if ext == 'fasta' else ext
     fname = f"{acc}.{ext}"
     fname = os.path.join(DATADIR, fname)

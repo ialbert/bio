@@ -1,3 +1,6 @@
+import os
+
+VERSION = "0.0.6"
 
 #
 # Turn off broken pipe errors that may appear when piping into unix tools (head/tail etc)
@@ -6,5 +9,3 @@
 #
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
-
-VERSION = "0.0.2"
