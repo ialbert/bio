@@ -16,5 +16,5 @@ Get more help on each command with:
 
 Examples:
 
-    bio view AF086833 > data.gb
+    bio view AF086833
 
