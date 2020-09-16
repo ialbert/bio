@@ -90,23 +90,16 @@ def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdo
     stream = open(fname, 'rt')
     return stream
 
-@plac.pos('acc', "accession number")
-@plac.opt('db', "target database")
-@plac.opt('name', "name of the feature")
-@plac.flg('fasta', "generate fasta file")
-@plac.flg('gff', "generate a gff file")
-@plac.flg('update', "update cached data if exists")
-@plac.flg('verbose', "verbose mode, progress messages printed")
-@plac.flg('prefetch', "saves data into cache, no output")
-def run(acc, db='nuccore', name='', fasta=False, gff=False,  update=False, verbose=False, prefetch=False):
 
-    utils.set_verbosity(logger, level=int(verbose))
+def process(acc, db='nuccore', name='', fasta=False, gff=False,  update=False, prefetch=False):
+    """
+    View a single accession number.
+    """
 
     parts = acc.split(":")
     if len(parts) == 2:
         acc = parts[0]
         name = name or parts[1]
-
 
     mode = "text"
     format = utils.GENBANK
@@ -116,12 +109,28 @@ def run(acc, db='nuccore', name='', fasta=False, gff=False,  update=False, verbo
     # No further action taken.
     if prefetch:
         return
-
-    if fasta :
+    if fasta:
         print_fasta(stream, name=name)
     elif gff:
         print_gff(stream, name=name)
     else:
         print_genbank(stream)
 
+    return
+
+
+@plac.pos('accs', "accession numbers")
+@plac.opt('db', "target database")
+@plac.opt('name', "name of the feature")
+@plac.flg('fasta', "generate fasta file")
+@plac.flg('gff', "generate a gff file")
+@plac.flg('update', "update cached data if exists")
+@plac.flg('verbose', "verbose mode, progress messages printed")
+@plac.flg('prefetch', "saves data into cache, no output")
+def run(db='nuccore', name='', fasta=False, gff=False,  update=False, verbose=False, prefetch=False, *accs):
+
+    utils.set_verbosity(logger, level=int(verbose))
+
+    for acc in accs:
+        process(acc, db=db, name=name, fasta=fasta, gff=gff,  update=update, prefetch=prefetch)
     return

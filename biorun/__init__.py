@@ -9,4 +9,3 @@ VERSION = "0.0.6"
 #
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
-
