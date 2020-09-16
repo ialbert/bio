@@ -1,10 +1,10 @@
-import setuptools
 import biorun
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setuptools.setup(
+setup(
     name="bio",
     version=biorun.VERSION,
     author="Istvan Albert",
@@ -13,8 +13,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ialbert/bio",
-    packages=["biorun"],
-    package_data={'templates': ['templates/*.txt']},
+    packages=find_packages(include=["biorun", "biorun.*"]),
+    ppackage_data={'biorun': ['templates/*.txt']},
+    include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

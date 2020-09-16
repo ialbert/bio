@@ -1,69 +1,51 @@
-# Bioinformatics Utilities
+# bio: introduction
 
-Making bioinformatics great again.
+Utilities to streamline bioinformatics education.
 
-Series of utility functions that streamline bioinformatics.
+The `bio` software package attempts to streamline several bioinformatics tasks,
+to allow users to focus on the concepts that matter.
+
+The primary use of the package is in education and exploratory analysis of viral and bacterial genomes.
+
+## Rationale
+
+Typical bioinformatics solutions end up  being unnecessarily complicated. Seemingly simple tasks require elaborate sets
+of preparations that, in our opinion should not be needed.
+
+For example suppose we wanted to find the alignment and the differences between protein `S` of the bat corona virus `MN996532` and protein `S` of the ancestral SARS-COV-2 virus designated by NCBI accession number `NC_045512`. With `bio` you can write:
+
+    bio align MN996532:S NC_045512:S
+
+And that's it. It will automatically fetch the data, align in DNA space, produce a global DNA alignment. But wait there is more
+Perhaps you needed local alignments, no problem:
+
+    bio align MN996532:S NC_045512:S --local
+
+perhaps you wanted to set a semiglobal alignment:
+
+    bio align MN996532:S NC_045512:S --semiglobal
+
+or align the translated sequences:
+
+    bio align MN996532:S NC_045512:S --translation
+
+perhaps you wish to align only a sub-range of the sequences:
+
+    bio align MN996532:S NC_045512:S --range 100-200
+
+and so on.
+
+Moreover after the first run the data for `MN996532` and `NC_045512` are saved in the local cache. Thus you would not need to connect to internet to run subsequent commands.
+
+## Documentation
+
+The documentation is maintained at
+
+    https://bio.github.io
+
+Or in the github repository as markdown files:
+
+    https://github.com/ialbert/bio/tree/master/doc
 
 
-## How to use
 
-> **Note**: data with NCBI accession numbers will be automatically downloaded from the corresponding data repositories then stored locally. No need to obtain data beforehand.
-
-Align the DNA sequence of the `S` protein of two two `SARS-COV-2` genomes:
-
-    bio align ACC1:S ACC2:S
-
-It prints:
-
-    ------
-
-Align the `S` protein as peptide sequences:
-
-    bio align --protein ACC1:S ACC2:S
-
-
-## Requirements
-
-The package requires `BioPython` and `pysam`. Depending on your work style use:
-
-    conda install biopython pysam
-    
-or
-
-    pip install biopython pysam
-    
-    
-## Installation
-        
-    pip install bio
-    
-    
-## Development mode
-
-    git clone https://github.com/ialbert/bio.git
-    (cd bio && python setup.py develop)
-    
-
-## Run
-
-Type
-
-    bio 
-        
-to see the usage:
-
-    Bioinformatics utilities: 0.0.1
-
-    Usage: bio COMMAND
-    
-    Data commands:
-    
-        convert    - convert biological data to other formats
-    
-    Operations:
-    
-        align      - align sequences with different algorithms
-    
-    Get more help on each command with:
-    
-        bio COMMAND -h    

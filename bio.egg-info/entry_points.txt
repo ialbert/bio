@@ -1,0 +1,3 @@
+[console_scripts]
+bio = biorun.__main__:main
+

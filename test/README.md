@@ -19,3 +19,24 @@ Insect, fruit fly (chromosome 2L): NT_033779 (2 minutes, 44MB)
 Mammal, human genome (chromosome 1): NC_000001 ( hours, 300MB)
 
     time bio fetch NC_000001  -v > foo.gb
+    
+
+E-utilites:
+
+web site:
+
+
+* https://www.ncbi.nlm.nih.gov/books/NBK25497/?report=reader
+
+code example:
+
+    URL=https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?
+    
+    PARAMS='db=nuccore&id=AF086833&rettype=gbwithparts&retmode=text'
+    
+    #PARAMS1='db=nuccore&id=AF086833&rettype=gb&retmode=text'
+    
+    echo time curl ${URL}${PARAMs}
+    
+    
+data_mode
