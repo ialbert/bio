@@ -50,7 +50,7 @@ class Feature(object):
         self.feat = feat
         self.type = get_attr(self.feat, "type")
 
-        self.qualifiers = dict(self.feat.qualifiers)
+        self.attr = dict(self.feat.qualifiers)
 
         # One based coordinate system.
         self.start = int(self.feat.location.start) + 1
@@ -72,6 +72,17 @@ class Feature(object):
 
         return get_attr(self.feat, item)
 
+    def as_gff(self, anchor):
+        """
+        Return a 11 field GFF ready list
+        :return:
+        """
+        data = [
+            anchor, ".", self.type, self.start, self.end, "score", "strand", "phase", "attrib"
+        ]
+        #print(self.as_dict())
+        return data
+
     def as_dict(self):
         """
         Represents a Biopython Feature as a dictionary.
@@ -81,7 +92,7 @@ class Feature(object):
             end=self.end,
             type=self.type,
         )
-        data.update(self.qualifiers)
+        data.update(self.attr)
         return data
 
 
