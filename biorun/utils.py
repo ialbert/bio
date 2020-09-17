@@ -34,6 +34,7 @@ TYPE_BY_EXTENSION = {
     "bam": BAM,
 }
 
+
 def time_it(func):
     @wraps(func)
     def timer(*args, **kwargs):
@@ -42,9 +43,11 @@ def time_it(func):
             return func(*args, **kwargs)
         finally:
             end = time.time()
-            diff = int(round((end-start), 1)) or 0.1
+            diff = int(round((end - start), 1)) or 0.1
             logger.info(f"{func.__name__} execution time: {diff} seconds")
+
     return timer
+
 
 def guess_type(path):
     """
@@ -96,6 +99,14 @@ def resolve_fname(acc, format='gb'):
     return fname
 
 
+def sizeof_fmt(num, suffix='B'):
+    for unit in ['', 'K', 'M', 'G']:
+        if abs(num) < 1024.0:
+            return "%3.1f %s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, '??', suffix)
+
+
 def save_stream(stream, fname, trigger=100000, stdout=False):
     """
     Write a input 'stream' as the fname filename.
@@ -126,9 +137,9 @@ def save_stream(stream, fname, trigger=100000, stdout=False):
     res.close()
     tmp.close()
 
-    # Show file size in Mb
-    fsize = os.path.getsize(fname) / 1024 / 1024
-    logger.info(f"saved {fsize:0.1f} MB data to {fname}")
+    # User friendly file size.
+    fsize = sizeof_fmt(os.path.getsize(fname))
+    logger.info(f"saved {fsize} data to {fname}")
     return
 
 
@@ -155,9 +166,20 @@ def get_logger(name, hnd=None, fmt=None, terminator='\n'):
 
     return log
 
+
 def set_verbosity(logger, level=1):
     level = logging.DEBUG if level > 0 else logging.WARNING
     logger.setLevel(level)
 
+
 # Initialize the logger.
 logger = get_logger("main")
+
+
+def error(msg):
+    """
+    The default error handler
+    """
+    global logger
+    logger.error(f"ERROR: {msg}")
+    sys.exit(1)

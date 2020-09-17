@@ -8,11 +8,13 @@ import plac
 from Bio import Entrez, SeqIO
 from biorun import utils
 from biorun.models import Sequence
+from . import fetch
 
 # The default logging function.
 logger = utils.logger
 
-Entrez.email = 'bio@example.com'
+# This email needs to be tunable.
+Entrez.email = 'bio@bio.com'
 
 def error(msg):
     print(f"ERROR: {msg}", file=sys.stderr)
@@ -23,17 +25,6 @@ def parse_genbank(stream):
     recs = map(lambda rec: Sequence(rec), recs)
     return recs
 
-
-@utils.time_it
-def efetch(acc, db, format, mode='text'):
-    try:
-        logger.info("connecting to edirect")
-        stream = Entrez.efetch(id=acc, db=db, rettype=format, retmode=mode)
-        logger.info("returning from edirect")
-        return stream
-    except Exception as exc:
-        msg = f"{exc} for efetch acc={acc} db={db} format={format} mode={mode}"
-        error(msg)
 
 
 def print_fasta(stream, name=''):
@@ -65,50 +56,14 @@ def print_genbank(stream):
         print(line, end="")
 
 
-def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdout=False):
+def process(acc, name='', fasta=False, gff=False):
     """
-    Downloads an accession number from NCBI to a file.
-    Returns an open stream to the file.
-    """
-
-    if format == utils.GENBANK:
-        format = "gbwithparts"
-
-    # Resolve file based on the requested format.
-    fname = utils.resolve_fname(acc=acc, format=format)
-
-
-    # Return the file if the file already exists and update is not required.
-    if os.path.isfile(fname) and not update:
-        msg = f"file found at: {fname}"
-        logger.info(msg)
-    else:
-        # Perform efetch and save the stream into the file.
-        stream = efetch(acc=acc, db=db, format=format, mode=mode)
-        utils.save_stream(stream=stream, fname=fname, stdout=stdout)
-
-    stream = open(fname, 'rt')
-    return stream
-
-
-def process(acc, db='nuccore', name='', fasta=False, gff=False,  update=False, prefetch=False):
-    """
-    View a single accession number.
+    Performs the processing of a single accession number.
     """
 
-    parts = acc.split(":")
-    if len(parts) == 2:
-        acc = parts[0]
-        name = name or parts[1]
+    # Open the stream to the data
+    stream = fetch.get(acc=acc)
 
-    mode = "text"
-    format = utils.GENBANK
-
-    stream = get(acc=acc, db=db, format=format, mode=mode, update=update)
-
-    # No further action taken.
-    if prefetch:
-        return
     if fasta:
         print_fasta(stream, name=name)
     elif gff:
@@ -120,17 +75,20 @@ def process(acc, db='nuccore', name='', fasta=False, gff=False,  update=False, p
 
 
 @plac.pos('accs', "accession numbers")
-@plac.opt('db', "target database")
 @plac.opt('name', "name of the feature")
 @plac.flg('fasta', "generate fasta file")
 @plac.flg('gff', "generate a gff file")
-@plac.flg('update', "update cached data if exists")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-@plac.flg('prefetch', "saves data into cache, no output")
-def run(db='nuccore', name='', fasta=False, gff=False,  update=False, verbose=False, prefetch=False, *accs):
+def run(name='', fasta=False, gff=False, verbose=False, *accs):
 
+    # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
-    for acc in accs:
-        process(acc, db=db, name=name, fasta=fasta, gff=gff,  update=update, prefetch=prefetch)
-    return
+    # The accession numbers may stored in files as well.
+    collect = fetch.accs_or_file(accs)
+
+    # Process each accession number.
+    for acc in collect:
+        process(acc, name=name, fasta=fasta, gff=gff)
+
+

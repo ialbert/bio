@@ -1,0 +1,7 @@
+#
+# accession numbers and comments
+# fetch will read the first column
+#
+AF086833
+MN996532   
+

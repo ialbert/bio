@@ -4,7 +4,8 @@ Usage: bio COMMAND
 
 Data commands
 
-    {{ "%-10s" | format(VIEW) }}  - obtains and/or converts biological data
+   {{ "%-10s" | format(FETCH) }}  - downloads GenBank/EMBL data into cache
+   {{ "%-10s" | format(VIEW) }}  - converts/extracts information from GenBank/EMBL data
 
 Action commands
 

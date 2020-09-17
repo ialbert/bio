@@ -3,8 +3,8 @@ rmd_files: [
   # Statistics
   "index.md",
   "bio-install.md",
+  "bio-fetch.md",
   "bio-view.md",
-
 ]
 
 book_filename: bio

@@ -9,18 +9,19 @@ from biorun import VERSION
 from biorun import utils
 
 # Commands names.
-VIEW, ALIGN  = "view", "align"
+FETCH, VIEW, ALIGN  = "fetch", "view", "align"
 
 # Enabled commands.
 COMMANDS = {
+    FETCH: 'biorun.data.fetch',
     VIEW: 'biorun.data.view',
     ALIGN: 'biorun.align.pairwise'
 }
 
 # Context for the USAGE help page.
-context = dict(VERSION=VERSION,
-               ALIGN=ALIGN, VIEW=VIEW
-               )
+context = dict(
+    VERSION=VERSION, FETCH=FETCH, ALIGN=ALIGN, VIEW=VIEW
+)
 
 # The default help page for the tool.
 USAGE = utils.render_file("usage.txt", context=context)
