@@ -16,6 +16,7 @@ except ImportError as exc:
     print(f"*** Try: conda install biopython", file=sys.stderr)
     sys.exit(1)
 
+logger = utils.logger
 
 def get_attr(obj, name, default=''):
     """
@@ -53,7 +54,7 @@ class Feature(object):
         self.attr = dict(self.feat.qualifiers)
 
         # One based coordinate system.
-        self.start = int(self.feat.location.start) + 1
+        self.start = int(self.feat.location.start)
         self.end = int(self.feat.location.end)
 
     @property
@@ -84,7 +85,7 @@ class Feature(object):
         attrib = ";".join(attrib)
 
         data = [
-            anchor, ".", self.type, self.start, self.end, ".", strand, ".", attrib
+            anchor, ".", self.type, self.start+1, self.end, ".", strand, ".", attrib
         ]
         return data
 
@@ -133,15 +134,17 @@ class Sequence(object):
             obj = Feature(feat=feat)
             self.tree[obj.start: obj.end] = obj
 
-    def features(self, start=0, end=None, name=None, typ=None):
+    def features(self, start=1, end=None, name=None, typ=None):
         """
         Returns the list of features.
         """
 
         # Slice the interval tree by range.
-        feats = self.tree[start:end]
+        logger.info("slicing the interval tree")
+        feats = self.tree[start-1:end]
 
         # Sort by coordinates.
+        logger.info("sorting features")
         feats = sorted(feats)
 
         # Return the features stored under the interval tree.

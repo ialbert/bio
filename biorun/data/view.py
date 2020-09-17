@@ -28,7 +28,7 @@ def parse_genbank(stream):
     return recs
 
 
-def print_fasta(stream, name='', rng=''):
+def print_fasta(stream, name='', start=0, end=None, typ=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
@@ -75,7 +75,7 @@ def process(acc, name='', fasta=False, gff=False, start=0, end=None, typ=''):
     cache, stream = fetch.get(acc=acc)
 
     if fasta:
-        print_fasta(stream, name=name, rng=rng)
+        print_fasta(stream, name=name, start=start, end=end, typ=type)
     elif gff:
         print_gff(stream, name=name, start=start, end=end, typ=typ)
     else:
@@ -84,7 +84,7 @@ def process(acc, name='', fasta=False, gff=False, start=0, end=None, typ=''):
     return
 
 
-@plac.pos('accs', "accession numbers")
+@plac.pos('acc', "accession numbers")
 @plac.opt('name', "name of the feature")
 @plac.opt('type', "the type of the feature")
 @plac.opt('start', "start coordinate ")
@@ -92,18 +92,15 @@ def process(acc, name='', fasta=False, gff=False, start=0, end=None, typ=''):
 @plac.flg('fasta', "generate fasta file")
 @plac.flg('gff', "generate a gff file")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(name='', fasta=False, gff=False, verbose=False, type='', start=0, end=0, *accs):
+def run(name='',  type='', start=0, end=0,  fasta=False, gff=False, verbose=False, *acc):
 
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
-    # The accession numbers may stored in files as well.
-    collect = fetch.accs_or_file(accs)
-
     start = start
     end = end or None
     # Process each accession number.
-    for acc in collect:
-        process(acc, name=name, fasta=fasta, gff=gff, start=start, end=end, typ=type)
+    for acx in acc:
+        process(acx, name=name, fasta=fasta, gff=gff, start=start, end=end, typ=type)
 
 

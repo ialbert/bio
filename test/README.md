@@ -2,11 +2,11 @@ Demo accession numbers:
 
 Viral, SARS-COV-2: NC_045512 (1 second)
 
-    time bio fetch NC_045512 -v > foo.gb
+    time bio fetch NC_045512
 
 Viral, Ebola: AF086833 (1 second)
 
-    time bio fetch AF086833 -v > foo.gb
+    time bio fetch AF086833 
 
 Bacteria, Escherichia coli: NC_002695 (2 minutes, 10MB)
 
@@ -14,12 +14,14 @@ Bacteria, Escherichia coli: NC_002695 (2 minutes, 10MB)
 
 Insect, fruit fly (chromosome 2L): NT_033779 (2 minutes, 44MB)
 
-    time bio fetch NT_033779  -v > foo.gb
+    time bio fetch NT_033779 
 
-Mammal, human genome (chromosome 1): NC_000001 ( hours, 300MB)
+Mammal, human genome (chromosome 1): NC_000001 (2 minutes, 300MB)
 
     time bio fetch NC_000001  -v > foo.gb
     
+
+https://www.ncbi.nlm.nih.gov/sviewer/viewer.cgi?tool=portal&save=file&log$=seqview&db=nuccore&report=gbwithparts&id=459277393&extrafeat=null&withparts=on
 
 E-utilites:
 

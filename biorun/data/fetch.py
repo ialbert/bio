@@ -28,6 +28,13 @@ def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdo
     Returns an open stream to the file.
     """
 
+    cache = True
+
+    # Check if the accession number is a local file:
+    if os.path.isfile(acc):
+        logger.info(f"file {acc}")
+        return cache, open(acc, "rt")
+
     if db == "nuc":
         db = "nuccore"
     else:
@@ -38,18 +45,16 @@ def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdo
 
     # Flag indicating the source
 
-    cache = False
 
     # Resolve file based on the requested format.
     fname = utils.resolve_fname(acc=acc, format=format)
 
     # Return the file if the file already exists and update is not required.
     if os.path.isfile(fname) and not update:
-        cache = True
-        msg = f"found {fname}"
-        logger.info(msg)
+        logger.info(f"found {fname}")
     else:
         # Perform efetch and save the stream into the file.
+        cache = False
         stream = efetch(acc=acc, db=db, format=format, mode=mode)
         utils.save_stream(stream=stream, fname=fname, stdout=stdout)
 
@@ -87,17 +92,17 @@ def accs_or_file(accs):
 
     return collect
 
-@plac.pos('accs', "accession numbers")
+@plac.pos('acc', "accession numbers")
 @plac.opt('db', "database type", choices=["nuc", "prot"])
 @plac.flg('update', "update cached data if exists")
 @plac.flg('quiet', "quiet mode, no output printed")
-def run(db='nuc', update=False, quiet=False, *accs):
+def run(db='nuc', update=False, quiet=False, *acc):
 
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
 
     # The accession numbers may stored in files as well.
-    collect = accs_or_file(accs)
+    collect = accs_or_file(acc)
 
     # Obtain the data for each accession number
     for acc in collect:

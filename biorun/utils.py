@@ -118,8 +118,8 @@ def sizeof_fmt(num, suffix='B'):
         num /= 1024.0
     return "%.1f%s%s" % (num, '??', suffix)
 
-
-def save_stream(stream, fname, trigger=100000, stdout=False):
+@time_it
+def save_stream(stream, fname, trigger=25000, stdout=False):
     """
     Write a input 'stream' as the fname filename.
     """
@@ -129,12 +129,15 @@ def save_stream(stream, fname, trigger=100000, stdout=False):
     tmp = tempfile.NamedTemporaryFile(mode="w+t")
 
     sequence = count(1)
+    logger.info(f"streaming data to file")
     for index, line in zip(sequence, stream):
         if (index % trigger) == 0:
             logger.info(f"processed {index:,d} lines")
         tmp.write(line)
         if stdout:
             print(line, end='')
+
+    logger.info(f"total of {index:,d} lines")
 
     # Not sure if this is needed. Can't hurt.
     tmp.flush()
