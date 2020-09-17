@@ -20,14 +20,15 @@ def error(msg):
     print(f"ERROR: {msg}", file=sys.stderr)
     sys.exit(1)
 
+
 def parse_genbank(stream):
     recs = SeqIO.parse(stream, utils.GENBANK)
     recs = map(lambda rec: Sequence(rec), recs)
+
     return recs
 
 
-
-def print_fasta(stream, name=''):
+def print_fasta(stream, name='', rng=''):
     """
     Prints the origin of a BioPython SeqRecord.
     """
@@ -38,7 +39,8 @@ def print_fasta(stream, name=''):
         for item in recs:
             print(item.rec.format("fasta"))
 
-def print_gff(stream, name=''):
+
+def print_gff(stream, name='', start=0, end=None, typ=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
@@ -46,28 +48,36 @@ def print_gff(stream, name=''):
 
     # Print the origin for each record
     for rec in recs:
-        for ival in rec:
-            values = ival.data.as_gff(anchor=rec.name)
+
+        # Subselect by coordinates.
+        feats = rec.features(start=start, end=end, name=name, typ=typ)
+
+        # Generate the gff output
+        for feat in feats:
+            #print (feat)
+            values = feat.as_gff(anchor=rec.id)
             values = map(str, values)
             print ("\t".join(values))
+
+
 
 def print_genbank(stream):
     for line in stream:
         print(line, end="")
 
 
-def process(acc, name='', fasta=False, gff=False):
+def process(acc, name='', fasta=False, gff=False, start=0, end=None, typ=''):
     """
     Performs the processing of a single accession number.
     """
 
     # Open the stream to the data
-    stream = fetch.get(acc=acc)
+    cache, stream = fetch.get(acc=acc)
 
     if fasta:
-        print_fasta(stream, name=name)
+        print_fasta(stream, name=name, rng=rng)
     elif gff:
-        print_gff(stream, name=name)
+        print_gff(stream, name=name, start=start, end=end, typ=typ)
     else:
         print_genbank(stream)
 
@@ -76,10 +86,13 @@ def process(acc, name='', fasta=False, gff=False):
 
 @plac.pos('accs', "accession numbers")
 @plac.opt('name', "name of the feature")
+@plac.opt('type', "the type of the feature")
+@plac.opt('start', "start coordinate ")
+@plac.opt('end', "end coordinate")
 @plac.flg('fasta', "generate fasta file")
 @plac.flg('gff', "generate a gff file")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(name='', fasta=False, gff=False, verbose=False, *accs):
+def run(name='', fasta=False, gff=False, verbose=False, type='', start=0, end=0, *accs):
 
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
@@ -87,8 +100,10 @@ def run(name='', fasta=False, gff=False, verbose=False, *accs):
     # The accession numbers may stored in files as well.
     collect = fetch.accs_or_file(accs)
 
+    start = start
+    end = end or None
     # Process each accession number.
     for acc in collect:
-        process(acc, name=name, fasta=fasta, gff=gff)
+        process(acc, name=name, fasta=fasta, gff=gff, start=start, end=end, typ=type)
 
 

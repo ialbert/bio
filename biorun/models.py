@@ -6,6 +6,7 @@ import sys, os
 from pprint import pprint
 from intervaltree import Interval, IntervalTree
 from biorun import utils
+from functools import lru_cache
 
 try:
     from Bio import SeqIO
@@ -30,7 +31,6 @@ def get_attr(obj, name, default=''):
         value = obj.annotations.get(name, default)
     else:
         value = default
-
     return value
 
 
@@ -38,7 +38,7 @@ class Feature(object):
     """
     A thin, a more usable wrapper around a BioPython feature.
 
-    Each feature has a type, has qualifiers and start, and stop coordinates.
+    Each feature has a type, has attributes, start, and stop coordinates.
     """
 
     def __init__(self, feat):
@@ -49,52 +49,55 @@ class Feature(object):
         # The BioPython feature.
         self.feat = feat
         self.type = get_attr(self.feat, "type")
-
+        self.strand = feat.strand
         self.attr = dict(self.feat.qualifiers)
 
         # One based coordinate system.
         self.start = int(self.feat.location.start) + 1
         self.end = int(self.feat.location.end)
 
-    def __repr__(self):
+    @property
+    @lru_cache()
+    def name(self):
         """
-        String representation of the feature.
+        Attempts to produce a meaningful name for the feature.
         """
-        return f"type:{self.type} loc:[{self.start}, {self.end}]"
+        value = self.get("gene") or self.type
+        return value
 
-    def __getattr__(self, item):
-        """
-        Attributes looked up in the qualifiers.
-        """
-        if item not in self.qualifiers:
-            # print(self.qualifiers)
-            raise AttributeError(item)
-
-        return get_attr(self.feat, item)
+    def get(self, name):
+        if hasattr(self, name):
+            return getattr(self, name)
+        value = self.attr.get(name, '')
+        return utils.flatten(value)
 
     def as_gff(self, anchor):
         """
         Return a 11 field GFF ready list
-        :return:
         """
+        strand = "+" if self.strand else "-"
+
+        pairs = [ ("Name", "name"), ("Function", "function"), ("ID", "protein_id")]
+        pairs = [ (k, self.get(v)) for k,v in pairs ]
+        pairs = filter(lambda x: x[1], pairs)
+        attrib = map(lambda x: f"{x[0]}={x[1]}", pairs)
+        attrib = ";".join(attrib)
+
         data = [
-            anchor, ".", self.type, self.start, self.end, "score", "strand", "phase", "attrib"
+            anchor, ".", self.type, self.start, self.end, ".", strand, ".", attrib
         ]
-        #print(self.as_dict())
         return data
 
     def as_dict(self):
         """
-        Represents a Biopython Feature as a dictionary.
+        Returns the feature as a dictionary
         """
-        data = dict(
-            start=self.start,
-            end=self.end,
-            type=self.type,
-        )
+        data = dict(name=self.name, start=self.start, end=self.end, type=self.type)
         data.update(self.attr)
         return data
 
+    def __str__(self):
+        return str(self.as_dict())
 
 
 class Sequence(object):
@@ -123,12 +126,34 @@ class Sequence(object):
             setattr(self, attr, value)
 
         # Store the features as intervals.
-        self.features = IntervalTree()
+        self.tree = IntervalTree()
 
         # Populate the interval tree.
         for feat in rec.features:
             obj = Feature(feat=feat)
-            self.features[obj.start: obj.end] = obj
+            self.tree[obj.start: obj.end] = obj
+
+    def features(self, start=0, end=None, name=None, typ=None):
+        """
+        Returns the list of features.
+        """
+
+        # Slice the interval tree by range.
+        feats = self.tree[start:end]
+
+        # Sort by coordinates.
+        feats = sorted(feats)
+
+        # Return the features stored under the interval tree.
+        feats = map(lambda f: f.data, feats)
+
+        # Filter by name if set.
+        feats = filter(lambda r: r.name == name, feats) if name else feats
+
+        # Filter by type if requested.
+        feats = filter(lambda r: r.type == typ, feats) if typ else feats
+
+        return feats
 
     def __iter__(self):
         """
@@ -154,26 +179,8 @@ class Sequence(object):
         )
         return data
 
-
-def parse_genbank(stream, attrs=[]):
-    stream = SeqIO.parse(stream, "genbank")
-    recs = map(lambda rec: Sequence(rec), stream)
-    return recs
-
-
-def parse_fasta(stream, attrs=[]):
-    recs = SeqIO.parse(stream, "fasta")
-    return recs
-
-def parse_file(fname, ftype=''):
-    ftype = ftype or utils.guess_type(fname)
-
-    if ftype == utils.GENBANK:
-        recs = parse_genbank(fname)
-    else:
-        recs = parse_fasta(fname)
-
-    return recs
+    def __str__(self):
+        return str(self.as_dict())
 
 
 if __name__ == "__main__":

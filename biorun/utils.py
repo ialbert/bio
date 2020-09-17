@@ -48,6 +48,18 @@ def time_it(func):
 
     return timer
 
+def flatten(value, sep="|"):
+    """
+    Flattens values that may be lists.
+
+    >>> flaten(["A", "B"])
+    'A|B'
+    """
+    if isinstance(value, list):
+        return sep.join(map(str, value))
+    else:
+        return str(value)
+
 
 def guess_type(path):
     """

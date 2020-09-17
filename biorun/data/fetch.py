@@ -36,11 +36,16 @@ def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdo
     if format == utils.GENBANK:
         format = "gbwithparts"
 
+    # Flag indicating the source
+
+    cache = False
+
     # Resolve file based on the requested format.
     fname = utils.resolve_fname(acc=acc, format=format)
 
     # Return the file if the file already exists and update is not required.
     if os.path.isfile(fname) and not update:
+        cache = True
         msg = f"found {fname}"
         logger.info(msg)
     else:
@@ -49,7 +54,7 @@ def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdo
         utils.save_stream(stream=stream, fname=fname, stdout=stdout)
 
     stream = open(fname, 'rt')
-    return stream
+    return cache, stream
 
 
 def accs_or_file(accs):
@@ -96,6 +101,12 @@ def run(db='nuc', update=False, quiet=False, *accs):
 
     # Obtain the data for each accession number
     for acc in collect:
-        get(acc=acc, db=db, format=utils.GENBANK, mode="text", update=update)
-        # Needs a timeout (500ms) to reduce the number of requests per second.
-        time.sleep(500)
+
+        cache, stream = get(acc=acc, db=db, format=utils.GENBANK, mode="text", update=update)
+
+        # No need to keep the stream open.
+        stream.close()
+
+        # A throttle to avoid accessing NCBI too quickly.
+        if not cache:
+            time.sleep(1)
