@@ -1,7 +1,8 @@
 """
 Utilites funcions.
 """
-import sys, os, tempfile, shutil
+import sys, os, tempfile, gzip
+
 from itertools import count, islice
 from functools import wraps
 import time
@@ -106,7 +107,7 @@ def resolve_fname(acc, format='gb'):
     ext = format.lower()
     ext = 'gb' if ext == 'gbwithparts' else ext
     ext = 'fa' if ext == 'fasta' else ext
-    fname = f"{acc}.{ext}"
+    fname = f"{acc}.{ext}.gz"
     fname = os.path.join(DATADIR, fname)
     return fname
 
@@ -145,11 +146,11 @@ def save_stream(stream, fname, trigger=50000, stdout=False):
     # Rewind temporary file to beginning
     tmp.seek(0)
 
-    # Copy over the content from the temporary file to the final destination
-    res = open(fname, 'wt')
+    # Copy over the content from the temporary file to the final gzipped file destination.
+    out = gzip.open(fname, 'wt')
     for line in tmp:
-        res.write(line)
-    res.close()
+        out.write(line)
+    out.close()
     tmp.close()
 
     # User friendly file size.
