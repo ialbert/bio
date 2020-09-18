@@ -5,6 +5,7 @@ import os, time
 import plac
 from Bio import Entrez
 from biorun import utils
+import gzip
 
 # The default logging function.
 logger = utils.logger
@@ -22,7 +23,7 @@ def efetch(acc, db, format, mode='text'):
         utils.error(msg)
 
 
-def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdout=False):
+def get(acc, db='nuc', format=utils.GENBANK, mode="text", update=False, stdout=False):
     """
     Downloads an accession number from NCBI to a file.
     Returns an open stream to the file.
@@ -33,7 +34,8 @@ def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdo
     # Check if the accession number is a local file:
     if os.path.isfile(acc):
         logger.info(f"file {acc}")
-        return cache, open(acc, "rt")
+        stream = gzip.open(acc, 'rb') if acc.endswith(".gz") else open("rt")
+        return cache, stream
 
     if db == "nuc":
         db = "nuccore"
@@ -58,7 +60,8 @@ def get(acc, db='nuccore', format=utils.GENBANK, mode="text", update=False, stdo
         stream = efetch(acc=acc, db=db, format=format, mode=mode)
         utils.save_stream(stream=stream, fname=fname, stdout=stdout)
 
-    stream = open(fname, 'rt')
+    stream = gzip.open(fname, 'rt')
+
     return cache, stream
 
 
