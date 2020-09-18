@@ -119,7 +119,7 @@ def sizeof_fmt(num, suffix='B'):
     return "%.1f%s%s" % (num, '??', suffix)
 
 @time_it
-def save_stream(stream, fname, trigger=25000, stdout=False):
+def save_stream(stream, fname, trigger=50000, stdout=False):
     """
     Write a input 'stream' as the fname filename.
     """
@@ -132,7 +132,7 @@ def save_stream(stream, fname, trigger=25000, stdout=False):
     logger.info(f"streaming data to file")
     for index, line in zip(sequence, stream):
         if (index % trigger) == 0:
-            logger.info(f"processed {index:,d} lines")
+            logger.info(f"retreived {index:,d} lines")
         tmp.write(line)
         if stdout:
             print(line, end='')
