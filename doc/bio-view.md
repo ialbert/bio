@@ -1,44 +1,61 @@
 # bio: view
 
-The `view` command can seamlessly:
+The `view` command may be used to:
 
 - convert data from GenBank/EMBL to other formats: FASTA, GFF
 - extract sections of data: features by name, coordinate, range
-- download data identified via an accession number from NCBI or EMBL.
 
-You can also use `fetch` to
+## Usage
 
-`fetch` will store the downloaded data in a cache directory `~/bio` so that next time around it does not need to connect to the internet.
-
-All other commands (`convert`, `align` etc) that can operate via accession numbers also use the `fetch` behind the scences.
+```{bash, comment=NA}
+bio view -h
+```
 
 ## Examples
 
-    # Get a single accession number
-    bio view NC_045512 > results.gb
+The following sections show a command and its output. For clarity we truncate the output to first few relevant lines.
 
-    # Get multiple accession numbers into a single file.
-    bio view NC_045512 AF086833 > results.gb
+You may add multiple accession numbers and the operations will take place on each sequentially.
 
-    # Extract the S protein's DNA sequence as FASTA
-    bio view NC_045512 --name S > nucleotide.fa
+You may also combine multiple parameters, each condition will be applied.
 
-    # Extract the S protein's DNA sequence as FASTA
-    bio view NC_045512 --name S --range 1-200 > nucleotide.fa
-    
-    # Extract the S protein's translated sequence from the GenBank file
-    bio view NC_045512:S --trans > protein.fa
-
-    # Extract the S protein's DNA coordinates from the GenBank file
-    bio view NC_045512:S --gff > results.gff
-
-## Usage
+### View the GenBank file:
 
 ```{bash, comment=NA}
 bio view NC_045512 | head
 ```
 
-## Command line help
+### Convert all features to GFF:
+
 ```{bash, comment=NA}
-bio view -h
+bio view NC_045512 --gff | head -3
 ```
+
+### Convert only features with type `CDS`
+
+```{bash, comment=NA}
+bio view NC_045512 --gff  --type CDS | head -3
+```
+
+### Convert only features with name `S`:
+
+```{bash, comment=NA}
+bio view NC_045512 --gff  --name S | head -3
+```
+
+### Convert features that overlap a range:
+
+```{bash, comment=NA}
+bio view NC_045512 --gff  --start 21563 --end 21565 | head -3
+```
+
+### Convert the "origin" sequence to FASTA:
+
+```{bash, comment=NA}
+bio view NC_045512 --fasta | head -5
+```
+
+### Extract DNA sequences for all features
+
+
+

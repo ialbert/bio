@@ -14,4 +14,4 @@ bookdown::gitbook:
     toc:
       collapse: none
       before: |
-        <li><a href="index.html">bio: make bioinformatics great again</a></li>
+        <li><a href="index.html">bio: make bioinformatics fun again</a></li>

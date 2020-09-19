@@ -1,7 +1,7 @@
 """
 Utilites funcions.
 """
-import sys, os, tempfile, gzip
+import sys, os, tempfile, gzip, glob
 
 from itertools import count, islice
 from functools import wraps
@@ -39,13 +39,16 @@ TYPE_BY_EXTENSION = {
 def time_it(func):
     @wraps(func)
     def timer(*args, **kwargs):
+        units = "seconds"
         start = time.time()
         try:
             return func(*args, **kwargs)
         finally:
             end = time.time()
             diff = int(round((end - start), 1)) or 0.1
-            logger.info(f"{func.__name__} execution time: {diff} seconds")
+            if diff > 120:
+                diff, units = diff/60, "minutes"
+            logger.info(f"{func.__name__} execution time: {diff} {units}")
 
     return timer
 
@@ -111,11 +114,21 @@ def resolve_fname(acc, format='gb'):
     fname = os.path.join(DATADIR, fname)
     return fname
 
+def print_file_list():
+    """
+    Returns a list of the files in the data directory
+    """
+    pattern = os.path.join(os.path.join(DATADIR, '*.gz'))
+    matched = glob.glob(pattern)
+    for path in matched:
+        fsize = sizeof_fmt(os.path.getsize(path))
+        base, fname = os.path.split(path)
+        print (f"{fsize}\t{fname}")
 
-def sizeof_fmt(num, suffix='B'):
+def sizeof_fmt(num, suffix=''):
     for unit in ['', 'K', 'M', 'G']:
         if abs(num) < 1024.0:
-            return "%3.1f %s%s" % (num, unit, suffix)
+            return "%.0f%s%s" % (num, unit, suffix)
         num /= 1024.0
     return "%.1f%s%s" % (num, '??', suffix)
 
@@ -133,7 +146,7 @@ def save_stream(stream, fname, trigger=50000, stdout=False):
     logger.info(f"streaming data to file")
     for index, line in zip(sequence, stream):
         if (index % trigger) == 0:
-            logger.info(f"retreived {index:,d} lines")
+            logger.info(f"downloaded {index:,d} lines")
         tmp.write(line)
         if stdout:
             print(line, end='')
