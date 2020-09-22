@@ -126,6 +126,7 @@ def print_file_list():
         fname = fname.rsplit(".", maxsplit=2)[0]
         print (f"{fsize}\t{fname}")
 
+
 def sizeof_fmt(num, suffix=''):
     for unit in ['', 'K', 'M', 'G']:
         if abs(num) < 1024.0:

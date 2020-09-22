@@ -6,11 +6,23 @@ import plac
 from Bio import Entrez
 from biorun import utils
 import gzip
+from Bio import  SeqIO
+from biorun.models import Sequence
 
 # The default logging function.
 logger = utils.logger
 
 Entrez.email = 'bio@bio.com'
+
+def get_runinfo(stream):
+    recs = parse_genbank(stream)
+
+
+def parse_genbank(stream):
+    recs = SeqIO.parse(stream, utils.GENBANK)
+    recs = map(lambda rec: Sequence(rec), recs)
+
+    return recs
 
 
 def validate_ncbi(acc):
@@ -119,8 +131,9 @@ def accs_or_file(accs):
 @plac.opt('db', "database type", choices=["nuc", "prot"])
 @plac.flg('update', "update cached data if exists")
 @plac.flg('list', "lists the cached data")
+@plac.flg('runinfo', "prints the Bioproject runinfo")
 @plac.flg('quiet', "quiet mode, no output printed")
-def run(db='nuc', update=False, list=False, quiet=False, *acc):
+def run(db='nuc', update=False, list=False, runinfo=False, quiet=False, *acc):
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
 
@@ -135,6 +148,10 @@ def run(db='nuc', update=False, list=False, quiet=False, *acc):
     for acc in collect:
 
         cache, stream = get(acc=acc, db=db, format=utils.GENBANK, mode="text", update=update)
+
+        # Fetches the run information.
+        if runinfo:
+            get_runinfo(stream)
 
         # No need to keep the stream open.
         stream.close()

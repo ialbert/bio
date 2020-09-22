@@ -21,18 +21,12 @@ def error(msg):
     sys.exit(1)
 
 
-def parse_genbank(stream):
-    recs = SeqIO.parse(stream, utils.GENBANK)
-    recs = map(lambda rec: Sequence(rec), recs)
-
-    return recs
-
 
 def print_fasta(stream, name='', start=0, end=None, typ=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
-    recs = parse_genbank(stream)
+    recs = fetch.parse_genbank(stream)
 
     # Print the origin for each record
     if not name:
