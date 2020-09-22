@@ -123,6 +123,7 @@ def print_file_list():
     for path in matched:
         fsize = sizeof_fmt(os.path.getsize(path))
         base, fname = os.path.split(path)
+        fname = fname.rsplit(".", maxsplit=2)[0]
         print (f"{fsize}\t{fname}")
 
 def sizeof_fmt(num, suffix=''):

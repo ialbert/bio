@@ -91,11 +91,16 @@ def process(acc, name='', fasta=False, gff=False, start=0, end=None, typ=''):
 @plac.opt('end', "end coordinate")
 @plac.flg('fasta', "generate fasta file")
 @plac.flg('gff', "generate a gff file")
+@plac.flg('list', "lists the cached data")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(name='',  type='', start=0, end=0,  fasta=False, gff=False, verbose=False, *acc):
+def run(name='',  type='', start=0, end=0,  fasta=False, gff=False, verbose=False, list=False, *acc):
 
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
+
+    # Produce the file listing
+    if list:
+        utils.print_file_list()
 
     start = start
     end = end or None
