@@ -9,10 +9,11 @@ from biorun import VERSION
 from biorun import utils
 
 # Commands names.
-FETCH, VIEW, ALIGN  = "fetch", "view", "align"
+LIST, FETCH, VIEW, ALIGN = "list", "fetch", "view", "align"
 
 # Enabled commands.
 COMMANDS = {
+    LIST: 'biorun.data.listing',
     FETCH: 'biorun.data.fetch',
     VIEW: 'biorun.data.view',
     ALIGN: 'biorun.align.pairwise'
@@ -20,11 +21,15 @@ COMMANDS = {
 
 # Context for the USAGE help page.
 context = dict(
-    VERSION=VERSION, FETCH=FETCH, ALIGN=ALIGN, VIEW=VIEW
+    VERSION=VERSION, FETCH=FETCH, ALIGN=ALIGN, VIEW=VIEW, LIST=LIST,
 )
+
+# These commands will show help when invoked with no parameters.
+SHOW_HELP = {FETCH, ALIGN, VIEW}
 
 # The default help page for the tool.
 USAGE = utils.render_file("usage.txt", context=context)
+
 
 @plac.annotations(
     cmd="command"
@@ -57,7 +62,8 @@ def run(*cmd):
         # Target the run function in each module.
         func = getattr(module, 'run')
         rest = cmd[1:]
-        rest = rest or [ "-h"]
+        if target in SHOW_HELP:
+            rest = rest or ["-h"]
         plac.call(func, rest)
     except KeyboardInterrupt:
         # Terminate keyboard interrupts without a traceback.
@@ -66,8 +72,10 @@ def run(*cmd):
 
 run.add_help = False
 
+
 def main():
     plac.call(run)
+
 
 if __name__ == '__main__':
     main()

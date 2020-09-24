@@ -7,7 +7,7 @@ from Bio import Entrez
 from biorun import utils
 import gzip
 from Bio import  SeqIO
-from biorun.models import Sequence
+from biorun import models
 
 # The default logging function.
 logger = utils.logger
@@ -15,14 +15,7 @@ logger = utils.logger
 Entrez.email = 'bio@bio.com'
 
 def get_runinfo(stream):
-    recs = parse_genbank(stream)
-
-
-def parse_genbank(stream):
-    recs = SeqIO.parse(stream, utils.GENBANK)
-    recs = map(lambda rec: Sequence(rec), recs)
-
-    return recs
+    recs = models.parse_genbank(stream)
 
 
 def validate_ncbi(acc):
@@ -62,6 +55,11 @@ def get(acc, db='nuc', format=utils.GENBANK, mode="text", update=False, stdout=F
     """
 
     cache = True
+
+    # Common mistake to pass an extra parameter.
+    if acc.startswith("-"):
+        msg = f"Invalid accession number: {acc}"
+        utils.error(msg)
 
     # Check if the accession number is a local file:
     if os.path.isfile(acc):
@@ -103,6 +101,12 @@ def accs_or_file(accs):
     """
     collect = []
     for acc in accs:
+
+        # Common mistake to pass an extra parameter.
+        if acc.startswith("-"):
+            msg = f"Invalid accession number: {acc}"
+            utils.error(msg)
+
         if os.path.isfile(acc):
 
             # Get the lines
@@ -130,16 +134,11 @@ def accs_or_file(accs):
 @plac.pos('acc', "accession numbers")
 @plac.opt('db', "database type", choices=["nuc", "prot"])
 @plac.flg('update', "update cached data if exists")
-@plac.flg('list', "lists the cached data")
 @plac.flg('runinfo', "prints the Bioproject runinfo")
 @plac.flg('quiet', "quiet mode, no output printed")
-def run(db='nuc', update=False, list=False, runinfo=False, quiet=False, *acc):
+def run(db='nuc', update=False, runinfo=False, quiet=False, *acc):
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
-
-    # Produce the file listing
-    if list:
-        utils.print_file_list()
 
     # The accession numbers may stored in files as well.
     collect = accs_or_file(acc)

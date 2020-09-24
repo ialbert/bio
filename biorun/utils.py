@@ -114,18 +114,6 @@ def resolve_fname(acc, format='gb'):
     fname = os.path.join(DATADIR, fname)
     return fname
 
-def print_file_list():
-    """
-    Returns a list of the files in the data directory
-    """
-    pattern = os.path.join(os.path.join(DATADIR, '*.gz'))
-    matched = glob.glob(pattern)
-    for path in matched:
-        fsize = sizeof_fmt(os.path.getsize(path))
-        base, fname = os.path.split(path)
-        fname = fname.rsplit(".", maxsplit=2)[0]
-        print (f"{fsize}\t{fname}")
-
 
 def sizeof_fmt(num, suffix=''):
     for unit in ['', 'K', 'M', 'G']:
