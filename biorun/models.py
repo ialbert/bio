@@ -7,6 +7,7 @@ from pprint import pprint
 from intervaltree import Interval, IntervalTree
 from biorun import utils
 from functools import lru_cache
+from itertools import *
 
 try:
     from Bio import SeqIO
@@ -184,6 +185,13 @@ class Sequence(object):
 
     def __str__(self):
         return str(self.as_dict())
+
+
+def parse_genbank(stream):
+    recs = SeqIO.parse(stream, utils.GENBANK)
+    recs = map(lambda rec: Sequence(rec), recs)
+
+    return recs
 
 
 if __name__ == "__main__":
