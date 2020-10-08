@@ -46,8 +46,17 @@ def test_view(capsys):
     run_bio(cmd, capsys=capsys, output=output)
 
 def test_view_fasta(capsys):
-    cmd = "bio view NC_045512 -f"
+    cmd = "bio view NC_045512 --fasta"
     output = read_file("NC_045512.fa")
+    run_bio(cmd, capsys=capsys, output=output)
+
+def test_view_gff(capsys):
+    cmd = "bio view NC_045512 --gff"
+    output = read_file("NC_045512.gff")
+    run_bio(cmd, capsys=capsys, output=output)
+
+    cmd = "bio view NC_045512 --gff --name S"
+    output = read_file("parts/1.gff")
     run_bio(cmd, capsys=capsys, output=output)
 
 
