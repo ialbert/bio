@@ -5,10 +5,10 @@ import sys
 import os
 
 import plac
-from Bio import Entrez, SeqIO
+from Bio import Entrez
 from biorun import utils
-from biorun.models import Sequence
-from . import fetch
+from biorun import models
+from biorun.data import fetch
 
 # The default logging function.
 logger = utils.logger
@@ -26,7 +26,7 @@ def print_fasta(stream, name='', start=0, end=None, typ=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
-    recs = fetch.parse_genbank(stream)
+    recs = models.parse_genbank(stream)
 
     # Print the origin for each record
     if not name:
@@ -38,7 +38,7 @@ def print_gff(stream, name='', start=0, end=None, typ=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
-    recs = utils.parse_genbank(stream)
+    recs = models.parse_genbank(stream)
 
     # Print the origin for each record
     for rec in recs:

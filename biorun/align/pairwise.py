@@ -16,7 +16,7 @@ try:
     from Bio import BiopythonExperimentalWarning
 except ImportError as exc:
     print(f"*** Error: {exc}", file=sys.stderr)
-    print(f"*** Please install biopython: conda install -y biopython", file=sys.stderr)
+    print(f"*** Please install biopython: conda install -y biopython==1.76", file=sys.stderr)
     sys.exit(-1)
 
 with warnings.catch_warnings():

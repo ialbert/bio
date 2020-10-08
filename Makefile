@@ -7,6 +7,9 @@ publish: build sync
 init:
 	rm -rf _book
 
+test:
+	pytest
+
 serve: init
 	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='doc/_book', port=8000)"
 

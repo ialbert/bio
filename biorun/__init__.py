@@ -1,6 +1,6 @@
 import os
 
-VERSION = "0.0.6"
+VERSION = "0.0.7"
 
 #
 # Turn off broken pipe errors that may appear when piping into unix tools (head/tail etc)

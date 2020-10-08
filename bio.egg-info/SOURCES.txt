@@ -13,5 +13,8 @@ biorun/utils.py
 biorun/align/__init__.py
 biorun/align/pairwise.py
 biorun/data/__init__.py
+biorun/data/fetch.py
+biorun/data/listing.py
+biorun/data/parse.py
 biorun/data/view.py
 biorun/templates/usage.txt

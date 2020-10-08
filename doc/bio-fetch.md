@@ -5,8 +5,8 @@ this data in a cache directory. All subsequent commands in the `bio` package can
 data from any location and would not need to connect to the internet.
 
     # Get data for a single accession number.
-    bio fetch NC_045512 
     
+   bio fetch NC_045512  
     # Get data for multiple accession numbers.
     bio fetch NC_045512 MN996532
  
