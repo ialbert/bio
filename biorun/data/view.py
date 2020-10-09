@@ -39,7 +39,7 @@ GFF_ATTRIBUTES = [
 ]
 
 
-def print_fasta(stream, gene='', start=0, end=None, typ=None):
+def print_fasta(stream, name='', gene='', start=0, end=None, typ=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
@@ -48,6 +48,16 @@ def print_fasta(stream, gene='', start=0, end=None, typ=None):
     # Print the origin for each record
     if not gene:
         for item in recs:
+
+            # Renanme the sequence
+            if name:
+                item.id = name
+
+            # If the start/ends are set.
+            if start or end:
+                end = end or len(item)
+                item.id = f"{item.id} [{start}-{end}]"
+
             print(item.format("fasta"))
 
 
@@ -121,7 +131,7 @@ def filter_features(stream, start=0, end=None, gene=None, typ=None):
     return stream
 
 
-def print_gff(stream, gene='', start=0, end=None, typ=None):
+def print_gff(stream, gene='', name='', start=0, end=None, typ=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
@@ -129,13 +139,13 @@ def print_gff(stream, gene='', start=0, end=None, typ=None):
 
     # Print the origin for each record
     for rec in recs:
-
+        anchor = name or rec.id
         # Subselect by coordinates.
         feats = filter_features(stream=rec.features, start=start, end=end, gene=gene, typ=typ)
 
         # Generate the gff output
         for feat in feats:
-            values = feature2gff(feat, anchor=rec.id)
+            values = feature2gff(feat, anchor=anchor)
             values = map(str, values)
             print("\t".join(values))
 
@@ -145,7 +155,7 @@ def print_genbank(stream):
         print(line, end="")
 
 
-def process(acc, gene='', fasta=False, gff=False, start=0, end=None, typ=''):
+def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, typ=''):
     """
     Performs the processing of a single accession number.
     """
@@ -154,9 +164,9 @@ def process(acc, gene='', fasta=False, gff=False, start=0, end=None, typ=''):
     cache, stream = fetch.get(acc=acc)
 
     if fasta:
-        print_fasta(stream, gene=gene, start=start, end=end, typ=type)
+        print_fasta(stream, gene=gene,  name=name, start=start, end=end, typ=type)
     elif gff:
-        print_gff(stream, gene=gene, start=start, end=end, typ=typ)
+        print_gff(stream, gene=gene, name=name, start=start, end=end, typ=typ)
     else:
         print_genbank(stream)
 
@@ -165,13 +175,14 @@ def process(acc, gene='', fasta=False, gff=False, start=0, end=None, typ=''):
 
 @plac.pos('acc', "accession numbers")
 @plac.opt('gene', "name of the gene associated with the feature")
+@plac.opt('rename', "renames the elements")
 @plac.opt('type', "the type of the feature")
 @plac.opt('start', "start coordinate ")
 @plac.opt('end', "end coordinate")
 @plac.flg('fasta', "generate fasta file")
 @plac.flg('gff', "generate a gff file", abbrev="G")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(gene='', type='', start=0, end=0, fasta=False, gff=False, verbose=False, *acc):
+def run(gene='', type='', rename='', start=0, end=0, fasta=False, gff=False, verbose=False, *acc):
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
@@ -179,4 +190,4 @@ def run(gene='', type='', start=0, end=0, fasta=False, gff=False, verbose=False,
     end = end or None
     # Process each accession number.
     for acx in acc:
-        process(acx, gene=gene, fasta=fasta, gff=gff, start=start, end=end, typ=type)
+        process(acx, gene=gene, name=rename, fasta=fasta, gff=gff, start=start, end=end, typ=type)

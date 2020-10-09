@@ -36,19 +36,19 @@ bio view NC_045512 --gff | head -3
 ### Convert only features with type `CDS`
 
 ```{bash, comment=NA}
-bio view NC_045512 --gff  --type CDS | head -3
+bio view NC_045512 --gff --type CDS | head -3
 ```
 
 ### Convert only features that related to gene `S`:
 
 ```{bash, comment=NA}
-bio view NC_045512 --gff  --gene S | head -3
+bio view NC_045512 --gff --gene S | head -3
 ```
 
 ### Convert features that overlap a range:
 
 ```{bash, comment=NA}
-bio view NC_045512 --gff  --start 21563 --end 21565 | head -3
+bio view NC_045512 --gff --start 21563 --end 21565 | head -3
 ```
 
 ### Convert the "origin" of the GenBank to FASTA:
