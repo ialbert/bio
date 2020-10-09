@@ -52,18 +52,25 @@ def time_it(func):
 
     return timer
 
+def first(value):
+    """
+   Returns the first element of a list.
+
+    >>> first(["A", "B"])
+    'A'
+    """
+
+    return value[0] if isinstance(value, list) else value
+
 def flatten(value, sep="|"):
     """
     Flattens values that may be lists.
 
-    >>> flaten(["A", "B"])
+    >>> flatten(["A", "B"])
     'A|B'
     """
-    if isinstance(value, list):
-        return sep.join(map(str, value))
-    else:
-        return str(value)
 
+    return sep.join(map(str, value)) if isinstance(value, list) else value
 
 def guess_type(path):
     """

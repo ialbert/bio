@@ -30,7 +30,12 @@ def run_bio(cmd, capsys, output=None):
     result = stream.out
 
     if output:
-        assert result[:1000] == output[:1000]
+        if result != output:
+            lines = result.splitlines()[:5]
+            text = "\n".join(lines)
+            print(text)
+            assert False
+
 
     return result
 
@@ -44,6 +49,10 @@ def test_view(capsys):
     output = read_file("NC_045512.gb")
     run_bio(cmd, capsys=capsys, output=output)
 
+def test_view_list(capsys):
+    cmd = "bio list"
+    run_bio(cmd, capsys=capsys)
+
 def test_view_fasta(capsys):
     cmd = "bio view NC_045512 --fasta"
     output = read_file("NC_045512.fa")
@@ -56,8 +65,8 @@ def test_view_gff1(capsys):
 
 
 def test_view_gff_name(capsys):
-    cmd = "bio view NC_045512 --gff --name S"
-    output = read_file("parts/name.gff")
+    cmd = "bio view NC_045512 --gff --gene S"
+    output = read_file("parts/gene.gff")
     run_bio(cmd, capsys=capsys, output=output)
 
 def test_view_gff_start(capsys):

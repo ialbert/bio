@@ -1,57 +1,57 @@
-NC_045512.2	.	5'UTR	1	265	.	+	.	Name=5'UTR
-NC_045512.2	.	source	1	29903	.	+	.	Name=source
-NC_045512.2	.	mat_peptide	266	805	.	+	.	Name=ORF1ab;ID=YP_009725297.1
-NC_045512.2	.	mat_peptide	266	805	.	+	.	Name=ORF1ab;ID=YP_009742608.1
-NC_045512.2	.	CDS	266	13483	.	+	.	Name=ORF1ab;ID=YP_009725295.1
-NC_045512.2	.	CDS	266	21555	.	+	.	Name=ORF1ab;ID=YP_009724389.1
-NC_045512.2	.	gene	266	21555	.	+	.	Name=ORF1ab
-NC_045512.2	.	mat_peptide	806	2719	.	+	.	Name=ORF1ab;ID=YP_009725298.1
-NC_045512.2	.	mat_peptide	806	2719	.	+	.	Name=ORF1ab;ID=YP_009742609.1
-NC_045512.2	.	mat_peptide	2720	8554	.	+	.	Name=ORF1ab;ID=YP_009742610.1
-NC_045512.2	.	mat_peptide	2720	8554	.	+	.	Name=ORF1ab;ID=YP_009725299.1
-NC_045512.2	.	mat_peptide	8555	10054	.	+	.	Name=ORF1ab;ID=YP_009742611.1
-NC_045512.2	.	mat_peptide	8555	10054	.	+	.	Name=ORF1ab;ID=YP_009725300.1
-NC_045512.2	.	mat_peptide	10055	10972	.	+	.	Name=ORF1ab;ID=YP_009725301.1
-NC_045512.2	.	mat_peptide	10055	10972	.	+	.	Name=ORF1ab;ID=YP_009742612.1
-NC_045512.2	.	mat_peptide	10973	11842	.	+	.	Name=ORF1ab;ID=YP_009725302.1
-NC_045512.2	.	mat_peptide	10973	11842	.	+	.	Name=ORF1ab;ID=YP_009742613.1
-NC_045512.2	.	mat_peptide	11843	12091	.	+	.	Name=ORF1ab;ID=YP_009725303.1
-NC_045512.2	.	mat_peptide	11843	12091	.	+	.	Name=ORF1ab;ID=YP_009742614.1
-NC_045512.2	.	mat_peptide	12092	12685	.	+	.	Name=ORF1ab;ID=YP_009742615.1
-NC_045512.2	.	mat_peptide	12092	12685	.	+	.	Name=ORF1ab;ID=YP_009725304.1
-NC_045512.2	.	mat_peptide	12686	13024	.	+	.	Name=ORF1ab;ID=YP_009742616.1
-NC_045512.2	.	mat_peptide	12686	13024	.	+	.	Name=ORF1ab;ID=YP_009725305.1
-NC_045512.2	.	mat_peptide	13025	13441	.	+	.	Name=ORF1ab;ID=YP_009725306.1
-NC_045512.2	.	mat_peptide	13025	13441	.	+	.	Name=ORF1ab;ID=YP_009742617.1
-NC_045512.2	.	mat_peptide	13442	13480	.	+	.	Name=ORF1ab;ID=YP_009725312.1
-NC_045512.2	.	mat_peptide	13442	16236	.	+	.	Name=ORF1ab;ID=YP_009725307.1
-NC_045512.2	.	stem_loop	13476	13503	.	+	.	Name=ORF1ab;Function=Coronavirus frameshifting stimulation element stem-loop 1
-NC_045512.2	.	stem_loop	13488	13542	.	+	.	Name=ORF1ab;Function=Coronavirus frameshifting stimulation element stem-loop 2
-NC_045512.2	.	mat_peptide	16237	18039	.	+	.	Name=ORF1ab;ID=YP_009725308.1
-NC_045512.2	.	mat_peptide	18040	19620	.	+	.	Name=ORF1ab;ID=YP_009725309.1
-NC_045512.2	.	mat_peptide	19621	20658	.	+	.	Name=ORF1ab;ID=YP_009725310.1
-NC_045512.2	.	mat_peptide	20659	21552	.	+	.	Name=ORF1ab;ID=YP_009725311.1
-NC_045512.2	.	gene	21563	25384	.	+	.	Name=S
-NC_045512.2	.	CDS	21563	25384	.	+	.	Name=S;ID=YP_009724390.1
-NC_045512.2	.	CDS	25393	26220	.	+	.	Name=ORF3a;ID=YP_009724391.1
-NC_045512.2	.	gene	25393	26220	.	+	.	Name=ORF3a
-NC_045512.2	.	CDS	26245	26472	.	+	.	Name=E;ID=YP_009724392.1
-NC_045512.2	.	gene	26245	26472	.	+	.	Name=E
-NC_045512.2	.	gene	26523	27191	.	+	.	Name=M
-NC_045512.2	.	CDS	26523	27191	.	+	.	Name=M;ID=YP_009724393.1
-NC_045512.2	.	gene	27202	27387	.	+	.	Name=ORF6
-NC_045512.2	.	CDS	27202	27387	.	+	.	Name=ORF6;ID=YP_009724394.1
-NC_045512.2	.	CDS	27394	27759	.	+	.	Name=ORF7a;ID=YP_009724395.1
-NC_045512.2	.	gene	27394	27759	.	+	.	Name=ORF7a
-NC_045512.2	.	CDS	27756	27887	.	+	.	Name=ORF7b;ID=YP_009725318.1
-NC_045512.2	.	gene	27756	27887	.	+	.	Name=ORF7b
-NC_045512.2	.	CDS	27894	28259	.	+	.	Name=ORF8;ID=YP_009724396.1
-NC_045512.2	.	gene	27894	28259	.	+	.	Name=ORF8
-NC_045512.2	.	gene	28274	29533	.	+	.	Name=N
-NC_045512.2	.	CDS	28274	29533	.	+	.	Name=N;ID=YP_009724397.2
-NC_045512.2	.	CDS	29558	29674	.	+	.	Name=ORF10;ID=YP_009725255.1
-NC_045512.2	.	gene	29558	29674	.	+	.	Name=ORF10
-NC_045512.2	.	stem_loop	29609	29644	.	+	.	Name=ORF10;Function=Coronavirus 3' UTR pseudoknot stem-loop 1
-NC_045512.2	.	stem_loop	29629	29657	.	+	.	Name=ORF10;Function=Coronavirus 3' UTR pseudoknot stem-loop 2
-NC_045512.2	.	3'UTR	29675	29903	.	+	.	Name=3'UTR
-NC_045512.2	.	stem_loop	29728	29768	.	+	.	Name=stem_loop;Function=Coronavirus 3' stem-loop II-like motif (s2m)
+NC_045512.2	.	source	0	29903	.	+	.	mol_type=genomic RNA;isolate=Wuhan-Hu-1;db_xref=taxon:2697049;organism=Severe acute respiratory syndrome coronavirus 2;country=China;collection_date=Dec-2019
+NC_045512.2	.	five_prime_UTR	0	265	.	+	.	
+NC_045512.2	.	gene	265	21555	.	+	.	Name=ORF1ab;gene=ORF1ab
+NC_045512.2	.	CDS	265	21555	.	+	.	gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;note=pp1ab; translated by -1 ribosomal frameshift
+NC_045512.2	.	mature_protein_region	265	805	.	+	.	gene=ORF1ab;protein_id=YP_009725297.1;product=leader protein;note=nsp1; produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	805	2719	.	+	.	gene=ORF1ab;protein_id=YP_009725298.1;product=nsp2;note=produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	2719	8554	.	+	.	gene=ORF1ab;protein_id=YP_009725299.1;product=nsp3;note=former nsp1; conserved domains are: N-terminal acidic (Ac), predicted phosphoesterase, papain-like proteinase, Y-domain, transmembrane domain 1 (TM1), adenosine diphosphate-ribose 1''-phosphatase (ADRP); produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	8554	10054	.	+	.	gene=ORF1ab;protein_id=YP_009725300.1;product=nsp4;note=nsp4B_TM; contains transmembrane domain 2 (TM2); produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	10054	10972	.	+	.	gene=ORF1ab;protein_id=YP_009725301.1;product=3C-like proteinase;note=nsp5A_3CLpro and nsp5B_3CLpro; main proteinase (Mpro); mediates cleavages downstream of nsp4. 3D structure of the SARSr-CoV homolog has been determined (Yang et al., 2003); produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	10972	11842	.	+	.	gene=ORF1ab;protein_id=YP_009725302.1;product=nsp6;note=nsp6_TM; putative transmembrane domain; produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	11842	12091	.	+	.	gene=ORF1ab;protein_id=YP_009725303.1;product=nsp7;note=produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	12091	12685	.	+	.	gene=ORF1ab;protein_id=YP_009725304.1;product=nsp8;note=produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	12685	13024	.	+	.	gene=ORF1ab;protein_id=YP_009725305.1;product=nsp9;note=ssRNA-binding protein; produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	13024	13441	.	+	.	gene=ORF1ab;protein_id=YP_009725306.1;product=nsp10;note=nsp10_CysHis; formerly known as growth-factor-like protein (GFL); produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	13441	16236	.	+	.	gene=ORF1ab;protein_id=YP_009725307.1;product=RNA-dependent RNA polymerase;note=nsp12; NiRAN and RdRp; produced by pp1ab only
+NC_045512.2	.	mature_protein_region	16236	18039	.	+	.	gene=ORF1ab;protein_id=YP_009725308.1;product=helicase;note=nsp13_ZBD, nsp13_TB, and nsp_HEL1core; zinc-binding domain (ZD), NTPase/helicase domain (HEL), RNA 5'-triphosphatase; produced by pp1ab only
+NC_045512.2	.	mature_protein_region	18039	19620	.	+	.	gene=ORF1ab;protein_id=YP_009725309.1;product=3'-to-5' exonuclease;note=nsp14A2_ExoN and nsp14B_NMT; produced by pp1ab only
+NC_045512.2	.	mature_protein_region	19620	20658	.	+	.	gene=ORF1ab;protein_id=YP_009725310.1;product=endoRNAse;note=nsp15-A1 and nsp15B-NendoU; produced by pp1ab only
+NC_045512.2	.	mature_protein_region	20658	21552	.	+	.	gene=ORF1ab;protein_id=YP_009725311.1;product=2'-O-ribose methyltransferase;note=nsp16_OMT; 2'-o-MT; produced by pp1ab only
+NC_045512.2	.	CDS	265	13483	.	+	.	gene=ORF1ab;protein_id=YP_009725295.1;product=ORF1a polyprotein;note=pp1a
+NC_045512.2	.	mature_protein_region	265	805	.	+	.	gene=ORF1ab;protein_id=YP_009742608.1;product=leader protein;note=nsp1; produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	805	2719	.	+	.	gene=ORF1ab;protein_id=YP_009742609.1;product=nsp2;note=produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	2719	8554	.	+	.	gene=ORF1ab;protein_id=YP_009742610.1;product=nsp3;note=former nsp1; conserved domains are: N-terminal acidic (Ac), predicted phosphoesterase, papain-like proteinase, Y-domain, transmembrane domain 1 (TM1), adenosine diphosphate-ribose 1''-phosphatase (ADRP); produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	8554	10054	.	+	.	gene=ORF1ab;protein_id=YP_009742611.1;product=nsp4;note=nsp4B_TM; contains transmembrane domain 2 (TM2); produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	10054	10972	.	+	.	gene=ORF1ab;protein_id=YP_009742612.1;product=3C-like proteinase;note=nsp5A_3CLpro and nsp5B_3CLpro; main proteinase (Mpro); mediates cleavages downstream of nsp4. 3D structure of the SARSr-CoV homolog has been determined (Yang et al., 2003); produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	10972	11842	.	+	.	gene=ORF1ab;protein_id=YP_009742613.1;product=nsp6;note=nsp6_TM; putative transmembrane domain; produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	11842	12091	.	+	.	gene=ORF1ab;protein_id=YP_009742614.1;product=nsp7;note=produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	12091	12685	.	+	.	gene=ORF1ab;protein_id=YP_009742615.1;product=nsp8;note=produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	12685	13024	.	+	.	gene=ORF1ab;protein_id=YP_009742616.1;product=nsp9;note=ssRNA-binding protein; produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	13024	13441	.	+	.	gene=ORF1ab;protein_id=YP_009742617.1;product=nsp10;note=nsp10_CysHis; formerly known as growth-factor-like protein (GFL); produced by both pp1a and pp1ab
+NC_045512.2	.	mature_protein_region	13441	13480	.	+	.	gene=ORF1ab;protein_id=YP_009725312.1;product=nsp11;note=produced by pp1a only
+NC_045512.2	.	stem_loop	13475	13503	.	+	.	gene=ORF1ab;function=Coronavirus frameshifting stimulation element stem-loop 1
+NC_045512.2	.	stem_loop	13487	13542	.	+	.	gene=ORF1ab;function=Coronavirus frameshifting stimulation element stem-loop 2
+NC_045512.2	.	gene	21562	25384	.	+	.	Name=S;gene=S
+NC_045512.2	.	CDS	21562	25384	.	+	.	gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;note=structural protein; spike protein
+NC_045512.2	.	gene	25392	26220	.	+	.	Name=ORF3a;gene=ORF3a
+NC_045512.2	.	CDS	25392	26220	.	+	.	gene=ORF3a;protein_id=YP_009724391.1;product=ORF3a protein
+NC_045512.2	.	gene	26244	26472	.	+	.	Name=E;gene=E
+NC_045512.2	.	CDS	26244	26472	.	+	.	gene=E;protein_id=YP_009724392.1;product=envelope protein;note=ORF4; structural protein; E protein
+NC_045512.2	.	gene	26522	27191	.	+	.	Name=M;gene=M
+NC_045512.2	.	CDS	26522	27191	.	+	.	gene=M;protein_id=YP_009724393.1;product=membrane glycoprotein;note=ORF5; structural protein
+NC_045512.2	.	gene	27201	27387	.	+	.	Name=ORF6;gene=ORF6
+NC_045512.2	.	CDS	27201	27387	.	+	.	gene=ORF6;protein_id=YP_009724394.1;product=ORF6 protein
+NC_045512.2	.	gene	27393	27759	.	+	.	Name=ORF7a;gene=ORF7a
+NC_045512.2	.	CDS	27393	27759	.	+	.	gene=ORF7a;protein_id=YP_009724395.1;product=ORF7a protein
+NC_045512.2	.	gene	27755	27887	.	+	.	Name=ORF7b;gene=ORF7b
+NC_045512.2	.	CDS	27755	27887	.	+	.	gene=ORF7b;protein_id=YP_009725318.1;product=ORF7b
+NC_045512.2	.	gene	27893	28259	.	+	.	Name=ORF8;gene=ORF8
+NC_045512.2	.	CDS	27893	28259	.	+	.	gene=ORF8;protein_id=YP_009724396.1;product=ORF8 protein
+NC_045512.2	.	gene	28273	29533	.	+	.	Name=N;gene=N
+NC_045512.2	.	CDS	28273	29533	.	+	.	gene=N;protein_id=YP_009724397.2;product=nucleocapsid phosphoprotein;note=ORF9; structural protein
+NC_045512.2	.	gene	29557	29674	.	+	.	Name=ORF10;gene=ORF10
+NC_045512.2	.	CDS	29557	29674	.	+	.	gene=ORF10;protein_id=YP_009725255.1;product=ORF10 protein
+NC_045512.2	.	stem_loop	29608	29644	.	+	.	gene=ORF10;function=Coronavirus 3' UTR pseudoknot stem-loop 1
+NC_045512.2	.	stem_loop	29628	29657	.	+	.	gene=ORF10;function=Coronavirus 3' UTR pseudoknot stem-loop 2
+NC_045512.2	.	3'UTR	29674	29903	.	+	.	
+NC_045512.2	.	stem_loop	29727	29768	.	+	.	function=Coronavirus 3' stem-loop II-like motif (s2m);note=basepair exception: alignment to the Rfam model implies coordinates 29740:29758 form a noncanonical C:T basepair, but the homologous positions form a highly conserved C:G basepair in other viruses, including SARS (NC_004718.3)
