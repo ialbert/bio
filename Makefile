@@ -1,4 +1,4 @@
-.PHONY: dist build
+.PHONY: dist build test
 
 all: serve
 

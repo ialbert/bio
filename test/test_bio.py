@@ -8,7 +8,6 @@ __CURR_DIR = os.path.dirname(__file__)
 
 __DATADIR = os.path.join(__CURR_DIR, "data")
 
-
 def read_file(fname, datadir=__DATADIR):
     path = os.path.join(datadir, fname) if datadir else fname
     text = open(path).read()
@@ -50,13 +49,26 @@ def test_view_fasta(capsys):
     output = read_file("NC_045512.fa")
     run_bio(cmd, capsys=capsys, output=output)
 
-def test_view_gff(capsys):
+def test_view_gff1(capsys):
     cmd = "bio view NC_045512 --gff"
     output = read_file("NC_045512.gff")
     run_bio(cmd, capsys=capsys, output=output)
 
+
+def test_view_gff_name(capsys):
     cmd = "bio view NC_045512 --gff --name S"
-    output = read_file("parts/1.gff")
+    output = read_file("parts/name.gff")
+    run_bio(cmd, capsys=capsys, output=output)
+
+def test_view_gff_start(capsys):
+    cmd = "bio view NC_045512 --gff  --start 21563 --end 21565"
+    output = read_file("parts/start.gff")
+    run_bio(cmd, capsys=capsys, output=output)
+
+
+def test_view_gff_type(capsys):
+    cmd = "bio view NC_045512 --gff  --type CDS"
+    output = read_file("parts/type.gff")
     run_bio(cmd, capsys=capsys, output=output)
 
 
