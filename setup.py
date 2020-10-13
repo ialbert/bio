@@ -24,7 +24,6 @@ setup(
     install_requires=[
         'plac==1.2.0',
         'jinja2',
-        'intervaltree',
         'toml',
     ],
 

@@ -45,20 +45,14 @@ def print_fasta(stream, name='', gene='', start=0, end=None, typ=None):
     """
     recs = models.parse_genbank(stream)
 
-    # Print the origin for each record
-    if not gene:
-        for item in recs:
+    if gene or typ:
+        seqs = models.get_feature_fasta(recs=recs, start=start, end=end, name=name, gene=gene)
+    else:
+        seqs = models.get_source_fasta(recs=recs, start=start, end=end, name=name)
 
-            # Renanme the sequence
-            if name:
-                item.id = name
-
-            # If the start/ends are set.
-            if start or end:
-                end = end or len(item)
-                item.id = f"{item.id} [{start}-{end}]"
-
-            print(item.format("fasta"))
+    # Print the sequence for each record
+    for item in seqs:
+        print(item.format("fasta"))
 
 
 def get_pairs(keys, adict):
@@ -99,36 +93,7 @@ def feature2gff(feat, anchor):
     return data
 
 
-def filter_features(stream, start=0, end=None, gene=None, typ=None):
-    # Filter by type.
-    if typ:
-        def type_filter(f):
-            return f.type == typ
 
-        stream = filter(type_filter, stream)
-
-    # Filter by name.
-    if gene:
-        def name_filter(f):
-            return gene in f.qualifiers.get("gene", [])
-
-        stream = filter(name_filter, stream)
-
-    # Filter by start.
-    if start:
-        def start_filter(f):
-            return start <= int(f.location.start)
-
-        stream = filter(start_filter, stream)
-
-    # Filter by end.
-    if end:
-        def end_filter(f):
-            return int(f.location.end) <= end
-
-        stream = filter(end_filter, stream)
-
-    return stream
 
 
 def print_gff(stream, gene='', name='', start=0, end=None, typ=None):
@@ -139,9 +104,12 @@ def print_gff(stream, gene='', name='', start=0, end=None, typ=None):
 
     # Print the origin for each record
     for rec in recs:
+
+        # The name of the GFF anchor.
         anchor = name or rec.id
+
         # Subselect by coordinates.
-        feats = filter_features(stream=rec.features, start=start, end=end, gene=gene, typ=typ)
+        feats = models.filter_features(stream=rec.features, start=start, end=end, gene=gene, typ=typ)
 
         # Generate the gff output
         for feat in feats:
@@ -177,17 +145,27 @@ def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, ty
 @plac.opt('gene', "name of the gene associated with the feature")
 @plac.opt('rename', "renames the elements")
 @plac.opt('type', "the type of the feature")
-@plac.opt('start', "start coordinate ")
-@plac.opt('end', "end coordinate")
+@plac.opt('start', "start coordinate ", type=int)
+@plac.opt('end', "end coordinate", type=int)
 @plac.flg('fasta', "generate fasta file")
 @plac.flg('gff', "generate a gff file", abbrev="G")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(gene='', type='', rename='', start=0, end=0, fasta=False, gff=False, verbose=False, *acc):
+def run(gene='', type='', rename='', start=1, end=None, fasta=False, gff=False, verbose=False, *acc):
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
-    start = start
+    if start < 1:
+        error(f"start={start} must be greater than zero")
+
+    if (end is not None) and (start > end):
+        error(f"start={start} is larger than end={end}")
+
+    # Move it to one based coordinate system
+    start = start - 1
+
+    # Set thethe end slice
     end = end or None
+
     # Process each accession number.
     for acx in acc:
         process(acx, gene=gene, name=rename, fasta=fasta, gff=gff, start=start, end=end, typ=type)

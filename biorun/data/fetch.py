@@ -6,8 +6,14 @@ import plac
 from Bio import Entrez
 from biorun import utils
 import gzip
-from Bio import  SeqIO
 from biorun import models
+
+try:
+    from Bio import SeqIO
+except ImportError as exc:
+    print(f"*** Error: {exc}", file=sys.stderr)
+    print(f"*** Please install biopython: conda install -y biopython==1.76", file=sys.stderr)
+    sys.exit(-1)
 
 # The default logging function.
 logger = utils.logger
