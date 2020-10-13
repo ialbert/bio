@@ -58,6 +58,22 @@ def test_view_fasta(capsys):
     output = read_file("NC_045512.fa")
     run_bio(cmd, capsys=capsys, output=output)
 
+def test_view_fasta_start(capsys):
+    cmd = "bio view NC_045512 --fasta --rename foo --start 10 --end 20"
+    output = read_file("parts/fasta-start.fa")
+    run_bio(cmd, capsys=capsys, output=output)
+
+def test_view_fasta_type(capsys):
+    cmd = "bio view NC_045512 --fasta --type CDS"
+    output = read_file("parts/CDS.fa")
+    run_bio(cmd, capsys=capsys, output=output)
+
+def test_view_fasta_type_start(capsys):
+    cmd = "bio view NC_045512 --fasta --type gene --end 10"
+    output = read_file("parts/gene-start.fa")
+    run_bio(cmd, capsys=capsys, output=output)
+
+
 def test_view_gff1(capsys):
     cmd = "bio view NC_045512 --gff"
     output = read_file("NC_045512.gff")

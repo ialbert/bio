@@ -46,7 +46,7 @@ def print_fasta(stream, name='', gene='', start=0, end=None, typ=None):
     recs = models.parse_genbank(stream)
 
     if gene or typ:
-        seqs = models.get_feature_fasta(recs=recs, start=start, end=end, name=name, gene=gene)
+        seqs = models.get_feature_fasta(recs=recs, start=start, end=end, name=name, gene=gene, typ=typ)
     else:
         seqs = models.get_source_fasta(recs=recs, start=start, end=end, name=name)
 
@@ -132,7 +132,7 @@ def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, ty
     cache, stream = fetch.get(acc=acc)
 
     if fasta:
-        print_fasta(stream, gene=gene,  name=name, start=start, end=end, typ=type)
+        print_fasta(stream, gene=gene,  name=name, start=start, end=end, typ=typ)
     elif gff:
         print_gff(stream, gene=gene, name=name, start=start, end=end, typ=typ)
     else:

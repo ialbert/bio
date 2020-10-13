@@ -18,6 +18,7 @@ except ImportError as exc:
 
 logger = utils.logger
 
+
 def get_feature_id(feat):
     """
     Attempts to generate a meaningful name for a feature
@@ -47,51 +48,47 @@ def get_feature_decription(feat):
 
 
 def filter_features(stream, start=0, end=None, gene=None, typ=None):
-    # Filter by type.
-    if typ:
-        def type_filter(f):
-            return f.type == typ
 
-        stream = filter(type_filter, stream)
+    # Filter by type.
+    if typ and typ != "all":
+        stream = filter(lambda f: f.type == typ, stream)
 
     # Filter by name.
     if gene:
-        def name_filter(f):
-            return gene in f.qualifiers.get("gene", [])
-
-        stream = filter(name_filter, stream)
+        stream = filter(lambda f: gene in f.qualifiers.get("gene", []), stream)
 
     # Filter by start.
     if start:
-        def start_filter(f):
-            return start <= int(f.location.start)
-
-        stream = filter(start_filter, stream)
+        stream = filter( lambda f: start <= int(f.location.start), stream)
 
     # Filter by end.
     if end:
-        def end_filter(f):
-            return int(f.location.end) <= end
-
-        stream = filter(end_filter, stream)
+        stream = filter(lambda f: int(f.location.end) <= end, stream)
 
     return stream
 
-def get_feature_fasta(recs, name='', gene='', start=1, end=None, typ=None):
+
+def get_feature_fasta(recs, name='', gene='', start=0, end=None, typ=None):
     """
     Returns records from a list of GenBank
     """
 
     for item in recs:
 
-        feats = filter_features(stream=item.features, start=start, end=end, gene=gene, typ=typ)
+        # For a fasta file start and end mean slicing the sequence.
+        feats = filter_features(stream=item.features, start=0, end=None, gene=gene, typ=typ)
 
         for feat in feats:
-            #print (feat)
+            # print (feat)
             seq = feat.extract(item)
             seq.id = get_feature_id(feat)
             seq.description = get_feature_decription(feat)
+            if start or end:
+                end = end or len(item)
+                seq.id = f"{seq.id} [{start}:{end}]"
+                seq = seq[start: end]
             yield seq
+
 
 def get_source_fasta(recs, name='', gene='', start=1, end=None, typ=None):
     """
@@ -103,7 +100,6 @@ def get_source_fasta(recs, name='', gene='', start=1, end=None, typ=None):
         # Renane the sequence.
         if name:
             item.id = name
-
 
         # If the start/ends are set.
         if start or end:
@@ -120,6 +116,7 @@ def parse_genbank(stream, fmt=utils.GENBANK):
     """
     recs = SeqIO.parse(stream, format=fmt)
     return recs
+
 
 if __name__ == "__main__":
     import doctest
