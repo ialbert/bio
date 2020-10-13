@@ -10,6 +10,9 @@ init:
 test:
 	pytest
 
+build_test:
+	(cd test/data && bash build.sh)
+
 serve: init
 	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='doc/_book', port=8000)"
 
