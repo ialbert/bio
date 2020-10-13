@@ -36,6 +36,12 @@ TYPE_BY_EXTENSION = {
 }
 
 
+def smartname(text):
+    """
+    Splits an accession number by colon into acc:name
+    """
+    pass
+
 def time_it(func):
     @wraps(func)
     def timer(*args, **kwargs):

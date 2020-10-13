@@ -73,7 +73,6 @@ def test_view_fasta_type_start(capsys):
     output = read_file("parts/gene-start.fa")
     run_bio(cmd, capsys=capsys, output=output)
 
-
 def test_view_gff1(capsys):
     cmd = "bio view NC_045512 --gff"
     output = read_file("NC_045512.gff")

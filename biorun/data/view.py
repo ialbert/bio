@@ -39,14 +39,14 @@ GFF_ATTRIBUTES = [
 ]
 
 
-def print_fasta(stream, name='', gene='', start=0, end=None, typ=None):
+def print_fasta(stream, name='', gene='', start=0, end=None, typ=None, translation=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
     recs = models.parse_genbank(stream)
 
-    if gene or typ:
-        seqs = models.get_feature_fasta(recs=recs, start=start, end=end, name=name, gene=gene, typ=typ)
+    if gene or typ or translation:
+        seqs = models.get_feature_fasta(recs=recs, start=start, end=end, name=name, gene=gene, typ=typ, translation=translation)
     else:
         seqs = models.get_source_fasta(recs=recs, start=start, end=end, name=name)
 
@@ -93,9 +93,6 @@ def feature2gff(feat, anchor):
     return data
 
 
-
-
-
 def print_gff(stream, gene='', name='', start=0, end=None, typ=None):
     """
     Prints the origin of a BioPython SeqRecord.
@@ -123,7 +120,7 @@ def print_genbank(stream):
         print(line, end="")
 
 
-def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, typ=''):
+def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, typ='', translation=None):
     """
     Performs the processing of a single accession number.
     """
@@ -131,8 +128,11 @@ def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, ty
     # Open the stream to the data
     cache, stream = fetch.get(acc=acc)
 
-    if fasta:
-        print_fasta(stream, gene=gene,  name=name, start=start, end=end, typ=typ)
+    # Turns on fasta formats
+    fasta = fasta or (not gff and gene)
+
+    if fasta or translation:
+        print_fasta(stream, gene=gene,  name=name, start=start, end=end, typ=typ, translation=translation)
     elif gff:
         print_gff(stream, gene=gene, name=name, start=start, end=end, typ=typ)
     else:
@@ -148,9 +148,10 @@ def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, ty
 @plac.opt('start', "start coordinate ", type=int)
 @plac.opt('end', "end coordinate", type=int)
 @plac.flg('fasta', "generate fasta file")
+@plac.flg('translation', "get the features that have a translation attribute set", abbrev="T")
 @plac.flg('gff', "generate a gff file", abbrev="G")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(gene='', type='', rename='', start=1, end=None, fasta=False, gff=False, verbose=False, *acc):
+def run(gene='', type='', rename='', start=1, end=None, fasta=False, translation=False, gff=False, verbose=False, *acc):
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
@@ -168,4 +169,4 @@ def run(gene='', type='', rename='', start=1, end=None, fasta=False, gff=False, 
 
     # Process each accession number.
     for acx in acc:
-        process(acx, gene=gene, name=rename, fasta=fasta, gff=gff, start=start, end=end, typ=type)
+        process(acx, gene=gene, name=rename, fasta=fasta, gff=gff, start=start, end=end, typ=type, translation=translation)

@@ -10,6 +10,8 @@ from pprint import pprint
 
 try:
     from Bio import SeqIO
+    from Bio.Seq import Seq
+    from Bio.SeqRecord import SeqRecord
 except ImportError as exc:
     print(f"*** {exc}", file=sys.stderr)
     print(f"*** This software requires biopython.", file=sys.stderr)
@@ -47,7 +49,8 @@ def get_feature_decription(feat):
     return desc
 
 
-def filter_features(stream, start=0, end=None, gene=None, typ=None):
+def filter_features(stream, start=0, end=None, gene=None, typ=None, translation=None):
+
 
     # Filter by type.
     if typ and typ != "all":
@@ -56,6 +59,10 @@ def filter_features(stream, start=0, end=None, gene=None, typ=None):
     # Filter by name.
     if gene:
         stream = filter(lambda f: gene in f.qualifiers.get("gene", []), stream)
+
+    # Filter by the translation attribute existance.
+    if translation:
+        stream = filter(lambda f: f.qualifiers.get("translation"), stream)
 
     # Filter by start.
     if start:
@@ -68,7 +75,7 @@ def filter_features(stream, start=0, end=None, gene=None, typ=None):
     return stream
 
 
-def get_feature_fasta(recs, name='', gene='', start=0, end=None, typ=None):
+def get_feature_fasta(recs, name='', gene='', start=0, end=None, typ=None, translation=None):
     """
     Returns records from a list of GenBank
     """
@@ -76,11 +83,15 @@ def get_feature_fasta(recs, name='', gene='', start=0, end=None, typ=None):
     for item in recs:
 
         # For a fasta file start and end mean slicing the sequence.
-        feats = filter_features(stream=item.features, start=0, end=None, gene=gene, typ=typ)
+        feats = filter_features(stream=item.features, start=0, end=None, gene=gene, typ=typ, translation=translation)
 
         for feat in feats:
             # print (feat)
-            seq = feat.extract(item)
+            if translation:
+                text = utils.first(feat.qualifiers.get("translation", ''))
+                seq = SeqRecord(Seq(text), id="seq")
+            else:
+                seq = feat.extract(item)
             seq.id = get_feature_id(feat)
             seq.description = get_feature_decription(feat)
             if start or end:
