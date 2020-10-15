@@ -1,7 +1,7 @@
 """
 Utilites funcions.
 """
-import sys, os, tempfile, gzip, glob
+import sys, os, tempfile, gzip, glob, shutil
 
 from itertools import count, islice
 from functools import wraps
@@ -54,7 +54,7 @@ def time_it(func):
             diff = int(round((end - start), 1)) or 0.1
             if diff > 120:
                 diff, units = diff/60, "minutes"
-            logger.info(f"{func.__name__} execution time: {diff} {units}")
+            logger.info(f"{func.__name__} runtime: {diff} {units}")
 
     return timer
 
@@ -116,13 +116,11 @@ def render_file(fname, context, dirname=__TMPL_DIR):
     return result
 
 
-def resolve_fname(acc, format='gb'):
+def resolve_fname(acc, format='json'):
     """
     Resolve a file name given an accession number.
     """
     ext = format.lower()
-    ext = 'gb' if ext == 'gbwithparts' else ext
-    ext = 'fa' if ext == 'fasta' else ext
     fname = f"{acc}.{ext}.gz"
     fname = os.path.join(DATADIR, fname)
     return fname
@@ -136,7 +134,7 @@ def sizeof_fmt(num, suffix=''):
     return "%.1f%s%s" % (num, '??', suffix)
 
 @time_it
-def save_stream(stream, fname, trigger=50000, stdout=False):
+def save_stream(stream, fname, trigger=50000):
     """
     Write a input 'stream' as the fname filename.
     """
@@ -151,8 +149,6 @@ def save_stream(stream, fname, trigger=50000, stdout=False):
         if (index % trigger) == 0:
             logger.info(f"downloaded {index:,d} lines")
         tmp.write(line)
-        if stdout:
-            print(line, end='')
 
     logger.info(f"total of {index:,d} lines")
 
@@ -173,7 +169,6 @@ def save_stream(stream, fname, trigger=50000, stdout=False):
     fsize = sizeof_fmt(os.path.getsize(fname))
     logger.info(f"saved {fsize} data to {fname}")
     return
-
 
 def get_logger(name, hnd=None, fmt=None, terminator='\n'):
     # Get the logger name.

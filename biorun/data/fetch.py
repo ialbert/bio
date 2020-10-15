@@ -1,12 +1,14 @@
 """
 Fetches data from Entrez and stores it in the local cache.
 """
-import os, time, sys, re
+import os, time, sys, re, json
 import plac
 from Bio import Entrez
 from biorun import utils
 import gzip
 from biorun import models
+from pprint import pprint
+import collections
 
 try:
     from Bio import SeqIO
@@ -19,9 +21,6 @@ except ImportError as exc:
 logger = utils.logger
 
 Entrez.email = 'bio@bio.com'
-
-def get_runinfo(stream):
-    recs = models.parse_genbank(stream)
 
 
 def validate_ncbi(acc):
@@ -40,7 +39,6 @@ def validate_ncbi(acc):
 
 @utils.time_it
 def efetch(acc, db, format, mode='text'):
-
     if not validate_ncbi(acc):
         msg = f"invalid NCBI accession number: {acc}"
         utils.error(msg)
@@ -53,70 +51,119 @@ def efetch(acc, db, format, mode='text'):
         msg = f"{exc} for efetch acc={acc} db={db} format={format} mode={mode}"
         utils.error(msg)
 
-
-def get(acc, db='nuc', format=utils.GENBANK, mode="text", update=False, stdout=False):
+def gbk_to_json(gbk_name, json_name):
     """
-    Downloads an accession number from NCBI to a file.
-    Returns an open stream to the file.
+    Transforms a GenBank file to a JSON file.
     """
 
-    cache = True
+    # Open GenBank file.
+    inp_stream = gzip.open(gbk_name, 'rt') if gbk_name.endswith(".gz") else open(gbk_name, 'rt')
+
+    # Convert genbank to a data structure.
+    data = models.convert_genbank(inp_stream)
+
+    # Serialize to indented text.
+    data = (json.dumps(data, indent=4))
+
+    # Save into a file.
+    logger.info(f"saving {json_name}")
+    fp = gzip.open(json_name, 'wt')
+    fp.write(data)
+    fp.close()
+
+def read_json_file(fname):
+    stream = gzip.open(fname, 'rt')
+    data = json.load(stream)
+    stream.close()
+    return data
+
+def get_data(acc, db='nuc', format=utils.GENBANK, mode="text", update=False, stdout=False):
+    """
+    Returns an open stream to the JSON file for a data.
+    If the GenBank file does not exist it downloadsit as accession number from NCBI and converts
+    it to json.
+    """
+
 
     # Common mistake to pass an extra parameter.
     if acc.startswith("-"):
         msg = f"Invalid accession number: {acc}"
         utils.error(msg)
 
-    # Check if the accession number is a local file:
+    # The accession number is a path to a GenBank file:
     if os.path.isfile(acc):
         logger.info(f"file {acc}")
-        stream = gzip.open(acc, 'rb') if acc.endswith(".gz") else open(acc, "rt")
-        return cache, stream
+        # Open the GenBank file.
+        inp_stream = gzip.open(acc, 'rb') if acc.endswith(".gz") else open(acc, "rt")
+        # Converts a GenBank to the internal JSON format the system uses.
+        data = models.convert_genbank(inp_stream)
+        return data
 
+    # The JSON representation of the data.
+    json_name = utils.resolve_fname(acc=acc, format="json")
+
+    # GenBank representation of the data.
+    gbk_name = utils.resolve_fname(acc=acc, format="gb")
+
+    # Found the JSON representation of the file.
+    if os.path.isfile(json_name) and not update and 0:
+        logger.info(f"found {json_name}")
+        fp = gzip.open(json_name, 'rt')
+        data = json.load(fp)
+        return data
+
+    # No JSON file but there is a genbank file. Convert, save the return the output.
+    if os.path.isfile(gbk_name) and not update:
+        logger.info(f"found {gbk_name}")
+        gbk_to_json(gbk_name=gbk_name, json_name=json_name)
+        data = read_json_file(json_name)
+        return data
+
+    # No file found or update required, need to fetch from origin and save locally.
     if db == "nuc":
         db = "nuccore"
     else:
         db = "protein"
 
+    # The data format.
     if format == utils.GENBANK:
         format = "gbwithparts"
 
-    # Flag indicating the source
+    # Open the stream to the data.
+    stream = efetch(acc=acc, db=db, format=format, mode=mode)
 
-    # Resolve file based on the requested format.
-    fname = utils.resolve_fname(acc=acc, format=format)
+    # Save the strean to GenBank.
+    utils.save_stream(stream=stream, fname=gbk_name)
 
-    # Return the file if the file already exists and update is not required.
-    if os.path.isfile(fname) and not update:
-        logger.info(f"found {fname}")
-    else:
-        # Perform efetch and save the stream into the file.
-        cache = False
-        stream = efetch(acc=acc, db=db, format=format, mode=mode)
-        utils.save_stream(stream=stream, fname=fname, stdout=stdout)
+    # Convert genbank to JSON.
+    gbk_to_json(gbk_name=gbk_name, json_name=json_name)
 
-    stream = gzip.open(fname, 'rt')
+    data = read_json_file(json_name)
 
-    return cache, stream
+    return data
 
 
-def accs_or_file(accs):
+def get_accessions(accs):
     """
-    Returns a list that contains either the accessions or if these accessions are valid filenames
-    the content of those files.
+    Returns a list that contains either the one accession or if any of these accessions is a
+    valid filenames the content of those files.
     """
     collect = []
     for acc in accs:
 
-        # Common mistake to pass an extra parameter.
+        # No whitespaces allowed.
+        acc = acc.strip()
+
+        # Common mistake to pass an extra parameter to command line.
         if acc.startswith("-"):
             msg = f"Invalid accession number: {acc}"
             utils.error(msg)
 
+        # Parse the file and extract accession numbers from it.
         if os.path.isfile(acc):
 
-            # Get the lines
-            lines = open(acc).readlines()
+            # Get the lines (for sanity check limit at 100)
+            lines = open(acc).readlines()[:100]
 
             # Remove whitespace from lines
             lines = [x.strip() for x in lines]
@@ -132,35 +179,29 @@ def accs_or_file(accs):
 
             collect.extend(nums)
         else:
-            collect.append(acc.strip())
+            collect.append(acc)
 
     return collect
 
 
+
 @plac.pos('acc', "accession numbers")
 @plac.opt('db', "database type", choices=["nuc", "prot"])
-@plac.flg('update', "update cached data if exists")
-@plac.flg('runinfo', "prints the Bioproject runinfo")
+@plac.flg('update', "download data again if it exists")
 @plac.flg('quiet', "quiet mode, no output printed")
-def run(db='nuc', update=False, runinfo=False, quiet=False, *acc):
+def run(db='nuc', update=False, quiet=False, *acc):
+
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
 
     # The accession numbers may stored in files as well.
-    collect = accs_or_file(acc)
+    collect = get_accessions(acc)
 
     # Obtain the data for each accession number
     for acc in collect:
 
-        cache, stream = get(acc=acc, db=db, format=utils.GENBANK, mode="text", update=update)
-
-        # Fetches the run information.
-        if runinfo:
-            get_runinfo(stream)
-
-        # No need to keep the stream open.
-        stream.close()
+        jsdata = get_data(acc=acc, db=db, update=update)
 
         # A throttle to avoid accessing NCBI too quickly.
-        if not cache:
+        if len(collect) > 1:
             time.sleep(1)

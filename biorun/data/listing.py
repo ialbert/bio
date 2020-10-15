@@ -13,7 +13,7 @@ def print_file_list():
     """
     Returns a list of the files in the data directory
     """
-    pattern = os.path.join(os.path.join(utils.DATADIR, '*.gz'))
+    pattern = os.path.join(os.path.join(utils.DATADIR, '*.gb.gz'))
     matched = glob.glob(pattern)
     for path in matched:
         fsize = utils.sizeof_fmt(os.path.getsize(path))
@@ -24,8 +24,6 @@ def print_file_list():
         project = collect.get("bioproject", ".       ")
         sample = collect.get("sample", ".       ")
         print (f"{fsize}\t{fname}\t{project}\t{sample}\t{title}")
-
-
 
 @plac.flg('verbose', "verbose mode, progress messages printed")
 def run(verbose=False):

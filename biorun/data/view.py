@@ -1,12 +1,15 @@
 """
 Fetches data from Entrez.
 """
-import sys, os, itertools
+import sys, os, itertools, json
 
 import plac
+
+from biorun import models
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 from Bio import Entrez
 from biorun import utils
-from biorun import models
 from biorun.data import fetch
 from biorun.utils import first
 import itertools
@@ -39,24 +42,29 @@ GFF_ATTRIBUTES = [
 ]
 
 
-def print_fasta(stream, name='', gene='', start=0, end=None, typ=None, translation=None):
+def print_fasta(data, name='', gene='', start=0, end=None, typ=None, translation=None):
     """
     Prints the origin of a BioPython SeqRecord.
     """
-    recs = models.parse_genbank(stream)
 
-    if gene or typ or translation:
-        seqs = models.get_feature_fasta(recs=recs, start=start, end=end, name=name, gene=gene, typ=typ, translation=translation)
-    else:
-        seqs = models.get_source_fasta(recs=recs, start=start, end=end, name=name)
+    for item in data:
+        if gene or typ or translation:
+            seqs = models.get_feature_fasta(item, start=start, end=end, name=name, gene=gene, typ=typ, translation=translation)
+        else:
+            seq = item['seq'][start:end]
+            seqid = item['id']
+            desc = item['definition']
+            name = name or seqid
+            seq = SeqRecord(Seq(seq), id=seqid, name=name, description=desc)
+            seqs = [ seq ]
 
-    # Print the sequence for each record
-    for item in seqs:
-        print(item.format("fasta"))
+        # Print the sequence for each record
+        for elem in seqs:
+            print(elem.format("fasta"))
 
 
 def get_pairs(keys, adict):
-    pairs = [(k, adict.get(k)) for k in keys]
+    pairs = [(k, adict.get_data(k)) for k in keys]
     pairs = [f"{k}={first(v)}" for (k, v) in pairs if v]
     return pairs
 
@@ -65,7 +73,7 @@ def make_attr(feat):
     """
     Creates GFF attributes from a SeqRecord
     """
-    gene = first(feat.qualifiers.get("gene"))
+    gene = first(feat.qualifiers.get_data("gene"))
     data = []
 
     if feat.type == "gene":
@@ -126,17 +134,18 @@ def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, ty
     """
 
     # Open the stream to the data
-    cache, stream = fetch.get(acc=acc)
+    data = fetch.get_data(acc=acc)
 
     # Turns on fasta formats
     fasta = fasta or (not gff and gene)
 
     if fasta or translation:
-        print_fasta(stream, gene=gene,  name=name, start=start, end=end, typ=typ, translation=translation)
+        print_fasta(data, gene=gene,  name=name, start=start, end=end, typ=typ, translation=translation)
     elif gff:
-        print_gff(stream, gene=gene, name=name, start=start, end=end, typ=typ)
+        print_gff(data, gene=gene, name=name, start=start, end=end, typ=typ)
     else:
-        print_genbank(stream)
+        text = json.dumps(data, indent=4)
+        print(text)
 
     return
 
