@@ -9,8 +9,9 @@ from collections import OrderedDict
 from itertools import *
 from pprint import pprint
 
-# The key by under which the features are stored
-FEATURES = "FEATURES"
+from biorun.const import *
+
+
 
 try:
     from Bio import SeqIO
@@ -53,74 +54,60 @@ def get_feature_decription(feat):
     return desc
 
 
-def filter_features(stream, start=0, end=None, gene=None, typ=None, translation=None):
+def filter_features(items, start=0, end=None, gene=None, typ=None, translation=None):
     # Filter by type.
     if typ and typ != "all":
-        stream = filter(lambda f: f.type == typ, stream)
+        items = filter(lambda f: f.get('type') == typ, items)
 
     # Filter by name.
     if gene:
-        stream = filter(lambda f: gene in f.qualifiers.get_data("gene", []), stream)
+        items = filter(lambda f: gene in f.get("gene", []), items)
 
     # Filter by the translation attribute existance.
     if translation:
-        stream = filter(lambda f: f.qualifiers.get_data("translation"), stream)
+        items = filter(lambda f: f.get("translation", [''])[0], items)
 
     # Filter by start.
     if start:
-        stream = filter(lambda f: start <= int(f.location.start), stream)
+        items = filter(lambda f: start <= f.get('start'), items)
 
     # Filter by end.
     if end:
-        stream = filter(lambda f: int(f.location.end) <= end, stream)
+        items = filter(lambda f: f.get('end') <= end, items)
 
-    return stream
+    return items
 
 
-def get_feature_fasta(recs, name='', gene='', start=0, end=None, typ=None, translation=None):
+def get_feature_fasta(data,  gene='', start=0, end=None, typ=None, translation=None):
     """
     Returns records from a list of GenBank
     """
 
-    for item in recs:
+    elems = data[FEATURES]
+    elems = filter_features(elems, start=0, end=None, gene=gene, typ=typ, translation=translation)
 
-        # For a fasta file start and end mean slicing the sequence.
-        feats = filter_features(stream=item.features, start=0, end=None, gene=gene, typ=typ, translation=translation)
-
-        for feat in feats:
-            # print (feat)
-            if translation:
-                text = utils.first(feat.qualifiers.get_data("translation", ''))
-                seq = SeqRecord(Seq(text), id="seq")
-            else:
-                seq = feat.extract(item)
-            seq.id = get_feature_id(feat)
-            seq.description = get_feature_decription(feat)
-            if start or end:
-                end = end or len(item)
-                seq.id = f"{seq.id} [{start}:{end}]"
-                seq = seq[start: end]
-            yield seq
+    for elem in elems:
+        if translation:
+            text = elem.get("translation", [''])[start:end]
+            rec = SeqRecord(Seq(text), id="foo")
+            yield rec
 
 
-def get_source_fasta(recs, name='', gene='', start=1, end=None, typ=None):
-    """
-    Returns records from a list of GenBank
-    """
-
-    for item in recs:
-
-        # Renane the sequence.
-        if name:
-            item.id = name
-
-        # If the start/ends are set.
+    '''
+        # print (feat)
+        if translation:
+            text = utils.first(feat.qualifiers.get_data("translation", ''))
+            seq = SeqRecord(Seq(text), id="seq")
+        else:
+            seq = feat.extract(item)
+        seq.id = get_feature_id(feat)
+        seq.description = get_feature_decription(feat)
         if start or end:
             end = end or len(item)
-            item.id = f"{item.id} [{start}:{end}]"
-            item.seq = item.seq[start:end]
-
-        yield item
+            seq.id = f"{seq.id} [{start}:{end}]"
+            seq = seq[start: end]
+        yield seq
+    '''
 
 
 def serialize(value):
@@ -145,8 +132,19 @@ def serialize(value):
 
     return value
 
+def get_origin(item, start=0, end=None, name=None):
+    """
+    Returns the origin sequence from an JSON item
+    """
+    # Prints the source sequence
+    seq = item[ORIGIN][start:end]
+    desc = item[DEFINITION]
+    seqid = item[SEQID]
+    locus = item[LOCUS]
+    seqid = name or seqid
+    rec = SeqRecord(Seq(seq), id=seqid, name=locus, description=desc)
+    return rec
 
-@utils.time_it
 def convert_genbank(stream):
     """
     Converts a stream to a GenBank file into json.
@@ -165,10 +163,10 @@ def convert_genbank(stream):
         item = dict()
 
         # Fill the standard SeqRecord fields.
-        item['id'] = rec.id
-        item['definition'] = rec.description
-        item['dblink'] = rec.dbxrefs
-        item['locus'] = rec.name
+        item[SEQID] = rec.id
+        item[DEFINITION] = rec.description
+        item[DBLINK] = rec.dbxrefs
+        item[LOCUS] = rec.name
 
         # Fill in all annotations.
         for key, value in rec.annotations.items():
@@ -194,7 +192,7 @@ def convert_genbank(stream):
         item[FEATURES] = feats
 
         # Save the sequence as well
-        item['seq'] = str(rec.seq)
+        item[ORIGIN] = str(rec.seq)
 
         # Each item keyed as the record.id.
         data.append(item)

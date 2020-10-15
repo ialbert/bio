@@ -12,6 +12,8 @@ from Bio import Entrez
 from biorun import utils
 from biorun.data import fetch
 from biorun.utils import first
+from biorun.const import *
+
 import itertools
 
 # The default logging function.
@@ -26,41 +28,52 @@ def error(msg):
     sys.exit(1)
 
 
-SEQUENCE_ONTOLOGY = {
-    "5'UTR": "five_prime_UTR",
-    "mat_peptide": "mature_protein_region",
-}
-
-# GFF attributes generated for a source type.
-SOURCE_ATTRIBUTES = [
-    "mol_type", "isolate", "db_xref", "organism", "country", "collection_date"
-]
-
-# GFF attributes filled for each feature other than "source"
-GFF_ATTRIBUTES = [
-    "gene", "protein_id", "function", "product", "note"
-]
-
-
-def print_fasta(data, name='', gene='', start=0, end=None, typ=None, translation=None):
+def print_fasta(data, name='', gene='', start=0, end=None, typ=None):
     """
-    Prints the origin of a BioPython SeqRecord.
+    Transforms a json data to FASTA
     """
 
     for item in data:
+
         if gene or typ or translation:
-            seqs = models.get_feature_fasta(item, start=start, end=end, name=name, gene=gene, typ=typ, translation=translation)
+            items = models.filter_features(items, start=0, end=None, gene=gene, typ=typ, translation=translation)
+            seqs = models.get_feature_fasta(items, start=start, end=end, gene=gene, typ=typ,
+                                            translation=translation)
         else:
-            seq = item['seq'][start:end]
-            seqid = item['id']
-            desc = item['definition']
-            name = name or seqid
-            seq = SeqRecord(Seq(seq), id=seqid, name=name, description=desc)
-            seqs = [ seq ]
+            seqs = [models.get_origin(item, start=start, end=end, name=name)]
 
         # Print the sequence for each record
         for elem in seqs:
             print(elem.format("fasta"))
+
+def get(item, key, default=""):
+    return item.get(key, [default])[0]
+
+def print_translation(data, name='', gene='', start=0, end=None, typ=None):
+    """
+    Transforms a json data to FASTA
+    """
+
+    for row in data:
+        items = row[FEATURES]
+        items = models.filter_features(items, start=0, end=None, gene=gene, typ=typ)
+        for item in items:
+            text = get(item, "translation")
+            if text:
+                gene = get(item, "gene")
+                protein_id = get(item, "protein_id") or "None"
+                db_xref = get(item, 'db_xref')
+
+                if protein_id:
+                    name = f"{gene}|{protein_id}"
+                else:
+                    name = f"{gene}"
+
+                desc = f"{db_xref}"
+
+                rec = SeqRecord(Seq(text), id=name, description=desc)
+                print(rec.format("fasta"))
+
 
 
 def get_pairs(keys, adict):
@@ -137,10 +150,12 @@ def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, ty
     data = fetch.get_data(acc=acc)
 
     # Turns on fasta formats
-    fasta = fasta or (not gff and gene)
+    fasta = fasta or (not gff and (gene or typ))
 
-    if fasta or translation:
-        print_fasta(data, gene=gene,  name=name, start=start, end=end, typ=typ, translation=translation)
+    if translation:
+        print_translation(data, gene=gene, name=name, start=start, end=end, typ=typ)
+    elif fasta:
+        print_fasta(data, gene=gene, name=name, start=start, end=end, typ=typ)
     elif gff:
         print_gff(data, gene=gene, name=name, start=start, end=end, typ=typ)
     else:
@@ -178,4 +193,5 @@ def run(gene='', type='', rename='', start=1, end=None, fasta=False, translation
 
     # Process each accession number.
     for acx in acc:
-        process(acx, gene=gene, name=rename, fasta=fasta, gff=gff, start=start, end=end, typ=type, translation=translation)
+        process(acx, gene=gene, name=rename, fasta=fasta, gff=gff, start=start, end=end, typ=type,
+                translation=translation)

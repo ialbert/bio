@@ -62,13 +62,10 @@ def gbk_to_json(gbk_name, json_name):
     # Convert genbank to a data structure.
     data = models.convert_genbank(inp_stream)
 
-    # Serialize to indented text.
-    data = (json.dumps(data, indent=4))
-
     # Save into a file.
     logger.info(f"saving {json_name}")
-    fp = gzip.open(json_name, 'wt')
-    fp.write(data)
+    fp = gzip.open(json_name, 'wt', compresslevel=1)
+    json.dump(data, fp)
     fp.close()
 
 def read_json_file(fname):
@@ -106,7 +103,7 @@ def get_data(acc, db='nuc', format=utils.GENBANK, mode="text", update=False, std
     gbk_name = utils.resolve_fname(acc=acc, format="gb")
 
     # Found the JSON representation of the file.
-    if os.path.isfile(json_name) and not update and 0:
+    if os.path.isfile(json_name) and not update:
         logger.info(f"found {json_name}")
         fp = gzip.open(json_name, 'rt')
         data = json.load(fp)
@@ -200,7 +197,8 @@ def run(db='nuc', update=False, quiet=False, *acc):
     # Obtain the data for each accession number
     for acc in collect:
 
-        jsdata = get_data(acc=acc, db=db, update=update)
+        data = get_data(acc=acc, db=db, update=update)
+
 
         # A throttle to avoid accessing NCBI too quickly.
         if len(collect) > 1:
