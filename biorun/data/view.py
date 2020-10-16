@@ -1,7 +1,7 @@
 """
 Fetches data from Entrez.
 """
-import sys, os, itertools, json
+import sys, os, itertools, json, re
 
 import plac
 
@@ -55,6 +55,23 @@ def print_feature_fasta(data,  param):
         for rec in recs:
             print(rec.format("fasta"))
 
+def print_json(data,  param):
+    """
+    Prints the sequence for features.
+    """
+
+    # Produce the full file when no parameters are set.
+    if param.unset():
+        text = json.dumps(data, indent=4)
+        print(text)
+        return
+
+    # Selects individual features.
+    for item in data:
+        feats = item[FEATURES]
+        feats = models.filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene, regexp=param.regexp)
+        text = json.dumps(list(feats), indent=4)
+        print (text)
 
 def get_pairs(keys, adict):
     pairs = [(k, adict.get_data(k)) for k in keys]
@@ -124,9 +141,6 @@ def process(acc, param):
     # Open the stream to the data
     data = fetch.get_data(acc=acc)
 
-    # Turns on fasta formats
-    fasta = not param.gff and (param.fasta or param.gene or param.type)
-
     # When to produce the origin fasta.
     origin = param.fasta and not(param.gene or param.type or param.protein or param.translate)
 
@@ -134,33 +148,21 @@ def process(acc, param):
         print_translation_fasta(data, param=param)
     elif origin:
         print_origin_fasta(data, param=param)
-    elif fasta:
+    elif param.fasta:
         print_feature_fasta(data, param=param)
     elif param.gff:
         print_gff(data, gene=gene, seqid=seqid, start=start, end=end, typ=typ)
     else:
-        text = json.dumps(data, indent=4)
-        print(text)
+        print_json(data, param=param)
+
 
     return
 
-class Param(object):
-    """
-    A class to maintain various parameters that have grown too numerous to pass individually.
-    """
-    def __init__(self, **kwds):
-        self.start = self.end = self.seqid = None
-        self.gff = self.protein = self.fasta = self.translate = None
-        self.name = self.gene = self.type = None
-        self.__dict__.update(kwds)
-
-    def __str__(self):
-        return str(self.__dict__)
 
 @plac.pos('acc', "accession numbers")
 @plac.opt('gene', "name of the gene associated with the feature")
 @plac.opt('seqid', "set the sequence id", abbrev="Q")
-@plac.opt('name', "select elements by name")
+@plac.opt('match', "select elements by matching a regexp to any existing information")
 @plac.opt('type', "filter by the type of the feature")
 @plac.opt('start', "start coordinate ", type=int)
 @plac.opt('end', "end coordinate", type=int)
@@ -169,7 +171,7 @@ class Param(object):
 @plac.flg('translate', "translates DNA sequences to protein", abbrev="T")
 @plac.flg('gff', "generate a gff file", abbrev="G")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(gene='', type='', seqid='', name='', start=1, end=0, fasta=False, protein=False, translate=False, gff=False, verbose=False, *acc):
+def run(gene='', type='', seqid='', match='', start=1, end=0, fasta=False, protein=False, translate=False, gff=False, verbose=False, *acc):
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
@@ -182,9 +184,12 @@ def run(gene='', type='', seqid='', name='', start=1, end=0, fasta=False, protei
     # Set the end slice
     end = end or None
 
+    # Set the regular expression.
+    regexp = re.compile(match) if match else match
+
     # Collected parameters
-    param = Param(start=start, end=end, name=name, seqid=seqid, protein=protein,
-                  gff=gff, translate=translate, fasta=fasta, type=type, gene=gene)
+    param = utils.Param(start=start, end=end, seqid=seqid, protein=protein,
+                  gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=regexp)
 
     # Process each accession number.
     for acx in acc:

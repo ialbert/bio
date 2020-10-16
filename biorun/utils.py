@@ -36,6 +36,27 @@ TYPE_BY_EXTENSION = {
 }
 
 
+class Param(object):
+    """
+    A class to maintain various parameters that have grown too numerous to pass individually.
+    """
+
+    def __init__(self, **kwds):
+        self.start = self.end = self.seqid = None
+        self.gff = self.protein = self.fasta = self.translate = None
+        self.name = self.gene = self.type = self.regexp = None
+        self.__dict__.update(kwds)
+
+    def unset(self):
+        """
+        Returns true if no parameters are set
+        :return:
+        """
+        return not any(self.__dict__.values())
+
+    def __str__(self):
+        return str(self.__dict__)
+
 def smartname(text):
     """
     Splits an accession number by colon into acc:name

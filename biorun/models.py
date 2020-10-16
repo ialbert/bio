@@ -11,8 +11,6 @@ from pprint import pprint
 
 from biorun.const import *
 
-
-
 try:
     from Bio import SeqIO
     from Bio.Seq import Seq
@@ -25,6 +23,7 @@ except ImportError as exc:
     sys.exit(1)
 
 logger = utils.logger
+
 
 def get_feature_id(feat):
     """
@@ -53,13 +52,15 @@ def get_feature_decription(feat):
 
     return desc
 
+
 def has_feature(item, name="gene"):
     """
     A filtering function to checks if a record contains keys with a name.
     """
     return item.get(name, [''])[0]
 
-def filter_features(items, start=0, end=None, gene=None, ftype=None):
+
+def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None):
     # Filter by type.
     if ftype and ftype != "all":
         items = filter(lambda f: f.get('type') == ftype, items)
@@ -76,11 +77,17 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None):
     if end:
         items = filter(lambda f: f.get('end') <= end, items)
 
+    # Filters by matching a regular expression
+    if regexp :
+        items = filter(lambda f: regexp.search(str(f)), items)
+
     return items
+
 
 def first(item, key, default=""):
     "Shortcut to obtain the first element of the list"
     return item.get(key, [default])[0]
+
 
 def rec_name(f):
     """
@@ -90,6 +97,7 @@ def rec_name(f):
     protein_id = first(f, "protein_id") or "None"
     name = f"{gene}|{protein_id}"
     return name
+
 
 def rec_desc(f):
     """
@@ -101,7 +109,8 @@ def rec_desc(f):
 
     return desc
 
-def get_translation_records(item,  param):
+
+def get_translation_records(item, param):
     """
     Produces SeqRecods for each feature that have translations.
     """
@@ -123,7 +132,6 @@ def get_translation_records(item,  param):
 
     # Produce the translation records.
     for f in feats:
-
         # Fetch the translation.
         trans = first(f, "translation")[start:end]
 
@@ -136,7 +144,8 @@ def get_translation_records(item,  param):
 
         yield rec
 
-def get_feature_records(data,  param):
+
+def get_feature_records(data, param):
     """
     Returns records from a list of GenBank
     """
@@ -153,10 +162,6 @@ def get_feature_records(data,  param):
 
     start, end = param.start, param.end
 
-    print (start, end)
-    # When to check translations.
-    check_translation = param.translate
-
     for f in feats:
         name = rec_name(f)
         desc = rec_desc(f)
@@ -164,7 +169,7 @@ def get_feature_records(data,  param):
 
         dna = Seq('')
         for x_start, x_end, strand in locations:
-            sub = Seq(origin[x_start-1:x_end])
+            sub = Seq(origin[x_start - 1:x_end])
             if strand == -1:
                 sub = sub.reverse_complement()
             dna += sub
@@ -176,10 +181,10 @@ def get_feature_records(data,  param):
         rec = SeqRecord(seq, id=name, description=desc)
 
         # Sanity check for translation
-        if check_translation :
+        if param.translate:
             expected = first(f, "translation")[start:end]
             observed = str(rec.seq)
-            if expected != observed:
+            if expected and expected != observed:
                 rec.description = f"{rec.description} (possible translation error)"
 
         yield rec
@@ -206,6 +211,7 @@ def serialize(value):
 
     return value
 
+
 def get_origin(item, param):
     """
     Returns the origin sequence from an JSON item
@@ -218,6 +224,7 @@ def get_origin(item, param):
     seqid = param.seqid or seqid
     rec = SeqRecord(Seq(seq), id=seqid, name=locus, description=desc)
     return rec
+
 
 def convert_genbank(stream):
     """
