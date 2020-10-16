@@ -28,52 +28,32 @@ def error(msg):
     sys.exit(1)
 
 
-def print_fasta(data, name='', gene='', start=0, end=None, typ=None):
+def print_origin_fasta(data,  param):
     """
-    Transforms a json data to FASTA
+    Prints the origin sequence for each record.
+    """
+    for item in data:
+        rec = models.get_origin(item, param)
+        print(rec.format("fasta"))
+
+def print_translation_fasta(data, param):
+    """
+    Prints the translation field of each record.
+    """
+    for item in data:
+        recs = models.get_translation_records(item, param)
+        for rec in recs:
+            print(rec.format("fasta"))
+
+def print_feature_fasta(data,  param):
+    """
+    Prints the sequence for features.
     """
 
     for item in data:
-
-        if gene or typ or translation:
-            items = models.filter_features(items, start=0, end=None, gene=gene, typ=typ, translation=translation)
-            seqs = models.get_feature_fasta(items, start=start, end=end, gene=gene, typ=typ,
-                                            translation=translation)
-        else:
-            seqs = [models.get_origin(item, start=start, end=end, name=name)]
-
-        # Print the sequence for each record
-        for elem in seqs:
-            print(elem.format("fasta"))
-
-def get(item, key, default=""):
-    return item.get(key, [default])[0]
-
-def print_translation(data, name='', gene='', start=0, end=None, typ=None):
-    """
-    Transforms a json data to FASTA
-    """
-
-    for row in data:
-        items = row[FEATURES]
-        items = models.filter_features(items, start=0, end=None, gene=gene, typ=typ)
-        for item in items:
-            text = get(item, "translation")
-            if text:
-                gene = get(item, "gene")
-                protein_id = get(item, "protein_id") or "None"
-                db_xref = get(item, 'db_xref')
-
-                if protein_id:
-                    name = f"{gene}|{protein_id}"
-                else:
-                    name = f"{gene}"
-
-                desc = f"{db_xref}"
-
-                rec = SeqRecord(Seq(text), id=name, description=desc)
-                print(rec.format("fasta"))
-
+        recs = models.get_feature_records(item, param)
+        for rec in recs:
+            print(rec.format("fasta"))
 
 
 def get_pairs(keys, adict):
@@ -109,7 +89,7 @@ def feature2gff(feat, anchor):
     end = int(feat.location.end)
     attr = make_attr(feat)
     strand = "+" if feat.strand else "-"
-    ftype = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
+    ftype = SEQUENCE_ONTOLOGY.first(feat.type, feat.type)
     data = [anchor, ".", ftype, start, end, ".", strand, ".", attr]
     return data
 
@@ -127,7 +107,7 @@ def print_gff(stream, gene='', name='', start=0, end=None, typ=None):
         anchor = name or rec.id
 
         # Subselect by coordinates.
-        feats = models.filter_features(stream=rec.features, start=start, end=end, gene=gene, typ=typ)
+        feats = models.filter_features(stream=rec.features, start=start, end=end, gene=gene, ftype=typ)
 
         # Generate the gff output
         for feat in feats:
@@ -136,12 +116,7 @@ def print_gff(stream, gene='', name='', start=0, end=None, typ=None):
             print("\t".join(values))
 
 
-def print_genbank(stream):
-    for line in stream:
-        print(line, end="")
-
-
-def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, typ='', translation=None):
+def process(acc, param):
     """
     Performs the processing of a single accession number.
     """
@@ -150,48 +125,67 @@ def process(acc, gene='', name='', fasta=False, gff=False, start=0, end=None, ty
     data = fetch.get_data(acc=acc)
 
     # Turns on fasta formats
-    fasta = fasta or (not gff and (gene or typ))
+    fasta = not param.gff and (param.fasta or param.gene or param.type)
 
-    if translation:
-        print_translation(data, gene=gene, name=name, start=start, end=end, typ=typ)
+    # When to produce the origin fasta.
+    origin = param.fasta and not(param.gene or param.type or param.protein or param.translate)
+
+    if param.protein:
+        print_translation_fasta(data, param=param)
+    elif origin:
+        print_origin_fasta(data, param=param)
     elif fasta:
-        print_fasta(data, gene=gene, name=name, start=start, end=end, typ=typ)
-    elif gff:
-        print_gff(data, gene=gene, name=name, start=start, end=end, typ=typ)
+        print_feature_fasta(data, param=param)
+    elif param.gff:
+        print_gff(data, gene=gene, seqid=seqid, start=start, end=end, typ=typ)
     else:
         text = json.dumps(data, indent=4)
         print(text)
 
     return
 
+class Param(object):
+    """
+    A class to maintain various parameters that have grown too numerous to pass individually.
+    """
+    def __init__(self, **kwds):
+        self.start = self.end = self.seqid = None
+        self.gff = self.protein = self.fasta = self.translate = None
+        self.name = self.gene = self.type = None
+        self.__dict__.update(kwds)
+
+    def __str__(self):
+        return str(self.__dict__)
 
 @plac.pos('acc', "accession numbers")
 @plac.opt('gene', "name of the gene associated with the feature")
-@plac.opt('rename', "renames the elements")
-@plac.opt('type', "the type of the feature")
+@plac.opt('seqid', "set the sequence id", abbrev="Q")
+@plac.opt('name', "select elements by name")
+@plac.opt('type', "filter by the type of the feature")
 @plac.opt('start', "start coordinate ", type=int)
 @plac.opt('end', "end coordinate", type=int)
 @plac.flg('fasta', "generate fasta file")
-@plac.flg('translation', "get the features that have a translation attribute set", abbrev="T")
+@plac.flg('protein', "fasta file with protein translations embedded in the data")
+@plac.flg('translate', "translates DNA sequences to protein", abbrev="T")
 @plac.flg('gff', "generate a gff file", abbrev="G")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(gene='', type='', rename='', start=1, end=None, fasta=False, translation=False, gff=False, verbose=False, *acc):
+def run(gene='', type='', seqid='', name='', start=1, end=0, fasta=False, protein=False, translate=False, gff=False, verbose=False, *acc):
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
-    if start < 1:
-        error(f"start={start} must be greater than zero")
-
-    if (end is not None) and (start > end):
-        error(f"start={start} is larger than end={end}")
+    if start == 0:
+        error(f"start={start} may not be  zero")
 
     # Move it to one based coordinate system
-    start = start - 1
+    start = start - 1 if start > 0 else start
 
-    # Set thethe end slice
+    # Set the end slice
     end = end or None
+
+    # Collected parameters
+    param = Param(start=start, end=end, name=name, seqid=seqid, protein=protein,
+                  gff=gff, translate=translate, fasta=fasta, type=type, gene=gene)
 
     # Process each accession number.
     for acx in acc:
-        process(acx, gene=gene, name=rename, fasta=fasta, gff=gff, start=start, end=end, typ=type,
-                translation=translation)
+        process(acx, param=param)

@@ -53,19 +53,20 @@ def get_feature_decription(feat):
 
     return desc
 
+def has_feature(item, name="gene"):
+    """
+    A filtering function to checks if a record contains keys with a name.
+    """
+    return item.get(name, [''])[0]
 
-def filter_features(items, start=0, end=None, gene=None, typ=None, translation=None):
+def filter_features(items, start=0, end=None, gene=None, ftype=None):
     # Filter by type.
-    if typ and typ != "all":
-        items = filter(lambda f: f.get('type') == typ, items)
+    if ftype and ftype != "all":
+        items = filter(lambda f: f.get('type') == ftype, items)
 
     # Filter by name.
     if gene:
         items = filter(lambda f: gene in f.get("gene", []), items)
-
-    # Filter by the translation attribute existance.
-    if translation:
-        items = filter(lambda f: f.get("translation", [''])[0], items)
 
     # Filter by start.
     if start:
@@ -77,38 +78,111 @@ def filter_features(items, start=0, end=None, gene=None, typ=None, translation=N
 
     return items
 
+def first(item, key, default=""):
+    "Shortcut to obtain the first element of the list"
+    return item.get(key, [default])[0]
 
-def get_feature_fasta(data,  gene='', start=0, end=None, typ=None, translation=None):
+def rec_name(f):
+    """
+    Creates a record name from a JSON feature.
+    """
+    gene = first(f, "gene", )
+    protein_id = first(f, "protein_id") or "None"
+    name = f"{gene}|{protein_id}"
+    return name
+
+def rec_desc(f):
+    """
+    Creates a record description from JSON feature.
+    """
+    ftype = f.get("type", ".")
+    db_xref = first(f, 'db_xref')
+    desc = f"{ftype} {db_xref}"
+
+    return desc
+
+def get_translation_records(item,  param):
+    """
+    Produces SeqRecods for each feature that have translations.
+    """
+
+    # All features for the item
+    feats = item[FEATURES]
+
+    # Filtering function for translations.
+    has_translation = lambda f: f.get('translation', [''])[0]
+
+    # Features with translation.
+    feats = filter(has_translation, feats)
+
+    # Additional filters
+    feats = filter_features(feats, gene=param.gene, ftype=param.type)
+
+    # Hoist the variables out.
+    start, end = param.start, param.end
+
+    # Produce the translation records.
+    for f in feats:
+
+        # Fetch the translation.
+        trans = first(f, "translation")[start:end]
+
+        # Set up the metadata.
+        name = rec_name(f)
+        desc = rec_desc(f)
+
+        # Generate sequence record.
+        rec = SeqRecord(Seq(trans), id=name, description=desc)
+
+        yield rec
+
+def get_feature_records(data,  param):
     """
     Returns records from a list of GenBank
     """
 
-    elems = data[FEATURES]
-    elems = filter_features(elems, start=0, end=None, gene=gene, typ=typ, translation=translation)
+    feats = data[FEATURES]
+    origin = data[ORIGIN]
+    feats = filter_features(feats, gene=param.gene, ftype=param.type)
 
-    for elem in elems:
-        if translation:
-            text = elem.get("translation", [''])[start:end]
-            rec = SeqRecord(Seq(text), id="foo")
-            yield rec
+    # Ignore translation warnings
+    if param.translate:
+        import warnings
+        from Bio import BiopythonWarning
+        warnings.simplefilter('ignore', BiopythonWarning)
 
+    start, end = param.start, param.end
 
-    '''
-        # print (feat)
-        if translation:
-            text = utils.first(feat.qualifiers.get_data("translation", ''))
-            seq = SeqRecord(Seq(text), id="seq")
-        else:
-            seq = feat.extract(item)
-        seq.id = get_feature_id(feat)
-        seq.description = get_feature_decription(feat)
-        if start or end:
-            end = end or len(item)
-            seq.id = f"{seq.id} [{start}:{end}]"
-            seq = seq[start: end]
-        yield seq
-    '''
+    print (start, end)
+    # When to check translations.
+    check_translation = param.translate
 
+    for f in feats:
+        name = rec_name(f)
+        desc = rec_desc(f)
+        locations = f.get("location", [])
+
+        dna = Seq('')
+        for x_start, x_end, strand in locations:
+            sub = Seq(origin[x_start-1:x_end])
+            if strand == -1:
+                sub = sub.reverse_complement()
+            dna += sub
+
+        seq = dna.translate()[:-1] if param.translate else dna
+
+        seq = seq[start:end]
+
+        rec = SeqRecord(seq, id=name, description=desc)
+
+        # Sanity check for translation
+        if check_translation :
+            expected = first(f, "translation")[start:end]
+            observed = str(rec.seq)
+            if expected != observed:
+                rec.description = f"{rec.description} (possible translation error)"
+
+        yield rec
 
 def serialize(value):
     """
@@ -132,16 +206,16 @@ def serialize(value):
 
     return value
 
-def get_origin(item, start=0, end=None, name=None):
+def get_origin(item, param):
     """
     Returns the origin sequence from an JSON item
     """
     # Prints the source sequence
-    seq = item[ORIGIN][start:end]
+    seq = item[ORIGIN][param.start:param.end]
     desc = item[DEFINITION]
     seqid = item[SEQID]
     locus = item[LOCUS]
-    seqid = name or seqid
+    seqid = param.seqid or seqid
     rec = SeqRecord(Seq(seq), id=seqid, name=locus, description=desc)
     return rec
 
@@ -179,9 +253,11 @@ def convert_genbank(stream):
             start = int(feat.location.start) + 1
             end = int(feat.location.end)
 
+            oper = feat.location_operator
+
             # print (feat.location, type(feat.location))
             location = [(loc.start + 1, loc.end, loc.strand) for loc in feat.location.parts]
-            elem = dict(start=start, end=end, type=ftype, location=location)
+            elem = dict(start=start, end=end, type=ftype, location=location, operator=oper)
 
             for (k, v) in feat.qualifiers.items():
                 elem[k] = serialize(v)

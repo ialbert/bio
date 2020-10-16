@@ -14,8 +14,6 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ialbert/bio",
     packages=find_packages(include=["biorun", "biorun.*"]),
-    ppackage_data={'biorun': ['templates/*.txt']},
-    include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -23,8 +21,6 @@ setup(
     ],
     install_requires=[
         'plac==1.2.0',
-        'jinja2',
-        'toml',
     ],
 
     entry_points={

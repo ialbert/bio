@@ -63,10 +63,11 @@ def gbk_to_json(gbk_name, json_name):
     data = models.convert_genbank(inp_stream)
 
     # Save into a file.
-    logger.info(f"saving {json_name}")
     fp = gzip.open(json_name, 'wt', compresslevel=1)
     json.dump(data, fp)
     fp.close()
+
+    logger.info(f"saved {json_name}")
 
 def read_json_file(fname):
     stream = gzip.open(fname, 'rt')
@@ -74,7 +75,7 @@ def read_json_file(fname):
     stream.close()
     return data
 
-def get_data(acc, db='nuc', format=utils.GENBANK, mode="text", update=False, stdout=False):
+def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False):
     """
     Returns an open stream to the JSON file for a data.
     If the GenBank file does not exist it downloadsit as accession number from NCBI and converts
@@ -103,7 +104,7 @@ def get_data(acc, db='nuc', format=utils.GENBANK, mode="text", update=False, std
     gbk_name = utils.resolve_fname(acc=acc, format="gb")
 
     # Found the JSON representation of the file.
-    if os.path.isfile(json_name) and not update:
+    if os.path.isfile(json_name) and not update and not rebuild:
         logger.info(f"found {json_name}")
         fp = gzip.open(json_name, 'rt')
         data = json.load(fp)
@@ -116,11 +117,11 @@ def get_data(acc, db='nuc', format=utils.GENBANK, mode="text", update=False, std
         data = read_json_file(json_name)
         return data
 
-    # No file found or update required, need to fetch from origin and save locally.
-    if db == "nuc":
-        db = "nuccore"
-    else:
+    # Accession numbers that are proteins.
+    if acc[:3] in [ "AP_", "NP_", "YP_", "XP_", "WP_"]:
         db = "protein"
+    else:
+        db = db or "nuccore"
 
     # The data format.
     if format == utils.GENBANK:
@@ -186,7 +187,8 @@ def get_accessions(accs):
 @plac.opt('db', "database type", choices=["nuc", "prot"])
 @plac.flg('update', "download data again if it exists")
 @plac.flg('quiet', "quiet mode, no output printed")
-def run(db='nuc', update=False, quiet=False, *acc):
+@plac.flg('rebuild', "rebuilds the JSON representation")
+def run(db='', update=False, quiet=False, rebuild=False, *acc):
 
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
@@ -197,7 +199,7 @@ def run(db='nuc', update=False, quiet=False, *acc):
     # Obtain the data for each accession number
     for acc in collect:
 
-        data = get_data(acc=acc, db=db, update=update)
+        data = get_data(acc=acc, db=db, update=update, rebuild=rebuild)
 
 
         # A throttle to avoid accessing NCBI too quickly.

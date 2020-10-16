@@ -7,6 +7,7 @@ import plac
 from importlib import import_module
 from biorun import VERSION
 from biorun import utils
+from biorun.usage import HELP
 
 # Commands names.
 LIST, FETCH, VIEW, ALIGN = "list", "fetch", "view", "align"
@@ -20,15 +21,15 @@ COMMANDS = {
 }
 
 # Context for the USAGE help page.
-context = dict(
+CONTEXT = dict(
     VERSION=VERSION, FETCH=FETCH, ALIGN=ALIGN, VIEW=VIEW, LIST=LIST,
 )
 
-# These commands will show help when invoked with no parameters.
+# These commands will generate a default help when no parameter is specified.
 SHOW_HELP = {FETCH, ALIGN, VIEW}
 
 # The default help page for the tool.
-USAGE = utils.render_file("usage.txt", context=context)
+USAGE = HELP.format(**CONTEXT)
 
 
 @plac.annotations(

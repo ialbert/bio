@@ -88,34 +88,6 @@ def guess_type(path):
     return ftype
 
 
-def get_template(fname, dirname=__TMPL_DIR):
-    """
-    Loads and returns the content of a file.
-    """
-    path = os.path.join(dirname, fname)
-    text = open(path).read()
-    return text
-
-
-def render_text(text, context={}):
-    """
-    Renders a template with a context.
-    """
-    tmpl = jinja2.Template(text, trim_blocks=True, lstrip_blocks=True, autoescape=False,
-                           undefined=jinja2.StrictUndefined)
-    text = tmpl.render(context)
-    return text
-
-
-def render_file(fname, context, dirname=__TMPL_DIR):
-    """
-    Renders a template from a file.
-    """
-    text = get_template(fname=fname, dirname=dirname)
-    result = render_text(text, context)
-    return result
-
-
 def resolve_fname(acc, format='json'):
     """
     Resolve a file name given an accession number.
@@ -133,7 +105,6 @@ def sizeof_fmt(num, suffix=''):
         num /= 1024.0
     return "%.1f%s%s" % (num, '??', suffix)
 
-@time_it
 def save_stream(stream, fname, trigger=50000):
     """
     Write a input 'stream' as the fname filename.
@@ -144,13 +115,10 @@ def save_stream(stream, fname, trigger=50000):
     tmp = tempfile.NamedTemporaryFile(mode="w+t")
 
     sequence = count(1)
-    logger.info(f"streaming data to file")
     for index, line in zip(sequence, stream):
         if (index % trigger) == 0:
-            logger.info(f"downloaded {index:,d} lines")
+            logger.info(f"wrote {index:,d} lines")
         tmp.write(line)
-
-    logger.info(f"total of {index:,d} lines")
 
     # Not sure if this is needed. Can't hurt.
     tmp.flush()
@@ -166,8 +134,8 @@ def save_stream(stream, fname, trigger=50000):
     tmp.close()
 
     # User friendly file size.
-    fsize = sizeof_fmt(os.path.getsize(fname))
-    logger.info(f"saved {fsize} data to {fname}")
+    #fsize = sizeof_fmt(os.path.getsize(fname))
+    #logger.debug(f"saved {fsize} data to {fname}")
     return
 
 def get_logger(name, hnd=None, fmt=None, terminator='\n'):
