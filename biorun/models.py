@@ -93,9 +93,13 @@ def rec_name(f):
     """
     Creates a record name from a JSON feature.
     """
-    gene = first(f, "gene", )
-    protein_id = first(f, "protein_id") or "None"
-    name = f"{gene}|{protein_id}"
+    ftype = f.get("type", ".")
+    if ftype == "source":
+        name = "source"
+    else:
+        name = first(f, "protein_id") or first(f, "gene") or first(f, 'locus_tag') or first(f, 'db_xref')
+        name = f"{name}|{ftype}"
+
     return name
 
 
@@ -103,10 +107,9 @@ def rec_desc(f):
     """
     Creates a record description from JSON feature.
     """
-    ftype = f.get("type", ".")
     db_xref = first(f, 'db_xref')
-    desc = f"{ftype} {db_xref}"
-
+    product = first(f, 'product')
+    desc = product or db_xref
     return desc
 
 
@@ -125,7 +128,7 @@ def get_translation_records(item, param):
     feats = filter(has_translation, feats)
 
     # Additional filters
-    feats = filter_features(feats, gene=param.gene, ftype=param.type)
+    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp)
 
     # Hoist the variables out.
     start, end = param.start, param.end
@@ -152,7 +155,7 @@ def get_feature_records(data, param):
 
     feats = data[FEATURES]
     origin = data[ORIGIN]
-    feats = filter_features(feats, gene=param.gene, ftype=param.type)
+    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp)
 
     # Ignore translation warnings
     if param.translate:
