@@ -25,34 +25,6 @@ except ImportError as exc:
 logger = utils.logger
 
 
-def get_feature_id(feat):
-    """
-    Attempts to generate a meaningful name for a feature
-    """
-    name = utils.first(feat.qualifiers.get_data("gene", '')) or feat.type
-
-    return name
-
-
-def get_feature_decription(feat):
-    """
-    Attempts to generate a meaningful name for a feature
-    """
-    synon = utils.first(feat.qualifiers.get_data("gene_synonym", ''))
-
-    db_xref = utils.first(feat.qualifiers.get_data("db_xref", ''))
-
-    desc = f"type={feat.type} loc={feat.location}"
-
-    if synon:
-        desc = f"{desc} synonym={synon}"
-
-    if db_xref:
-        desc = f"{desc} db_xref={db_xref}"
-
-    return desc
-
-
 def has_feature(item, name="gene"):
     """
     A filtering function to checks if a record contains keys with a name.
@@ -61,6 +33,10 @@ def has_feature(item, name="gene"):
 
 
 def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None):
+
+    # Remove source as a valid feature.
+    items = filter(lambda f: f.get('type') != 'source', items)
+
     # Filter by type.
     if ftype and ftype != "all":
         items = filter(lambda f: f.get('type') == ftype, items)
@@ -78,27 +54,44 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
         items = filter(lambda f: f.get('end') <= end, items)
 
     # Filters by matching a regular expression
-    if regexp :
+    if regexp:
         items = filter(lambda f: regexp.search(str(f)), items)
 
     return items
 
 
 def first(item, key, default=""):
-    "Shortcut to obtain the first element of the list"
+    """
+    Shortcut to obtain the first element of the list
+    """
     return item.get(key, [default])[0]
+
+def make_attr(feat):
+    """
+    Creates GFF attributes from a SeqRecord
+    """
+    ftype = feat['type']
+
+    data = []
+
+    name = rec_name(feat)
+
+    data.append(f"Name={name};type={ftype}")
+
+    for label in GFF_ATTRIBUTES:
+        value = first(feat, label)
+        if value:
+            data.append( f"{label}={value}")
+
+    return ";".join(data)
 
 
 def rec_name(f):
     """
     Creates a record name from a JSON feature.
     """
-    ftype = f.get("type", ".")
-    if ftype == "source":
-        name = "source"
-    else:
-        name = first(f, "protein_id") or first(f, "gene") or first(f, 'locus_tag') or first(f, 'db_xref')
-        name = f"{name}|{ftype}"
+
+    name = first(f, "protein_id") or first(f, "gene") or first(f, 'locus_tag') or first(f, 'db_xref')
 
     return name
 
@@ -107,10 +100,7 @@ def rec_desc(f):
     """
     Creates a record description from JSON feature.
     """
-    db_xref = first(f, 'db_xref')
-    product = first(f, 'product')
-    desc = product or db_xref
-    return desc
+    return make_attr(f)
 
 
 def get_translation_records(item, param):
@@ -192,6 +182,7 @@ def get_feature_records(data, param):
 
         yield rec
 
+
 def serialize(value):
     """
     Serializes values to JSON ready type.
@@ -260,14 +251,13 @@ def convert_genbank(stream):
         feats = []
         for feat in rec.features:
             ftype = feat.type
+            strand = feat.strand
             start = int(feat.location.start) + 1
             end = int(feat.location.end)
-
             oper = feat.location_operator
 
-            # print (feat.location, type(feat.location))
             location = [(loc.start + 1, loc.end, loc.strand) for loc in feat.location.parts]
-            elem = dict(start=start, end=end, type=ftype, location=location, operator=oper)
+            elem = dict(start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
 
             for (k, v) in feat.qualifiers.items():
                 elem[k] = serialize(v)

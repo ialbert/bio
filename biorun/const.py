@@ -26,5 +26,5 @@ SOURCE_ATTRIBUTES = [
 
 # GFF attributes filled for each feature other than "source"
 GFF_ATTRIBUTES = [
-    "gene", "protein_id", "function", "product", "note"
+    "gene", "protein_id", "product", "db_xref", "function",
 ]

@@ -11,7 +11,6 @@ from Bio.SeqRecord import SeqRecord
 from Bio import Entrez
 from biorun import utils
 from biorun.data import fetch
-from biorun.utils import first
 from biorun.const import *
 
 import itertools
@@ -79,52 +78,38 @@ def get_pairs(keys, adict):
     return pairs
 
 
-def make_attr(feat):
-    """
-    Creates GFF attributes from a SeqRecord
-    """
-    gene = first(feat.qualifiers.get_data("gene"))
-    data = []
-
-    if feat.type == "gene":
-        data.append(f"Name={gene}")
-
-    if feat.type == "source":
-        data.extend(get_pairs(SOURCE_ATTRIBUTES, feat.qualifiers))
-    else:
-        # Adds generic attrbiutes
-        data.extend(get_pairs(GFF_ATTRIBUTES, feat.qualifiers))
-
-    return ";".join(data)
 
 
 def feature2gff(feat, anchor):
     """
     Returns a SeqRecord as an 11 element  GFF3 list .
     """
-    start = int(feat.location.start)
-    end = int(feat.location.end)
-    attr = make_attr(feat)
-    strand = "+" if feat.strand else "-"
-    ftype = SEQUENCE_ONTOLOGY.first(feat.type, feat.type)
-    data = [anchor, ".", ftype, start, end, ".", strand, ".", attr]
+    start = feat['start']
+    end = feat['end']
+    ftype = feat['type']
+    strand = feat['strand']
+    phase = feat.get("codon_start", [1])[0]
+    attr = models.make_attr(feat)
+    strand = "+" if strand else "-"
+    ftype = SEQUENCE_ONTOLOGY.get(ftype, ftype)
+    data = [anchor, ".", ftype, start, end, ".", strand, phase, attr]
     return data
 
 
-def print_gff(stream, gene='', name='', start=0, end=None, typ=None):
+def print_gff(data, param):
     """
     Prints the origin of a BioPython SeqRecord.
     """
-    recs = models.parse_genbank(stream)
 
-    # Print the origin for each record
-    for rec in recs:
+    for item in data:
+
+        feats = item[FEATURES]
 
         # The name of the GFF anchor.
-        anchor = name or rec.id
+        anchor = param.seqid or item['id']
 
         # Subselect by coordinates.
-        feats = models.filter_features(stream=rec.features, start=start, end=end, gene=gene, ftype=typ)
+        feats = models.filter_features(feats, start=param.start, end=param.end, gene=param.gene, ftype=param.type, regexp=param.regexp)
 
         # Generate the gff output
         for feat in feats:
@@ -151,7 +136,7 @@ def process(acc, param):
     elif param.fasta:
         print_feature_fasta(data, param=param)
     elif param.gff:
-        print_gff(data, gene=gene, seqid=seqid, start=start, end=end, typ=typ)
+        print_gff(data, param=param)
     else:
         print_json(data, param=param)
 
@@ -161,7 +146,7 @@ def process(acc, param):
 
 @plac.pos('acc', "accession numbers")
 @plac.opt('gene', "name of the gene associated with the feature")
-@plac.opt('seqid', "set the sequence id", abbrev="Q")
+@plac.opt('id', "set the sequence id", abbrev="Q")
 @plac.opt('match', "select elements by matching a regexp to any existing information")
 @plac.opt('type', "filter by the type of the feature")
 @plac.opt('start', "start coordinate ", type=int)
@@ -171,7 +156,7 @@ def process(acc, param):
 @plac.flg('translate', "translates DNA sequences to protein", abbrev="T")
 @plac.flg('gff', "generate a gff file", abbrev="G")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(gene='', type='', seqid='', match='', start=1, end=0, fasta=False, protein=False, translate=False, gff=False, verbose=False, *acc):
+def run(gene='', type='', id='', match='', start=1, end=0, fasta=False, protein=False, translate=False, gff=False, verbose=False, *acc):
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
@@ -188,7 +173,7 @@ def run(gene='', type='', seqid='', match='', start=1, end=0, fasta=False, prote
     regexp = re.compile(match) if match else match
 
     # Collected parameters
-    param = utils.Param(start=start, end=end, seqid=seqid, protein=protein,
+    param = utils.Param(start=start, end=end, seqid=id, protein=protein,
                   gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=regexp)
 
     # Process each accession number.

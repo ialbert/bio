@@ -79,26 +79,6 @@ def time_it(func):
 
     return timer
 
-def first(value):
-    """
-   Returns the first element of a list.
-
-    >>> first(["A", "B"])
-    'A'
-    """
-
-    return value[0] if isinstance(value, list) else value
-
-def flatten(value, sep="|"):
-    """
-    Flattens values that may be lists.
-
-    >>> flatten(["A", "B"])
-    'A|B'
-    """
-
-    return sep.join(map(str, value)) if isinstance(value, list) else value
-
 def guess_type(path):
     """
     Attempts to guess a file type from an extension.
