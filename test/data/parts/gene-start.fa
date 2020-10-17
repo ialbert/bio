@@ -1,33 +1,33 @@
->ORF1ab [0:10] type=gene loc=[265:21555](+) db_xref=GeneID:43740578
+>ORF1ab Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
 ATGGAGAGCC
 
->S [0:10] type=gene loc=[21562:25384](+) synonym=spike glycoprotein db_xref=GeneID:43740568
+>S Name=S;type=gene;gene=S;db_xref=GeneID:43740568
 ATGTTTGTTT
 
->ORF3a [0:10] type=gene loc=[25392:26220](+) db_xref=GeneID:43740569
+>ORF3a Name=ORF3a;type=gene;gene=ORF3a;db_xref=GeneID:43740569
 ATGGATTTGT
 
->E [0:10] type=gene loc=[26244:26472](+) db_xref=GeneID:43740570
+>E Name=E;type=gene;gene=E;db_xref=GeneID:43740570
 ATGTACTCAT
 
->M [0:10] type=gene loc=[26522:27191](+) db_xref=GeneID:43740571
+>M Name=M;type=gene;gene=M;db_xref=GeneID:43740571
 ATGGCAGATT
 
->ORF6 [0:10] type=gene loc=[27201:27387](+) db_xref=GeneID:43740572
+>ORF6 Name=ORF6;type=gene;gene=ORF6;db_xref=GeneID:43740572
 ATGTTTCATC
 
->ORF7a [0:10] type=gene loc=[27393:27759](+) db_xref=GeneID:43740573
+>ORF7a Name=ORF7a;type=gene;gene=ORF7a;db_xref=GeneID:43740573
 ATGAAAATTA
 
->ORF7b [0:10] type=gene loc=[27755:27887](+) db_xref=GeneID:43740574
+>ORF7b Name=ORF7b;type=gene;gene=ORF7b;db_xref=GeneID:43740574
 ATGATTGAAC
 
->ORF8 [0:10] type=gene loc=[27893:28259](+) db_xref=GeneID:43740577
+>ORF8 Name=ORF8;type=gene;gene=ORF8;db_xref=GeneID:43740577
 ATGAAATTTC
 
->N [0:10] type=gene loc=[28273:29533](+) db_xref=GeneID:43740575
+>N Name=N;type=gene;gene=N;db_xref=GeneID:43740575
 ATGTCTGATA
 
->ORF10 [0:10] type=gene loc=[29557:29674](+) db_xref=GeneID:43740576
+>ORF10 Name=ORF10;type=gene;gene=ORF10;db_xref=GeneID:43740576
 ATGGGCTATA
 

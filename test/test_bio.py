@@ -46,7 +46,12 @@ def test_fetch(capsys):
 
 def test_view(capsys):
     cmd = "bio view NC_045512"
-    output = read_file("NC_045512.gb")
+    output = read_file("NC_045512.json")
+    run_bio(cmd, capsys=capsys, output=output)
+
+def test_view_match(capsys):
+    cmd = "bio view NC_045512 --match ORF1ab --type gene "
+    output = read_file("parts/match.json")
     run_bio(cmd, capsys=capsys, output=output)
 
 def test_view_list(capsys):
@@ -59,8 +64,13 @@ def test_view_fasta(capsys):
     run_bio(cmd, capsys=capsys, output=output)
 
 def test_view_fasta_start(capsys):
-    cmd = "bio view NC_045512 --fasta --rename foo --start 10 --end 20"
+    cmd = "bio view NC_045512 --fasta --id foo --start 10 --end 20"
     output = read_file("parts/fasta-start.fa")
+    run_bio(cmd, capsys=capsys, output=output)
+
+def test_protein_end(capsys):
+    cmd = "bio view NC_045512 --protein --start -10"
+    output = read_file("parts/protein-end.fa")
     run_bio(cmd, capsys=capsys, output=output)
 
 def test_view_fasta_type(capsys):
@@ -85,8 +95,8 @@ def test_view_gff_name(capsys):
     run_bio(cmd, capsys=capsys, output=output)
 
 def test_view_gff_start(capsys):
-    cmd = "bio view NC_045512 --gff  --start 21563 --end 21565"
-    output = read_file("parts/start.gff")
+    cmd = "bio view NC_045512 --gff  --start 10000 --end 20000"
+    output = read_file("parts/overlap.gff")
     run_bio(cmd, capsys=capsys, output=output)
 
 

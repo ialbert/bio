@@ -1,0 +1,25 @@
+[
+    {
+        "start": 266,
+        "end": 21555,
+        "type": "gene",
+        "strand": 1,
+        "location": [
+            [
+                266,
+                21555,
+                1
+            ]
+        ],
+        "operator": null,
+        "gene": [
+            "ORF1ab"
+        ],
+        "locus_tag": [
+            "GU280_gp01"
+        ],
+        "db_xref": [
+            "GeneID:43740578"
+        ]
+    }
+]

@@ -1,2 +1,2 @@
-NC_045512.2	.	gene	21562	25384	.	+	.	Name=S;gene=S
-NC_045512.2	.	CDS	21562	25384	.	+	.	gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;note=structural protein; spike protein
+NC_045512.2	.	gene	21563	25384	.	+	1	Name=S;type=gene;gene=S;db_xref=GeneID:43740568
+NC_045512.2	.	CDS	21563	25384	.	+	1	Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
