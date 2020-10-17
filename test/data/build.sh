@@ -6,7 +6,7 @@
 set -uex
 
 # Rebuild the JSON
-bio fetch NC_045512 --rebuild
+bio fetch NC_045512 --build
 
 # JSON output.
 bio view NC_045512 > NC_045512.json

@@ -75,13 +75,12 @@ def read_json_file(fname):
     stream.close()
     return data
 
-def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False):
+def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False, rename=''):
     """
     Returns an open stream to the JSON file for a data.
     If the GenBank file does not exist it downloadsit as accession number from NCBI and converts
     it to json.
     """
-
 
     # Common mistake to pass an extra parameter.
     if acc.startswith("-"):
@@ -98,7 +97,7 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
         return data
 
     # The JSON representation of the data.
-    json_name = utils.resolve_fname(acc=acc, format="json")
+    json_name = utils.resolve_fname(acc=acc , format="json")
 
     # GenBank representation of the data.
     gbk_name = utils.resolve_fname(acc=acc, format="gb")
@@ -184,11 +183,12 @@ def get_accessions(accs):
 
 
 @plac.pos('acc', "accession numbers")
-@plac.opt('db', "database type", choices=["nuc", "prot"])
+@plac.opt('db', "database type", choices=["nuccore", "prot"])
+@plac.opt('rename', "rename the entry")
 @plac.flg('update', "download data again if it exists")
 @plac.flg('quiet', "quiet mode, no output printed")
-@plac.flg('rebuild', "rebuilds the JSON representation")
-def run(db='', update=False, quiet=False, rebuild=False, *acc):
+@plac.flg('build', "rebuilds the JSON representation")
+def run(db='', rename='', update=False, quiet=False, build=False, *acc):
 
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
@@ -199,8 +199,7 @@ def run(db='', update=False, quiet=False, rebuild=False, *acc):
     # Obtain the data for each accession number
     for acc in collect:
 
-        data = get_data(acc=acc, db=db, update=update, rebuild=rebuild)
-
+        data = get_data(acc=acc, db=db, update=update, rebuild=build, rename=rename)
 
         # A throttle to avoid accessing NCBI too quickly.
         if len(collect) > 1:

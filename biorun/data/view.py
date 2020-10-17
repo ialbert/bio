@@ -21,11 +21,9 @@ logger = utils.logger
 # This email needs to be tunable.
 Entrez.email = 'bio@bio.com'
 
-
 def error(msg):
-    print(f"ERROR: {msg}", file=sys.stderr)
+    print(f"*** {msg}", file=sys.stderr)
     sys.exit(1)
-
 
 def print_origin_fasta(data,  param):
     """
@@ -72,13 +70,6 @@ def print_json(data,  param):
         text = json.dumps(list(feats), indent=4)
         print (text)
 
-def get_pairs(keys, adict):
-    pairs = [(k, adict.get_data(k)) for k in keys]
-    pairs = [f"{k}={first(v)}" for (k, v) in pairs if v]
-    return pairs
-
-
-
 
 def feature2gff(feat, anchor):
     """
@@ -101,6 +92,8 @@ def print_gff(data, param):
     Prints the origin of a BioPython SeqRecord.
     """
 
+    print ("##gff-version 3")
+    
     for item in data:
 
         feats = item[FEATURES]
