@@ -167,6 +167,18 @@ def set_verbosity(logger, level=1):
     level = logging.DEBUG if level > 0 else logging.WARNING
     logger.setLevel(level)
 
+def symlink(src, dest):
+    """
+    Creates a symlink.
+    """
+
+    if os.path.islink(dest):
+        os.remove(dest)
+
+    if os.path.isfile(dest):
+        logger.error(f"invalid link destination {dest}")
+
+    os.symlink(src, dest)
 
 # Initialize the logger.
 logger = get_logger("main")

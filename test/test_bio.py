@@ -44,6 +44,10 @@ def test_fetch(capsys):
     cmd = "bio fetch NC_045512"
     run_bio(cmd, capsys=capsys)
 
+def test_list(capsys):
+    cmd = "bio list"
+    run_bio(cmd, capsys=capsys)
+
 def test_view(capsys):
     cmd = "bio view NC_045512"
     output = read_file("NC_045512.json")

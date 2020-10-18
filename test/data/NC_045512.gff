@@ -1,3 +1,4 @@
+##gff-version 3
 NC_045512.2	.	five_prime_UTR	1	265	.	+	1	Name=;type=5'UTR
 NC_045512.2	.	gene	266	21555	.	+	1	Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
 NC_045512.2	.	CDS	266	21555	.	+	1	Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578

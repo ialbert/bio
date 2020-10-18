@@ -1,3 +1,4 @@
+##gff-version 3
 NC_045512.2	.	mature_protein_region	10055	10972	.	+	1	Name=YP_009725301.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725301.1;product=3C-like proteinase
 NC_045512.2	.	mature_protein_region	10973	11842	.	+	1	Name=YP_009725302.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725302.1;product=nsp6
 NC_045512.2	.	mature_protein_region	11843	12091	.	+	1	Name=YP_009725303.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725303.1;product=nsp7

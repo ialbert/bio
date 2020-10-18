@@ -75,7 +75,7 @@ def read_json_file(fname):
     stream.close()
     return data
 
-def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False, rename=''):
+def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False):
     """
     Returns an open stream to the JSON file for a data.
     If the GenBank file does not exist it downloadsit as accession number from NCBI and converts
@@ -184,11 +184,10 @@ def get_accessions(accs):
 
 @plac.pos('acc', "accession numbers")
 @plac.opt('db', "database type", choices=["nuccore", "prot"])
-@plac.opt('rename', "rename the entry")
 @plac.flg('update', "download data again if it exists")
 @plac.flg('quiet', "quiet mode, no output printed")
 @plac.flg('build', "rebuilds the JSON representation")
-def run(db='', rename='', update=False, quiet=False, build=False, *acc):
+def run(db='', alias='', update=False, quiet=False, build=False, *acc):
 
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
@@ -199,7 +198,7 @@ def run(db='', rename='', update=False, quiet=False, build=False, *acc):
     # Obtain the data for each accession number
     for acc in collect:
 
-        data = get_data(acc=acc, db=db, update=update, rebuild=build, rename=rename)
+        data = get_data(acc=acc, db=db, update=update, rebuild=build)
 
         # A throttle to avoid accessing NCBI too quickly.
         if len(collect) > 1:

@@ -8,18 +8,14 @@ import gzip, io
 from biorun import models
 from itertools import *
 
-def open_stream(path):
-    if path.endswith(".gz"):
-        return gzip.open(path, 'rt')
-    else:
-        return open(path, 'rt')
+
 
 def collect_metadata(path, limit=100):
     """
     Attempts to find simple tidbits from a genbank file
     """
     collect = dict()
-    stream = open_stream(path)
+    stream = utils.open_stream(path)
     func = lambda x: not x.startswith("FEATURES")
     stream = takewhile(func, stream)
     for line in stream:
