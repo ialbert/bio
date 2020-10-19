@@ -162,6 +162,15 @@ def get_logger(name, hnd=None, fmt=None, terminator='\n'):
 
     return log
 
+def shift_start(start):
+    """
+    Shift to zero based coordinate system.
+    """
+    if start == 0:
+        error(f"start={start} may not be  zero")
+
+    start = start - 1 if start > 0 else start
+    return start
 
 def set_verbosity(logger, level=1):
     level = logging.DEBUG if level > 0 else logging.WARNING

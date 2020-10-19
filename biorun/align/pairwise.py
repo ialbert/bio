@@ -1,11 +1,13 @@
-import warnings
-import sys
+import warnings, sys, os
 import plac
 from pprint import pprint
 from itertools import islice, count
 import textwrap
 
-import os
+from biorun.data import fetch
+from biorun.const import *
+from biorun import models
+from biorun import utils
 
 try:
     from Bio import SeqIO
@@ -24,25 +26,6 @@ with warnings.catch_warnings():
     from Bio.Align import substitution_matrices
 
 
-def guess_type(name):
-    if name.endswith("gb") or name.endswith("genbank"):
-        return "genbank"
-    return "fasta"
-
-
-def get_sequence(fname, name, nucl=False):
-
-    if os.path.isfile(fname):
-        ftype = guess_type(fname)
-        recs = SeqIO.parse(fname, ftype)
-    else:
-        alph = IUPAC.ambiguous_dna if nucl else IUPAC.protein
-        seq = Seq(fname, alphabet=alph)
-        rec = SeqRecord(seq, id=name, name=name)
-        recs = [rec]
-    return recs
-
-
 def unpack(aln):
     """
     Unpack the formatted alignment.
@@ -52,12 +35,12 @@ def unpack(aln):
     return query, pattern, target
 
 
-def print_aln(aln, matrix, tgt, rec, aligner, width=100):
+def print_aln(aln, matrix, query, target, aligner, width=100):
 
     nw = 8
-    tgt_name = f"{tgt.name[:nw]:8s}"
+    tgt_name = f"{target.name[:nw]:8s}"
     pat_name = " " * nw
-    rec_name = f"{rec.name[:nw]:8s}"
+    rec_name = f"{query.name[:nw]:8s}"
 
     query, pattern, target = unpack(aln)
 
@@ -88,14 +71,11 @@ def print_aln(aln, matrix, tgt, rec, aligner, width=100):
         print(rec_name, query[start:end])
         print("")
 
-
-
-def align(query, target, nucl=False, gap_open=0, gap_extend=0, matrix=None, limit=1, report=1, params=None):
-    # The query sequences.
-    queries = get_sequence(query, name="a")
-
-    # The alignment targets.
-    targets = get_sequence(target, name="b")
+def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, matrix=None, limit=1):
+    """
+    Perform alignment with BioPython.
+    """
+    import parasail
 
     # The pairwise aligner.
     aligner = Align.PairwiseAligner()
@@ -134,39 +114,72 @@ def align(query, target, nucl=False, gap_open=0, gap_extend=0, matrix=None, limi
     aligner.left_gap_score = 0
     aligner.right_gap_score = 0
 
-
-    for tgt in targets:
-        tgt_seq = str(tgt.seq).upper()
-        # print (tgt)
-        for rec in queries:
-
-            rec_seq = str(rec.seq).upper()
-
-            try:
-                results = aligner.align(tgt_seq, rec_seq)
-            except KeyError as exc:
-                print(f"*** Error: {exc}", file=sys.stderr)
-                sys.exit(-1)
-
-            # How many alignments to report
-            results = islice(results, limit)
-
-            for aln in results:
-                print_aln(aln, matrix=matrix, tgt=tgt, rec=rec, aligner=aligner)
+    seq_q = str(query.seq).upper()
+    seq_t = str(target.seq).upper()
 
 
-@plac.annotations(
-    target=("target", "positional", None, str, None, None),
-    query=("query", "positional", None, str, None, None),
-    nucl=("sequence", "flag",),
-    matrix=("scoring matrix", "option", "m"),
+    try:
+        results = aligner.align(seq_t, seq_q)
+    except Exception as exc:
+        print(f"*** Error: {exc}", file=sys.stderr)
+        sys.exit(-1)
 
-)
-def run(target, query, nucl, matrix):
+    # How many alignments to report
+    results = islice(results, limit)
+
+    for aln in results:
+        print_aln(aln, matrix=matrix, query=query, target=target, aligner=aligner)
+
+
+def parasail_align(query, target, gap_open=10, gap_extend=0.5, matrix=None, limit=1):
+    import parasail
+
+    q = str(query.seq)
+    t = str(target.seq)
+
+    result = parasail.sw_trace_striped_16(q, t, 11, 1, parasail.nuc44)
+
+    print(dir(result))
+
+    words = "score similar cigar end_ref"
+    for word in words.split():
+        if hasattr(result, word):
+            value = getattr(result, word)
+            print(f"{word}={value}")
+
+    if hasattr(result, "cigar"):
+        cigar = result.cigar
+
+        # cigars have seq, len, beg_query, and beg_ref properties
+        # the seq property is encoded
+        print(cigar.seq)
+        # use decode attribute to return a decoded cigar string
+        print(cigar.decode)
+
+@plac.opt('start', "start coordinate ", type=int)
+@plac.opt('end', "end coordinate", type=int)
+@plac.opt('matrix', "scoring matrix")
+@plac.flg('verbose', "verbose mode, progress messages printed")
+def run(start=1, end=None, matrix='', verbose=False, query='', target=''):
     "Prints the effect of an annotation"
 
+    # Move to zero based coordinate system.
+    start = utils.shift_start(start)
 
-    align(query=query, target=target, nucl=nucl, matrix=matrix)
+    queries = fetch.get_data(query)
+    targets = fetch.get_data(target)
+
+    param = utils.Param(start=start, end=end)
+
+    query = models.get_origin(queries[0], param)[:200]
+    target = models.get_origin(targets[0], param)[:200]
+
+    #print (seq1)
+    #print (seq2)
+
+    #biopython_align(query=query, target=target, matrix=matrix)
+
+    parasail_align(query=query, target=target)
 
 
 def main():

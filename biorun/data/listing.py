@@ -3,7 +3,6 @@ Lists the files in the database
 """
 import plac, os, glob, gzip, re, sys
 from biorun import utils
-from . import parse
 
 # Get the logger information.
 logger = utils.logger
@@ -16,7 +15,7 @@ def print_file_list():
     matched = glob.glob(pattern)
 
     # Extract the definition from the JSON without parsing it.
-    patt = re.compile('(definition\":\s*)(?P<value>\".+?\")')
+    patt = re.compile(r'(definition\":\s*)(?P<value>\".+?\")')
     collect = []
     for path in matched:
         fsize = utils.sizeof_fmt(os.path.getsize(path))
@@ -38,8 +37,8 @@ def print_file_list():
         line = "\t".join(row)
         print(line)
 
-@plac.opt('alias', "create an alias to the data ")
-@plac.flg('delete', "deletes the JSON file for the each acc")
+@plac.opt('alias', "create alias to accession ")
+@plac.flg('delete', "delete the data for accession")
 @plac.flg('verbose', "verbose mode, progress messages printed")
 def run(alias='', delete=False, verbose=False, *accs):
     # Set the verbosity of the process.

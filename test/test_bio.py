@@ -8,15 +8,14 @@ __CURR_DIR = os.path.dirname(__file__)
 
 __DATADIR = os.path.join(__CURR_DIR, "data")
 
-def read_file(fname, datadir=__DATADIR):
+def read(fname, datadir=__DATADIR):
     path = os.path.join(datadir, fname) if datadir else fname
     text = open(path).read()
     return text
 
-
-def run_bio(cmd, capsys, output=None):
+def run(cmd, capsys, out=None):
     """
-    Runs a command and returns its output.
+    Runs a command and returns its out.
     """
 
     # Take the parameters only.
@@ -25,94 +24,89 @@ def run_bio(cmd, capsys, output=None):
     # Run the command and assert its state.
     assert plac.call(bio.run, params) == None
 
-    # Read the standard output
+    # Read the standard out
     stream = capsys.readouterr()
     result = stream.out
 
-    if output:
-        if result != output:
+    if out:
+        # Print only a subsection of the file
+        if result != out:
             lines = result.splitlines()[:5]
             text = "\n".join(lines)
             print(text)
             assert False
 
-
     return result
-
 
 def test_fetch(capsys):
     cmd = "bio fetch NC_045512"
-    run_bio(cmd, capsys=capsys)
+    run(cmd, capsys=capsys)
 
 def test_list(capsys):
-    cmd = "bio list"
-    run_bio(cmd, capsys=capsys)
+    cmd = "bio data"
+    run(cmd, capsys=capsys)
 
 def test_view(capsys):
     cmd = "bio view NC_045512"
-    output = read_file("NC_045512.json")
-    run_bio(cmd, capsys=capsys, output=output)
+    out = read("NC_045512.json")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_match(capsys):
     cmd = "bio view NC_045512 --match ORF1ab --type gene "
-    output = read_file("parts/match.json")
-    run_bio(cmd, capsys=capsys, output=output)
+    out = read("parts/match.json")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_list(capsys):
-    cmd = "bio list"
-    run_bio(cmd, capsys=capsys)
+    cmd = "bio data"
+    run(cmd, capsys=capsys)
 
 def test_view_fasta(capsys):
     cmd = "bio view NC_045512 --fasta"
-    output = read_file("NC_045512.fa")
-    run_bio(cmd, capsys=capsys, output=output)
+    out = read("NC_045512.fa")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_start(capsys):
     cmd = "bio view NC_045512 --fasta --id foo --start 10 --end 20"
-    output = read_file("parts/fasta-start.fa")
-    run_bio(cmd, capsys=capsys, output=output)
+    out = read("parts/fasta-start.fa")
+    run(cmd, capsys=capsys, out=out)
 
 def test_protein_end(capsys):
     cmd = "bio view NC_045512 --protein --start -10"
-    output = read_file("parts/protein-end.fa")
-    run_bio(cmd, capsys=capsys, output=output)
+    out = read("parts/protein-end.fa")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_type(capsys):
     cmd = "bio view NC_045512 --fasta --type CDS"
-    output = read_file("parts/CDS.fa")
-    run_bio(cmd, capsys=capsys, output=output)
+    out = read("parts/CDS.fa")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_type_start(capsys):
     cmd = "bio view NC_045512 --fasta --type gene --end 10"
-    output = read_file("parts/gene-start.fa")
-    run_bio(cmd, capsys=capsys, output=output)
+    out = read("parts/gene-start.fa")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_gff1(capsys):
     cmd = "bio view NC_045512 --gff"
-    output = read_file("NC_045512.gff")
-    run_bio(cmd, capsys=capsys, output=output)
-
+    out = read("NC_045512.gff")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_name(capsys):
     cmd = "bio view NC_045512 --gff --gene S"
-    output = read_file("parts/gene.gff")
-    run_bio(cmd, capsys=capsys, output=output)
+    out = read("parts/gene.gff")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_start(capsys):
     cmd = "bio view NC_045512 --gff  --start 10000 --end 20000"
-    output = read_file("parts/overlap.gff")
-    run_bio(cmd, capsys=capsys, output=output)
-
+    out = read("parts/overlap.gff")
+    run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_type(capsys):
     cmd = "bio view NC_045512 --gff  --type CDS"
-    output = read_file("parts/type.gff")
-    run_bio(cmd, capsys=capsys, output=output)
-
+    out = read("parts/type.gff")
+    run(cmd, capsys=capsys, out=out)
 
 def main():
     pass
-
 
 if __name__ == '__main__':
     main()

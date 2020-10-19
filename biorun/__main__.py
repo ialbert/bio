@@ -10,7 +10,7 @@ from biorun import utils
 from biorun.usage import HELP
 
 # Commands names.
-LIST, FETCH, VIEW, ALIGN = "list", "fetch", "view", "align"
+LIST, FETCH, VIEW, ALIGN = "data", "fetch", "view", "align"
 
 # Enabled commands.
 COMMANDS = {

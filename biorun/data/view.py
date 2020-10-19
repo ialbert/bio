@@ -156,7 +156,7 @@ def run(gene='', type='', id='', match='', start=1, end=0, fasta=False, protein=
     if start == 0:
         error(f"start={start} may not be  zero")
 
-    # Move it to one based coordinate system
+    # Move it to zero based coordinate system
     start = start - 1 if start > 0 else start
 
     # Set the end slice
