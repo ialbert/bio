@@ -36,7 +36,6 @@ def unpack(aln):
 
 
 def print_aln(aln, matrix, query, target, aligner, width=100):
-
     nw = 8
     tgt_name = f"{target.name[:nw]:8s}"
     pat_name = " " * nw
@@ -70,7 +69,6 @@ def print_aln(aln, matrix, query, target, aligner, width=100):
         print(pat_name, pattern[start:end])
         print(rec_name, query[start:end])
         print("")
-
 
 
 def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, matrix=None, limit=1):
@@ -119,7 +117,6 @@ def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, ma
     seq_q = str(query.seq).upper()
     seq_t = str(target.seq).upper()
 
-
     try:
         results = aligner.align(seq_t, seq_q)
     except Exception as exc:
@@ -151,8 +148,8 @@ def print_wrapped(query, pattern, target, width=80, **kwargs):
     Ident:\t{ident}/{length} ({iperc:.0f}%)
     Simil:\t{similar}/{length} ({sperc:.0f}%)
     Gaps:\t{gaps}/{length} ({gperc:.0f}%)
-    Query:\t{len_query} [{start_query}, {end_query}]
     Target:\t{len_ref} [{start_ref}, {end_ref}]
+    Query:\t{len_query} [{start_query}, {end_query}]
     Matrix:\t{matrix} (-{gap_open}, -{gap_extend}) 
     '''.format(**kwargs)
 
@@ -160,15 +157,17 @@ def print_wrapped(query, pattern, target, width=80, **kwargs):
     print(templ)
     for start in range(0, len(pattern), width):
         end = start + width
-        print(q_name, query[start:end])
-        print(p_name, pattern[start:end])
         print(t_name, target[start:end])
+        print(p_name, pattern[start:end])
+        print(q_name, query[start:end])
         print("")
 
-    #cigar = kwargs.get("cigar", b'').decode("ascii")
-    #print ("Cigar:\t{}".format(cigar))
+    # cigar = kwargs.get("cigar", b'').decode("ascii")
+    # print ("Cigar:\t{}".format(cigar))
+
 
 GLOBAL, LOCAL, SEMIGLOBAL = "GLOBAL", "LOCAL", "SEMIGLOBAL"
+
 
 def parasail_align(query, target, gap_open=11, gap_extend=1, matrix=None, limit=1, mode=None):
     import parasail
@@ -184,23 +183,22 @@ def parasail_align(query, target, gap_open=11, gap_extend=1, matrix=None, limit=
     matrix = parasail.nuc44
 
     if mode == GLOBAL:
-        func = parasail.nw_trace_striped_16
+        func = parasail.nw_trace_scan_16
     elif mode == SEMIGLOBAL:
-        func = parasail.sg_dx_trace_striped_16
+        func = parasail.sg_trace_scan_16
     else:
-        func = parasail.sw_trace_striped_16
+        func = parasail.sw_trace_scan_16
 
     result = func(q, t, gap_open, gap_extend, matrix=matrix)
 
     if hasattr(result, "traceback"):
         tb = result.traceback
 
-
         ident = tb.comp.count("|")
-        similar = ident +  tb.comp.count(":")
+        similar = ident + tb.comp.count(":")
         gaps = tb.comp.count(" ")
         length = len(tb.comp)
-        iperc = ident/length * 100 if length > 0 else 0
+        iperc = ident / length * 100 if length > 0 else 0
         sperc = similar / length * 100 if length > 0 else 0
         gperc = gaps / length * 100 if length > 0 else 0
 
@@ -222,7 +220,20 @@ def parasail_align(query, target, gap_open=11, gap_extend=1, matrix=None, limit=
             params['start_ref'] = cigar.beg_ref + 1
             params['cigar'] = cigar.decode
 
-        print_wrapped(query=tb.query, pattern=tb.comp, target=tb.ref, **params)
+        query, pattern, target = tb.query, tb.comp, tb.ref
+
+        if mode == SEMIGLOBAL and tb.comp:
+            stream = enumerate(tb.comp)
+            idx = list(idx for (idx, chr) in stream if not chr.isspace())
+            start = min(idx)
+            end = max(idx) + 1
+            query = query[start:end]
+            target = target[start: end]
+            pattern = pattern[start:end]
+            params['start_ref'], params['end_ref'], params['length'] = start + 1, end, end - start
+        # For semiglobal alignment need to manually find the start/end from the pattern.
+        print_wrapped(query=query, pattern=pattern, target=target, **params)
+
 
 @plac.opt('start', "start coordinate ", type=int)
 @plac.opt('end', "end coordinate", type=int)
@@ -235,20 +246,19 @@ def run(start=1, end=None, mode='', matrix='', verbose=False, query='', target='
     # Move to zero based coordinate system.
     start = utils.shift_start(start)
 
-
-    #queries = fetch.get_data(query)
-    #targets = fetch.get_data(target)
+    # queries = fetch.get_data(query)
+    # targets = fetch.get_data(target)
 
     param = utils.Param(start=start, end=end)
 
-    #query = models.get_origin(queries[0], param)
-    #target = models.get_origin(targets[0], param)
+    # query = models.get_origin(queries[0], param)
+    # target = models.get_origin(targets[0], param)
 
     query = SeqRecord(Seq(query), id="QUERY")
 
     target = SeqRecord(Seq(target), id="TARGET")
 
-    #biopython_align(query=query, target=target, matrix=matrix)
+    # biopython_align(query=query, target=target, matrix=matrix)
 
     parasail_align(query=query, target=target, mode=mode)
 
