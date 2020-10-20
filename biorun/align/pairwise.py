@@ -71,6 +71,8 @@ def print_aln(aln, matrix, query, target, aligner, width=100):
         print(rec_name, query[start:end])
         print("")
 
+
+
 def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, matrix=None, limit=1):
     """
     Perform alignment with BioPython.
@@ -131,55 +133,124 @@ def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, ma
         print_aln(aln, matrix=matrix, query=query, target=target, aligner=aligner)
 
 
-def parasail_align(query, target, gap_open=10, gap_extend=0.5, matrix=None, limit=1):
+def print_wrapped(query, pattern, target, width=80, **kwargs):
+    """
+    Wraps and prints alignments
+    """
+
+    # Enforce a fixed width on each name.
+    get = lambda name: f'{kwargs.get(name, ""):12.12s}'
+
+    q_name = get("q_name")
+    p_name = get("p_name")
+    t_name = get("t_name")
+
+    templ = '''
+    Align:\t{length} 
+    Score:\t{score}
+    Ident:\t{ident}/{length} ({iperc:.0f}%)
+    Simil:\t{similar}/{length} ({sperc:.0f}%)
+    Gaps:\t{gaps}/{length} ({gperc:.0f}%)
+    Query:\t{len_query} [{start_query}, {end_query}]
+    Target:\t{len_ref} [{start_ref}, {end_ref}]
+    Matrix:\t{matrix} (-{gap_open}, -{gap_extend}) 
+    '''.format(**kwargs)
+
+    templ = textwrap.dedent(templ)
+    print(templ)
+    for start in range(0, len(pattern), width):
+        end = start + width
+        print(q_name, query[start:end])
+        print(p_name, pattern[start:end])
+        print(t_name, target[start:end])
+        print("")
+
+    #cigar = kwargs.get("cigar", b'').decode("ascii")
+    #print ("Cigar:\t{}".format(cigar))
+
+GLOBAL, LOCAL, SEMIGLOBAL = "GLOBAL", "LOCAL", "SEMIGLOBAL"
+
+def parasail_align(query, target, gap_open=11, gap_extend=1, matrix=None, limit=1, mode=None):
     import parasail
+
+    # Detect the mode
+    mode = GLOBAL if mode == 'global' else mode
+    mode = SEMIGLOBAL if mode == "semiglobal" else mode
+    mode = mode or LOCAL
 
     q = str(query.seq)
     t = str(target.seq)
 
-    result = parasail.sw_trace_striped_16(q, t, 11, 1, parasail.nuc44)
+    matrix = parasail.nuc44
 
-    print(dir(result))
+    if mode == GLOBAL:
+        func = parasail.nw_trace_striped_16
+    elif mode == SEMIGLOBAL:
+        func = parasail.sg_dx_trace_striped_16
+    else:
+        func = parasail.sw_trace_striped_16
 
-    words = "score similar cigar end_ref"
-    for word in words.split():
-        if hasattr(result, word):
-            value = getattr(result, word)
-            print(f"{word}={value}")
+    result = func(q, t, gap_open, gap_extend, matrix=matrix)
 
-    if hasattr(result, "cigar"):
-        cigar = result.cigar
+    if hasattr(result, "traceback"):
+        tb = result.traceback
 
-        # cigars have seq, len, beg_query, and beg_ref properties
-        # the seq property is encoded
-        print(cigar.seq)
-        # use decode attribute to return a decoded cigar string
-        print(cigar.decode)
+
+        ident = tb.comp.count("|")
+        similar = ident +  tb.comp.count(":")
+        gaps = tb.comp.count(" ")
+        length = len(tb.comp)
+        iperc = ident/length * 100 if length > 0 else 0
+        sperc = similar / length * 100 if length > 0 else 0
+        gperc = gaps / length * 100 if length > 0 else 0
+
+        params = dict(q_name=query.id, t_name=target.id, length=length, ident=ident, iperc=iperc,
+                      gaps=gaps, gperc=gperc, similar=similar, sperc=sperc, matrix=result.matrix.name.decode("ascii"),
+                      gap_open=gap_open, gap_extend=gap_extend)
+
+        words = "score matches len_ref len_query cigar".split()
+        for word in words:
+            params[word] = getattr(result, word, '')
+
+        coords = "start_ref end_ref start_query end_query".split()
+        for coord in coords:
+            params[coord] = getattr(result, coord, 0) + 1
+
+        if hasattr(result, "cigar"):
+            cigar = result.cigar
+            params['start_query'] = cigar.beg_query + 1
+            params['start_ref'] = cigar.beg_ref + 1
+            params['cigar'] = cigar.decode
+
+        print_wrapped(query=tb.query, pattern=tb.comp, target=tb.ref, **params)
 
 @plac.opt('start', "start coordinate ", type=int)
 @plac.opt('end', "end coordinate", type=int)
-@plac.opt('matrix', "scoring matrix")
+@plac.opt('matrix', "scoring matrix", abbrev='M')
+@plac.opt('mode', "alignment mode (default=local)")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(start=1, end=None, matrix='', verbose=False, query='', target=''):
+def run(start=1, end=None, mode='', matrix='', verbose=False, query='', target=''):
     "Prints the effect of an annotation"
 
     # Move to zero based coordinate system.
     start = utils.shift_start(start)
 
-    queries = fetch.get_data(query)
-    targets = fetch.get_data(target)
+
+    #queries = fetch.get_data(query)
+    #targets = fetch.get_data(target)
 
     param = utils.Param(start=start, end=end)
 
-    query = models.get_origin(queries[0], param)[:200]
-    target = models.get_origin(targets[0], param)[:200]
+    #query = models.get_origin(queries[0], param)
+    #target = models.get_origin(targets[0], param)
 
-    #print (seq1)
-    #print (seq2)
+    query = SeqRecord(Seq(query), id="QUERY")
+
+    target = SeqRecord(Seq(target), id="TARGET")
 
     #biopython_align(query=query, target=target, matrix=matrix)
 
-    parasail_align(query=query, target=target)
+    parasail_align(query=query, target=target, mode=mode)
 
 
 def main():
