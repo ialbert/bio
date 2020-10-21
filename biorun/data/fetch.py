@@ -51,6 +51,7 @@ def efetch(acc, db, format, mode='text'):
         msg = f"{exc} for efetch acc={acc} db={db} format={format} mode={mode}"
         utils.error(msg)
 
+
 def gbk_to_json(gbk_name, json_name):
     """
     Transforms a GenBank file to a JSON file.
@@ -69,11 +70,13 @@ def gbk_to_json(gbk_name, json_name):
 
     logger.info(f"saved {json_name}")
 
+
 def read_json_file(fname):
     stream = gzip.open(fname, 'rt')
     data = json.load(stream)
     stream.close()
     return data
+
 
 def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False):
     """
@@ -97,7 +100,7 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
         return data
 
     # The JSON representation of the data.
-    json_name = utils.resolve_fname(acc=acc , format="json")
+    json_name = utils.resolve_fname(acc=acc, format="json")
 
     # GenBank representation of the data.
     gbk_name = utils.resolve_fname(acc=acc, format="gb")
@@ -117,8 +120,8 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
         return data
 
     # Accession numbers that are proteins.
-    if acc[:3] in [ "AP_", "NP_", "YP_", "XP_", "WP_"]:
-        db = "protein"
+    if acc[:2] in ["AP", "NP", "YP", "XP", "WP", "AK"]:
+        db = db or "protein"
     else:
         db = db or "nuccore"
 
@@ -181,14 +184,12 @@ def get_accessions(accs):
     return collect
 
 
-
 @plac.pos('acc', "accession numbers")
 @plac.opt('db', "database type", choices=["nuccore", "prot"])
 @plac.flg('update', "download data again if it exists")
 @plac.flg('quiet', "quiet mode, no output printed")
 @plac.flg('build', "rebuilds the JSON representation")
-def run(db='', alias='', update=False, quiet=False, build=False, *acc):
-
+def run(db='', update=False, quiet=False, build=False, *acc):
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
 
