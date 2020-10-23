@@ -1,19 +1,19 @@
 ##gff-version 3
-NC_045512.2	.	mature_protein_region	10055	10972	.	+	1	Name=YP_009725301.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725301.1;product=3C-like proteinase
-NC_045512.2	.	mature_protein_region	10973	11842	.	+	1	Name=YP_009725302.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725302.1;product=nsp6
-NC_045512.2	.	mature_protein_region	11843	12091	.	+	1	Name=YP_009725303.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725303.1;product=nsp7
-NC_045512.2	.	mature_protein_region	12092	12685	.	+	1	Name=YP_009725304.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725304.1;product=nsp8
-NC_045512.2	.	mature_protein_region	12686	13024	.	+	1	Name=YP_009725305.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725305.1;product=nsp9
-NC_045512.2	.	mature_protein_region	13025	13441	.	+	1	Name=YP_009725306.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725306.1;product=nsp10
-NC_045512.2	.	mature_protein_region	13442	16236	.	+	1	Name=YP_009725307.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725307.1;product=RNA-dependent RNA polymerase
-NC_045512.2	.	mature_protein_region	16237	18039	.	+	1	Name=YP_009725308.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725308.1;product=helicase
-NC_045512.2	.	mature_protein_region	18040	19620	.	+	1	Name=YP_009725309.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725309.1;product=3'-to-5' exonuclease
-NC_045512.2	.	mature_protein_region	10055	10972	.	+	1	Name=YP_009742612.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742612.1;product=3C-like proteinase
-NC_045512.2	.	mature_protein_region	10973	11842	.	+	1	Name=YP_009742613.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742613.1;product=nsp6
-NC_045512.2	.	mature_protein_region	11843	12091	.	+	1	Name=YP_009742614.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742614.1;product=nsp7
-NC_045512.2	.	mature_protein_region	12092	12685	.	+	1	Name=YP_009742615.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742615.1;product=nsp8
-NC_045512.2	.	mature_protein_region	12686	13024	.	+	1	Name=YP_009742616.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742616.1;product=nsp9
-NC_045512.2	.	mature_protein_region	13025	13441	.	+	1	Name=YP_009742617.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742617.1;product=nsp10
-NC_045512.2	.	mature_protein_region	13442	13480	.	+	1	Name=YP_009725312.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725312.1;product=nsp11
-NC_045512.2	.	stem_loop	13476	13503	.	+	1	Name=ORF1ab;type=stem_loop;gene=ORF1ab;function=Coronavirus frameshifting stimulation element stem-loop 1
-NC_045512.2	.	stem_loop	13488	13542	.	+	1	Name=ORF1ab;type=stem_loop;gene=ORF1ab;function=Coronavirus frameshifting stimulation element stem-loop 2
+SARS2	.	mature_protein_region	10055	10972	.	+	1	Name=YP_009725301.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725301.1;product=3C-like proteinase
+SARS2	.	mature_protein_region	10973	11842	.	+	1	Name=YP_009725302.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725302.1;product=nsp6
+SARS2	.	mature_protein_region	11843	12091	.	+	1	Name=YP_009725303.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725303.1;product=nsp7
+SARS2	.	mature_protein_region	12092	12685	.	+	1	Name=YP_009725304.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725304.1;product=nsp8
+SARS2	.	mature_protein_region	12686	13024	.	+	1	Name=YP_009725305.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725305.1;product=nsp9
+SARS2	.	mature_protein_region	13025	13441	.	+	1	Name=YP_009725306.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725306.1;product=nsp10
+SARS2	.	mature_protein_region	13442	16236	.	+	1	Name=YP_009725307.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725307.1;product=RNA-dependent RNA polymerase
+SARS2	.	mature_protein_region	16237	18039	.	+	1	Name=YP_009725308.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725308.1;product=helicase
+SARS2	.	mature_protein_region	18040	19620	.	+	1	Name=YP_009725309.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725309.1;product=3'-to-5' exonuclease
+SARS2	.	mature_protein_region	10055	10972	.	+	1	Name=YP_009742612.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742612.1;product=3C-like proteinase
+SARS2	.	mature_protein_region	10973	11842	.	+	1	Name=YP_009742613.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742613.1;product=nsp6
+SARS2	.	mature_protein_region	11843	12091	.	+	1	Name=YP_009742614.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742614.1;product=nsp7
+SARS2	.	mature_protein_region	12092	12685	.	+	1	Name=YP_009742615.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742615.1;product=nsp8
+SARS2	.	mature_protein_region	12686	13024	.	+	1	Name=YP_009742616.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742616.1;product=nsp9
+SARS2	.	mature_protein_region	13025	13441	.	+	1	Name=YP_009742617.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742617.1;product=nsp10
+SARS2	.	mature_protein_region	13442	13480	.	+	1	Name=YP_009725312.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725312.1;product=nsp11
+SARS2	.	stem_loop	13476	13503	.	+	1	Name=ORF1ab;type=stem_loop;gene=ORF1ab;function=Coronavirus frameshifting stimulation element stem-loop 1
+SARS2	.	stem_loop	13488	13542	.	+	1	Name=ORF1ab;type=stem_loop;gene=ORF1ab;function=Coronavirus frameshifting stimulation element stem-loop 2

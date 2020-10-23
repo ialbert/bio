@@ -1,6 +1,6 @@
 [
     {
-        "id": "NC_045512.2",
+        "id": "SARS2",
         "definition": "Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome",
         "dblink": [
             "BioProject:PRJNA485481"

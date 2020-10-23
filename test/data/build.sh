@@ -6,37 +6,37 @@
 set -uex
 
 # Rebuild the JSON
-bio fetch NC_045512 --build
+bio fetch NC_045512 --build  --name SARS2
 
 # JSON output.
-bio view NC_045512 > NC_045512.json
+bio view SARS2 > SARS2.json
 
 # JSON by type and match
-bio view NC_045512 --match ORF1ab --type gene > parts/match.json
+bio view SARS2 --match ORF1ab --type gene > parts/match.json
 
 # GFF formatting.
-bio view NC_045512 --gff > NC_045512.gff
+bio view SARS2 --gff > SARS2.gff
 
 # GFF by gene name.
-bio view NC_045512 --gff --gene S > parts/gene.gff
+bio view SARS2 --gff --gene S > parts/gene.gff
 
 # GFF by start and end.
-bio view NC_045512 --gff  --start 10000 --end 20000 > parts/overlap.gff
+bio view SARS2 --gff  --start 10000 --end 20000 > parts/overlap.gff
 
 # GFF by type.
-bio view NC_045512 --gff  --type CDS > parts/type.gff
+bio view SARS2 --gff  --type CDS > parts/type.gff
 
 # FASTA.
-bio view NC_045512 --fasta > NC_045512.fa
+bio view SARS2 --fasta > SARS2.fa
 
 # Sliced FASTA with different id .
-bio view NC_045512 --fasta --id foo --start 10 --end 20 > parts/fasta-start.fa
+bio view SARS2 --fasta --id foo --start 10 --end 20 > parts/fasta-start.fa
 
 # FASTA features
-bio view NC_045512 --fasta --type CDS > parts/CDS.fa
+bio view SARS2 --fasta --type CDS > parts/CDS.fa
 
 # Sliced FASTA features by type.
-bio view NC_045512 --fasta --type gene --end 10 > parts/gene-start.fa
+bio view SARS2 --fasta --type gene --end 10 > parts/gene-start.fa
 
 # Protein FASTA
-bio view NC_045512 --protein --start -10 > parts/protein-end.fa
+bio view SARS2 --protein --start -10 > parts/protein-end.fa

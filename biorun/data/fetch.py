@@ -52,7 +52,7 @@ def efetch(acc, db, format, mode='text'):
         utils.error(msg)
 
 
-def gbk_to_json(gbk_name, json_name):
+def gbk_to_json(gbk_name, json_name, seqid=None):
     """
     Transforms a GenBank file to a JSON file.
     """
@@ -61,7 +61,7 @@ def gbk_to_json(gbk_name, json_name):
     inp_stream = gzip.open(gbk_name, 'rt') if gbk_name.endswith(".gz") else open(gbk_name, 'rt')
 
     # Convert genbank to a data structure.
-    data = models.convert_genbank(inp_stream)
+    data = models.convert_genbank(inp_stream, seqid=seqid)
 
     # Save into a file.
     fp = gzip.open(json_name, 'wt', compresslevel=1)
@@ -78,7 +78,7 @@ def read_json_file(fname):
     return data
 
 
-def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False):
+def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False, name=None):
     """
     Returns an open stream to the JSON file for a data.
     If the GenBank file does not exist it downloadsit as accession number from NCBI and converts
@@ -100,7 +100,7 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
         return data
 
     # The JSON representation of the data.
-    json_name = utils.resolve_fname(acc=acc, format="json")
+    json_name = utils.resolve_fname(acc=(name or acc), format="json")
 
     # GenBank representation of the data.
     gbk_name = utils.resolve_fname(acc=acc, format="gb")
@@ -108,14 +108,13 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
     # Found the JSON representation of the file.
     if os.path.isfile(json_name) and not update and not rebuild:
         logger.info(f"found {json_name}")
-        fp = gzip.open(json_name, 'rt')
-        data = json.load(fp)
+        data = read_json_file(json_name)
         return data
 
     # No JSON file but there is a genbank file. Convert, save the return the output.
     if os.path.isfile(gbk_name) and not update:
         logger.info(f"found {gbk_name}")
-        gbk_to_json(gbk_name=gbk_name, json_name=json_name)
+        gbk_to_json(gbk_name=gbk_name, json_name=json_name, seqid=name)
         data = read_json_file(json_name)
         return data
 
@@ -136,8 +135,9 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
     utils.save_stream(stream=stream, fname=gbk_name)
 
     # Convert genbank to JSON.
-    gbk_to_json(gbk_name=gbk_name, json_name=json_name)
+    gbk_to_json(gbk_name=gbk_name, json_name=json_name, seqid=name)
 
+    # Return the data
     data = read_json_file(json_name)
 
     return data
@@ -185,11 +185,12 @@ def get_accessions(accs):
 
 
 @plac.pos('acc', "accession numbers")
-@plac.opt('db', "database type", choices=["nuccore", "prot"])
+@plac.opt('db', "database type", choices=["nuccore", "protein"])
+@plac.opt('name', "rename the data (both the file and sequence id")
 @plac.flg('update', "download data again if it exists")
 @plac.flg('quiet', "quiet mode, no output printed")
 @plac.flg('build', "rebuilds the JSON representation")
-def run(db='', update=False, quiet=False, build=False, *acc):
+def run(db='', update=False, name='', quiet=False, build=False, *acc):
     # Set the verbosity level.
     utils.set_verbosity(logger, level=int(not quiet))
 
@@ -199,7 +200,7 @@ def run(db='', update=False, quiet=False, build=False, *acc):
     # Obtain the data for each accession number
     for acc in collect:
 
-        data = get_data(acc=acc, db=db, update=update, rebuild=build)
+        data = get_data(acc=acc, db=db, update=update, rebuild=build, name=name)
 
         # A throttle to avoid accessing NCBI too quickly.
         if len(collect) > 1:

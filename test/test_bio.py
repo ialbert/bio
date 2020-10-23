@@ -39,7 +39,7 @@ def run(cmd, capsys, out=None):
     return result
 
 def test_fetch(capsys):
-    cmd = "bio fetch NC_045512"
+    cmd = "bio fetch NC_045512 --name SARS2"
     run(cmd, capsys=capsys)
 
 def test_list(capsys):
@@ -47,12 +47,12 @@ def test_list(capsys):
     run(cmd, capsys=capsys)
 
 def test_view(capsys):
-    cmd = "bio view NC_045512"
-    out = read("NC_045512.json")
+    cmd = "bio view SARS2"
+    out = read("SARS2.json")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_match(capsys):
-    cmd = "bio view NC_045512 --match ORF1ab --type gene "
+    cmd = "bio view SARS2 --match ORF1ab --type gene "
     out = read("parts/match.json")
     run(cmd, capsys=capsys, out=out)
 
@@ -61,47 +61,47 @@ def test_view_list(capsys):
     run(cmd, capsys=capsys)
 
 def test_view_fasta(capsys):
-    cmd = "bio view NC_045512 --fasta"
-    out = read("NC_045512.fa")
+    cmd = "bio view SARS2 --fasta"
+    out = read("SARS2.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_start(capsys):
-    cmd = "bio view NC_045512 --fasta --id foo --start 10 --end 20"
+    cmd = "bio view SARS2 --fasta --id foo --start 10 --end 20"
     out = read("parts/fasta-start.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_protein_end(capsys):
-    cmd = "bio view NC_045512 --protein --start -10"
+    cmd = "bio view SARS2 --protein --start -10"
     out = read("parts/protein-end.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_type(capsys):
-    cmd = "bio view NC_045512 --fasta --type CDS"
+    cmd = "bio view SARS2 --fasta --type CDS"
     out = read("parts/CDS.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_type_start(capsys):
-    cmd = "bio view NC_045512 --fasta --type gene --end 10"
+    cmd = "bio view SARS2 --fasta --type gene --end 10"
     out = read("parts/gene-start.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_gff1(capsys):
-    cmd = "bio view NC_045512 --gff"
-    out = read("NC_045512.gff")
+    cmd = "bio view SARS2 --gff"
+    out = read("SARS2.gff")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_name(capsys):
-    cmd = "bio view NC_045512 --gff --gene S"
+    cmd = "bio view SARS2 --gff --gene S"
     out = read("parts/gene.gff")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_start(capsys):
-    cmd = "bio view NC_045512 --gff  --start 10000 --end 20000"
+    cmd = "bio view SARS2 --gff  --start 10000 --end 20000"
     out = read("parts/overlap.gff")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_type(capsys):
-    cmd = "bio view NC_045512 --gff  --type CDS"
+    cmd = "bio view SARS2 --gff  --type CDS"
     out = read("parts/type.gff")
     run(cmd, capsys=capsys, out=out)
 

@@ -220,7 +220,7 @@ def get_origin(item, param):
     return rec
 
 
-def convert_genbank(stream):
+def convert_genbank(stream, seqid=None):
     """
     Converts a stream to a GenBank file into json.
     """
@@ -238,7 +238,7 @@ def convert_genbank(stream):
         item = dict()
 
         # Fill the standard SeqRecord fields.
-        item[SEQID] = rec.id
+        item[SEQID] = seqid or rec.id
         item[DEFINITION] = rec.description
         item[DBLINK] = rec.dbxrefs
         item[LOCUS] = rec.name
