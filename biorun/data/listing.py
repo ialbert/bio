@@ -24,13 +24,17 @@ def print_file_list():
 
         # Parse the first N lines
         stream = gzip.open(path, 'rt') if path.endswith('gz') else open(path, 'rt')
-        text = stream.read(300)
+        text = stream.read(1000)
         match = patt.search(text)
 
         title = match.group("value") if match else ''
         title = title.strip('", ')
 
-        collect.append((str(fsize), f"{fname:10s}", title))
+        # Trim the title
+        stitle = title[:100]
+        stitle = stitle + "..." if len(title) != len(stitle) else stitle
+
+        collect.append((str(fsize), f"{fname:10s}", stitle))
 
     collect = sorted(collect, key=lambda x: x[2])
     for row in collect:

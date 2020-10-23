@@ -6,6 +6,8 @@
             "BioProject:PRJNA485481"
         ],
         "locus": "NC_045512",
+        "feature_count": 57,
+        "origin_len": 29903,
         "molecule_type": "ss-RNA",
         "topology": "linear",
         "data_file_division": "VRL",

@@ -7,7 +7,8 @@ LOCUS = "locus"
 SEQID = "id"
 ORIGIN = "ORIGIN"
 FEATURES = "FEATURES"
-
+FEATURE_COUNT = "feature_count"
+ORIGIN_SIZE = "origin_len"
 
 #
 # Remaps types from GenBank to Sequence Ontology when converting to GFF files

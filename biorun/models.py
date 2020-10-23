@@ -242,6 +242,8 @@ def convert_genbank(stream, seqid=None):
         item[DEFINITION] = rec.description
         item[DBLINK] = rec.dbxrefs
         item[LOCUS] = rec.name
+        item[FEATURE_COUNT] = len(rec.features)
+        item[ORIGIN_SIZE] = len(rec.seq)
 
         # Fill in all annotations.
         for key, value in rec.annotations.items():
