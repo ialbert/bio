@@ -10,6 +10,10 @@ FEATURES = "FEATURES"
 FEATURE_COUNT = "feature_count"
 ORIGIN_SIZE = "origin_len"
 
+# Alignment modes.
+GLOBAL_ALN, LOCAL_ALN, SEMIGLOBAL_ALN = "GLOBAL", "LOCAL", "SEMIGLOBAL"
+
+
 #
 # Remaps types from GenBank to Sequence Ontology when converting to GFF files
 #
