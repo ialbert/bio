@@ -28,9 +28,10 @@ logger = utils.logger
 @plac.opt('gene', "select features associated with gene" )
 @plac.opt('match', "select features by rexep match")
 @plac.opt('align', "alignment mode", choices=['global', 'local'])
+@plac.flg('verbose', "verbose mode")
 def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
         delete=False,  list=False, store=False, name='',
-        seqid='', start='', end='', type='', gene='', match='', align='', *names):
+        seqid='', start='', end='', type='', gene='', match='', align='', verbose=False, *names):
     """
     bio - making bioinformatics fun again
 
@@ -39,6 +40,9 @@ def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
 
     # Check the names.
     names = storage.validate_names(names)
+
+    # Set the verbosity
+    utils.set_verbosity(logger, level=int(verbose))
 
     # Delete the files from storage.
     if delete:
@@ -49,6 +53,7 @@ def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
         utils.set_verbosity(logger, level=1)
         db = "protein" if protein else None
         storage.fetch(names, seqid=seqid, db=db)
+        utils.set_verbosity(logger, level=int(verbose))
 
     if name:
         storage.rename(names, seqid=seqid, newname=name)
