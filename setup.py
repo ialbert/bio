@@ -25,7 +25,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'bio=biorun.__main__:main',
+            'bio=biorun.__main__:runner',
         ],
     },
 

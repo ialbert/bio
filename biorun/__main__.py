@@ -1,82 +1,11 @@
 """
 The main job runner. Register functions here.
 """
-import os, time
-import sys
 import plac
-from importlib import import_module
-from biorun import VERSION
-from biorun import utils
-from biorun.usage import HELP
+from biorun.main import run
 
-# Commands names.
-LIST, FETCH, VIEW, ALIGN = "data", "fetch", "view", "align"
-
-# Enabled commands.
-COMMANDS = {
-    LIST: 'biorun.data.listing',
-    FETCH: 'biorun.data.fetch',
-    VIEW: 'biorun.data.view',
-    ALIGN: 'biorun.align.pairwise'
-}
-
-# Context for the USAGE help page.
-CONTEXT = dict(
-    VERSION=VERSION, FETCH=FETCH, ALIGN=ALIGN, VIEW=VIEW, LIST=LIST,
-)
-
-# These commands will generate a default help when no parameter is specified.
-SHOW_HELP = {FETCH, ALIGN, VIEW}
-
-# The default help page for the tool.
-USAGE = HELP.format(**CONTEXT)
-
-
-@plac.annotations(
-    cmd="command"
-)
-def run(*cmd):
-    """
-    Main command runner.
-    """
-
-    # Commands are case insensitive.
-    target = cmd[0].lower() if cmd else None
-
-    # Print usage if no command is seen.
-    if target is None or target in ("-h", "--help"):
-        print(f"{USAGE}", file=sys.stderr)
-
-        # Raise 1 as exit only if it seems the user forgot to pass any flag
-        sys.exit(int(target is None))
-
-    # Handles invalid command.
-    if target not in COMMANDS:
-        print(f"{USAGE}", file=sys.stderr)
-        print(f"*** Invalid command: {target}\n", file=sys.stderr)
-        sys.exit(127)
-
-    try:
-        # Import and call the target function.
-        package = COMMANDS[target]
-        module = import_module(name=package)
-        # Target the run function in each module.
-        func = getattr(module, 'run')
-        rest = cmd[1:]
-        if target in SHOW_HELP:
-            rest = rest or ["-h"]
-        plac.call(func, rest)
-    except KeyboardInterrupt:
-        # Terminate keyboard interrupts without a traceback.
-        sys.exit(0)
-
-
-run.add_help = False
-
-
-def main():
+def runner():
     plac.call(run)
 
-
 if __name__ == '__main__':
-    main()
+    runner()

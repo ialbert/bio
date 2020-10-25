@@ -66,7 +66,7 @@ def smartname(text):
 @plac.flg('protein', "operate on proteins", abbrev='P')
 @plac.flg('translate', "translate DNA to protein", abbrev='T')
 @plac.flg('store', "places a file into storage", abbrev='X')
-@plac.opt('name', "set the name", abbrev='R')
+@plac.opt('rename', "set the name", abbrev='R')
 @plac.opt('seqid', "set the sequence id", abbrev='S')
 @plac.opt('type', "select feature by type")
 @plac.opt('start', "start coordinate")
@@ -76,7 +76,7 @@ def smartname(text):
 @plac.opt('align', "alignment mode", choices=['global', 'local'])
 @plac.flg('verbose', "verbose mode")
 def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
-        delete=False,  list=False, store=False, name='',
+        delete=False,  list=False, store=False, rename='',
         seqid='', start='', end='', type='', gene='', match='', align='', verbose=False, *names):
     """
     bio - making bioinformatics fun again
@@ -96,24 +96,32 @@ def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
 
     # Get the data from Entrez.
     if fetch:
-        utils.set_verbosity(logger, level=1)
         db = "protein" if protein else None
         storage.fetch(names, seqid=seqid, db=db)
-        utils.set_verbosity(logger, level=int(verbose))
 
-    if name:
-        storage.rename(names, seqid=seqid, newname=name)
+    # The logging version may change within efetch to show progress.
+    utils.set_verbosity(logger, level=int(verbose))
 
-    # Listing has the higher priority.
+    # Renaming step.
+    if rename:
+        storage.rename(names, seqid=seqid, newname=rename)
+
+    # List the available data.
     if list:
         listing.print_data_list()
+        sys.exit()
 
-    # When is the request a data conversion
-    convert = not(list or fetch or delete)
+    # Stop here.
+    if list or rename:
+        sys.exit()
 
     # Populate the parameter list.
     param = Param(start=start, end=end, seqid=seqid, protein=protein,
                         gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=match)
+
+    # Decide if it is a data conversion
+    convert = not(align or delete)
+
     if convert:
         # Perform the data conversion
         view.convert_all(names, param=param)

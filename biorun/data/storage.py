@@ -117,6 +117,9 @@ def ncbi_efetch(name, gbk_name, db=None):
 
 def fetch(names, seqid=None, db=None):
 
+    # It is useful to see how large files are downloaded.
+    utils.set_verbosity(logger, level=1)
+
     # Find names that do not exist
     names = filter(lambda n: not get_json(n), names)
 

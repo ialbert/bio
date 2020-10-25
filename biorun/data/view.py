@@ -1,24 +1,15 @@
 """
 Fetches data from Entrez.
 """
-import sys, os, itertools, json, re
+import sys, json
 
-import plac
 from biorun import models
-from Bio import Entrez
 from biorun import utils
 from biorun.data import storage
 from biorun.const import *
 
 # The default logging function.
 logger = utils.logger
-
-# This email needs to be tunable.
-Entrez.email = 'bio@bio.com'
-
-def error(msg):
-    print(f"*** {msg}", file=sys.stderr)
-    sys.exit(1)
 
 def print_origin_fasta(data,  param):
     """
@@ -135,39 +126,3 @@ def convert_one(data, param):
     else:
         print_json(data, param=param)
 
-
-@plac.pos('acc', "accession numbers")
-@plac.opt('gene', "name of the gene associated with the feature")
-@plac.opt('id', "set the sequence id", abbrev="Q")
-@plac.opt('match', "select elements by matching a regexp to any existing information")
-@plac.opt('type', "filter by the type of the feature")
-@plac.opt('start', "start coordinate ", type=int)
-@plac.opt('end', "end coordinate", type=int)
-@plac.flg('fasta', "generate fasta file")
-@plac.flg('protein', "fasta file with protein translations embedded in the data")
-@plac.flg('translate', "translates DNA sequences to protein", abbrev="T")
-@plac.flg('gff', "generate a gff file", abbrev="G")
-@plac.flg('verbose', "verbose mode, progress messages printed")
-def run(gene='', type='', id='', match='', start=1, end=0, fasta=False, protein=False, translate=False, gff=False, verbose=False, *acc):
-    # Set the verbosity of the process.
-    utils.set_verbosity(logger, level=int(verbose))
-
-    if start == 0:
-        error(f"start={start} may not be  zero")
-
-    # Move it to zero based coordinate system
-    start = start - 1 if start > 0 else start
-
-    # Set the end slice
-    end = end or None
-
-    # Set the regular expression.
-    regexp = re.compile(match) if match else match
-
-    # Collected parameters
-    param = utils.Param(start=start, end=end, seqid=id, protein=protein,
-                  gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=regexp)
-
-    # Process each accession number.
-    for acx in acc:
-        process(acx, param=param)
