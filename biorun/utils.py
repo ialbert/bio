@@ -89,15 +89,6 @@ def guess_type(path):
     return ftype
 
 
-def resolve_fname(acc, format='json'):
-    """
-    Resolve a file name given an accession number.
-    """
-    ext = format.lower()
-    fname = f"{acc}.{ext}.gz"
-    fname = os.path.join(DATADIR, fname)
-    return fname
-
 
 def sizeof_fmt(num, suffix=''):
     for unit in ['', 'K', 'M', 'G']:
@@ -128,7 +119,7 @@ def save_stream(stream, fname, trigger=50000):
     tmp.seek(0)
 
     # Copy over the content from the temporary file to the final gzipped file destination.
-    out = gzip.open(fname, 'wt')
+    out = gzip.open(fname, 'wt')  if fname.endswith(".gz") else open('wt')
     for line in tmp:
         out.write(line)
     out.close()

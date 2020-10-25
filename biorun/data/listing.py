@@ -1,13 +1,13 @@
 """
 Lists the files in the database
 """
-import plac, os, glob, gzip, re, sys
+import os, glob, gzip, re, sys
 from biorun import utils
 
 # Get the logger information.
 logger = utils.logger
 
-def print_file_list():
+def print_data_list():
     """
     Returns a list of the files in the data directory
     """
@@ -41,34 +41,4 @@ def print_file_list():
         line = "\t".join(row)
         print(line)
 
-@plac.opt('alias', "create alias to accession ")
-@plac.flg('delete', "delete the data for accession")
-@plac.flg('verbose', "verbose mode, progress messages printed")
-def run(alias='', delete=False, verbose=False, *accs):
-    # Set the verbosity of the process.
-    utils.set_verbosity(logger, level=int(verbose))
 
-    for acc in accs:
-
-        # Make aliases
-        if alias:
-
-            json_name1 = utils.resolve_fname(acc=acc, format="json")
-            json_name2 = utils.resolve_fname(acc=alias, format="json")
-
-            names = [
-                (json_name1, json_name2),
-            ]
-            for src, dest in names:
-                utils.symlink(src, dest)
-                logger.info(f"link {dest}")
-
-        elif delete:
-
-                json_name = utils.resolve_fname(acc=acc, format="json")
-                if os.path.isfile(json_name):
-                    os.remove(json_name)
-
-
-    # Produce the file listing
-    print_file_list()

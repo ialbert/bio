@@ -43,39 +43,13 @@ def efetch(acc, db, format, mode='text'):
         msg = f"invalid NCBI accession number: {acc}"
         utils.error(msg)
 
-    try:
-        logger.info(f"connecting to Entrez for {acc}")
-        stream = Entrez.efetch(id=acc, db=db, rettype=format, retmode=mode)
-        return stream
-    except Exception as exc:
-        msg = f"{exc} for efetch acc={acc} db={db} format={format} mode={mode}"
-        utils.error(msg)
 
 
-def gbk_to_json(gbk_name, json_name, seqid=None):
-    """
-    Transforms a GenBank file to a JSON file.
-    """
-
-    # Open GenBank file.
-    inp_stream = gzip.open(gbk_name, 'rt') if gbk_name.endswith(".gz") else open(gbk_name, 'rt')
-
-    # Convert genbank to a data structure.
-    data = models.convert_genbank(inp_stream, seqid=seqid)
-
-    # Save into a file.
-    fp = gzip.open(json_name, 'wt', compresslevel=1)
-    json.dump(data, fp)
-    fp.close()
-
-    logger.info(f"saved {json_name}")
 
 
-def read_json_file(fname):
-    stream = gzip.open(fname, 'rt')
-    data = json.load(stream)
-    stream.close()
-    return data
+
+
+
 
 
 def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebuild=False, name=None):
@@ -118,11 +92,7 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
         data = read_json_file(json_name)
         return data
 
-    # Accession numbers that are proteins.
-    if acc[:2] in ["AP", "NP", "YP", "XP", "WP", "AK"]:
-        db = db or "protein"
-    else:
-        db = db or "nuccore"
+
 
     # The data format.
     if format == utils.GENBANK:
@@ -143,46 +113,7 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
     return data
 
 
-def get_accessions(accs):
-    """
-    Returns a list that contains either the one accession or if any of these accessions is a
-    valid filenames the content of those files.
-    """
-    collect = []
-    for acc in accs:
-
-        # No whitespaces allowed.
-        acc = acc.strip()
-
-        # Common mistake to pass an extra parameter to command line.
-        if acc.startswith("-"):
-            msg = f"Invalid accession number: {acc}"
-            utils.error(msg)
-
-        # Parse the file and extract accession numbers from it.
-        if os.path.isfile(acc):
-
-            # Get the lines (for sanity check limit at 100)
-            lines = open(acc).readlines()[:100]
-
-            # Remove whitespace from lines
-            lines = [x.strip() for x in lines]
-
-            # Remove comments from the file.
-            lines = filter(lambda x: not x.startswith('#'), lines)
-
-            # Remove empty lines from the file.
-            lines = filter(None, lines)
-
-            # Keep the first colums
-            nums = [x.split()[0].strip() for x in lines]
-
-            collect.extend(nums)
-        else:
-            collect.append(acc)
-
-    return collect
-
+cs
 
 @plac.pos('acc', "accession numbers")
 @plac.opt('db', "database type", choices=["nuccore", "protein"])
