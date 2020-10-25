@@ -152,5 +152,11 @@ def get_json(name, seqid=None):
 def rename(names, seqid=None, newname=None):
 
     # Renames only the first
-    pass
-
+    if names:
+        name = names[0]
+        if get_json(name):
+            src = resolve_fname(name=name, format="json")
+            dest = resolve_fname(name=newname, format="json")
+            os.rename(src, dest)
+        else:
+            logger.error(f"not found: {name}")

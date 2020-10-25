@@ -113,8 +113,6 @@ def get_data(acc, db=None, format=utils.GENBANK, mode="text", update=False, rebu
     return data
 
 
-cs
-
 @plac.pos('acc', "accession numbers")
 @plac.opt('db', "database type", choices=["nuccore", "protein"])
 @plac.opt('name', "rename the data (both the file and sequence id")

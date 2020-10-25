@@ -20,7 +20,7 @@ logger = utils.logger
 @plac.flg('protein', "operate on proteins", abbrev='P')
 @plac.flg('translate', "translate DNA to protein", abbrev='T')
 @plac.flg('store', "places a file into storage", abbrev='X')
-@plac.opt('rename', "rename data in storage", abbrev='R')
+@plac.opt('name', "set the name", abbrev='R')
 @plac.opt('seqid', "set the sequence id", abbrev='S')
 @plac.opt('type', "select feature by type")
 @plac.opt('start', "start coordinate")
@@ -29,7 +29,7 @@ logger = utils.logger
 @plac.opt('match', "select features by rexep match")
 @plac.opt('align', "alignment mode", choices=['global', 'local'])
 def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
-        delete=False,  list=False, store=False, rename='',
+        delete=False,  list=False, store=False, name='',
         seqid='', start='', end='', type='', gene='', match='', align='', *names):
     """
     bio - making bioinformatics fun again
@@ -50,8 +50,8 @@ def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
         db = "protein" if protein else None
         storage.fetch(names, seqid=seqid, db=db)
 
-    if rename:
-        storage.rename(names, seqid=seqid, newname=rename)
+    if name:
+        storage.rename(names, seqid=seqid, newname=name)
 
     # Listing has the higher priority.
     if list:
