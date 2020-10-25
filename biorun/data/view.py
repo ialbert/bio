@@ -4,16 +4,11 @@ Fetches data from Entrez.
 import sys, os, itertools, json, re
 
 import plac
-
 from biorun import models
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
 from Bio import Entrez
 from biorun import utils
-from biorun.data import fetch
+from biorun.data import storage
 from biorun.const import *
-
-import itertools
 
 # The default logging function.
 logger = utils.logger
@@ -111,13 +106,20 @@ def print_gff(data, param):
             print("\t".join(values))
 
 
-def process(acc, param):
+def convert_all(names, param):
     """
-    Performs the processing of a single accession number.
+    Converts all accession numbers listed
     """
+    for name in names:
+        data = storage.get_json(name, seqid=param.seqid)
+        if not data:
+            utils.error(f"data not found: {name}")
+        convert_one(data, param)
 
-    # Open the stream to the data
-    data = fetch.get_data(acc=acc)
+def convert_one(data, param):
+    """
+    Converts an accession number
+    """
 
     # When to produce the origin fasta.
     origin = param.fasta and not(param.gene or param.type or param.protein or param.translate)
@@ -126,15 +128,12 @@ def process(acc, param):
         print_translation_fasta(data, param=param)
     elif origin:
         print_origin_fasta(data, param=param)
-    elif param.fasta:
-        print_feature_fasta(data, param=param)
     elif param.gff:
         print_gff(data, param=param)
+    elif param.fasta or param.translate:
+        print_feature_fasta(data, param=param)
     else:
         print_json(data, param=param)
-
-
-    return
 
 
 @plac.pos('acc', "accession numbers")

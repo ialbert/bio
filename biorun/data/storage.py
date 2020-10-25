@@ -79,14 +79,26 @@ def gbk_to_json(gbk_name, json_name, seqid=None):
 
     logger.info(f"saved {json_name}")
 
-def efetch(name, db=None):
+def change_seqid(json_name, seqid):
+    """
+    Changes the sequence id stored in a json file.
+    """
+    if os.path.isfile(json_name):
+        data = read_json_file(json_name)
+        for item in data:
+            item[SEQID] = seqid
+        fp = gzip.open(json_name, 'wt', compresslevel=1)
+        json.dump(data, fp)
+        fp.close()
+
+def ncbi_efetch(name, gbk_name, db=None):
     """
     Connects to Entrez Direct to download data.
     """
     # Get the entire GenBank file.
     format, retmode = "gbwithparts", "text"
 
-    # Accession numbers that are proteins.
+    # Guess accession numbers that are proteins.
     if name[:2] in ["AP", "NP", "YP", "XP", "WP", "AK"]:
         db = db or "protein"
     else:
@@ -99,13 +111,9 @@ def efetch(name, db=None):
         msg = f"{exc} for efetch acc={name} db={db} format={format} mode={retmode}"
         utils.error(msg)
 
-    # The name of the file to save it locally to.
-    gbk_name = resolve_fname(name=name, format="gb")
-
     # Save the stream to GenBank.
     utils.save_stream(stream=stream, fname=gbk_name)
 
-    return gbk_name
 
 def fetch(names, seqid=None, db=None):
 
@@ -116,16 +124,19 @@ def fetch(names, seqid=None, db=None):
         # The JSON representation of the data.
         json_name = resolve_fname(name=name, format="json")
 
-        # Need to fetch genbank from remote site.
-        gbk_name = efetch(name, db=db)
+        # GenBank representation of the data.
+        gbk_name = resolve_fname(name=name, format="gb")
 
-        # Copy GenBank to JSON
+        # Fetch and store genbank from remote site.
+        ncbi_efetch(name, db=db, gbk_name=gbk_name)
+
+        # Copy GenBank to JSON, set new sequence id if needed.
         gbk_to_json(gbk_name=gbk_name, json_name=json_name, seqid=seqid)
 
 
 def get_json(name, seqid=None):
     """
-    Attempts to return a JSON formatted data for a name.
+    Attempts to return a JSON formatted data based on a name name.
     """
 
     # The JSON representation of the data.
@@ -151,12 +162,24 @@ def get_json(name, seqid=None):
 
 def rename(names, seqid=None, newname=None):
 
-    # Renames only the first
-    if names:
-        name = names[0]
-        if get_json(name):
-            src = resolve_fname(name=name, format="json")
-            dest = resolve_fname(name=newname, format="json")
+    # Empty list
+    if not names:
+        return
+
+    # It only makes sense to rename one in case there are more.
+    name = names[0]
+
+    # We can only rename files that we have
+    if get_json(name):
+        src = resolve_fname(name=name, format="json")
+        dest = resolve_fname(name=newname, format="json")
+        if os.path.isfile(src):
             os.rename(src, dest)
+            if seqid:
+                change_seqid(dest, seqid=seqid)
+
         else:
-            logger.error(f"not found: {name}")
+            logger.error(f"not in storage: {src}")
+    else:
+        logger.error(f"not found: {name}")
+

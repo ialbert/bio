@@ -36,32 +36,7 @@ TYPE_BY_EXTENSION = {
 }
 
 
-class Param(object):
-    """
-    A class to maintain various parameters that have grown too numerous to pass individually.
-    """
 
-    def __init__(self, **kwds):
-        self.start = self.end = self.seqid = None
-        self.gff = self.protein = self.fasta = self.translate = None
-        self.name = self.gene = self.type = self.regexp = None
-        self.__dict__.update(kwds)
-
-    def unset(self):
-        """
-        Returns true if no parameters are set
-        :return:
-        """
-        return not any(self.__dict__.values())
-
-    def __str__(self):
-        return str(self.__dict__)
-
-def smartname(text):
-    """
-    Splits an accession number by colon into acc:name
-    """
-    pass
 
 def time_it(func):
     @wraps(func)
@@ -153,15 +128,6 @@ def get_logger(name, hnd=None, fmt=None, terminator='\n'):
 
     return log
 
-def shift_start(start):
-    """
-    Shift to zero based coordinate system.
-    """
-    if start == 0:
-        error(f"start={start} may not be  zero")
-
-    start = start - 1 if start > 0 else start
-    return start
 
 def set_verbosity(logger, level=1):
     level = logging.DEBUG if level > 0 else logging.WARNING
