@@ -177,6 +177,7 @@ def rename(names, seqid=None, newname=None):
         src = resolve_fname(name=name, format="json")
         dest = resolve_fname(name=newname, format="json")
         if os.path.isfile(src):
+            logger.info(f"moved {dest}")
             os.rename(src, dest)
             if seqid:
                 change_seqid(dest, seqid=seqid)

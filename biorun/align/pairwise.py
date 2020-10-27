@@ -4,7 +4,7 @@ from pprint import pprint
 from itertools import islice, count
 import textwrap
 
-from biorun.data import fetch
+from biorun.data import storage
 from biorun.const import *
 from biorun import models
 from biorun import utils

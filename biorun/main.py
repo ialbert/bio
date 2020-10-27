@@ -1,7 +1,7 @@
 """
 The main job runner. Register functions here.
 """
-import os, time
+import os, time, re
 import sys
 import plac
 from biorun import VERSION
@@ -37,11 +37,13 @@ class Param(object):
     """
 
     def __init__(self, **kwds):
-        self.start = self.end = self.seqid = None
+        self.start = self.end = 0
+        self.seqid = None
         self.gff = self.protein = self.fasta = self.translate = None
         self.name = self.gene = self.type = self.regexp = None
         self.__dict__.update(kwds)
         self.start, self.end = zero_based(start=self.start, end=self.end)
+        self.regexp = re.compile(self.regexp) if self.regexp else None
 
     def unset(self):
         """
@@ -109,11 +111,10 @@ def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
     # List the available data.
     if list:
         listing.print_data_list()
-        sys.exit()
 
     # Stop here.
     if list or rename:
-        sys.exit()
+        sys.exit(0)
 
     # Populate the parameter list.
     param = Param(start=start, end=end, seqid=seqid, protein=protein,

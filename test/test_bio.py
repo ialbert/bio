@@ -1,7 +1,8 @@
 import os, csv
-from biorun import __main__ as bio
+from biorun import main
 import plac
 from biorun.align import pairwise
+import pytest
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -22,7 +23,7 @@ def run(cmd, capsys, out=None):
     params = cmd.split()[1:]
 
     # Run the command and assert its state.
-    assert plac.call(bio.run, params) == None
+    assert plac.call(main.run, params) == None
 
     # Read the standard out
     stream = capsys.readouterr()
@@ -38,75 +39,88 @@ def run(cmd, capsys, out=None):
 
     return result
 
-def test_fetch(capsys):
-    cmd = "bio fetch NC_045512 --name SARS2"
+
+def test_delete(capsys):
+    cmd = "bio SARS2 --delete"
     run(cmd, capsys=capsys)
+
+
+def test_empty(capsys):
+    cmd = "bio SARS2"
+    with pytest.raises(SystemExit) as e:
+        run(cmd, capsys=capsys)
+    assert e.type == SystemExit
+    assert e.value.code == 1
+
+
+def test_fetch(capsys):
+    cmd = "bio NC_045512 --rename SARS2 --seqid SARS2"
+    with pytest.raises(SystemExit) as e:
+        run(cmd, capsys=capsys)
+    assert e.type == SystemExit
+    assert e.value.code == 0
 
 def test_list(capsys):
-    cmd = "bio data"
-    run(cmd, capsys=capsys)
+    cmd = "bio --list"
+    with pytest.raises(SystemExit) as e:
+        run(cmd, capsys=capsys)
+    assert e.type == SystemExit
+    assert e.value.code == 0
 
 def test_view(capsys):
-    cmd = "bio view SARS2"
+    cmd = "bio SARS2"
     out = read("SARS2.json")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_match(capsys):
-    cmd = "bio view SARS2 --match ORF1ab --type gene "
+    cmd = "bio SARS2 --match ORF1ab --type gene "
     out = read("parts/match.json")
     run(cmd, capsys=capsys, out=out)
 
-def test_view_list(capsys):
-    cmd = "bio data"
-    run(cmd, capsys=capsys)
-
 def test_view_fasta(capsys):
-    cmd = "bio view SARS2 --fasta"
+    cmd = "bio SARS2 --fasta"
     out = read("SARS2.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_start(capsys):
-    cmd = "bio view SARS2 --fasta --id foo --start 10 --end 20"
+    cmd = "bio SARS2 --fasta --seqid foo --start 10 --end 20"
     out = read("parts/fasta-start.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_protein_end(capsys):
-    cmd = "bio view SARS2 --protein --start -10"
+    cmd = "bio SARS2 --protein --start -10"
     out = read("parts/protein-end.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_type(capsys):
-    cmd = "bio view SARS2 --fasta --type CDS"
+    cmd = "bio SARS2 --fasta --type CDS"
     out = read("parts/CDS.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_fasta_type_start(capsys):
-    cmd = "bio view SARS2 --fasta --type gene --end 10"
+    cmd = "bio SARS2 --fasta --type gene --end 10"
     out = read("parts/gene-start.fa")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_gff1(capsys):
-    cmd = "bio view SARS2 --gff"
+    cmd = "bio SARS2 --gff"
     out = read("SARS2.gff")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_name(capsys):
-    cmd = "bio view SARS2 --gff --gene S"
+    cmd = "bio SARS2 --gff --gene S"
     out = read("parts/gene.gff")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_start(capsys):
-    cmd = "bio view SARS2 --gff  --start 10000 --end 20000"
+    cmd = "bio SARS2 --gff  --start 10000 --end 20000"
     out = read("parts/overlap.gff")
     run(cmd, capsys=capsys, out=out)
 
 def test_view_gff_type(capsys):
-    cmd = "bio view SARS2 --gff  --type CDS"
+    cmd = "bio SARS2 --gff  --type CDS"
     out = read("parts/type.gff")
     run(cmd, capsys=capsys, out=out)
 
-def main():
-    pass
-
 if __name__ == '__main__':
-    main()
+    pass
