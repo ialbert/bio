@@ -33,7 +33,9 @@ def has_feature(item, name="gene"):
 
 
 def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None):
-
+    """
+    Filters features based on various parameters.
+    """
     # Remove source as a valid feature.
     items = filter(lambda f: f.get('type') != 'source', items)
 
@@ -45,13 +47,10 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
     if gene:
         items = filter(lambda f: gene in f.get("gene", []), items)
 
-    # Filter by start.
-    if start:
-        items = filter(lambda f: start <= f.get('start'), items)
-
-    # Filter by end.
-    if end:
-        items = filter(lambda f: f.get('end') <= end, items)
+    # Filter by coordinates.
+    if start or end:
+        end = sys.maxsize if end is None else end
+        items = filter(lambda f: start <= f.get('end') and end >= f.get('start'), items)
 
     # Filters by matching a regular expression
     if regexp:

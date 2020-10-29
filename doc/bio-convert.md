@@ -1,25 +1,12 @@
-# bio: convert
+# bio: conversion
 
 The `bio` package may be used to 
 
 - convert data from GenBank to other formats: FASTA, GFF
-- operate on certai sections of data: features by name, coordinate, range
+- extract only certain sections of data: features by name, coordinate, range
 
-## Usage
-
+```{r, child='bio-tips.md'}
 ```
-bio -h
-```
-
-## Examples
-
-The following sections show a command and its output. For clarity we truncate the output to first few relevant lines.
-
-If  add multiple accession numbers the operations will take place sequentially on each.
-
-You may also combine multiple parameters, in that case each condition will be applied.
-
-Coordinates are 1 based (inclusive on both ends) identical to GFF coordinate formats.
 
 ### View the JSON representation of the data:
 
@@ -27,43 +14,56 @@ Coordinates are 1 based (inclusive on both ends) identical to GFF coordinate for
 bio NC_045512 | head
 ```
 
+### View the JSON representation for a feature:
+  
+```{bash, comment=NA}
+bio NC_045512 --type CDS --gene S | head 
+```
+
 ### Convert all features to GFF:
 
 ```{bash, comment=NA}
-bio NC_045512 --gff | head -3
+bio NC_045512 --gff | head -5
 ```
 
-### Convert to GFF the features with type `CDS`
+### Convert to GFF only the features with type `CDS`
 
 ```{bash, comment=NA}
-bio NC_045512 --gff --type CDS | head -3
+bio NC_045512 --gff --type CDS | head -5
 ```
 
-### Convert to GFF only the features tagged with gene `S`:
+### Convert to GFF only the features tagged with gene `S`
 
 ```{bash, comment=NA}
-bio NC_045512 --gff --gene S | head -3
+bio NC_045512 --gff --gene S | head -5
 ```
 
-### Convert to GFF features that overlap a range:
+### Convert to GFF only the features that overlap a interval
 
 ```{bash, comment=NA}
-bio NC_045512 --gff --start 21563 --end 21565 | head -3
+bio NC_045512 --gff --start 2000 --end 3000 | head -5
 ```
 
-### Convert to FASTA the origin sequence in GenBank:
+### Convert the data to FASTA (the origin of the GenBank)
 
 ```{bash, comment=NA}
 bio NC_045512 --fasta | head -5
 ```
 
-### Extract a subsequence from the "origin":
+### Extract a partial sequence and change the sequence id
 
 ```{bash, comment=NA}
-bio NC_045512 --fasta --start 100 --end 200 | head -5
+bio NC_045512 --fasta --start 100 --end 200 --seqid foo | head -5
 ```
 
-### Extract the sequences for features of a certain type:
+### Extract the last ten DNA bases
+
+```{bash, comment=NA}
+bio NC_045512 --fasta --start -10 --seqid last | head -5
+```
+
+
+### Extract the sequences for features of a certain type
 
 ```{bash, comment=NA}
 bio NC_045512 --fasta --type CDS | head -5

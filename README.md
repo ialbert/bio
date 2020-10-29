@@ -1,27 +1,31 @@
 # bio: introduction
 
-> Beta testing (in progress)
-
 **Making bioinformatics fun again.**
 
 Command-line utilities to make bioinformatics explorations more enjoyable.
 
-Built on top of [BioPython][bioython] and other existing packages; the `bio` software package streamlines bioinformatics tasks such as:
+Built on top of [BioPython][biopython] and other existing packages; the `bio` software package streamlines bioinformatics tasks such as:
  
 - downloading data from NCBI
 - converting between data formats 
 - extracting information from files (by gene, by coordinate etc)
 - aligning sequences
+- and ... many more
 
-The `bio` package is well suited for exploratory analysis of genomes. 
+Having acces to all the utility above makes the `bio` package well suited for exploratory analysis of genomes. 
+
+The software with the most similar goals is the [emboss suite][emboss].
 
 [biopython]: https://biopython.org/
+[emboss]: http://emboss.sourceforge.net/
 
 ## Rationale
 
-If you've ever done bioinformatics you know how even seemingly straigthforward tasks require multiple steps, arcane incantation, reading obtuse documentation and several preparations that slow down progress. Time and again I found myself not pursuing an idea because getting to the fun part was too tedios. `bio` is meant to solve that tedium.
+If you've ever done bioinformatics you know how even seemingly straigthforward tasks require multiple steps, arcane incantations, reading documentation and other preparations that slow down your progress. 
 
-For example, suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. If you are a trained bioinformatician, think about all the steps you would need to perform to be succesful at this task, the think about the effort it would take to teach someone else how to do it. 
+Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. Well, `bio` is meant to solve that tedium.
+
+For example, suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, the think about the effort it would take to teach someone else how to do it. Right?
  
 Well, with the `bio` package you can just write:
 
@@ -74,3 +78,10 @@ The documentation is maintained at
 Or in the github repository as markdown files:
 
     https://github.com/ialbert/bio/tree/master/doc
+
+## Comparisons to EMBOSS
+
+The software with the most similar goals to `bio` is the [emboss suite][emboss] a package developed way ahead of its time, perhaps the main reason why its amazing feats of software engineering are packaged with incomprehensible documentation and incredibly obtuse user interfaces. 
+
+We love the concept of `emboss` but even after many years we don't fully understand it intricacies, We constantly have to consult the manual for details. Commands that use `emboss` suites always end up as a series of hard to read jumbles of commands that are surprisingly difficult to comprehend even for experienced scientists.
+
