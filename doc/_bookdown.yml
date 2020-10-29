@@ -4,7 +4,7 @@ rmd_files: [
   "index.md",
   "bio-install.md",
   "bio-fetch.md",
-  "bio-view.md",
+  "bio-convert.md",
 ]
 
 book_filename: bio

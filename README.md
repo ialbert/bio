@@ -1,48 +1,69 @@
 # bio: introduction
 
-> Note: the package is not yet released, some functionality is not yet operational.
+> Beta testing (in progress)
 
-**Making learning bioinformatics fun again.**
+**Making bioinformatics fun again.**
 
-Command line utilities to make bioinformatics education more streamlined.
+Command-line utilities to make bioinformatics explorations more enjoyable.
 
-Build on top of [BioPython][bioython] the `bio` software package attempts to streamline several bioinformatics tasks,
-to allow learners to focus on the concepts that matter.
+Built on top of [BioPython][bioython] and other existing packages; the `bio` software package streamlines bioinformatics tasks such as:
+ 
+- downloading data from NCBI
+- converting between data formats 
+- extracting information from files (by gene, by coordinate etc)
+- aligning sequences
 
-The primary use of the package is for education and for exploratory analysis of viral and bacterial genomes.
+The `bio` package is well suited for exploratory analysis of genomes. 
 
 [biopython]: https://biopython.org/
 
 ## Rationale
 
-Typical bioinformatics solutions end up  being unnecessarily complicated. Seemingly simple tasks require lengthy command
-preparations that slow down progress.
+If you've ever done bioinformatics you know how even seemingly straigthforward tasks require multiple steps, arcane incantation, reading obtuse documentation and several preparations that slow down progress. Time and again I found myself not pursuing an idea because getting to the fun part was too tedios. `bio` is meant to solve that tedium.
 
-For example suppose you wanted to find the alignment and the differences between protein `S` of the bat corona virus deposited as 
-`MN996532` and protein `S` of the ancestral SARS-COV-2 virus (accession numbers as designated by NCBI accession number `NC_045512`). 
-If you are a trained bioinformatician think about all the steps you would need to undertake to perform that task.
+For example, suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. If you are a trained bioinformatician, think about all the steps you would need to perform to be succesful at this task, the think about the effort it would take to teach someone else how to do it. 
  
-With `bio` you can write:
+Well, with the `bio` package you can just write:
 
-    bio align MN996532:S NC_045512:S
+    bio MN996532 --fetch --rename bat
+    bio NC_045512--fetch --rename sars2
+    
+to get the data, and rename it into more manageable lables. Then you can simply align the whole genomes:
 
-And that's it. It will:
+    bio bat sars2 --align 
+
+or align just the genomic region that forms the `S` protein:
+
+    bio bat:S sars2:S --align
+
+What did `bio` do in the backround?
  
-1. automatically fetch the data
-1. store the compressed data in a cache so next time it won't need to connect to the internet
-1. produce a global DNA alignment. 
+1. fetches the data from NCBI
+1. creates a more efficient local representation of it
+1. stores this representation so that next time no internet connection is necessary
+1. generate a global DNA alignment. 
 
 But wait there is more. Perhaps you needed local alignments, no problem:
 
-    bio align MN996532:S NC_045512:S --local
+    bio bat:S sars2:S --align --mode local
 
-or align the translated sequences as proteins:
+or that you wanted to align the sequences as proteins:
 
-    bio align MN996532:S NC_045512:S --translation
+    bio bat:S sars2:S --align --protein
+   
+proteins and local alignments:
 
-perhaps you wanted to align only a range of the sequences of protein `S`:
+    bio bat:S sars2:S --align --protein --mode local
+   
+proteins and local alignments and just a certain region:
+   
+    bio bat:S sars2:S --align --protein --mode local --start 100 --end 200 
+   
+look ma, I can even align the last two aminoacids
 
-    bio align MN996532:S NC_045512:S --range 100-200
+    bio bat:S sars2:S --align --protein --start -10 
+   
+There is a lot more the `bio` than just alignments though. The package is an effort to solve the most nagging and annoying limitations that practitioners have that often boil down to do I extract the data I need and I know is embedded in the file.
 
 ## Documentation
 
@@ -53,4 +74,3 @@ The documentation is maintained at
 Or in the github repository as markdown files:
 
     https://github.com/ialbert/bio/tree/master/doc
-
