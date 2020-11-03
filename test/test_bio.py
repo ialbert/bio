@@ -55,7 +55,7 @@ def test_empty(capsys):
 
 
 def test_fetch(capsys):
-    cmd = "bio NC_045512 --rename SARS2 --seqid SARS2"
+    cmd = "bio NC_045512 --fetch --rename SARS2 --seqid SARS2"
     run(cmd, capsys=capsys)
 
 def test_list(capsys):
