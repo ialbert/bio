@@ -11,7 +11,7 @@ FEATURE_COUNT = "feature_count"
 ORIGIN_SIZE = "origin_len"
 
 # Alignment modes.
-GLOBAL_ALN, LOCAL_ALN, SEMIGLOBAL_ALN = "GLOBAL", "LOCAL", "SEMIGLOBAL"
+GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
 ALIGN = "align"
 

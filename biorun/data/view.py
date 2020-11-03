@@ -11,34 +11,45 @@ from biorun.const import *
 # The default logging function.
 logger = utils.logger
 
-def print_origin_fasta(data,  param):
+
+def get_origin_fasta(data, param):
     """
     Prints the origin sequence for each record.
     """
     for item in data:
         rec = models.get_origin(item, param)
-        print(rec.format("fasta"))
+        yield rec
 
-def print_translation_fasta(data, param):
+
+def get_translation_fasta(data, param):
     """
     Prints the translation field of each record.
     """
     for item in data:
         recs = models.get_translation_records(item, param)
         for rec in recs:
-            print(rec.format("fasta"))
+            yield rec
 
-def print_feature_fasta(data,  param):
+
+def get_feature_fasta(data, param):
     """
     Prints the sequence for features.
     """
-
     for item in data:
         recs = models.get_feature_records(item, param)
         for rec in recs:
-            print(rec.format("fasta"))
+            yield rec
 
-def print_json(data,  param):
+
+def print_fasta(recs):
+    """
+    Prints fasta records
+    """
+    for rec in recs:
+        print(rec.format("fasta"))
+
+
+def print_json(data, param):
     """
     Prints the sequence for features.
     """
@@ -52,9 +63,10 @@ def print_json(data,  param):
     # Selects individual features.
     for item in data:
         feats = item[FEATURES]
-        feats = models.filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene, regexp=param.regexp)
+        feats = models.filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene,
+                                       regexp=param.regexp)
         text = json.dumps(list(feats), indent=4)
-        print (text)
+        print(text)
 
 
 def feature2gff(feat, anchor):
@@ -78,8 +90,8 @@ def print_gff(data, param):
     Prints the origin of a BioPython SeqRecord.
     """
 
-    print ("##gff-version 3")
-    
+    print("##gff-version 3")
+
     for item in data:
 
         feats = item[FEATURES]
@@ -88,7 +100,8 @@ def print_gff(data, param):
         anchor = param.seqid or item['id']
 
         # Subselect by coordinates.
-        feats = models.filter_features(feats, start=param.start, end=param.end, gene=param.gene, ftype=param.type, regexp=param.regexp)
+        feats = models.filter_features(feats, start=param.start, end=param.end, gene=param.gene, ftype=param.type,
+                                       regexp=param.regexp)
 
         # Generate the gff output
         for feat in feats:
@@ -107,22 +120,33 @@ def convert_all(names, param):
             utils.error(f"data not found: {name}")
         convert_one(data, param)
 
+
 def convert_one(data, param):
     """
     Converts an accession number
     """
 
-    # When to produce the origin fasta.
-    origin = param.fasta and not(param.gene or param.type or param.protein or param.translate)
-
-    if param.protein:
-        print_translation_fasta(data, param=param)
-    elif origin:
-        print_origin_fasta(data, param=param)
-    elif param.gff:
+    # GFF conversion.
+    if param.gff:
         print_gff(data, param=param)
-    elif param.fasta or param.translate:
-        print_feature_fasta(data, param=param)
-    else:
-        print_json(data, param=param)
+        return
 
+    # FASTA conversion
+    fasta = param.fasta or param.protein or param.translate
+    if fasta:
+
+        # If there is no other filtering, produce the origin.
+        origin = not (param.gene or param.type or param.protein or param.translate)
+
+        if origin:
+            recs = get_origin_fasta(data, param=param)
+        elif param.protein:
+            recs = get_translation_fasta(data, param=param)
+        else:
+            recs = get_feature_fasta(data, param=param)
+
+        print_fasta(recs)
+        return
+
+    # No explicit conversion request, print JSON
+    print_json(data, param=param)

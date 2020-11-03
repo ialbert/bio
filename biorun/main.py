@@ -44,7 +44,7 @@ def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=Fa
     """
 
     # Check the names.
-    names = storage.validate_names(names)
+    names = storage.check_names(names)
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))

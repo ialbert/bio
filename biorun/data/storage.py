@@ -39,7 +39,7 @@ def delete(names):
             os.remove(fname)
 
 
-def validate_names(names):
+def check_names(names):
     """
     Catches common user errors.
     """
@@ -55,29 +55,32 @@ def read_json_file(fname):
     """
     Returns the content of a JSON file.
     """
-    stream = gzip.open(fname, 'rt') if fname.endswith(".gz") else open(fname, 'rt')
-    data = json.load(stream)
-    stream.close()
+    fp = gzip.open(fname, 'rt') if fname.endswith(".gz") else open(fname, 'rt')
+    data = json.load(fp)
+    fp.close()
+    return data
+
+def save_json_file(fname, data):
+    """
+    Returns the content of a JSON file.
+    """
+    fp = gzip.open(fname, 'wt') if fname.endswith(".gz") else open(fname, 'wt')
+    json.dump(data, fp)
+    fp.close()
+    logger.info(f"saved {fname}")
     return data
 
 
-def gbk_to_json(gbk_name, json_name, seqid=None):
+def gbk_to_json(gbk_name, seqid=None):
     """
-    Transforms a GenBank file to a JSON file.
+    Transforms GenBank file into a JSON data.
     """
 
-    # Open GenBank file.
-    inp_stream = gzip.open(gbk_name, 'rt') if gbk_name.endswith(".gz") else open(gbk_name, 'rt')
 
     # Convert genbank to a data structure.
     data = models.convert_genbank(inp_stream, seqid=seqid)
 
-    # Save into a file.
-    fp = gzip.open(json_name, 'wt', compresslevel=1)
-    json.dump(data, fp)
-    fp.close()
-
-    logger.info(f"saved {json_name}")
+    return data
 
 def change_seqid(json_name, seqid):
     """
@@ -142,6 +145,13 @@ def get_json(name, seqid=None):
     Attempts to return a JSON formatted data based on a name name.
     """
 
+    # Data is an existing path to a file.
+    if os.path.isfile(name):
+        data = models.parse_file(name, seqid=seqid)
+        return data
+
+    # File not found try to resolve to storage.
+
     # The JSON representation of the data.
     json_name = resolve_fname(name=name, format="json")
 
@@ -157,8 +167,8 @@ def get_json(name, seqid=None):
     # No JSON file but there is a genbank file.
     if os.path.isfile(gbk_name):
         logger.info(f"found {gbk_name}")
-        gbk_to_json(gbk_name=gbk_name, json_name=json_name, seqid=seqid)
-        data = read_json_file(json_name)
+        data = models.parse_file(fname=gbk_name, seqid=seqid)
+        data = save_json_file(fname=json_name, data=data)
         return data
 
     return None

@@ -78,7 +78,10 @@ class Param(object):
         self.start = self.end = 0
         self.phase = "1"
         self.seqid = None
-        self.gff = self.protein = self.fasta = self.translate = None
+        self.gap_open = 11
+        self.gap_extend = 1
+        self.matrix = None
+        self.gff = self.protein = self.fasta = self.translate = self.mode = None
         self.name = self.gene = self.type = self.regexp = None
         self.__dict__.update(kwds)
         self.start, self.end = zero_based(start=self.start, end=self.end)

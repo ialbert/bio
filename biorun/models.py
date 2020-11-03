@@ -2,13 +2,13 @@
 This package attempts to simplify the BioPython SeqRecords into a simpler, flatter structure that
 can be more readily worked with.
 """
-import sys, os, json
+import sys, os, gzip
 from biorun import utils
 from collections import OrderedDict
 
 from itertools import *
 from pprint import pprint
-
+from biorun import utils
 from biorun.const import *
 
 try:
@@ -219,13 +219,10 @@ def get_origin(item, param):
     return rec
 
 
-def convert_genbank(stream, seqid=None):
+def convert_genbank(recs, seqid=None):
     """
     Converts a stream to a GenBank file into json.
     """
-
-    # Parses the genbank into memory.
-    recs = parse_genbank(stream)
 
     # The outer dictionary containing multiple records.
     data = []
@@ -280,13 +277,34 @@ def convert_genbank(stream, seqid=None):
 
     return data
 
+def convert_fasta(recs, seqid=None):
+    data = []
+    return data
 
-def parse_genbank(stream, fmt=utils.GENBANK):
+def parse_file(fname, seqid=None):
     """
-    Parses GenBank into sequence records.
+    Parses a recognized file into a JSON representation
     """
-    recs = SeqIO.parse(stream, format=fmt)
-    return recs
+    stream = gzip.open(fname, 'rt') if fname.endswith(".gz") else open(fname, 'rt')
+
+    name, ext = os.path.splitext(fname)
+    ext = ext.lower()
+
+    # Split extension one more time
+    if ext == ".gz":
+        name, ext = os.path.splitext(name)
+        ext = ext.lower()
+
+    if ext in (".gb", ".gbk", ".genbank"):
+        recs = SeqIO.parse(stream, format=utils.GENBANK)
+        data = convert_genbank(recs, seqid=seqid)
+    elif ext in (".fa", ".fasta"):
+        recs = SeqIO.parse(stream, format=utils.FASTA)
+        data = convert_fasta(recs, seqid=seqid)
+    else:
+        utils.error(f"format not recognized: {fname}")
+
+    return data
 
 
 if __name__ == "__main__":

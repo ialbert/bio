@@ -138,21 +138,20 @@ def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, ma
 
 
 
-
 class AlnResult():
     """
     A wrapper class to represent alignments produced from different sources.
     """
 
     def __init__(self, query, target, trace,
-                  gap_open=11, gap_extend=1, matrix='',
+                  gap_open=11, gap_extend=1, matrix='', mode='',
                   ichr='|', mchr='.', gchr=' ', schr=':', attrs={}):
 
         self.query = query
         self.target = target
         self.trace = trace
         self.len = len(trace)
-
+        self.mode = mode
         self.gap_open = gap_open
         self.gap_extend = gap_extend
         self.matrix = matrix
@@ -190,14 +189,14 @@ class AlnResult():
         t_name = get("t_name")
 
         header = f'''
-        Align:\t{self.len} 
-        Target:\t{self.len_ref} [{self.start_ref}, {self.end_ref}]
+        Length:\t{self.len} ({self.mode}) 
         Query:\t{self.len_query} [{self.start_query}, {self.end_query}]
+        Target:\t{self.len_ref} [{self.start_ref}, {self.end_ref}]
         Score:\t{self.score}
         Ident:\t{self.icount}/{self.len} ({self.iperc:.1f}%)
         Simil:\t{self.scount}/{self.len} ({self.sperc:.1f}%)
         Gaps:\t{self.gcount}/{self.len} ({self.gperc:.1f}%)
-        Matrix:\t{self.matrix} (-{self.gap_open}, -{self.gap_extend}) 
+        Matrix:\t{self.matrix}(-{self.gap_open}, -{self.gap_extend}) 
         '''
 
         header = textwrap.dedent(header)
@@ -220,23 +219,24 @@ def get_matrix(seq, matrix):
         raise Exception("No matrix found")
     return matrix
 
-def parasail_align(qseq, tseq, gap_open=11, gap_extend=1, matrix=None, limit=1, mode=None):
+def parasail_align(qseq, tseq, param):
 
     q = str(qseq.seq)
     t = str(tseq.seq)
 
     # Guess matrix type
-    matrix = get_matrix(t, matrix)
+    matrix = get_matrix(t, param.matrix)
 
-    if mode == GLOBAL_ALN:
-        func = parasail.nw_trace_scan_16
-    elif mode == SEMIGLOBAL_ALN:
+    # Pick the algorithm for the alignment method.
+    if param.mode in (GLOBAL_ALIGN, SEMIGLOBAL_ALIGN):
         func = parasail.sg_trace_scan_16
+    elif param.mode == STRICT_ALIGN:
+        func = parasail.nw_trace_scan_16
     else:
         func = parasail.sw_trace_scan_16
 
     # The alignment results.
-    res = func(q, t, gap_open, gap_extend, matrix=matrix)
+    res = func(q, t, param.gap_open, param.gap_extend, matrix=matrix)
 
     # Alignment must be traceback aware.
     t = res.traceback
@@ -256,7 +256,7 @@ def parasail_align(qseq, tseq, gap_open=11, gap_extend=1, matrix=None, limit=1, 
         attrs[coord] = getattr(res, coord, 0) + 1
 
     # Semiglobal mode needs to compute alignment start/end differently.
-    if mode == SEMIGLOBAL_ALN and t.comp:
+    if param.mode == SEMIGLOBAL_ALIGN and t.comp:
         # Find the indices of the nonzero elements.
         idx = list(idx for (idx, chr) in enumerate(t.comp) if not chr.isspace())
         start, end = min(idx), max(idx) + 1
@@ -274,35 +274,26 @@ def parasail_align(qseq, tseq, gap_open=11, gap_extend=1, matrix=None, limit=1, 
 
     # String name for the matrix
     mname = str(matrix.name.decode("ascii"))
-    aln = AlnResult(query=query, target=target, gap_open=gap_open, gap_extend=gap_extend,
-                    trace=trace, attrs=attrs, matrix=mname)
+    aln = AlnResult(query=query, target=target, gap_open=param.gap_open, gap_extend=param.gap_extend,
+                    trace=trace, attrs=attrs, matrix=mname, mode=param.mode)
 
     # For semiglobal alignment need to manually find the start/end from the pattern.
     aln.print_wrapped(q_name=qseq.id, t_name=tseq.id)
 
-
 @plac.opt('start', "start coordinate ", type=int)
-@plac.opt('end', "end coordinate", type=int)
+@plac.opt('end', "end coordinate")
 @plac.opt('matrix', "scoring matrix", abbrev='M')
 @plac.opt('gap_open', "scoring matrix", abbrev='o')
 @plac.opt('gap_extend', "scoring matrix", abbrev='x')
-@plac.flg('GLOBAL', "use global alignment")
-@plac.flg('LOCAL', "use local alignment")
-@plac.flg('SEMIGLOBAL', "use semi-global alignment")
+@plac.opt('mode', "alignment mode (local, global, semiglobal, strictglobal")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(start=1, end=None,  GLOBAL=False, LOCAL=False, SEMIGLOBAL=False, gap_open=11, gap_extend=1, verbose=False, query='', target=''):
+def run(start=1, end='',  mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, verbose=False, query='', target=''):
     "Prints the effect of an annotation"
 
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
-    # Move to zero based coordinate system.
-    start = utils.shift_start(start)
-
-    # queries = fetch.get_data(query)
-    # targets = fetch.get_data(target)
-
-    param = utils.Param(start=start, end=end)
+    param = utils.Param(start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
 
     # query = models.get_origin(queries[0], param)
     # target = models.get_origin(targets[0], param)
@@ -313,13 +304,13 @@ def run(start=1, end=None,  GLOBAL=False, LOCAL=False, SEMIGLOBAL=False, gap_ope
     qseq = SeqRecord(Seq(query), id="QUERY")
     tseq = SeqRecord(Seq(target), id="TARGET")
 
+    # queries = fetch.get_data(query)
+    # targets = fetch.get_data(target)
+
+
     # biopython_align(query=query, target=target, matrix=matrix)
 
-    # Select the mode of operations
-    mode = GLOBAL_ALN if GLOBAL else LOCAL
-    mode = SEMIGLOBAL_ALN if SEMIGLOBAL else mode
-
-    parasail_align(qseq=qseq, tseq=tseq, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
+    parasail_align(qseq=qseq, tseq=tseq, param=param)
 
 
 def main():
