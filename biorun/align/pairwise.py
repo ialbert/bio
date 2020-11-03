@@ -139,9 +139,7 @@ def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, ma
 
 
 
-
-
-class Aligned():
+class AlnResult():
     """
     A wrapper class to represent alignments produced from different sources.
     """
@@ -276,8 +274,8 @@ def parasail_align(qseq, tseq, gap_open=11, gap_extend=1, matrix=None, limit=1, 
 
     # String name for the matrix
     mname = str(matrix.name.decode("ascii"))
-    aln = Aligned(query=query, target=target, gap_open=gap_open, gap_extend=gap_extend,
-                  trace=trace, attrs=attrs, matrix=mname)
+    aln = AlnResult(query=query, target=target, gap_open=gap_open, gap_extend=gap_extend,
+                    trace=trace, attrs=attrs, matrix=mname)
 
     # For semiglobal alignment need to manually find the start/end from the pattern.
     aln.print_wrapped(q_name=qseq.id, t_name=tseq.id)

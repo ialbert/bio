@@ -5,54 +5,13 @@ import os, time, re
 import sys
 import plac
 from biorun import VERSION
+from biorun.const import *
 from biorun import utils
 from biorun.data import listing, view, storage
 
 # Module level logger
 logger = utils.logger
 
-def zero_based(start, end):
-    """
-    Shift to zero based coordinate system.
-    """
-
-    # Don't allow zero for start.
-    if start == 0:
-        utils.error(f"start={start} may not be  zero")
-
-    # Default value for start
-    start = int(start) if start else 1
-
-    # Default value for end.
-    end = None if not end else int(end)
-
-    # Shift the coordinates
-    start = start - 1 if start > 0 else start
-    return start, end
-
-
-class Param(object):
-    """
-    Parameter representation that have grown too numerous to pass individually.
-    """
-
-    def __init__(self, **kwds):
-        self.start = self.end = 0
-        self.seqid = None
-        self.gff = self.protein = self.fasta = self.translate = None
-        self.name = self.gene = self.type = self.regexp = None
-        self.__dict__.update(kwds)
-        self.start, self.end = zero_based(start=self.start, end=self.end)
-        self.regexp = re.compile(self.regexp) if self.regexp else None
-
-    def unset(self):
-        """
-        Feature filtering parameters not set.
-        """
-        return not (self.start or self.end or self.type or self.gene or self.regexp)
-
-    def __str__(self):
-        return str(self.__dict__)
 
 def smartname(text):
     """
@@ -67,7 +26,6 @@ def smartname(text):
 @plac.flg('delete', "delete data in storage", abbrev='D')
 @plac.flg('protein', "operate on proteins", abbrev='P')
 @plac.flg('translate', "translate DNA to protein", abbrev='T')
-@plac.flg('store', "places a file into storage", abbrev='X')
 @plac.opt('rename', "set the name", abbrev='R')
 @plac.opt('seqid', "set the sequence id", abbrev='S')
 @plac.opt('type', "select feature by type")
@@ -75,11 +33,10 @@ def smartname(text):
 @plac.opt('end', "end coordinate")
 @plac.opt('gene', "select features associated with gene" )
 @plac.opt('match', "select features by rexep match")
-@plac.opt('align', "alignment mode", choices=['global', 'local'])
 @plac.flg('verbose', "verbose mode")
-def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
-        delete=False,  list=False, store=False, rename='',
-        seqid='', start='', end='', type='', gene='', match='', align='', verbose=False, *names):
+def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=False,
+                delete=False, list=False, rename='',
+                seqid='', start='', end='', type='', gene='', match='', verbose=False, *names):
     """
     bio - making bioinformatics fun again
 
@@ -98,13 +55,13 @@ def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
 
     # Get the data from Entrez.
     if fetch:
-        db = "protein" if protein else None
+        db = "protein" if protein else "nuccore"
         storage.fetch(names, seqid=seqid, db=db)
 
-    # The logging version may change within efetch to show progress.
+    # The logging level may change within efetch to show progress.
     utils.set_verbosity(logger, level=int(verbose))
 
-    # Renaming step.
+    # Renaming step before listing.
     if rename:
         storage.rename(names, seqid=seqid, newname=rename)
 
@@ -112,28 +69,44 @@ def run(fasta=False, gff=False, fetch=False, protein=False, translate=False,
     if list:
         listing.print_data_list()
 
-    # Stop here.
-    if list or rename:
-        sys.exit(0)
 
     # Populate the parameter list.
-    param = Param(start=start, end=end, seqid=seqid, protein=protein,
+    param = utils.Param(start=start, end=end, seqid=seqid, protein=protein,
                         gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=match)
 
-    # Decide if it is a data conversion
-    convert = not(align or delete)
+    # Convert if no other command was given.
+    convert = not(list or rename or delete)
 
     if convert:
         # Perform the data conversion
         view.convert_all(names, param=param)
 
 
-def toplevel():
+def router():
     """
-    Runs the toplevel function.
+    Routes the tasks based on incoming parameters.
     """
-    plac.call(run)
+
+    if ALIGN in sys.argv:
+
+        # Delayed import to avoid missing library warning for other tasks.
+        from biorun.align import pairwise
+
+        # Drop the alignment request
+        sys.argv.remove(ALIGN)
+
+        # Add the help flag if otherwise empty.
+        sys.argv += ["-h"] if len(sys.argv) == 1 else []
+
+        # Call the pairwise aligner.
+        plac.call(pairwise.run)
+
+    else:
+
+        # Add the help flag if otherwise empty.
+        sys.argv += ["-h"] if len(sys.argv) == 1 else []
+        plac.call(base_runner)
 
 
 if __name__ == '__main__':
-    toplevel()
+    router()

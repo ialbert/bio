@@ -23,7 +23,7 @@ def run(cmd, capsys, out=None):
     params = cmd.split()[1:]
 
     # Run the command and assert its state.
-    assert plac.call(main.run, params) == None
+    assert plac.call(main.base_runner, params) == None
 
     # Read the standard out
     stream = capsys.readouterr()
@@ -55,17 +55,11 @@ def test_empty(capsys):
 
 def test_fetch(capsys):
     cmd = "bio NC_045512 --rename SARS2 --seqid SARS2"
-    with pytest.raises(SystemExit) as e:
-        run(cmd, capsys=capsys)
-    assert e.type == SystemExit
-    assert e.value.code == 0
+    run(cmd, capsys=capsys)
 
 def test_list(capsys):
     cmd = "bio --list"
-    with pytest.raises(SystemExit) as e:
-        run(cmd, capsys=capsys)
-    assert e.type == SystemExit
-    assert e.value.code == 0
+    run(cmd, capsys=capsys)
 
 def test_view(capsys):
     cmd = "bio SARS2"

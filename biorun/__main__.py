@@ -1,11 +1,17 @@
 """
-The main job runner. Register functions here.
-"""
-import plac
-from biorun.main import run
+This module exists only to make module level execution also viable.
 
-def runner():
-    plac.call(run)
+python -m biorun
+
+"""
+
+from biorun.main import router
+
+def run():
+    """
+    A simple wrapper over the task_selector
+    """
+    router()
 
 if __name__ == '__main__':
-    runner()
+    run()

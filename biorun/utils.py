@@ -1,12 +1,11 @@
 """
 Utilites funcions.
 """
-import sys, os, tempfile, gzip, glob, shutil
+import sys, os, re, tempfile, gzip, glob, shutil
 
 from itertools import count, islice
 from functools import wraps
 import time
-import jinja2
 import logging
 from os.path import expanduser
 
@@ -35,9 +34,6 @@ TYPE_BY_EXTENSION = {
     "bam": BAM,
 }
 
-
-
-
 def time_it(func):
     @wraps(func)
     def timer(*args, **kwargs):
@@ -53,6 +49,49 @@ def time_it(func):
             logger.info(f"{func.__name__} runtime: {diff} {units}")
 
     return timer
+
+def zero_based(start, end):
+    """
+    Shift to zero based coordinate system.
+    """
+
+    # Don't allow zero for start.
+    if start == 0:
+        error(f"start={start} may not be  zero")
+
+    # Default value for start
+    start = int(start) if start else 1
+
+    # Default value for end.
+    end = None if not end else int(end)
+
+    # Shift the coordinates
+    start = start - 1 if start > 0 else start
+    return start, end
+
+class Param(object):
+    """
+    Parameter representation that have grown too numerous to pass individually.
+    """
+
+    def __init__(self, **kwds):
+        self.start = self.end = 0
+        self.phase = "1"
+        self.seqid = None
+        self.gff = self.protein = self.fasta = self.translate = None
+        self.name = self.gene = self.type = self.regexp = None
+        self.__dict__.update(kwds)
+        self.start, self.end = zero_based(start=self.start, end=self.end)
+        self.regexp = re.compile(self.regexp) if self.regexp else None
+
+    def unset(self):
+        """
+        Feature filtering parameters not set.
+        """
+        return not (self.start or self.end or self.type or self.gene or self.regexp)
+
+    def __str__(self):
+        return str(self.__dict__)
 
 def guess_type(path):
     """
@@ -74,7 +113,7 @@ def sizeof_fmt(num, suffix=''):
 
 def save_stream(stream, fname, trigger=50000):
     """
-    Write a input 'stream' as the fname filename.
+    Write a input 'stream' as the fname filename
     """
     # Save a stream into file and print progess.
     # Use a temporary file in case the process fails.
