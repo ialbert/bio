@@ -75,7 +75,7 @@ def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=Fa
                         gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=match)
 
     # Convert if no other command was given.
-    convert = not(list or rename or delete)
+    convert = not(list or rename or delete or fetch)
 
     if convert:
         # Perform the data conversion

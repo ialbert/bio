@@ -34,9 +34,11 @@ def delete(names):
     """
     for name in names:
         fname = resolve_fname(name)
-        logger.info(f"removing: {fname}")
         if os.path.isfile(fname):
+            logger.info(f"removing: {fname}")
             os.remove(fname)
+        else:
+            logger.info(f"file does not exist: {fname}")
 
 
 def check_names(names):
@@ -70,17 +72,6 @@ def save_json_file(fname, data):
     logger.info(f"saved {fname}")
     return data
 
-
-def gbk_to_json(gbk_name, seqid=None):
-    """
-    Transforms GenBank file into a JSON data.
-    """
-
-
-    # Convert genbank to a data structure.
-    data = models.convert_genbank(inp_stream, seqid=seqid)
-
-    return data
 
 def change_seqid(json_name, seqid):
     """
@@ -119,7 +110,9 @@ def ncbi_efetch(name, gbk_name, db=None):
 
 
 def fetch(names, seqid=None, db=None):
-
+    """
+    Obtains data from NCBI
+    """
     # It is useful to see how large files are downloaded.
     utils.set_verbosity(logger, level=1)
 
@@ -136,13 +129,15 @@ def fetch(names, seqid=None, db=None):
         # Fetch and store genbank from remote site.
         ncbi_efetch(name, db=db, gbk_name=gbk_name)
 
-        # Copy GenBank to JSON, set new sequence id if needed.
-        gbk_to_json(gbk_name=gbk_name, json_name=json_name, seqid=seqid)
+        # Convert genbank to JSON.
+        data = models.parse_file(fname=gbk_name, seqid=seqid)
 
+        # Save JSON file.
+        save_json_file(fname=json_name, data=data)
 
 def get_json(name, seqid=None):
     """
-    Attempts to return a JSON formatted data based on a name name.
+    Attempts to return a JSON formatted data based on a name.
     """
 
     # Data is an existing path to a file.
@@ -150,7 +145,7 @@ def get_json(name, seqid=None):
         data = models.parse_file(name, seqid=seqid)
         return data
 
-    # File not found try to resolve to storage.
+    # No a local file, attempt to resolve to storage.
 
     # The JSON representation of the data.
     json_name = resolve_fname(name=name, format="json")

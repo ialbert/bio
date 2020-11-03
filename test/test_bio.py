@@ -30,12 +30,13 @@ def run(cmd, capsys, out=None):
     result = stream.out
 
     if out:
+        assert result == out
         # Print only a subsection of the file
-        if result != out:
-            lines = result.splitlines()[:5]
-            text = "\n".join(lines)
-            print(text)
-            assert False
+        #if result != out:
+        #    lines = result.splitlines()[:50]
+        #    text = "\n".join(lines)
+        #    print(text)
+        #    assert False
 
     return result
 
