@@ -53,7 +53,6 @@ def test_empty(capsys):
     assert e.type == SystemExit
     assert e.value.code == 1
 
-
 def test_fetch(capsys):
     cmd = "bio NC_045512 --fetch --rename SARS2 --seqid SARS2"
     run(cmd, capsys=capsys)
