@@ -96,6 +96,15 @@ class Param(object):
     def __str__(self):
         return str(self.__dict__)
 
+    def parse(self, text):
+        """
+        Allows names in form of ACC:GENE
+        """
+        if ":" in text:
+            text, gene = text.split(":")
+            self.gene, self.type = gene, 'CDS'
+        return text
+
 def guess_type(path):
     """
     Attempts to guess a file type from an extension.

@@ -145,7 +145,7 @@ def get_json(name, seqid=None):
         data = models.parse_file(name, seqid=seqid)
         return data
 
-    # No a local file, attempt to resolve to storage.
+    # Not a local file, attempt to resolve to storage.
 
     # The JSON representation of the data.
     json_name = resolve_fname(name=name, format="json")

@@ -4,7 +4,7 @@ from pprint import pprint
 from itertools import islice, count
 import textwrap
 
-from biorun.data import storage
+from biorun.data import storage, view
 from biorun.const import *
 from biorun import models
 from biorun import utils
@@ -23,6 +23,7 @@ except ImportError as exc:
 
 try:
     import parasail
+
     HAS_PARASAIL = True
 except ImportError as exc:
     print(f"*** Warning: {exc}", file=sys.stderr)
@@ -32,7 +33,6 @@ except ImportError as exc:
 with warnings.catch_warnings():
     warnings.simplefilter('ignore', BiopythonExperimentalWarning)
     from Bio.Align import substitution_matrices
-
 
     # The default logging function.
     logger = utils.logger
@@ -47,8 +47,6 @@ def unpack(aln):
     return query, pattern, target
 
 
-
-
 def print_aln(aln, matrix, query, target, aligner, width=100):
     nw = 8
     tgt_name = f"{target.name[:nw]:8s}"
@@ -56,7 +54,6 @@ def print_aln(aln, matrix, query, target, aligner, width=100):
     rec_name = f"{query.name[:nw]:8s}"
 
     query, pattern, target = unpack(aln)
-
 
     print(f"# Lenght: {aln_len}")
     print(f"# Identity: {aln.icount}/{aln_len} ({ident_perc}%)")
@@ -137,16 +134,14 @@ def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, ma
         print_aln(aln, matrix=matrix, query=query, target=target, aligner=aligner)
 
 
-
 class AlnResult():
     """
     A wrapper class to represent alignments produced from different sources.
     """
 
     def __init__(self, query, target, trace,
-                  gap_open=11, gap_extend=1, matrix='', mode='',
-                  ichr='|', mchr='.', gchr=' ', schr=':', attrs={}):
-
+                 gap_open=11, gap_extend=1, matrix='', mode='',
+                 ichr='|', mchr='.', gchr=' ', schr=':', attrs={}):
         self.query = query
         self.target = target
         self.trace = trace
@@ -208,19 +203,16 @@ class AlnResult():
             print(q_name, self.query[start:end])
             print("")
 
-        #print (f"Cigar:\t{self.cigar}")
-
 def get_matrix(seq, matrix):
-
     if not matrix:
-        haspep = any (x for x in seq[:100] if x not in "ATGC")
+        haspep = any(x for x in seq[:100] if x not in "ATGC")
         matrix = parasail.blosum62 if haspep else parasail.nuc44
     else:
         raise Exception("No matrix found")
     return matrix
 
-def parasail_align(qseq, tseq, param):
 
+def parasail_align(qseq, tseq, param):
     q = str(qseq.seq)
     t = str(tseq.seq)
 
@@ -229,13 +221,12 @@ def parasail_align(qseq, tseq, param):
 
     # Pick the algorithm for the alignment method.
     if param.mode in (GLOBAL_ALIGN, SEMIGLOBAL_ALIGN):
-        func = parasail.sg_trace_scan_16
+        func = parasail.sg_trace_scan
     elif param.mode == STRICT_ALIGN:
-        func = parasail.nw_trace_scan_16
+        func = parasail.nw_trace_scan
     else:
-        func = parasail.sw_trace_scan_16
+        func = parasail.sw_trace_scan
 
-    # The alignment results.
     res = func(q, t, param.gap_open, param.gap_extend, matrix=matrix)
 
     # Alignment must be traceback aware.
@@ -272,13 +263,16 @@ def parasail_align(qseq, tseq, param):
     # Decode the CIGAR string
     attrs['cigar'] = res.cigar.decode.decode("ascii")
 
+    print ()
     # String name for the matrix
     mname = str(matrix.name.decode("ascii"))
+
     aln = AlnResult(query=query, target=target, gap_open=param.gap_open, gap_extend=param.gap_extend,
                     trace=trace, attrs=attrs, matrix=mname, mode=param.mode)
 
     # For semiglobal alignment need to manually find the start/end from the pattern.
     aln.print_wrapped(q_name=qseq.id, t_name=tseq.id)
+
 
 @plac.opt('start', "start coordinate ", type=int)
 @plac.opt('end', "end coordinate")
@@ -287,30 +281,42 @@ def parasail_align(qseq, tseq, param):
 @plac.opt('gap_extend', "scoring matrix", abbrev='x')
 @plac.opt('mode', "alignment mode (local, global, semiglobal, strictglobal")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(start=1, end='',  mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, verbose=False, query='', target=''):
+def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, verbose=False, query='', target=''):
     "Prints the effect of an annotation"
 
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
-    param = utils.Param(start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
-
-    # query = models.get_origin(queries[0], param)
-    # target = models.get_origin(targets[0], param)
-
     if not (query and target):
         utils.error(f"Please specify both a QUERY and a TARGET")
 
-    qseq = SeqRecord(Seq(query), id="QUERY")
-    tseq = SeqRecord(Seq(target), id="TARGET")
+    param = utils.Param(start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
 
-    # queries = fetch.get_data(query)
-    # targets = fetch.get_data(target)
+    # Fill in potential filtering instructions.
+    query = param.parse(query)
+    target = param.parse(target)
 
+
+    # Get the data.
+    qdata = storage.get_json(query)
+
+    tdata = storage.get_json(target)
+
+    if qdata:
+        qrecs = view.get_fasta(data=qdata, param=param)
+    else:
+        qrecs = [SeqRecord(Seq(query), id="QUERY")]
+
+    if tdata:
+        trecs = view.get_fasta(data=tdata, param=param)
+    else:
+        trecs = [SeqRecord(Seq(target), id="TARGET")]
 
     # biopython_align(query=query, target=target, matrix=matrix)
 
-    parasail_align(qseq=qseq, tseq=tseq, param=param)
+    for qseq in qrecs:
+        for tseq in trecs:
+            parasail_align(qseq=qseq, tseq=tseq, param=param)
 
 
 def main():

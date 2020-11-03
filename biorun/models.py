@@ -278,7 +278,18 @@ def convert_genbank(recs, seqid=None):
     return data
 
 def convert_fasta(recs, seqid=None):
+    """
+    FASTA files as JSON data.
+    """
     data = []
+    for rec in recs:
+        item = dict()
+        item[SEQID] = seqid or rec.id
+        item[LOCUS] = rec.name
+        item[DEFINITION] = rec.description
+        item[ORIGIN] = str(rec.seq)
+        item[FEATURES] = []
+        data.append(item)
     return data
 
 def parse_file(fname, seqid=None):

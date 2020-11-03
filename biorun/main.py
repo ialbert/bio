@@ -36,12 +36,23 @@ def smartname(text):
 @plac.flg('verbose', "verbose mode")
 def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=False,
                 delete=False, list=False, rename='',
-                seqid='', start='', end='', type='', gene='', match='', verbose=False, *names):
+                seqid='', start='', end='', type='', gene='', match='', verbose=False, *acc):
     """
     bio - making bioinformatics fun again
 
     command line utility for manipulating bioinformatics data
     """
+
+    params = []
+    names = []
+    for name in acc:
+        # Populate the parameter list.
+        param = utils.Param(start=start, end=end, seqid=seqid, protein=protein,
+                            gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=match)
+
+        name = param.parse(name)
+        names.append(name)
+        params.append(param)
 
     # Check the names.
     names = storage.check_names(names)
@@ -70,16 +81,12 @@ def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=Fa
         listing.print_data_list()
 
 
-    # Populate the parameter list.
-    param = utils.Param(start=start, end=end, seqid=seqid, protein=protein,
-                        gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=match)
-
     # Convert if no other command was given.
     convert = not(list or rename or delete or fetch)
 
     if convert:
         # Perform the data conversion
-        view.convert_all(names, param=param)
+        view.convert(names, params=params)
 
 
 def router():

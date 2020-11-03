@@ -40,6 +40,21 @@ def get_feature_fasta(data, param):
         for rec in recs:
             yield rec
 
+def get_fasta(data, param):
+    """
+    Returns SeqRecord objects based on parameters.
+    """
+    # If there is no other filtering, produce the origin.
+    origin = not (param.gene or param.type or param.protein or param.translate)
+
+    if origin:
+        recs = get_origin_fasta(data, param=param)
+    elif param.protein:
+        recs = get_translation_fasta(data, param=param)
+    else:
+        recs = get_feature_fasta(data, param=param)
+
+    return recs
 
 def print_fasta(recs):
     """
@@ -110,11 +125,11 @@ def print_gff(data, param):
             print("\t".join(values))
 
 
-def convert_all(names, param):
+def convert(names, params):
     """
     Converts all accession numbers listed
     """
-    for name in names:
+    for name, param in zip(names, params):
         data = storage.get_json(name, seqid=param.seqid)
         if not data:
             utils.error(f"data not found: {name}")
@@ -131,20 +146,10 @@ def convert_one(data, param):
         print_gff(data, param=param)
         return
 
-    # FASTA conversion
+    # Some type of FASTA conversion
     fasta = param.fasta or param.protein or param.translate
     if fasta:
-
-        # If there is no other filtering, produce the origin.
-        origin = not (param.gene or param.type or param.protein or param.translate)
-
-        if origin:
-            recs = get_origin_fasta(data, param=param)
-        elif param.protein:
-            recs = get_translation_fasta(data, param=param)
-        else:
-            recs = get_feature_fasta(data, param=param)
-
+        recs = get_fasta(data, param=param)
         print_fasta(recs)
         return
 
