@@ -80,7 +80,6 @@ def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=Fa
     if list:
         listing.print_data_list()
 
-
     # Convert if no other command was given.
     convert = not(list or rename or delete or fetch)
 

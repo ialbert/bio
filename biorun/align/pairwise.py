@@ -138,6 +138,7 @@ class AlnResult():
     """
     A wrapper class to represent alignments produced from different sources.
     """
+    counter = count(1)
 
     def __init__(self, query, target, trace,
                  gap_open=11, gap_extend=1, matrix='', mode='',
@@ -184,6 +185,8 @@ class AlnResult():
         t_name = get("t_name")
 
         header = f'''
+        ### Alignment:{next(self.counter)} {q_name} vs {t_name} ###
+
         Length:\t{self.len} ({self.mode}) 
         Query:\t{self.len_query} [{self.start_query}, {self.end_query}]
         Target:\t{self.len_ref} [{self.start_ref}, {self.end_ref}]
@@ -263,7 +266,6 @@ def parasail_align(qseq, tseq, param):
     # Decode the CIGAR string
     attrs['cigar'] = res.cigar.decode.decode("ascii")
 
-    print ()
     # String name for the matrix
     mname = str(matrix.name.decode("ascii"))
 
@@ -290,25 +292,26 @@ def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, verbose=Fa
     if not (query and target):
         utils.error(f"Please specify both a QUERY and a TARGET")
 
-    param = utils.Param(start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
+
+    param1 = utils.Param(start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
+    param2 = utils.Param(start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
 
     # Fill in potential filtering instructions.
-    query = param.parse(query)
-    target = param.parse(target)
+    query = param1.parse(query)
+    target = param2.parse(target)
 
 
     # Get the data.
     qdata = storage.get_json(query)
-
     tdata = storage.get_json(target)
 
     if qdata:
-        qrecs = view.get_fasta(data=qdata, param=param)
+        qrecs = view.get_fasta(data=qdata, param=param1)
     else:
         qrecs = [SeqRecord(Seq(query), id="QUERY")]
 
     if tdata:
-        trecs = view.get_fasta(data=tdata, param=param)
+        trecs = view.get_fasta(data=tdata, param=param2)
     else:
         trecs = [SeqRecord(Seq(target), id="TARGET")]
 
@@ -316,7 +319,8 @@ def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, verbose=Fa
 
     for qseq in qrecs:
         for tseq in trecs:
-            parasail_align(qseq=qseq, tseq=tseq, param=param)
+            parasail_align(qseq=qseq, tseq=tseq, param=param1)
+
 
 
 def main():
