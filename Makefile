@@ -11,7 +11,8 @@ test:
 	pytest
 
 build_test:
-	(cd test/data && bash build.sh)
+	(cd test && python generate.py)
+	pytest
 
 serve: init
 	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='doc/_book', port=8000)"
