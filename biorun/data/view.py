@@ -1,11 +1,10 @@
 """
 Fetches data from Entrez.
 """
-import sys, json
+import json
 
-from biorun import models
 from biorun import utils
-from biorun.data import storage
+from biorun.data import storage, jsonrec
 from biorun.const import *
 
 # The default logging function.
@@ -17,7 +16,7 @@ def get_origin_fasta(data, param):
     Prints the origin sequence for each record.
     """
     for item in data:
-        rec = models.get_origin(item, param)
+        rec = jsonrec.get_origin(item, param)
         yield rec
 
 
@@ -26,7 +25,7 @@ def get_translation_fasta(data, param):
     Prints the translation field of each record.
     """
     for item in data:
-        recs = models.get_translation_records(item, param)
+        recs = jsonrec.get_translation_records(item, param)
         for rec in recs:
             yield rec
 
@@ -36,7 +35,7 @@ def get_feature_fasta(data, param):
     Prints the sequence for features.
     """
     for item in data:
-        recs = models.get_feature_records(item, param)
+        recs = jsonrec.get_feature_records(item, param)
         for rec in recs:
             yield rec
 
@@ -78,8 +77,8 @@ def print_json(data, param):
     # Selects individual features.
     for item in data:
         feats = item[FEATURES]
-        feats = models.filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene,
-                                       regexp=param.regexp)
+        feats = jsonrec.filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene,
+                                        regexp=param.regexp)
         text = json.dumps(list(feats), indent=4)
         print(text)
 
@@ -93,7 +92,7 @@ def feature2gff(feat, anchor):
     ftype = feat['type']
     strand = feat['strand']
     phase = feat.get("codon_start", [1])[0]
-    attr = models.make_attr(feat)
+    attr = jsonrec.make_attr(feat)
     strand = "+" if strand else "-"
     ftype = SEQUENCE_ONTOLOGY.get(ftype, ftype)
     data = [anchor, ".", ftype, start, end, ".", strand, phase, attr]
@@ -115,8 +114,8 @@ def print_gff(data, param):
         anchor = param.seqid or item['id']
 
         # Subselect by coordinates.
-        feats = models.filter_features(feats, start=param.start, end=param.end, gene=param.gene, ftype=param.type,
-                                       regexp=param.regexp)
+        feats = jsonrec.filter_features(feats, start=param.start, end=param.end, gene=param.gene, ftype=param.type,
+                                        regexp=param.regexp)
 
         # Generate the gff output
         for feat in feats:

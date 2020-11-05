@@ -1,12 +1,10 @@
 import warnings, sys, os
 import plac
-from pprint import pprint
 from itertools import islice, count
 import textwrap
 
 from biorun.data import storage, view
 from biorun.const import *
-from biorun import models
 from biorun import utils
 
 try:
@@ -79,7 +77,6 @@ def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, ma
     """
     Perform alignment with BioPython.
     """
-    import parasail
 
     # The pairwise aligner.
     aligner = Align.PairwiseAligner()

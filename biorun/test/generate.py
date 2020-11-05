@@ -65,7 +65,7 @@ init = '''
 #
 
 # Get the helper utitilies.
-from biorun.test.generate import *
+from biorun.test.generate import run
 '''
 
 

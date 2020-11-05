@@ -4,20 +4,14 @@ The main job runner. Register functions here.
 import os, time, re
 import sys
 import plac
-from biorun import VERSION
-from biorun.const import *
-from biorun import utils
-from biorun.data import listing, view, storage
+
+from biorun import utils, const
+from biorun.data import listing, storage
+from biorun.data import fastarec, gffrec
 
 # Module level logger
 logger = utils.logger
 
-
-def smartname(text):
-    """
-    Splits an accession number by colon into acc:name
-    """
-    pass
 
 @plac.flg('fasta', "produce FASTA format")
 @plac.flg('gff', "produce GFF format", abbrev='G')
@@ -32,58 +26,74 @@ def smartname(text):
 @plac.opt('type', "select feature by type")
 @plac.opt('start', "start coordinate")
 @plac.opt('end', "end coordinate")
-@plac.opt('gene', "select features associated with gene" )
+@plac.opt('gene', "select features associated with gene")
 @plac.opt('match', "select features by rexep match")
 @plac.flg('verbose', "verbose mode")
 def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, translate=False,
-              delete=False, list=False, rename='',
-              seqid='', start='', end='', type='', gene='', match='', verbose=False, *acc):
+              delete=False, list=False, rename='', seqid='', start='', end='', type='', gene='', match='',
+              verbose=False, *acc):
     """
     bio - making bioinformatics fun again
 
     command line utility for manipulating bioinformatics data
     """
 
-    params = []
-    names = []
-    for name in acc:
-        # Needs a separate parameter as there may be compound names ACC:S.
-        param = utils.Param(start=start, end=end, seqid=seqid, protein=protein, update=update,
-                            gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=match)
+    def make_param(name):
+        """
+        Creates a parameter for each accession.
 
-        name = param.parse(name)
-        names.append(name)
-        params.append(param)
+        """
+        # A very common error. Catch it here.
+        if name.startswith("-"):
+            msg = f"Invalid accession number: {name}"
+            utils.error(msg)
 
-    # Check the names.
-    names = storage.check_names(names)
+        # A simple wrapper class to carry all parameters around.
+        p = utils.Param(start=start, end=end, seqid=seqid, protein=protein,
+                        update=update, name=name, gff=gff, translate=translate,
+                        fasta=fasta, type=type, gene=gene, regexp=match)
+
+        # Fill the json data for the name.
+        p.json = storage.get_json(name, seqid=seqid)
+        return p
+
+    # Make a list of parameters for each name.
+    params = [make_param(n) for n in acc]
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
 
     # Delete the files from storage.
     if delete:
-        storage.delete(names)
+        storage.delete(params)
 
     # Get the data from Entrez.
     if fetch:
         db = "protein" if protein else "nuccore"
-        storage.fetch(names, seqid=seqid, db=db, update=update)
+        storage.fetch(params, seqid=seqid, db=db, update=update)
 
     # Renaming step before listing.
     if rename:
-        storage.rename(names, seqid=seqid, newname=rename)
+        storage.rename(params, seqid=seqid, newname=rename)
 
     # List the available data.
     if list:
         listing.print_data_list()
 
     # Convert if no other command was given.
-    convert = not(list or rename or delete or fetch)
+    convert = not (list or rename or delete or fetch)
 
-    if convert:
-        # Perform the data conversion
-        view.convert(names, params=params)
+    if fasta:
+        fastarec.fasta_view(params, params=params)
+
+    elif gff:
+        gffrec.gff_convert(params, params=params)
+    else:
+        pass
+
+    # if convert:
+    #    # Perform the data conversion
+    #    view.convert(names, params=params)
 
 
 def router():
@@ -92,10 +102,10 @@ def router():
     """
 
     # Alignment requested.
-    if ALIGN in sys.argv:
+    if const.ALIGN in sys.argv:
 
         # Drop the alignment command from paramters.
-        sys.argv.remove(ALIGN)
+        sys.argv.remove(const.ALIGN)
 
         # Delayed import to avoid missing library warning for other tasks.
         from biorun.align import pairwise

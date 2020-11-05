@@ -1,15 +1,16 @@
 """
-This package attempts to simplify the BioPython SeqRecords into a simpler, flatter structure that
-can be more readily worked with.
-"""
-import sys, os, gzip
-from biorun import utils
-from collections import OrderedDict
+Represents a BioPython SeqRecords as JSON data structure.
 
-from itertools import *
-from pprint import pprint
+There is functionality to convert from SeqRecord to JSON and vice versa.
+
+Storing data as JSON instead of FASTA or GENBANK allows for much faster processing of the data.
+"""
+import sys, os, gzip, json
+from collections import OrderedDict
 from biorun import utils
-from biorun.const import *
+from biorun import const
+
+from pprint import pprint
 
 try:
     from Bio import SeqIO
@@ -21,6 +22,7 @@ except ImportError as exc:
     print(f"*** This software requires biopython.", file=sys.stderr)
     print(f"*** Try: conda install biopython", file=sys.stderr)
     sys.exit(1)
+
 
 logger = utils.logger
 
@@ -68,7 +70,7 @@ def first(item, key, default=""):
 
 def make_attr(feat):
     """
-    Creates GFF attributes from a JSON field.
+    Creates GFF style attributes from JSON fields.
     """
 
     # Generate a name.
@@ -80,8 +82,8 @@ def make_attr(feat):
     # The minimally present features
     data = [f"Name={name}", f"type={ftype}"]
 
-    # Fill in GFF attributes.
-    for label in GFF_ATTRIBUTES:
+    # Fill in known GFF attributes.
+    for label in const.GFF_ATTRIBUTES:
         value = first(feat, label)
         if value:
             data.append(f"{label}={value}")
@@ -106,11 +108,11 @@ def rec_desc(f):
 
 def get_translation_records(item, param):
     """
-    Produces SeqRecods for each feature that have translations.
+    Yields BioPython SeqRecords for JSON features that do have translations.
     """
 
     # All features for the item
-    feats = item[FEATURES]
+    feats = item[const.FEATURES]
 
     # Filtering function for translations.
     has_translation = lambda f: f.get('translation', [''])[0]
@@ -118,7 +120,7 @@ def get_translation_records(item, param):
     # Features with translation.
     feats = filter(has_translation, feats)
 
-    # Additional filters
+    # Additional filters that may have been passed.
     feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp)
 
     # Hoist the variables out.
@@ -126,52 +128,75 @@ def get_translation_records(item, param):
 
     # Produce the translation records.
     for f in feats:
+
         # Fetch the translation.
         trans = first(f, "translation")[start:end]
 
         # Set up the metadata.
         name = param.seqid or rec_name(f)
+
+        # Create the sequence descriptor.
         desc = rec_desc(f)
 
         # Generate sequence record.
-        rec = SeqRecord(Seq(trans), id=name, description=desc)
+        seq = Seq(trans)
+
+        # Form the sequence record.
+        rec = SeqRecord(seq, id=name, description=desc)
 
         yield rec
 
 
 def get_feature_records(data, param):
     """
-    Returns records from a list of GenBank
+    Yields BioPython SeqRecords from JSON data.
     """
 
-    feats = data[FEATURES]
-    origin = data[ORIGIN]
+    # A shortcut to features.
+    feats = data[const.FEATURES]
+
+    # Filter the features.
     feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp)
 
-    # Ignore translation warnings
-    if param.translate:
-        import warnings
-        from Bio import BiopythonWarning
-        warnings.simplefilter('ignore', BiopythonWarning)
+    # We can extract DNA sequences from this if needed.
+    origin = data[const.ORIGIN]
 
+    # Ignore translation warnings
+    #if param.translate:
+    #    import warnings
+    #    from Bio import BiopythonWarning
+    #    warnings.simplefilter('ignore', BiopythonWarning)
+
+    # Shortcuts to coordinates.
     start, end = param.start, param.end
 
+    # Create a SeqRecord from each feature.
     for f in feats:
+
+        # Make a name
         name = rec_name(f)
+
+        # Make a description
         desc = rec_desc(f)
+
+        # Concatenate locations
         locations = f.get("location", [])
 
+        # The sequence for the feature.
         dna = Seq('')
-        for x_start, x_end, strand in locations:
-            sub = Seq(origin[x_start - 1:x_end])
+        for x, y, strand in locations:
+            chunk = Seq(origin[x - 1:y])
             if strand == -1:
-                sub = sub.reverse_complement()
-            dna += sub
+                chunk = chunk.reverse_complement()
+            dna += chunk
 
+        # Slice the resulting DNA sequence.
+        dna = dna[start:end]
+
+        # Perform the translation if needed (drop the stop codon).
         seq = dna.translate()[:-1] if param.translate else dna
 
-        seq = seq[start:end]
-
+        # Build the sequence record.
         rec = SeqRecord(seq, id=name, description=desc)
 
         # Sanity check for translation
@@ -179,14 +204,29 @@ def get_feature_records(data, param):
             expected = first(f, "translation")[start:end]
             observed = str(rec.seq)
             if expected and expected != observed:
-                rec.description = f"{rec.description} (possible translation error)"
+                logger.info(f"translation mismatch for: {rec.id}")
 
         yield rec
 
 
-def serialize(value):
+def get_origin(item, param):
     """
-    Serializes values to JSON ready type.
+    Returns the origin sequence from an JSON item
+    """
+    # Prints the source sequence
+    seq = item[const.ORIGIN][param.start:param.end]
+    desc = item[const.DEFINITION]
+    seqid = item[const.SEQID]
+    locus = item[const.LOCUS]
+    seqid = param.seqid or seqid
+    rec = SeqRecord(Seq(seq), id=seqid, name=locus, description=desc)
+
+    yield rec
+
+
+def json_ready(value):
+    """
+    Serializes values to a type that can be turned into JSON.
     """
 
     # The type of of the incoming value.
@@ -198,32 +238,18 @@ def serialize(value):
 
     # Serialize each element of the list.
     if curr_type == list:
-        return [serialize(x) for x in value]
+        return [json_ready(x) for x in value]
 
-    # Serialize the elements of an Ordered dictionary.
+    # Serialize the values of an Ordered dictionary.
     if curr_type == OrderedDict:
-        return dict((k, serialize(v)) for (k, v) in value.items())
+        return dict((k, json_ready(v)) for (k, v) in value.items())
 
     return value
 
 
-def get_origin(item, param):
-    """
-    Returns the origin sequence from an JSON item
-    """
-    # Prints the source sequence
-    seq = item[ORIGIN][param.start:param.end]
-    desc = item[DEFINITION]
-    seqid = item[SEQID]
-    locus = item[LOCUS]
-    seqid = param.seqid or seqid
-    rec = SeqRecord(Seq(seq), id=seqid, name=locus, description=desc)
-    return rec
-
-
 def convert_genbank(recs, seqid=None):
     """
-    Converts a stream to a GenBank file into json.
+    Converts BioPython SeqRecords obtained from a GENBANK file to a JSON representation.
     """
 
     # The outer dictionary containing multiple records.
@@ -232,84 +258,120 @@ def convert_genbank(recs, seqid=None):
     # Add each record separately.
     for rec in recs:
 
-        # The individual SeqRecords as dictionaries.
+        # Each individual SeqRecords is a dictionary.
         item = dict()
 
         # Fill the standard SeqRecord fields.
-        item[SEQID] = seqid or rec.id
-        item[DEFINITION] = rec.description
-        item[DBLINK] = rec.dbxrefs
-        item[LOCUS] = rec.name
-        item[FEATURE_COUNT] = len(rec.features)
-        item[ORIGIN_SIZE] = len(rec.seq)
+        item[const.SEQID] = seqid or rec.id
+        item[const.DEFINITION] = rec.description
+        item[const.DBLINK] = rec.dbxrefs
+        item[const.LOCUS] = rec.name
+        item[const.FEATURE_COUNT] = len(rec.features)
+        item[const.ORIGIN_SIZE] = len(rec.seq)
 
         # Fill in all annotations.
         for key, value in rec.annotations.items():
-            item[key] = serialize(value)
+            item[key] = json_ready(value)
 
         # Fill in the features.
         feats = []
         for feat in rec.features:
+
+            # Feature type.
             ftype = feat.type
+
+            # Feature strand.
             strand = feat.strand
+
+            # Feature coordinates are 1 based.
             start = int(feat.location.start) + 1
             end = int(feat.location.end)
+
+            # Location operator.
             oper = feat.location_operator
 
+            # Location coordinates are 1 based.
             location = [(loc.start + 1, loc.end, loc.strand) for loc in feat.location.parts]
-            elem = dict(start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
 
+            # Feature attributes
+            attrs = dict(start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
+
+            # Fills in the additional qualifiers.
             for (k, v) in feat.qualifiers.items():
-                elem[k] = serialize(v)
+                attrs[k] = json_ready(v)
 
-            feats.append(elem)
+            # Append the attributes as a record.
+            feats.append(attrs)
 
         # Add the features
-        item[FEATURES] = feats
+        item[const.FEATURES] = feats
 
         # Save the sequence as well
-        item[ORIGIN] = str(rec.seq)
+        item[const.ORIGIN] = str(rec.seq)
 
-        # Each item keyed as the record.id.
+        # Add the item to the list.
         data.append(item)
-
-        # pprint(rec.annotations)
-
-        # print(rec)
 
     return data
 
 
 def convert_fasta(recs, seqid=None):
     """
-    FASTA files as JSON data.
+    Converts BioPython SeqRecords obtained from a FASTA file to JSON representation.
     """
     data = []
     for rec in recs:
         item = dict()
-        item[SEQID] = seqid or rec.id
-        item[LOCUS] = rec.name
-        item[DEFINITION] = rec.description
-        item[ORIGIN] = str(rec.seq)
-        item[FEATURES] = []
+        item[const.SEQID] = seqid or rec.id
+        item[const.LOCUS] = rec.name
+        item[const.DEFINITION] = rec.description
+        item[const.ORIGIN] = str(rec.seq)
+        item[const.FEATURES] = []
         data.append(item)
     return data
+
+
+def print_json(data, param):
+    """
+    Prints the sequence for features.
+    """
+
+    # Produce the full file when no parameters are set.
+    if param.unset():
+        text = json.dumps(data, indent=4)
+        print(text)
+        return
+
+    # Selects individual features.
+    for item in data:
+        feats = item[const.FEATURES]
+        feats = filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene,
+                                        regexp=param.regexp)
+        text = json.dumps(list(feats), indent=4)
+        print(text)
+
+def json_view(names):
+    pass
 
 
 def parse_file(fname, seqid=None):
     """
     Parses a recognized file into a JSON representation
     """
+
+    # Handle both compressed and uncompressed formats.
     stream = gzip.open(fname, 'rt') if fname.endswith(".gz") else open(fname, 'rt')
 
+    # Detect extentions
     name, ext = os.path.splitext(fname)
     ext = ext.lower()
 
-    # Split extension one more time
+    # Split extension one more time if it looks like a compressed file.
     if ext == ".gz":
         name, ext = os.path.splitext(name)
         ext = ext.lower()
 
+    # Cascade over the known file formats.
     if ext in (".gb", ".gbk", ".genbank"):
         recs = SeqIO.parse(stream, format=utils.GENBANK)
         data = convert_genbank(recs, seqid=seqid)
@@ -324,5 +386,4 @@ def parse_file(fname, seqid=None):
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod()

@@ -81,11 +81,21 @@ class Param(object):
         self.gap_open = 11
         self.gap_extend = 1
         self.matrix = None
+        self.json = None
+        self.name = None
         self.gff = self.protein = self.fasta = self.translate = self.mode = None
-        self.name = self.gene = self.type = self.regexp = None
+        self.gene = self.type = self.regexp = None
+
         self.__dict__.update(kwds)
+
+        # Parses out colon from data name if that exists.
+        if self.name and ":" in self.name:
+            self.name, word = self.name.split(":")
+            self.gene, self.type = word, 'CDS'
+
         self.start, self.end = zero_based(start=self.start, end=self.end)
         self.regexp = re.compile(self.regexp) if self.regexp else None
+
 
     def unset(self):
         """
@@ -95,15 +105,6 @@ class Param(object):
 
     def __str__(self):
         return str(self.__dict__)
-
-    def parse(self, text):
-        """
-        Allows names in form of ACC:GENE
-        """
-        if ":" in text:
-            text, gene = text.split(":")
-            self.gene, self.type = gene, 'CDS'
-        return text
 
 def guess_type(path):
     """

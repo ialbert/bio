@@ -4,7 +4,7 @@
 #
 
 # Get the helper utitilies.
-from biorun.test.generate import *
+from biorun.test.generate import run
 
 
 def test_1(capsys):

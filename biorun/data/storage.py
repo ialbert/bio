@@ -2,7 +2,8 @@
 Deals with the data storage.
 """
 import sys, os, gzip, json
-from biorun import utils, models
+from biorun import utils
+from biorun.data import jsonrec
 from biorun.const import *
 
 # Module level logger.
@@ -28,29 +29,17 @@ def resolve_fname(name, format='json'):
     return fname
 
 
-def delete(names):
+def delete(params):
     """
     Deletes data under a filename.
     """
-    for name in names:
-        fname = resolve_fname(name)
+    for p in params:
+        fname = resolve_fname(p.name)
         if os.path.isfile(fname):
             logger.info(f"removing: {fname}")
             os.remove(fname)
         else:
             logger.info(f"file does not exist: {fname}")
-
-
-def check_names(names):
-    """
-    Catches common user errors.
-    """
-    for name in names:
-        if name.startswith("-"):
-            msg = f"Invalid accession number: {name}"
-            utils.error(msg)
-
-    return names
 
 
 def read_json_file(fname):
@@ -109,25 +98,28 @@ def ncbi_efetch(name, gbk_name, db=None):
     utils.save_stream(stream=stream, fname=gbk_name)
 
 
-def fetch(names, seqid=None, db=None, update=False):
+def fetch(params, seqid=None, db=None, update=False):
     """
     Obtains data from NCBI
     """
-    # Find names that do not exist
-    names = filter(lambda n: not get_json(n, update=update), names)
 
-    for name in names:
+    for p in params:
+
+        # Skip if exists (or not update).
+        if p.json and not update:
+            continue
+
         # The JSON representation of the data.
-        json_name = resolve_fname(name=name, format="json")
+        json_name = resolve_fname(name=p.name, format="json")
 
         # GenBank representation of the data.
-        gbk_name = resolve_fname(name=name, format="gb")
+        gbk_name = resolve_fname(name=p.name, format="gb")
 
         # Fetch and store genbank from remote site.
-        ncbi_efetch(name, db=db, gbk_name=gbk_name)
+        ncbi_efetch(p.name, db=db, gbk_name=gbk_name)
 
         # Convert genbank to JSON.
-        data = models.parse_file(fname=gbk_name, seqid=seqid)
+        data = jsonrec.parse_file(fname=gbk_name, seqid=seqid)
 
         # Save JSON file.
         save_json_file(fname=json_name, data=data)
@@ -139,7 +131,7 @@ def get_json(name, seqid=None, update=False):
 
     # Data is an existing path to a file.
     if os.path.isfile(name):
-        data = models.parse_file(name, seqid=seqid)
+        data = jsonrec.parse_file(name, seqid=seqid)
         return data
 
     # Not a local file, attempt to resolve to storage.
@@ -163,20 +155,20 @@ def get_json(name, seqid=None, update=False):
     # No JSON file but there is a genbank file.
     if os.path.isfile(gbk_name):
         logger.info(f"found {gbk_name}")
-        data = models.parse_file(fname=gbk_name, seqid=seqid)
+        data = jsonrec.parse_file(fname=gbk_name, seqid=seqid)
         data = save_json_file(fname=json_name, data=data)
         return data
 
     return None
 
-def rename(names, seqid=None, newname=None):
+def rename(params, seqid=None, newname=None):
 
     # Empty list
-    if not names:
+    if not params:
         return
 
-    # It only makes sense to rename one in case there are more.
-    name = names[0]
+    # It only makes sense to rename one of the many
+    name = params[0].name
 
     # We can only rename files that we have
     if get_json(name):
