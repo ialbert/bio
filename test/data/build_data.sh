@@ -9,7 +9,7 @@ set -uex
 bio SARS2 --delete
 
 # Rebuild the JSON
-bio NC_045512 --rename SARS2 --seqid SARS2
+bio NC_045512 --fetch --rename SARS2 --seqid SARS2
 
 # JSON output.
 bio SARS2 > SARS2.json

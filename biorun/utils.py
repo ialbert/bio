@@ -123,19 +123,20 @@ def sizeof_fmt(num, suffix=''):
         num /= 1024.0
     return "%.1f%s%s" % (num, '??', suffix)
 
-def save_stream(stream, fname, trigger=50000):
+def save_stream(stream, fname, trigger=50000, file=sys.stdout):
     """
     Write a input 'stream' as the fname filename
     """
     # Save a stream into file and print progess.
     # Use a temporary file in case the process fails.
     # We don't want a failed cache file.
+
     tmp = tempfile.NamedTemporaryFile(mode="w+t")
 
     sequence = count(1)
     for index, line in zip(sequence, stream):
         if (index % trigger) == 0:
-            logger.info(f"wrote {index:,d} lines")
+            logger.info(f"*** wrote {index:,d} lines", file=file)
         tmp.write(line)
 
     # Not sure if this is needed. Can't hurt.
@@ -151,9 +152,8 @@ def save_stream(stream, fname, trigger=50000):
     out.close()
     tmp.close()
 
-    # User friendly file size.
-    #fsize = sizeof_fmt(os.path.getsize(fname))
-    #logger.debug(f"saved {fsize} data to {fname}")
+    logger.info(f"saved {fname}")
+
     return
 
 def get_logger(name, hnd=None, fmt=None, terminator='\n'):

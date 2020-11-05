@@ -26,7 +26,7 @@ def run(cmd, capsys, out=None):
     params = cmd.split()[1:]
 
     # Run the command and assert its state.
-    assert plac.call(main.base_runner, params) == None
+    assert plac.call(main.converter, params) == None
 
     # Read the standard out
     stream = capsys.readouterr()

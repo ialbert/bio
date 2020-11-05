@@ -109,15 +109,12 @@ def ncbi_efetch(name, gbk_name, db=None):
     utils.save_stream(stream=stream, fname=gbk_name)
 
 
-def fetch(names, seqid=None, db=None):
+def fetch(names, seqid=None, db=None, update=False):
     """
     Obtains data from NCBI
     """
-    # It is useful to see how large files are downloaded.
-    utils.set_verbosity(logger, level=1)
-
     # Find names that do not exist
-    names = filter(lambda n: not get_json(n), names)
+    names = filter(lambda n: not get_json(n, update=update), names)
 
     for name in names:
         # The JSON representation of the data.
@@ -135,7 +132,7 @@ def fetch(names, seqid=None, db=None):
         # Save JSON file.
         save_json_file(fname=json_name, data=data)
 
-def get_json(name, seqid=None):
+def get_json(name, seqid=None, update=False):
     """
     Attempts to return a JSON formatted data based on a name.
     """
@@ -146,6 +143,10 @@ def get_json(name, seqid=None):
         return data
 
     # Not a local file, attempt to resolve to storage.
+
+    # Report as not found if update is requested.
+    if update:
+        return None
 
     # The JSON representation of the data.
     json_name = resolve_fname(name=name, format="json")

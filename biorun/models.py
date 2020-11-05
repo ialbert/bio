@@ -130,7 +130,7 @@ def get_translation_records(item, param):
         trans = first(f, "translation")[start:end]
 
         # Set up the metadata.
-        name = rec_name(f)
+        name = param.seqid or rec_name(f)
         desc = rec_desc(f)
 
         # Generate sequence record.

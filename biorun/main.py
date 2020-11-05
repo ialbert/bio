@@ -24,6 +24,7 @@ def smartname(text):
 @plac.flg('fetch', "download data as accessions", abbrev='F')
 @plac.flg('list', "list data in storage", abbrev='L')
 @plac.flg('delete', "delete data in storage", abbrev='D')
+@plac.flg('update', "updates data in storage", abbrev='U')
 @plac.flg('protein', "operate on proteins", abbrev='P')
 @plac.flg('translate', "translate DNA to protein", abbrev='T')
 @plac.opt('rename', "set the name", abbrev='R')
@@ -34,9 +35,9 @@ def smartname(text):
 @plac.opt('gene', "select features associated with gene" )
 @plac.opt('match', "select features by rexep match")
 @plac.flg('verbose', "verbose mode")
-def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=False,
-                delete=False, list=False, rename='',
-                seqid='', start='', end='', type='', gene='', match='', verbose=False, *acc):
+def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, translate=False,
+              delete=False, list=False, rename='',
+              seqid='', start='', end='', type='', gene='', match='', verbose=False, *acc):
     """
     bio - making bioinformatics fun again
 
@@ -46,8 +47,8 @@ def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=Fa
     params = []
     names = []
     for name in acc:
-        # Populate the parameter list.
-        param = utils.Param(start=start, end=end, seqid=seqid, protein=protein,
+        # Needs a separate parameter as there may be compound names ACC:S.
+        param = utils.Param(start=start, end=end, seqid=seqid, protein=protein, update=update,
                             gff=gff, translate=translate, fasta=fasta, type=type, gene=gene, regexp=match)
 
         name = param.parse(name)
@@ -67,10 +68,7 @@ def base_runner(fasta=False, gff=False, fetch=False, protein=False, translate=Fa
     # Get the data from Entrez.
     if fetch:
         db = "protein" if protein else "nuccore"
-        storage.fetch(names, seqid=seqid, db=db)
-
-    # The logging level may change within efetch to show progress.
-    utils.set_verbosity(logger, level=int(verbose))
+        storage.fetch(names, seqid=seqid, db=db, update=update)
 
     # Renaming step before listing.
     if rename:
@@ -93,13 +91,14 @@ def router():
     Routes the tasks based on incoming parameters.
     """
 
+    # Alignment requested.
     if ALIGN in sys.argv:
+
+        # Drop the alignment command from paramters.
+        sys.argv.remove(ALIGN)
 
         # Delayed import to avoid missing library warning for other tasks.
         from biorun.align import pairwise
-
-        # Drop the alignment request
-        sys.argv.remove(ALIGN)
 
         # Add the help flag if otherwise empty.
         sys.argv += ["-h"] if len(sys.argv) == 1 else []
@@ -107,11 +106,12 @@ def router():
         # Call the pairwise aligner.
         plac.call(pairwise.run)
 
+    # Default action is to convert a file.
     else:
 
         # Add the help flag if otherwise empty.
         sys.argv += ["-h"] if len(sys.argv) == 1 else []
-        plac.call(base_runner)
+        plac.call(converter)
 
 
 if __name__ == '__main__':
