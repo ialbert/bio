@@ -11,7 +11,7 @@ test:
 	pytest
 
 build_test:
-	(cd test && python generate.py)
+	python -m biorun.test.generate
 	pytest
 
 serve: init

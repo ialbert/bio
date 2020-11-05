@@ -41,8 +41,8 @@ bio SARS2 --fasta --type CDS > CDS.fa
 # Sliced FASTA features by type.
 bio SARS2 --fasta --type gene --end 10 > gene-start.fa
 
-# Protein FASTA
+# Protein FASTA.
 bio SARS2 --protein --start -10 > protein-end.fa
 
-# Renamed protein
+# Renamed protein.
 bio SARS2:S --fasta --protein --seqid foo > s_prot_foo.fa
