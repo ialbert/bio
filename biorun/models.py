@@ -65,39 +65,41 @@ def first(item, key, default=""):
     """
     return item.get(key, [default])[0]
 
+
 def make_attr(feat):
     """
-    Creates GFF attributes from a SeqRecord
+    Creates GFF attributes from a JSON field.
     """
-    ftype = feat['type']
 
-    data = []
-
+    # Generate a name.
     name = rec_name(feat)
 
-    data.append(f"Name={name};type={ftype}")
+    # Feature type
+    ftype = feat['type']
 
+    # The minimally present features
+    data = [f"Name={name}", f"type={ftype}"]
+
+    # Fill in GFF attributes.
     for label in GFF_ATTRIBUTES:
         value = first(feat, label)
         if value:
-            data.append( f"{label}={value}")
+            data.append(f"{label}={value}")
 
     return ";".join(data)
 
 
 def rec_name(f):
     """
-    Creates a record name from a JSON feature.
+    Generates a record name from a JSON feature.
     """
-
     name = first(f, "protein_id") or first(f, "gene") or first(f, 'locus_tag') or first(f, 'db_xref')
-
     return name
 
 
 def rec_desc(f):
     """
-    Creates a record description from JSON feature.
+    Generates a record description from JSON feature.
     """
     return make_attr(f)
 
@@ -277,6 +279,7 @@ def convert_genbank(recs, seqid=None):
 
     return data
 
+
 def convert_fasta(recs, seqid=None):
     """
     FASTA files as JSON data.
@@ -291,6 +294,7 @@ def convert_fasta(recs, seqid=None):
         item[FEATURES] = []
         data.append(item)
     return data
+
 
 def parse_file(fname, seqid=None):
     """
