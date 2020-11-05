@@ -7,7 +7,7 @@ import plac
 
 from biorun import utils, const
 from biorun.data import listing, storage
-from biorun.data import fastarec, gffrec
+from biorun.data import fastarec, gffrec, jsonrec
 
 # Module level logger
 logger = utils.logger
@@ -80,20 +80,19 @@ def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, 
     if list:
         listing.print_data_list()
 
-    # Convert if no other command was given.
-    convert = not (list or rename or delete or fetch)
+    # Condition to exit.
+    exit = (list or rename or delete or fetch)
 
+    if exit:
+        return
+
+    # Looks like  conversion
     if fasta:
-        fastarec.fasta_view(params, params=params)
-
+        fastarec.fasta_view(params)
     elif gff:
-        gffrec.gff_convert(params, params=params)
+        gffrec.gff_view(params)
     else:
-        pass
-
-    # if convert:
-    #    # Perform the data conversion
-    #    view.convert(names, params=params)
+        jsonrec.json_view(params)
 
 
 def router():

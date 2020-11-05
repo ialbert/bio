@@ -33,22 +33,19 @@ def print_fasta(recs):
         print(rec.format("fasta"))
 
 
-def fasta_view(names, params):
+def fasta_view(params):
     """
     Converts data to fastya
     """
 
-    for name, param in zip(names, params):
-
-        # Look for the data by name
-        data = storage.get_json(name, seqid=param.seqid)
+    for param in params:
 
         # Stop when data was not found.
-        if not data:
-            utils.error(f"data not found: {name}")
+        if not param.json:
+            utils.error(f"data not found: {param.name}")
 
         # Each data may have multiple entries.
-        for item in data:
+        for item in param.json:
 
             # Get the fasta for each entry.
             recs = get_fasta(item, param=param)
