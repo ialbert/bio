@@ -17,6 +17,7 @@ def print_data_list():
     # Extract the definition from the JSON without parsing it.
     patt = re.compile(r'(definition\":\s*)(?P<value>\".+?\")')
     collect = []
+
     for path in matched:
         fsize = utils.sizeof_fmt(os.path.getsize(path))
         base, fname = os.path.split(path)
