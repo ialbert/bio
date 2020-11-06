@@ -1,0 +1,16 @@
+
+### 1: S1 vs S2 ###
+
+Length:	2 (local) 
+Query:	8 [7, 8]
+Target:	9 [7, 8]
+Score:	11
+Ident:	2/2 (100.0%)
+Simil:	2/2 (100.0%)
+Gaps:	0/2 (0.0%)
+Matrix:	blosum62(-11, -1) 
+
+S2           NE
+             ||
+S1           NE
+
