@@ -1,10 +1,9 @@
 """
 Deals with the data storage.
 """
-import sys, os, gzip, json
-from biorun import utils
+import sys, os, glob, re, gzip, json
+from biorun import const, utils
 from biorun.data import jsonrec
-from biorun.const import *
 
 # Module level logger.
 logger = utils.logger
@@ -69,7 +68,7 @@ def change_seqid(json_name, seqid):
     if os.path.isfile(json_name):
         data = read_json_file(json_name)
         for item in data:
-            item[SEQID] = seqid
+            item[const.SEQID] = seqid
         fp = gzip.open(json_name, 'wt', compresslevel=1)
         json.dump(data, fp)
         fp.close()
@@ -185,3 +184,38 @@ def rename(params, seqid=None, newname=None):
     else:
         logger.error(f"not found: {name}")
 
+
+def print_data_list():
+    """
+    Returns a list of the files in the data directory
+    """
+    pattern = os.path.join(os.path.join(utils.DATADIR, '*.json.gz'))
+    matched = glob.glob(pattern)
+
+    # Extract the definition from the JSON without parsing it.
+    patt = re.compile(r'(definition\":\s*)(?P<value>\".+?\")')
+    collect = []
+
+    for path in matched:
+        fsize = utils.sizeof_fmt(os.path.getsize(path))
+        base, fname = os.path.split(path)
+        fname = fname.rsplit(".", maxsplit=2)[0]
+
+        # Parse the first N lines
+        stream = gzip.open(path, 'rt') if path.endswith('gz') else open(path, 'rt')
+        text = stream.read(1000)
+        match = patt.search(text)
+
+        title = match.group("value") if match else ''
+        title = title.strip('", ')
+
+        # Trim the title
+        stitle = title[:100]
+        stitle = stitle + "..." if len(title) != len(stitle) else stitle
+
+        collect.append((str(fsize), f"{fname:10s}", stitle))
+
+    collect = sorted(collect, key=lambda x: x[2])
+    for row in collect:
+        line = "\t".join(row)
+        print(line)

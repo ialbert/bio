@@ -1,12 +1,10 @@
 """
 The main job runner. Register functions here.
 """
-import os, time, re
 import sys
 import plac
 
-from biorun import utils, const
-from biorun.data import listing, storage
+from biorun import utils, const, storage
 from biorun.data import fastarec, gffrec, jsonrec
 
 # Module level logger
@@ -78,7 +76,7 @@ def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, 
 
     # List the available data.
     if list:
-        listing.print_data_list()
+        storage.print_data_list()
 
     # Stop after storage related actions
     if (list or rename or delete):

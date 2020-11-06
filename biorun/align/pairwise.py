@@ -3,9 +3,9 @@ import plac
 from itertools import islice, count
 import textwrap
 
-from biorun.data import storage, view
+from biorun.data import view
 from biorun.const import *
-from biorun import utils
+from biorun import utils, storage
 
 try:
     from Bio import SeqIO
