@@ -54,7 +54,7 @@ def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, 
                         fasta=fasta, type=type, gene=gene, regexp=match)
 
         # Fill the json data for the name.
-        p.json = storage.get_json(name, seqid=seqid)
+        p.json = storage.get_json(p.name, seqid=seqid)
         return p
 
     # Make a list of parameters for each name.
@@ -80,18 +80,16 @@ def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, 
     if list:
         listing.print_data_list()
 
-    # Condition to exit.
-    exit = (list or rename or delete or fetch)
-
-    if exit:
+    # Stop after storage related actions
+    if (list or rename or delete):
         return
 
-    # Looks like  conversion
-    if fasta:
+    # Perform a conversion if the flags as passed.
+    if fasta or protein or translate:
         fastarec.fasta_view(params)
     elif gff:
         gffrec.gff_view(params)
-    else:
+    elif not fetch:
         jsonrec.json_view(params)
 
 

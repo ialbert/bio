@@ -83,20 +83,6 @@ def print_json(data, param):
         print(text)
 
 
-def feature2gff(feat, anchor):
-    """
-    Returns a SeqRecord as an 11 element  GFF3 list .
-    """
-    start = feat['start']
-    end = feat['end']
-    ftype = feat['type']
-    strand = feat['strand']
-    phase = feat.get("codon_start", [1])[0]
-    attr = jsonrec.make_attr(feat)
-    strand = "+" if strand else "-"
-    ftype = SEQUENCE_ONTOLOGY.get(ftype, ftype)
-    data = [anchor, ".", ftype, start, end, ".", strand, phase, attr]
-    return data
 
 
 def print_gff(data, param):

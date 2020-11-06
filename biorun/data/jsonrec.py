@@ -201,8 +201,8 @@ def get_feature_records(data, param):
 
         # Sanity check for translation
         if param.translate:
-            expected = first(f, "translation")[start:end]
-            observed = str(rec.seq)
+            expected = first(f, "translation")
+            observed = str(seq)
             if expected and expected != observed:
                 logger.info(f"translation mismatch for: {rec.id}")
 
@@ -331,28 +331,24 @@ def convert_fasta(recs, seqid=None):
     return data
 
 
-def print_json(data, param):
+def json_view(params):
     """
-    Prints the sequence for features.
+    Prints json output to
     """
+    for param in params:
 
-    # Produce the full file when no parameters are set.
-    if param.unset():
-        text = json.dumps(data, indent=4)
-        print(text)
-        return
-
-    # Selects individual features.
-    for item in data:
-        feats = item[const.FEATURES]
-        feats = filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene,
+        # Produce the full file when no parameters are set.
+        if param.unset():
+            text = json.dumps(param.json, indent=4)
+            print(text)
+        else:
+            # Selects individual features.
+            for item in param.json:
+                feats = item[const.FEATURES]
+                feats = filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene,
                                         regexp=param.regexp)
-        text = json.dumps(list(feats), indent=4)
-        print(text)
-
-def json_view(names):
-    pass
-
+                text = json.dumps(list(feats), indent=4)
+                print(text)
 
 def parse_file(fname, seqid=None):
     """

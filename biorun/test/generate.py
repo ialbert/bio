@@ -54,7 +54,8 @@ def run(cmd, capsys, out=None):
 
     # Check the output if we pass expected value here.
     if out:
-        assert result == read(out)
+        expect = read(out)
+        assert result == expect
 
     return result
 
