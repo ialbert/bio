@@ -23,51 +23,113 @@ The software with the most similar goals is the [emboss suite][emboss].
 
 If you've ever done bioinformatics you know how even seemingly straigthforward tasks require multiple steps, arcane incantations, reading documentation and other preparations that slow down your progress. 
 
-Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. Well, `bio` is meant to solve that tedium.
+Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium. 
 
 For example, suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, the think about the effort it would take to teach someone else how to do it. Right?
  
 Well, with the `bio` package you can just write:
 
-    bio MN996532 --fetch --rename bat
-    bio NC_045512--fetch --rename sars2
+    bio MN996532 --fetch --rename ratg13
+    bio NC_045512 --fetch --rename ncov
     
-to get the data, and rename it into more manageable lables. Then you can simply align the whole genomes:
+to get the data, and rename it into more manageable labels. Since you are interested in the `S` protein alone you can write:
 
-    bio bat sars2 --align 
 
-or align just the genomic region that forms the `S` protein:
+    bio align ncov:S ratg13:S | head -20
 
-    bio bat:S sars2:S --align
+to see:
+    
+    ### 1: YP_009724390 vs QHR63300.2 ###
+    
+    Length:	3827 (local) 
+    Query:	3822 [1, 3822]
+    Target:	3810 [1, 3810]
+    Score:	16694
+    Ident:	3554/3827 (92.9%)
+    Simil:	3554/3827 (92.9%)
+    Gaps:	22/3827 (0.6%)
+    Matrix:	nuc44(-11, -1) 
+    
+    QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGC
+                 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||
+    YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGC
+    
+    QHR63300.2   ATACACCAACTCATCCACCCGTGGTGTCTATTACCCTGACAAAGTTTTCAGATCTTCAGTTTTACATTTAACTCAGGATT
+                 ||||||.||.||.|.|||.||||||||.||||||||||||||||||||||||||.|||||||||||||.|||||||||.|
+    YP_009724390 ATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGAC
 
-What did `bio` do in the backround?
+or maybe you wanted to align the `S` protein in protein space like so:
+
+    bio align ncov:S ratg13:S --protein | head -20
+    
+that prints:
+
+    ### 1: YP_009724390 vs QHR63300.2 ###
+    
+    Length:	1273 (local) 
+    Query:	1273 [1, 1273]
+    Target:	1269 [1, 1269]
+    Score:	6541
+    Ident:	1240/1273 (97.4%)
+    Simil:	1252/1273 (98.4%)
+    Gaps:	4/1273 (0.3%)
+    Matrix:	blosum62(-11, -1) 
+    
+    QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFD
+                 |||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||
+    YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFD
+    
+    QHR63300.2   NPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVY
+                 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    YP_009724390 NPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVY
+
+
+We can immediately see that many of the mutations are synomous, the similarity went from `92%` to `97%`.
+
+What could `bio` do for us?
  
-1. fetches the data from NCBI
-1. creates a more efficient local representation of it
-1. stores this representation so that next time no internet connection is necessary
-1. generate a global DNA alignment. 
+1. fetch the data from NCBI
+1. create a more efficient local representation the data
+1. store this representation so that next time no internet connection is necessary
+1. generate alignments 
 
-But wait there is more. Perhaps you needed local alignments, no problem:
+But wait there is more. Perhaps you wanted the FASTA sequence of the genome
 
-    bio bat:S sars2:S --align --mode local
+    bio ncov --fasta | head -5
+    
+prints:
 
-or that you wanted to align the sequences as proteins:
+    >ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+    GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+    CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+    TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
 
-    bio bat:S sars2:S --align --protein
-   
-proteins and local alignments:
+But wait there is even more, a lot more. How about translating the, reverse of the last 10 nucleotides of every feature labeled as CDS. Why not:
 
-    bio bat:S sars2:S --align --protein --mode local
-   
-proteins and local alignments and just a certain region:
-   
-    bio bat:S sars2:S --align --protein --mode local --start 100 --end 200 
-   
-look ma, I can even align the last two aminoacids
 
-    bio bat:S sars2:S --align --protein --start -10 
-   
-There is a lot more the `bio` than just alignments though. The package is an effort to solve the most nagging and annoying limitations that practitioners have that often boil down to do I extract the data I need and I know is embedded in the file.
+    bio ncov --fasta --type CDS --start -10 --translate | head -5
+    
+ah yes, just what I needed:    
+        
+    >YP_009724389.1 [-9:21291], translated DNA
+    *QL
+    
+    >YP_009725295.1 [-9:13218], translated DNA
+    CGV
+
+Or what about GFF regions of type `gene` that overlap with a region 1000 to 2000
+
+    bio ncov --gff --start 1000 --end 2000 | head
+
+it prints:
+
+    ##gff-version 3
+    ncov	.	gene	266	21555	.	+	1	Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
+    ncov	.	CDS	266	21555	.	+	1	Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
+    ncov	.	mature_protein_region	806	2719	.	+	1	Name=YP_009725298.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725298.1;product=nsp2
+    ncov	.	CDS	266	13483	.	+	1	Name=YP_009725295.1;type=CDS;gene=ORF1ab;protein_id=YP_009725295.1;product=ORF1a polyprotein;db_xref=GeneID:43740578
+    ncov	.	mature_protein_region	806	2719	.	+	1	Name=YP_009742609.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742609.1;product=nsp2
 
 ## Documentation
 
