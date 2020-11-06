@@ -11,10 +11,10 @@ test:
 	pytest
 
 build_data:
-	(cd biorun/test/data && bash ../test_bio_data.sh)
+	(cd test/data && bash ../test_bio_data.sh)
 
 build_test:
-	python -m biorun.test.generate
+	(cd test && python generate.py)
 	pytest
 
 serve: init

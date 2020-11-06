@@ -10,8 +10,7 @@ from itertools import count
 from textwrap import dedent
 import os
 import plac
-from biorun import main
-from biorun.const import *
+from biorun import main, const
 
 # Test naming index.
 counter = count(1)
@@ -41,7 +40,7 @@ def run(cmd, capsys, out=None):
     params = cmd.split()[1:]
 
     # Different functions to be called based on the command.
-    if params and params[0] == ALIGN:
+    if params and params[0] == const.ALIGN:
         # Run the alignment tests.
         pass
     else:
@@ -66,7 +65,7 @@ init = '''
 #
 
 # Get the helper utitilies.
-from biorun.test.generate import run
+from generate import run
 '''
 
 
