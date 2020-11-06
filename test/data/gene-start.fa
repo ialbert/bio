@@ -1,33 +1,33 @@
->ORF1ab Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
+>ORF1ab [1:10]
 ATGGAGAGCC
 
->S Name=S;type=gene;gene=S;db_xref=GeneID:43740568
+>S [1:10]
 ATGTTTGTTT
 
->ORF3a Name=ORF3a;type=gene;gene=ORF3a;db_xref=GeneID:43740569
+>ORF3a [1:10]
 ATGGATTTGT
 
->E Name=E;type=gene;gene=E;db_xref=GeneID:43740570
+>E [1:10]
 ATGTACTCAT
 
->M Name=M;type=gene;gene=M;db_xref=GeneID:43740571
+>M [1:10]
 ATGGCAGATT
 
->ORF6 Name=ORF6;type=gene;gene=ORF6;db_xref=GeneID:43740572
+>ORF6 [1:10]
 ATGTTTCATC
 
->ORF7a Name=ORF7a;type=gene;gene=ORF7a;db_xref=GeneID:43740573
+>ORF7a [1:10]
 ATGAAAATTA
 
->ORF7b Name=ORF7b;type=gene;gene=ORF7b;db_xref=GeneID:43740574
+>ORF7b [1:10]
 ATGATTGAAC
 
->ORF8 Name=ORF8;type=gene;gene=ORF8;db_xref=GeneID:43740577
+>ORF8 [1:10]
 ATGAAATTTC
 
->N Name=N;type=gene;gene=N;db_xref=GeneID:43740575
+>N [1:10]
 ATGTCTGATA
 
->ORF10 Name=ORF10;type=gene;gene=ORF10;db_xref=GeneID:43740576
+>ORF10 [1:10]
 ATGGGCTATA
 

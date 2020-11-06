@@ -25,7 +25,6 @@ except ImportError as exc:
     print(f"*** Try: conda install biopython", file=sys.stderr)
     sys.exit(1)
 
-
 logger = utils.logger
 
 
@@ -130,7 +129,6 @@ def get_translation_records(item, param):
 
     # Produce the translation records.
     for f in feats:
-
         # Fetch the translation.
         trans = first(f, "translation")[start:end]
 
@@ -178,9 +176,6 @@ def get_feature_records(data, param):
         # Make a name
         name = rec_name(f)
 
-        # Make a description
-        desc = rec_desc(f)
-
         # Concatenate locations
         locations = f.get("location", [])
 
@@ -192,14 +187,44 @@ def get_feature_records(data, param):
                 chunk = chunk.reverse_complement()
             dna += chunk
 
+        # Figure out description for slices.
+        if start or end:
+            _end = len(dna) if end is None else end
+            desc = [f'[{start + 1}:{_end}]']
+        else:
+            desc = []
+
         # Slice the resulting DNA sequence.
-        dna = dna[start:end]
+        seq = dna[start:end]
+
 
         try:
-            # Perform the translation if needed (drop the stop codon).
-            seq = dna.translate() if param.translate else dna
+            # Preforme reverse complement if needed.
+            if param.revcomp:
+                seq = seq.reverse_complement()
+                desc.append("reverse complement")
+
+            if param.reverse:
+                seq = seq[::-1]
+                desc.append("reverse")
+
+            if param.complement:
+                seq = seq.complement()
+                desc.append("complement")
+
+            if param.translate:
+                seq = seq.translate()
+                desc.append("translated DNA")
+
+            if param.transcribe:
+                seq = seq.transcribe()
+                desc.append("transcribed DNA")
+
         except Exception as exc:
             utils.error(exc)
+
+        # Make a description
+        desc = ", ".join(desc) if desc else rec_desc(f)
 
         # Build the sequence record.
         rec = SeqRecord(seq, id=name, description=desc)
@@ -220,12 +245,18 @@ def get_origin(item, param):
     Returns the origin sequence from an JSON item
     """
     # Prints the source sequence
-    seq = item[const.ORIGIN][param.start:param.end]
+    text = item[const.ORIGIN][param.start:param.end]
+    seq = Seq(text)
+
+    if param.translate:
+        seq = seq.translate() if param.translate else seq
+
     desc = item[const.DEFINITION]
     seqid = item[const.SEQID]
     locus = item[const.LOCUS]
     seqid = param.seqid or seqid
-    rec = SeqRecord(Seq(seq), id=seqid, name=locus, description=desc)
+
+    rec = SeqRecord(seq, id=seqid, name=locus, description=desc)
 
     yield rec
 
@@ -336,12 +367,13 @@ def convert_fasta(recs, seqid=None):
         data.append(item)
     return data
 
+
 def make_json(seq, seqid=None):
     """
     Makes a simple JSON representation for a text
     """
     count = next(counter)
-    name  = f"A{count}"
+    name = f"A{count}"
     data = []
     item = dict()
     item[const.SEQID] = seqid or "seqid"
@@ -349,8 +381,8 @@ def make_json(seq, seqid=None):
     item[const.DEFINITION] = ''
     item[const.ORIGIN] = str(seq)
     start, end, strand = 1, len(seq), 1
-    oper=None,
-    location = [[ start, end, strand ]]
+    oper = None,
+    location = [[start, end, strand]]
     ftype = "region"
     attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
     item[const.FEATURES] = [
@@ -358,6 +390,7 @@ def make_json(seq, seqid=None):
     ]
     data.append(item)
     return data
+
 
 def json_view(params):
     """
@@ -381,6 +414,7 @@ def json_view(params):
                                         regexp=param.regexp)
                 text = json.dumps(list(feats), indent=4)
                 print(text)
+
 
 def parse_file(fname, seqid=None):
     """
@@ -414,4 +448,5 @@ def parse_file(fname, seqid=None):
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

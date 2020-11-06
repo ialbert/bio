@@ -11,15 +11,16 @@ from biorun.models import fastarec, gffrec, jsonrec
 logger = utils.logger
 
 
-@plac.flg('fasta', "produce FASTA format")
+@plac.flg('fasta', "produce FASTA format", abbrev='F')
 @plac.flg('gff', "produce GFF format", abbrev='G')
-@plac.flg('fetch', "download data as accessions", abbrev='F')
-@plac.flg('list', "list data in storage", abbrev='L')
-@plac.flg('delete', "delete data in storage", abbrev='D')
-@plac.flg('update', "updates data in storage", abbrev='U')
+@plac.flg('fetch', "download data as accessions")
+@plac.flg('list', "list data in storage")
+@plac.flg('delete', "delete data in storage")
+@plac.flg('update', "updates data in storage")
 @plac.flg('protein', "operate on proteins", abbrev='P')
 @plac.flg('translate', "translate DNA to protein", abbrev='T')
-@plac.opt('rename', "set the name", abbrev='R')
+@plac.flg('transcribe', "transrcribe DNA to RNA", abbrev='X')
+@plac.opt('rename', "set the name", abbrev='r')
 @plac.opt('seqid', "set the sequence id", abbrev='S')
 @plac.opt('type', "select feature by type")
 @plac.opt('start', "start coordinate")
@@ -27,9 +28,13 @@ logger = utils.logger
 @plac.opt('gene', "select features associated with gene")
 @plac.opt('match', "select features by rexep match")
 @plac.flg('inter', "interactive (data from command line)", abbrev='i')
+@plac.flg('reverse', "reverse sequence", abbrev='E')
+@plac.flg('complement', "complement sequence", abbrev='C')
+@plac.flg('revcomp', "reverse complement sequence", abbrev='R')
 @plac.flg('verbose', "verbose mode")
-def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, translate=False,
-              delete=False, list=False, rename='', seqid='', start='', end='', type='', gene='', match='', inter=False,
+def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, list=False, protein=False,
+              translate=False, transcribe=False,
+              reverse=False, complement=False, revcomp=False, rename='',  seqid='', start='', end='', type='', gene='', match='', inter=False,
               verbose=False, *acc):
     """
     bio - making bioinformatics fun again
@@ -48,9 +53,9 @@ def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, 
             utils.error(msg)
 
         # A simple wrapper class to carry all parameters around.
-        p = objects.Param(start=start, end=end, seqid=seqid, protein=protein,
-                        update=update, name=name, gff=gff, translate=translate,
-                        fasta=fasta, type=type, gene=gene, regexp=match)
+        p = objects.Param(start=start, end=end, seqid=seqid, protein=protein, revcomp=revcomp,
+                        update=update, name=name, gff=gff, translate=translate, reverse=reverse, complement=complement,
+                        fasta=fasta, type=type, gene=gene, regexp=match, transcribe=transcribe)
 
         # Fill the json data for the parameter.
         p.json = storage.get_json(p.name, seqid=seqid, inter=inter)
