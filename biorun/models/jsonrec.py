@@ -341,17 +341,17 @@ def make_json(seq, seqid=None):
     Makes a simple JSON representation for a text
     """
     count = next(counter)
-    name  = seqid or f"seq{count}"
+    name  = f"A{count}"
     data = []
     item = dict()
-    item[const.SEQID] = name
+    item[const.SEQID] = seqid or "seqid"
     item[const.LOCUS] = ''
     item[const.DEFINITION] = ''
     item[const.ORIGIN] = str(seq)
     start, end, strand = 1, len(seq), 1
     oper=None,
     location = [[ start, end, strand ]]
-    ftype = "origin"
+    ftype = "region"
     attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
     item[const.FEATURES] = [
         attrs
