@@ -2,7 +2,7 @@
 Generates FASTA outputs from a JSON record.
 """
 from biorun import utils
-from biorun.data import jsonrec
+from biorun.models import jsonrec
 
 logger = utils.logger
 

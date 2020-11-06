@@ -20,19 +20,8 @@ DATADIR = os.path.join(expanduser("~"), ".bio")
 # Create the cache directory
 os.makedirs(DATADIR, exist_ok=True)
 
-GENBANK, FASTA, GFF, BED, SAM, BAM = "genbank", "fasta", "gff", "bed", "sam", "bam"
 
-TYPE_BY_EXTENSION = {
-    "gb": GENBANK,
-    "gbk": GENBANK,
-    "genbank": GENBANK,
-    "fa": FASTA,
-    "fasta": FASTA,
-    "bed": BED,
-    "gff": GFF,
-    "sam": SAM,
-    "bam": BAM,
-}
+
 
 def time_it(func):
     @wraps(func)
@@ -45,10 +34,11 @@ def time_it(func):
             end = time.time()
             diff = int(round((end - start), 1)) or 0.1
             if diff > 120:
-                diff, units = diff/60, "minutes"
+                diff, units = diff / 60, "minutes"
             logger.info(f"{func.__name__} runtime: {diff} {units}")
 
     return timer
+
 
 def zero_based(start, end):
     """
@@ -69,53 +59,6 @@ def zero_based(start, end):
     start = start - 1 if start > 0 else start
     return start, end
 
-class Param(object):
-    """
-    Parameter representation that have grown too numerous to pass individually.
-    """
-
-    def __init__(self, **kwds):
-        self.start = self.end = 0
-        self.phase = "1"
-        self.seqid = None
-        self.gap_open = 11
-        self.gap_extend = 1
-        self.matrix = None
-        self.json = None
-        self.name = None
-        self.gff = self.protein = self.fasta = self.translate = self.mode = None
-        self.gene = self.type = self.regexp = None
-
-        self.__dict__.update(kwds)
-
-        # Parses out colon from data name if that exists.
-        if self.name and ":" in self.name:
-            self.name, word = self.name.split(":")
-            self.gene, self.type = word, 'CDS'
-
-        self.start, self.end = zero_based(start=self.start, end=self.end)
-        self.regexp = re.compile(self.regexp) if self.regexp else None
-
-
-    def unset(self):
-        """
-        Feature filtering parameters not set.
-        """
-        return not (self.start or self.end or self.type or self.gene or self.regexp)
-
-    def __str__(self):
-        return str(self.__dict__)
-
-def guess_type(path):
-    """
-    Attempts to guess a file type from an extension.
-    """
-    name, ext = os.path.splitext(path)
-    ext = ext.lower()
-    ftype = TYPE_BY_EXTENSION.get(ext, "")
-    return ftype
-
-
 
 def sizeof_fmt(num, suffix=''):
     for unit in ['', 'K', 'M', 'G']:
@@ -123,6 +66,7 @@ def sizeof_fmt(num, suffix=''):
             return "%.0f%s%s" % (num, unit, suffix)
         num /= 1024.0
     return "%.1f%s%s" % (num, '??', suffix)
+
 
 def save_stream(stream, fname, trigger=50000, file=sys.stdout):
     """
@@ -147,7 +91,7 @@ def save_stream(stream, fname, trigger=50000, file=sys.stdout):
     tmp.seek(0)
 
     # Copy over the content from the temporary file to the final gzipped file destination.
-    out = gzip.open(fname, 'wt')  if fname.endswith(".gz") else open('wt')
+    out = gzip.open(fname, 'wt') if fname.endswith(".gz") else open('wt')
     for line in tmp:
         out.write(line)
     out.close()
@@ -157,7 +101,11 @@ def save_stream(stream, fname, trigger=50000, file=sys.stdout):
 
     return
 
+
 def get_logger(name, hnd=None, fmt=None, terminator='\n'):
+    """
+    Initializes a logger with a handler and formatter.
+    """
     # Get the logger name.
     log = logging.getLogger(name)
 
@@ -182,17 +130,23 @@ def get_logger(name, hnd=None, fmt=None, terminator='\n'):
 
 
 def set_verbosity(logger, level=1):
+    """
+    Sets the verbosity of the logger.
+    """
     level = logging.DEBUG if level > 0 else logging.WARNING
     logger.setLevel(level)
+
 
 def symlink(src, dest):
     """
     Creates a symlink.
     """
 
+    # Allow link replacement.
     if os.path.islink(dest):
         os.remove(dest)
 
+    # Don't link to files.
     if os.path.isfile(dest):
         logger.error(f"invalid link destination {dest}")
 
@@ -201,11 +155,9 @@ def symlink(src, dest):
 # Initialize the logger.
 logger = get_logger("main")
 
-
-def error(msg):
+def error(msg, logger=logger):
     """
     The default error handler
     """
-    global logger
-    logger.error(f"ERROR: {msg}")
+    logger.error(f"error: {msg}")
     sys.exit(1)

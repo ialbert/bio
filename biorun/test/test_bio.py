@@ -63,6 +63,11 @@ def test_11(capsys):
 
 
 def test_12(capsys):
+    cmd = "bio SARS2 --translate --type CDS "
+    run(cmd, capsys=capsys, out="translate.fa")
+
+
+def test_13(capsys):
     cmd = "bio SARS2:S --fasta --protein --seqid foo "
     run(cmd, capsys=capsys, out="s_prot_foo.fa")
 

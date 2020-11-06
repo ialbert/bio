@@ -37,3 +37,19 @@ SOURCE_ATTRIBUTES = [
 GFF_ATTRIBUTES = [
     "gene", "protein_id", "product", "db_xref", "function",
 ]
+
+# Recognized types.
+GENBANK, FASTA, GFF, BED, SAM, BAM = "genbank", "fasta", "gff", "bed", "sam", "bam"
+
+# Connect an extension to types.
+TYPE_BY_EXTENSION = {
+    "gb": GENBANK,
+    "gbk": GENBANK,
+    "genbank": GENBANK,
+    "fa": FASTA,
+    "fasta": FASTA,
+    "bed": BED,
+    "gff": GFF,
+    "sam": SAM,
+    "bam": BAM,
+}

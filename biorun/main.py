@@ -4,8 +4,8 @@ The main job runner. Register functions here.
 import sys
 import plac
 
-from biorun import utils, const, storage
-from biorun.data import fastarec, gffrec, jsonrec
+from biorun import utils, const, storage, objects
+from biorun.models import fastarec, gffrec, jsonrec
 
 # Module level logger
 logger = utils.logger
@@ -26,9 +26,10 @@ logger = utils.logger
 @plac.opt('end', "end coordinate")
 @plac.opt('gene', "select features associated with gene")
 @plac.opt('match', "select features by rexep match")
+@plac.flg('inter', "interactive (data from command line)", abbrev='i')
 @plac.flg('verbose', "verbose mode")
 def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, translate=False,
-              delete=False, list=False, rename='', seqid='', start='', end='', type='', gene='', match='',
+              delete=False, list=False, rename='', seqid='', start='', end='', type='', gene='', match='', inter=False,
               verbose=False, *acc):
     """
     bio - making bioinformatics fun again
@@ -47,12 +48,12 @@ def converter(fasta=False, gff=False, fetch=False, update=False, protein=False, 
             utils.error(msg)
 
         # A simple wrapper class to carry all parameters around.
-        p = utils.Param(start=start, end=end, seqid=seqid, protein=protein,
+        p = objects.Param(start=start, end=end, seqid=seqid, protein=protein,
                         update=update, name=name, gff=gff, translate=translate,
                         fasta=fasta, type=type, gene=gene, regexp=match)
 
-        # Fill the json data for the name.
-        p.json = storage.get_json(p.name, seqid=seqid)
+        # Fill the json data for the parameter.
+        p.json = storage.get_json(p.name, seqid=seqid, inter=inter)
         return p
 
     # Make a list of parameters for each name.
@@ -103,13 +104,13 @@ def router():
         sys.argv.remove(const.ALIGN)
 
         # Delayed import to avoid missing library warning for other tasks.
-        from biorun.align import pairwise
+        from biorun.algo import align
 
         # Add the help flag if otherwise empty.
         sys.argv += ["-h"] if len(sys.argv) == 1 else []
 
         # Call the pairwise aligner.
-        plac.call(pairwise.run)
+        plac.call(align.run)
 
     # Default action is to convert a file.
     else:

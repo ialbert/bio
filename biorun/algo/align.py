@@ -3,7 +3,7 @@ import plac
 from itertools import islice, count
 import textwrap
 
-from biorun.data import view
+from biorun.models import view
 from biorun.const import *
 from biorun import utils, storage
 

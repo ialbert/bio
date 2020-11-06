@@ -2,7 +2,7 @@
 Generates GFF outputs from a JSON record.
 """
 from biorun import utils, const
-from biorun.data import jsonrec
+from biorun.models import jsonrec
 
 
 def feature2gff(feat, anchor):

@@ -7,8 +7,10 @@ Storing data as JSON instead of FASTA or GENBANK allows for much faster processi
 """
 import sys, os, gzip, json
 from collections import OrderedDict
-from biorun import utils
-from biorun import const
+from biorun import utils, const
+from itertools import count
+
+counter = count(1)
 
 from pprint import pprint
 
@@ -193,8 +195,11 @@ def get_feature_records(data, param):
         # Slice the resulting DNA sequence.
         dna = dna[start:end]
 
-        # Perform the translation if needed (drop the stop codon).
-        seq = dna.translate()[:-1] if param.translate else dna
+        try:
+            # Perform the translation if needed (drop the stop codon).
+            seq = dna.translate() if param.translate else dna
+        except Exception as exc:
+            utils.error(exc)
 
         # Build the sequence record.
         rec = SeqRecord(seq, id=name, description=desc)
@@ -203,7 +208,8 @@ def get_feature_records(data, param):
         if param.translate:
             expected = first(f, "translation")
             observed = str(seq)
-            if expected and expected != observed:
+            # Stop codon is present in the CDS but not in the translation.
+            if expected and expected != observed[:-1]:
                 logger.info(f"translation mismatch for: {rec.id}")
 
         yield rec
@@ -330,12 +336,38 @@ def convert_fasta(recs, seqid=None):
         data.append(item)
     return data
 
+def make_json(seq, seqid=None):
+    """
+    Makes a simple JSON representation for a text
+    """
+    count = next(counter)
+    name  = seqid or f"seq{count}"
+    data = []
+    item = dict()
+    item[const.SEQID] = name
+    item[const.LOCUS] = ''
+    item[const.DEFINITION] = ''
+    item[const.ORIGIN] = str(seq)
+    start, end, strand = 1, len(seq), 1
+    oper=None,
+    location = [[ start, end, strand ]]
+    ftype = "origin"
+    attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
+    item[const.FEATURES] = [
+        attrs
+    ]
+    data.append(item)
+    return data
 
 def json_view(params):
     """
     Prints json output to
     """
     for param in params:
+
+        # Stop when data was not found.
+        if not param.json:
+            utils.error(f"data not found: {param.name}")
 
         # Produce the full file when no parameters are set.
         if param.unset():
@@ -369,13 +401,13 @@ def parse_file(fname, seqid=None):
 
     # Cascade over the known file formats.
     if ext in (".gb", ".gbk", ".genbank"):
-        recs = SeqIO.parse(stream, format=utils.GENBANK)
+        recs = SeqIO.parse(stream, format=const.GENBANK)
         data = convert_genbank(recs, seqid=seqid)
     elif ext in (".fa", ".fasta"):
-        recs = SeqIO.parse(stream, format=utils.FASTA)
+        recs = SeqIO.parse(stream, format=const.FASTA)
         data = convert_fasta(recs, seqid=seqid)
     else:
-        utils.error(f"format not recognized: {fname}")
+        utils.error(f"file format not recognized: {fname}")
 
     return data
 

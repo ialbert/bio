@@ -3,7 +3,7 @@ Deals with the data storage.
 """
 import sys, os, glob, re, gzip, json
 from biorun import const, utils
-from biorun.data import jsonrec
+from biorun.models import jsonrec
 
 # Module level logger.
 logger = utils.logger
@@ -123,7 +123,7 @@ def fetch(params, seqid=None, db=None, update=False):
         # Save JSON file.
         save_json_file(fname=json_name, data=data)
 
-def get_json(name, seqid=None, update=False):
+def get_json(name, seqid=None, update=False, inter=False):
     """
     Attempts to return a JSON formatted data based on a name.
     """
@@ -156,6 +156,11 @@ def get_json(name, seqid=None, update=False):
         logger.info(f"found {gbk_name}")
         data = jsonrec.parse_file(fname=gbk_name, seqid=seqid)
         data = save_json_file(fname=json_name, data=data)
+        return data
+
+    # If not found and interactive mode create a JSON from the name itself.
+    if inter:
+        data = jsonrec.make_json(seq=name, seqid=seqid)
         return data
 
     return None
