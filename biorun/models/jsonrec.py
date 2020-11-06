@@ -164,10 +164,10 @@ def get_feature_records(data, param):
     origin = data[const.ORIGIN]
 
     # Ignore translation warnings
-    #if param.translate:
-    #    import warnings
-    #    from Bio import BiopythonWarning
-    #    warnings.simplefilter('ignore', BiopythonWarning)
+    if param.translate:
+        import warnings
+        from Bio import BiopythonWarning
+        warnings.simplefilter('ignore', BiopythonWarning)
 
     # Shortcuts to coordinates.
     start, end = param.start, param.end
