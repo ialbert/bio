@@ -26,6 +26,7 @@ except ImportError as exc:
     print(f"*** Warning: {exc}", file=sys.stderr)
     print(f"*** Please install parasail: conda install -y parasail-python", file=sys.stderr)
     HAS_PARASAIL = False
+    sys.exit(-1)
 
 with warnings.catch_warnings():
     warnings.simplefilter('ignore', BiopythonExperimentalWarning)
@@ -90,7 +91,7 @@ class Alignment():
         t_name = get("t_name")
 
         header = f'''
-        ### Alignment:{next(self.counter)} {q_name} vs {t_name} ###
+        ### {next(self.counter)}: {q_name.strip()} vs {t_name.strip()} ###
 
         Length:\t{self.len} ({self.mode}) 
         Query:\t{self.len_query} [{self.start_query}, {self.end_query}]
@@ -200,8 +201,13 @@ def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, protein=Fa
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
+    # Ensure counter is reset.
+    jsonrec.reset_counter()
+
+    # Requires two inputs.
     if not (query and target):
         utils.error(f"Please specify both a QUERY and a TARGET")
+
 
     param1 = objects.Param(name=query, protein=protein, translate=translate,
                            start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
@@ -213,6 +219,7 @@ def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, protein=Fa
     param2.json = storage.get_json(param2.name, inter=inter, strict=True)
 
     for rec1 in param1.json:
+
         for rec2 in param2.json:
 
             qrecs = fastarec.get_fasta(rec1, param=param1)

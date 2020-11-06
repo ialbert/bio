@@ -92,3 +92,28 @@ def test_17(capsys):
     run(cmd, capsys=capsys, out="align-translated-s.txt")
 
 
+def test_18(capsys):
+    cmd = "bio align THISLINE ISALIGNED  -i "
+    run(cmd, capsys=capsys, out="align-local.txt")
+
+
+def test_19(capsys):
+    cmd = "bio align THISLINE ISALIGNED  -i "
+    run(cmd, capsys=capsys, out="align-local.txt")
+
+
+def test_20(capsys):
+    cmd = "bio align THISLINE ISALIGNED -i --mode global "
+    run(cmd, capsys=capsys, out="align-global.txt")
+
+
+def test_21(capsys):
+    cmd = "bio align THISLINE ISALIGNED -i --mode semiglobal "
+    run(cmd, capsys=capsys, out="align-semiglobal.txt")
+
+
+def test_22(capsys):
+    cmd = "bio align THISLINE ISALIGNED -i --mode strictglobal "
+    run(cmd, capsys=capsys, out="align-strictglobal.txt")
+
+

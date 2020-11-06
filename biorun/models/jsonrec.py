@@ -10,8 +10,6 @@ from collections import OrderedDict
 from biorun import utils, const
 from itertools import count
 
-counter = count(1)
-
 from pprint import pprint
 
 try:
@@ -27,6 +25,12 @@ except ImportError as exc:
 
 logger = utils.logger
 
+counter = count(1)
+
+# Allow for resetting the global counter. Needed for keeping test labeled consistenly.
+def reset_counter():
+    global counter
+    counter = count(1)
 
 def has_feature(item, name="gene"):
     """

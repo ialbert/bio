@@ -1,5 +1,5 @@
 
-### Alignment:1 ncov         vs ratg13       ###
+### 1: ncov vs ratg13 ###
 
 Length:	185 (local) 
 Query:	200 [1, 200]

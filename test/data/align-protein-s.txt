@@ -1,5 +1,5 @@
 
-### Alignment:1 YP_009724390 vs QHR63300.2   ###
+### 1: YP_009724390 vs QHR63300.2 ###
 
 Length:	1273 (local) 
 Query:	1273 [1, 1273]
