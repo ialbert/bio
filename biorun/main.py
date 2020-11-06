@@ -47,7 +47,7 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
         Creates a parameter for each accession.
 
         """
-        # A very common error. Catch it here.
+        # A very common error to pass a fragment as
         if name.startswith("-"):
             msg = f"Invalid accession number: {name}"
             utils.error(msg)
@@ -67,16 +67,16 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
 
-    # Delete the files from storage.
+    # Delete should be the first to execute.
     if delete:
         storage.delete(params)
 
-    # Get the data from Entrez.
+    # Fetch to be perfomed before renaming.
     if fetch:
         db = "protein" if protein else "nuccore"
         storage.fetch(params, seqid=seqid, db=db, update=update)
 
-    # Renaming step before listing.
+    # Renaming needs to be performed before listing.
     if rename:
         storage.rename(params, seqid=seqid, newname=rename)
 
@@ -88,7 +88,7 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
     if (list or rename or delete):
         return
 
-    # Perform a conversion if the flags as passed.
+    # Decide which type of conversion based on incoming parameters.
     if fasta or protein or translate:
         fastarec.fasta_view(params)
     elif gff:
@@ -96,11 +96,45 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
     elif not fetch:
         jsonrec.json_view(params)
 
+def proofreader(value):
+    """
+    Bridges the gap between short and longforms. Allows the use of both by remapping to canonical forms.
+    Remaps -start to --start, --F to -F
+    """
+
+    # Longform parameter
+    long = value.startswith("--")
+
+    # Shortform parameter.
+    short = not long and value.startswith("-")
+
+    # Is it one character.
+    onechar = len(value.strip("-")) == 1
+
+    try:
+        # Can the value be converted to a number
+        float(value)
+        isnum = True
+    except Exception as exc:
+        isnum = False
+
+    # Single character but long form. Drop a leading dash.
+    if onechar and long and not isnum:
+        value = value[1:]
+
+    # Short form but more than one char. Add a dash.
+    if short and not onechar and not isnum:
+        value = f"-{value}"
+
+    return value
 
 def router():
     """
     Routes the tasks based on incoming parameters.
     """
+
+    # Allow multiple forms of parameters to be used.
+    sys.argv = list(map(proofreader, sys.argv))
 
     # Alignment requested.
     if const.ALIGN in sys.argv:
@@ -108,20 +142,24 @@ def router():
         # Drop the alignment command from paramters.
         sys.argv.remove(const.ALIGN)
 
-        # Delayed import to avoid missing library warning for other tasks.
+        # Delayed import to allow other functionality to work even when the parasail library is missing.
         from biorun.methods import align
 
-        # Add the help flag if otherwise empty.
-        sys.argv += ["-h"] if len(sys.argv) == 1 else []
+        # Add the help flag if no other information is present.
+        if len(sys.argv) == 1:
+            sys.argv.append("-h")
 
-        # Call the pairwise aligner.
+        # Delegate parameter parsing to aligner.
         plac.call(align.run)
 
     # Default action is to convert a file.
     else:
 
-        # Add the help flag if otherwise empty.
-        sys.argv += ["-h"] if len(sys.argv) == 1 else []
+        # Add the help flag if no other information is present.
+        if len(sys.argv) == 1:
+            sys.argv.append("-h")
+
+        # Delegate parameter parsing to converter.
         plac.call(converter)
 
 
