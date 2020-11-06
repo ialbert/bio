@@ -1,13 +1,13 @@
 ##gff-version 3
-SARS2	.	CDS	266	21555	.	+	1	Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
-SARS2	.	CDS	266	13483	.	+	1	Name=YP_009725295.1;type=CDS;gene=ORF1ab;protein_id=YP_009725295.1;product=ORF1a polyprotein;db_xref=GeneID:43740578
-SARS2	.	CDS	21563	25384	.	+	1	Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
-SARS2	.	CDS	25393	26220	.	+	1	Name=YP_009724391.1;type=CDS;gene=ORF3a;protein_id=YP_009724391.1;product=ORF3a protein;db_xref=GeneID:43740569
-SARS2	.	CDS	26245	26472	.	+	1	Name=YP_009724392.1;type=CDS;gene=E;protein_id=YP_009724392.1;product=envelope protein;db_xref=GeneID:43740570
-SARS2	.	CDS	26523	27191	.	+	1	Name=YP_009724393.1;type=CDS;gene=M;protein_id=YP_009724393.1;product=membrane glycoprotein;db_xref=GeneID:43740571
-SARS2	.	CDS	27202	27387	.	+	1	Name=YP_009724394.1;type=CDS;gene=ORF6;protein_id=YP_009724394.1;product=ORF6 protein;db_xref=GeneID:43740572
-SARS2	.	CDS	27394	27759	.	+	1	Name=YP_009724395.1;type=CDS;gene=ORF7a;protein_id=YP_009724395.1;product=ORF7a protein;db_xref=GeneID:43740573
-SARS2	.	CDS	27756	27887	.	+	1	Name=YP_009725318.1;type=CDS;gene=ORF7b;protein_id=YP_009725318.1;product=ORF7b;db_xref=GeneID:43740574
-SARS2	.	CDS	27894	28259	.	+	1	Name=YP_009724396.1;type=CDS;gene=ORF8;protein_id=YP_009724396.1;product=ORF8 protein;db_xref=GeneID:43740577
-SARS2	.	CDS	28274	29533	.	+	1	Name=YP_009724397.2;type=CDS;gene=N;protein_id=YP_009724397.2;product=nucleocapsid phosphoprotein;db_xref=GeneID:43740575
-SARS2	.	CDS	29558	29674	.	+	1	Name=YP_009725255.1;type=CDS;gene=ORF10;protein_id=YP_009725255.1;product=ORF10 protein;db_xref=GeneID:43740576
+ncov	.	CDS	266	21555	.	+	1	Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
+ncov	.	CDS	266	13483	.	+	1	Name=YP_009725295.1;type=CDS;gene=ORF1ab;protein_id=YP_009725295.1;product=ORF1a polyprotein;db_xref=GeneID:43740578
+ncov	.	CDS	21563	25384	.	+	1	Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
+ncov	.	CDS	25393	26220	.	+	1	Name=YP_009724391.1;type=CDS;gene=ORF3a;protein_id=YP_009724391.1;product=ORF3a protein;db_xref=GeneID:43740569
+ncov	.	CDS	26245	26472	.	+	1	Name=YP_009724392.1;type=CDS;gene=E;protein_id=YP_009724392.1;product=envelope protein;db_xref=GeneID:43740570
+ncov	.	CDS	26523	27191	.	+	1	Name=YP_009724393.1;type=CDS;gene=M;protein_id=YP_009724393.1;product=membrane glycoprotein;db_xref=GeneID:43740571
+ncov	.	CDS	27202	27387	.	+	1	Name=YP_009724394.1;type=CDS;gene=ORF6;protein_id=YP_009724394.1;product=ORF6 protein;db_xref=GeneID:43740572
+ncov	.	CDS	27394	27759	.	+	1	Name=YP_009724395.1;type=CDS;gene=ORF7a;protein_id=YP_009724395.1;product=ORF7a protein;db_xref=GeneID:43740573
+ncov	.	CDS	27756	27887	.	+	1	Name=YP_009725318.1;type=CDS;gene=ORF7b;protein_id=YP_009725318.1;product=ORF7b;db_xref=GeneID:43740574
+ncov	.	CDS	27894	28259	.	+	1	Name=YP_009724396.1;type=CDS;gene=ORF8;protein_id=YP_009724396.1;product=ORF8 protein;db_xref=GeneID:43740577
+ncov	.	CDS	28274	29533	.	+	1	Name=YP_009724397.2;type=CDS;gene=N;protein_id=YP_009724397.2;product=nucleocapsid phosphoprotein;db_xref=GeneID:43740575
+ncov	.	CDS	29558	29674	.	+	1	Name=YP_009725255.1;type=CDS;gene=ORF10;protein_id=YP_009725255.1;product=ORF10 protein;db_xref=GeneID:43740576

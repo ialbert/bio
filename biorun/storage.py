@@ -123,7 +123,7 @@ def fetch(params, seqid=None, db=None, update=False):
         # Save JSON file.
         save_json_file(fname=json_name, data=data)
 
-def get_json(name, seqid=None, update=False, inter=False):
+def get_json(name, seqid=None, update=False, inter=False, strict=False):
     """
     Attempts to return a JSON formatted data based on a name.
     """
@@ -162,6 +162,10 @@ def get_json(name, seqid=None, update=False, inter=False):
     if inter:
         data = jsonrec.make_json(seq=name, seqid=seqid)
         return data
+
+    # At this point the data was not found
+    if strict:
+        utils.error(f"data not found: {name}")
 
     return None
 

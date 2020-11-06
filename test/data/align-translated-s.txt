@@ -1,0 +1,16 @@
+
+### Alignment:1 YP_009724390 vs QHR63300.2   ###
+
+Length:	26 (local) 
+Query:	26 [1, 26]
+Target:	26 [1, 26]
+Score:	131
+Ident:	26/26 (100.0%)
+Simil:	26/26 (100.0%)
+Gaps:	0/26 (0.0%)
+Matrix:	blosum62(-11, -1) 
+
+QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP
+             ||||||||||||||||||||||||||
+YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
+

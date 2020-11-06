@@ -3,9 +3,9 @@ import plac
 from itertools import islice, count
 import textwrap
 
-from biorun.models import view
 from biorun.const import *
-from biorun import utils, storage
+from biorun import utils, storage, objects
+from biorun.models import jsonrec, fastarec
 
 try:
     from Bio import SeqIO
@@ -21,7 +21,6 @@ except ImportError as exc:
 
 try:
     import parasail
-
     HAS_PARASAIL = True
 except ImportError as exc:
     print(f"*** Warning: {exc}", file=sys.stderr)
@@ -32,110 +31,15 @@ with warnings.catch_warnings():
     warnings.simplefilter('ignore', BiopythonExperimentalWarning)
     from Bio.Align import substitution_matrices
 
-    # The default logging function.
-    logger = utils.logger
+
+# The default logging function.
+logger = utils.logger
 
 
-def unpack(aln):
+class Alignment():
     """
-    Unpack the formatted alignment.
+    A wrapper class to represent an alignment.
     """
-    query, pattern, target = format(aln).splitlines()
-
-    return query, pattern, target
-
-
-def print_aln(aln, matrix, query, target, aligner, width=100):
-    nw = 8
-    tgt_name = f"{target.name[:nw]:8s}"
-    pat_name = " " * nw
-    rec_name = f"{query.name[:nw]:8s}"
-
-    query, pattern, target = unpack(aln)
-
-    print(f"# Lenght: {aln_len}")
-    print(f"# Identity: {aln.icount}/{aln_len} ({ident_perc}%)")
-    print(f"# Gaps: {gapn}/{aln_len} ({gapn_perc}%)")
-    print(f"# Score: {aln.score}")
-    print(f"#")
-    print(f"# Matrix: {matrix} ")
-    print(f"# Score: {aln.score}")
-    print(f"# Gap open: {aligner.internal_open_gap_score}")
-    print(f"# Gap extend: {aligner.internal_extend_gap_score}")
-    print("#")
-
-    for start in range(0, aln_len, width):
-        end = start + width
-
-        print(tgt_name, target[start:end])
-        print(pat_name, pattern[start:end])
-        print(rec_name, query[start:end])
-        print("")
-
-
-def biopython_align(query, target, nucl=True, gap_open=None, gap_extend=None, matrix=None, limit=1):
-    """
-    Perform alignment with BioPython.
-    """
-
-    # The pairwise aligner.
-    aligner = Align.PairwiseAligner()
-
-    # The default scoring matrices
-    if nucl:
-        gap_open = gap_open or -10
-        gap_extend = gap_extend or -0.5
-        matrix = matrix or "NUC.4.4"
-    else:
-        gap_open = gap_open or -16
-        gap_extend = gap_extend or -4
-        matrix = matrix or "BLOSUM62"
-
-    # Read the substitution matrix
-    try:
-        if os.path.isfile(matrix):
-            m = substitution_matrices.read(matrix)
-        else:
-            m = substitution_matrices.load(matrix)
-    except Exception as exc:
-        print(f"*** Unable to read scoring matrix: {exc}", file=sys.stderr)
-        print(f"*** Builtin: {', '.join(substitution_matrices.load())}", file=sys.stderr)
-        sys.exit(-1)
-
-    # Gap open
-    aligner.open_gap_score = gap_open
-
-    # Gap extend
-    aligner.extend_gap_score = gap_extend
-
-    # Assign the matrix.
-    aligner.substitution_matrix = m
-
-    # Gaps at the end of the sequences.
-    aligner.left_gap_score = 0
-    aligner.right_gap_score = 0
-
-    seq_q = str(query.seq).upper()
-    seq_t = str(target.seq).upper()
-
-    try:
-        results = aligner.align(seq_t, seq_q)
-    except Exception as exc:
-        print(f"*** Error: {exc}", file=sys.stderr)
-        sys.exit(-1)
-
-    # How many alignments to report
-    results = islice(results, limit)
-
-    for aln in results:
-        print_aln(aln, matrix=matrix, query=query, target=target, aligner=aligner)
-
-
-class AlnResult():
-    """
-    A wrapper class to represent alignments produced from different sources.
-    """
-    counter = count(1)
 
     def __init__(self, query, target, trace,
                  gap_open=11, gap_extend=1, matrix='', mode='',
@@ -148,6 +52,8 @@ class AlnResult():
         self.gap_open = gap_open
         self.gap_extend = gap_extend
         self.matrix = matrix
+        self.len_query = self.len_ref = self.score = 0
+        self.start_query = self.start_ref = self.end_query = self.end_ref = 0
 
         # Identity
         self.icount = self.trace.count(ichr)
@@ -167,6 +73,8 @@ class AlnResult():
 
         # Update with additional attributes.
         self.__dict__.update(attrs)
+
+        self.counter = count(1)
 
     def print_wrapped(self, width=80, **kwargs):
         """
@@ -202,6 +110,7 @@ class AlnResult():
             print(p_name, self.trace[start:end])
             print(q_name, self.query[start:end])
             print("")
+
 
 def get_matrix(seq, matrix):
     if not matrix:
@@ -266,7 +175,7 @@ def parasail_align(qseq, tseq, param):
     # String name for the matrix
     mname = str(matrix.name.decode("ascii"))
 
-    aln = AlnResult(query=query, target=target, gap_open=param.gap_open, gap_extend=param.gap_extend,
+    aln = Alignment(query=query, target=target, gap_open=param.gap_open, gap_extend=param.gap_extend,
                     trace=trace, attrs=attrs, matrix=mname, mode=param.mode)
 
     # For semiglobal alignment need to manually find the start/end from the pattern.
@@ -279,9 +188,14 @@ def parasail_align(qseq, tseq, param):
 @plac.opt('gap_open', "scoring matrix", abbrev='o')
 @plac.opt('gap_extend', "scoring matrix", abbrev='x')
 @plac.opt('mode', "alignment mode (local, global, semiglobal, strictglobal")
+@plac.flg('inter', "interactive mode, data from command line")
+@plac.flg('protein', "use the translated protein sequences from the data")
+@plac.flg('translate', "use the translated protein sequences from the data")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, verbose=False, query='', target=''):
-    "Prints the effect of an annotation"
+def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, protein=False, translate=False, inter=False, verbose=False, query='',  target=''):
+    """
+    Handles an alignment request.
+    """
 
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
@@ -289,34 +203,27 @@ def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, verbose=Fa
     if not (query and target):
         utils.error(f"Please specify both a QUERY and a TARGET")
 
+    param1 = objects.Param(name=query, protein=protein, translate=translate,
+                           start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
+    param2 = objects.Param(name=target, protein=protein, translate=translate,
+                           start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
 
-    param1 = utils.Param(start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
-    param2 = utils.Param(start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
+    # Get the JSON data.
+    param1.json = storage.get_json(param1.name, inter=inter, strict=True)
+    param2.json = storage.get_json(param2.name, inter=inter, strict=True)
 
-    # Fill in potential filtering instructions.
-    query = param1.parse(query)
-    target = param2.parse(target)
+    for rec1 in param1.json:
+        for rec2 in param2.json:
 
+            qrecs = fastarec.get_fasta(rec1, param=param1)
+            trecs = fastarec.get_fasta(rec2, param=param2)
 
-    # Get the data.
-    qdata = storage.get_json(query)
-    tdata = storage.get_json(target)
+            for qseq in qrecs:
+                for tseq in trecs:
+                    parasail_align(qseq=qseq, tseq=tseq, param=param1)
 
-    if qdata:
-        qrecs = view.get_fasta(data=qdata, param=param1)
-    else:
-        qrecs = [SeqRecord(Seq(query), id="QUERY")]
-
-    if tdata:
-        trecs = view.get_fasta(data=tdata, param=param2)
-    else:
-        trecs = [SeqRecord(Seq(target), id="TARGET")]
 
     # biopython_align(query=query, target=target, matrix=matrix)
-
-    for qseq in qrecs:
-        for tseq in trecs:
-            parasail_align(qseq=qseq, tseq=tseq, param=param1)
 
 
 

@@ -19,6 +19,7 @@ class Param(object):
         self.matrix = None
         self.json = None
         self.name = None
+        self.reverse = self.complement = self.revcomp = self.transcribe = None
         self.gff = self.protein = self.fasta = self.translate = self.mode = None
         self.gene = self.type = self.regexp = None
 

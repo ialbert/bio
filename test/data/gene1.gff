@@ -1,0 +1,3 @@
+##gff-version 3
+ncov	.	gene	21563	25384	.	+	1	Name=S;type=gene;gene=S;db_xref=GeneID:43740568
+ncov	.	CDS	21563	25384	.	+	1	Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568

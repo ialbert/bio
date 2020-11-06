@@ -8,9 +8,10 @@ Each line in the shell script will be a line in the
 """
 from itertools import count
 from textwrap import dedent
-import os
+import os, sys, difflib
 import plac
 from biorun import main, const
+from biorun.methods import align
 
 # Test naming index.
 counter = count(1)
@@ -40,9 +41,10 @@ def run(cmd, capsys, out=None):
     params = cmd.split()[1:]
 
     # Different functions to be called based on the command.
-    if params and params[0] == const.ALIGN:
+    if params and const.ALIGN in params:
         # Run the alignment tests.
-        pass
+        params.remove(const.ALIGN)
+        assert plac.call(align.run, params) is None
     else:
         # Run converter commands.
         assert plac.call(main.converter, params) is None
@@ -54,7 +56,13 @@ def run(cmd, capsys, out=None):
     # Check the output if we pass expected value here.
     if out:
         expect = read(out)
-        assert result == expect
+        if expect != result:
+            lines1 = expect.splitlines()
+            lines2 = result.splitlines()
+            diffs = difflib.unified_diff(lines1, lines2)
+            for diff in diffs:
+                print(diff)
+            assert result == expect
 
     return result
 

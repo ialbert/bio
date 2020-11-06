@@ -109,7 +109,7 @@ def router():
         sys.argv.remove(const.ALIGN)
 
         # Delayed import to avoid missing library warning for other tasks.
-        from biorun.algo import align
+        from biorun.methods import align
 
         # Add the help flag if otherwise empty.
         sys.argv += ["-h"] if len(sys.argv) == 1 else []

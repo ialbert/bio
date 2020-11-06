@@ -5,47 +5,62 @@
 # Stop on errors.
 set -uex
 
-# Delete the SARS2 data if exists
-bio SARS2 --delete
+# Delete the ncov data if exists
+bio ncov --delete
 
 # Rebuild the JSON
-bio NC_045512 --fetch --rename SARS2 --seqid SARS2
+bio NC_045512 --fetch --rename ncov --seqid ncov
 
 # JSON output.
-bio SARS2 > SARS2.json
+bio ncov > ncov.json
 
 # FASTA.
-bio SARS2 --fasta > SARS2.fa
+bio ncov --fasta > ncov.fa
 
 # GFF formatting.
-bio SARS2 --gff > SARS2.gff
+bio ncov --gff > ncov.gff
 
 # JSON by type and match
-bio SARS2 --match ORF1ab --type gene > match.json
+bio ncov --match ORF1ab --type gene > match.json
 
 # GFF by gene name.
-bio SARS2 --gff --gene S > gene.gff
+bio ncov --gff --gene S > gene1.gff
 
 # GFF by start and end.
-bio SARS2 --gff  --start 10000 --end 20000 > overlap.gff
+bio ncov --gff  --start 10000 --end 20000 > overlap.gff
 
 # GFF by type.
-bio SARS2 --gff  --type CDS > type.gff
+bio ncov --gff  --type CDS > type.gff
 
 # Sliced FASTA with different id .
-bio SARS2 --fasta --seqid foo --start 10 --end 20 > fasta-start.fa
+bio ncov --fasta --seqid foo --start 10 --end 20 > fasta-start.fa
 
 # FASTA features
-bio SARS2 --fasta --type CDS > CDS.fa
+bio ncov --fasta --type CDS > CDS.fa
 
 # Sliced FASTA features by type.
-bio SARS2 --fasta --type gene --end 10 > gene-start.fa
+bio ncov --fasta --type gene --end 10 > gene-start.fa
 
 # Protein FASTA.
-bio SARS2 --protein --start -10 > protein-end.fa
+bio ncov --protein --start -10 > protein-end.fa
 
 # Translated CDS.
-bio SARS2 --translate --type CDS > translate.fa
+bio ncov --translate --type CDS > translate.fa
 
 # Renamed protein.
-bio SARS2:S --fasta --protein --seqid foo > s_prot_foo.fa
+bio ncov:S --fasta --protein --seqid foo > s_prot_foo.fa
+
+# Get the RatG13 data.
+bio MN996532 --fetch --rename ratg13 --seqid ratg13
+
+# Align DNA
+bio align ncov ratg13 --end 200 > align-dna.txt
+
+# Align the extracted protein.
+bio align ncov:S ratg13:S --end 80 > align-dna-s.txt
+
+# Align the extracted protein.
+bio align ncov:S ratg13:S --protein > align-protein-s.txt
+
+# Align the translated regions.
+bio align ncov:S ratg13:S --end 80 --translate > align-translated-s.txt
