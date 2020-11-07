@@ -1,10 +1,10 @@
 rmd_files: [
-
-  # Statistics
   "index.md",
   "bio-install.md",
   "bio-fetch.md",
   "bio-convert.md",
+  "bio-align.md",
+  "bio-tips.md",
 ]
 
 book_filename: bio

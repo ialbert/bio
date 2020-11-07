@@ -18,8 +18,7 @@ build_test:
 	pytest
 
 serve: init
-	rm -rf doc
-	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='doc/_book', port=8000)"
+	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='_book', port=8000)"
 
 clean:
 	rm -rf dist build bio.egg-info

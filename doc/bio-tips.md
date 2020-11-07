@@ -1,4 +1,4 @@
-# bio: tips 
+# bio: tips {#tips}
 
 ## More forgiving command line
 

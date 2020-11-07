@@ -5,9 +5,6 @@ The `bio` package may be used to
 - convert data from GenBank to other formats: FASTA, GFF
 - extract only certain sections of data: features by name, coordinate, range
 
-```{r, child='bio-tips.md'}
-```
-
 ### View the JSON representation of the data:
 
 ```{bash, comment=NA}
