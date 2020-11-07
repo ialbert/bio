@@ -12,32 +12,29 @@ Built on top of [BioPython][biopython] and other existing packages; the `bio` so
 - aligning sequences
 - and ... many more
 
-Having acces to all the utility above makes the `bio` package well suited for exploratory analysis of genomes. 
-
-The software with the most similar goals is the [emboss suite][emboss].
+Having acces to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
 [biopython]: https://biopython.org/
 [emboss]: http://emboss.sourceforge.net/
 
 ## Rationale
 
-If you've ever done bioinformatics you know how even seemingly straigthforward tasks require multiple steps, arcane incantations, reading documentation and other preparations that slow down your progress. 
+If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress. 
 
 Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium. 
 
-For example, suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, the think about the effort it would take to teach someone else how to do it. Right?
+For example, suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, the think about the effort it would take to teach someone else how to do it.
  
-Well, with the `bio` package you can just write:
+Well, with the `bio` package it would work like so. First we get and rename the data to have more manageable labels:
 
     bio MN996532 --fetch --rename ratg13
     bio NC_045512 --fetch --rename ncov
     
-to get the data, and rename it into more manageable labels. Since you are interested in the `S` protein alone you can write:
+Let's align the first 80 basepairs of DNA sequences for the `S` protein as annotated in each organism:
 
+    bio align ncov:S ratg13:S --end 80
 
-    bio align ncov:S ratg13:S | head -20
-
-to see:
+the above command produces:
     
     ### 1: YP_009724390 vs QHR63300.2 ###
     
@@ -54,61 +51,51 @@ to see:
                  ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||
     YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGC
     
-    QHR63300.2   ATACACCAACTCATCCACCCGTGGTGTCTATTACCCTGACAAAGTTTTCAGATCTTCAGTTTTACATTTAACTCAGGATT
-                 ||||||.||.||.|.|||.||||||||.||||||||||||||||||||||||||.|||||||||||||.|||||||||.|
-    YP_009724390 ATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGAC
-
-or maybe you wanted to align the `S` protein in protein space like so:
-
-    bio align ncov:S ratg13:S --protein | head -20
     
-that prints:
+If instead we wanted to align the 80bp DNA sequences for `S` protein after their translation into proteins we could do it like so:
+
+    bio align ncov:S ratg13:S --translate --end 80
+    
+Now the output is:
 
     ### 1: YP_009724390 vs QHR63300.2 ###
     
-    Length:	1273 (local) 
-    Query:	1273 [1, 1273]
-    Target:	1269 [1, 1269]
-    Score:	6541
-    Ident:	1240/1273 (97.4%)
-    Simil:	1252/1273 (98.4%)
-    Gaps:	4/1273 (0.3%)
-    Matrix:	blosum62(-11, -1) 
+    Length: 26 (local)
+    Query:  26 [1, 26]
+    Target: 26 [1, 26]
+    Score:  131
+    Ident:  26/26 (100.0%)
+    Simil:  26/26 (100.0%)
+    Gaps:   0/26 (0.0%)
+    Matrix: blosum62(-11, -1)
     
-    QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFD
-                 |||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||
-    YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFD
-    
-    QHR63300.2   NPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVY
-                 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-    YP_009724390 NPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVY
+    QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP
+                 ||||||||||||||||||||||||||
+    YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
 
+We can note right away that all differences in DNA are synonymous substitutions, both pieces of DNA code for the same proteins.
 
-We can immediately see that many of the mutations are synomous, the similarity went from `92%` to `97%`.
-
-What could `bio` do for us?
+What did `bio` do for us?
  
-1. fetch the data from NCBI
-1. create a more efficient local representation the data
-1. store this representation so that next time no internet connection is necessary
-1. generate alignments 
+1. fetched the data from NCBI
+1. created a more efficient local representation the data
+1. stored this representation so that next time no internet connection is necessary
+1. generated alignments 
 
-But wait there is more. Perhaps you wanted the FASTA sequence of the genome
+But wait there is more. Perhaps we wanted a subsection of  FASTA sequence of the genome
 
-    bio ncov --fasta | head -5
+    bio ncov --fasta --end 160
     
 prints:
-
+    
     >ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
     ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
     GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
-    CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
-    TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
+    CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGG
 
-But wait there is even more, a lot more. How about translating the, reverse of the last 10 nucleotides of every feature labeled as CDS. Why not:
+But wait, there is even more, a lot more. How about translating the reverse of the last 10 nucleotides of every feature labeled as `CDS`. `bio` can do that like so:
 
-
-    bio ncov --fasta --type CDS --start -10 --translate | head -5
+    bio ncov --fasta --type CDS --start -10 --translate
     
 ah yes, just what I needed:    
         
@@ -117,7 +104,8 @@ ah yes, just what I needed:
     
     >YP_009725295.1 [-9:13218], translated DNA
     CGV
-
+    ...
+    
 Or what about GFF regions of type `gene` that overlap with a region 1000 to 2000
 
     bio ncov --gff --start 1000 --end 2000 | head
@@ -131,6 +119,8 @@ it prints:
     ncov	.	CDS	266	13483	.	+	1	Name=YP_009725295.1;type=CDS;gene=ORF1ab;protein_id=YP_009725295.1;product=ORF1a polyprotein;db_xref=GeneID:43740578
     ncov	.	mature_protein_region	806	2719	.	+	1	Name=YP_009742609.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742609.1;product=nsp2
 
+And so on. `bio` has a wealth of utility that makes bioinformatics more accessible.
+
 ## Documentation
 
 The documentation is maintained at
@@ -143,7 +133,9 @@ Or in the github repository as markdown files:
 
 ## Comparisons to EMBOSS
 
-The software with the most similar goals to `bio` is the [emboss suite][emboss] a package developed way ahead of its time, perhaps the main reason why its amazing feats of software engineering are packaged with incomprehensible documentation and incredibly obtuse user interfaces. 
+The software with the most similar goals to `bio` is the [emboss suite][emboss] a revolutionary software package developed decades ahead of its time. Alas perhaps the seminal nature of `emboss` is also the reason why its amazing feats of software engineering are packaged with nearly incomprehensible documentation and uncommonly obtuse user interfaces. 
 
-We love the concept of `emboss` but even after many years we don't fully understand it intricacies, We constantly have to consult the manual for details. Commands that use `emboss` suites always end up as a series of hard to read jumbles of commands that are surprisingly difficult to comprehend even for experienced scientists.
+We love the concept of `emboss` but even after many years we don't understand how to use it. We constantly have to consult the manual for details. Moreover commands that use `emboss` suites tend to end up as a series of hard to read jumbles of commands that are surprisingly difficult to comprehend even for experienced scientists.
+
+`bio` is an homage to `emboss` with the hope that one day we can replace all the functionality from `emboss` in a form that brings joy rather than frustrations.
 
