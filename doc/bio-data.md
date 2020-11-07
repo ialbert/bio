@@ -4,16 +4,32 @@ The `bio` package solves the ongoing struggle of how to maintain sanity among di
 
 When you obtain data with `bio` it becomes universally available to all tools in the package.
 
-### Getting data (--fetch)
+### Local data
+
+There is an  automated data storage in `bio` that makes using data from NCBI quite convenient. But before we even go ther let's make it clear that `bio` can read and process data from local file just as well. If you have a genbank or fasta file you can use that as input:
+
+    bio  mydata.gb --fasta 
+
+Moreover there is a so called command line input of data (`-i`) where the data is read as listed on the command line:
+
+    bio ATGAATATATAC -i --translate
+   
+will operate on the sequence listed as if it were a DNA sequence:     
+    
+    >S1 translated DNA
+    MNIY
+
+### Getting data from NCBI (--fetch)
 
 The `--fetch` command downloads data identified via accession numbers from NCBI then stores 
-this data in a cache directory. All subsequent commands in the `bio` package can seamlessly access the cached 
-data from any location and would not need to connect to the internet.
+this data in a storage directory (`~/.bio`). All subsequent commands in the `bio` package can seamlessly access the stored  data from any location and would not need to connect to the internet to use it.
 
     # Get data for a single accession number.
     bio NC_045512 --fetch
     
-For most commands you can operate on multiple accession numbers at a time.
+Running the fetch command once you already have the data will not connect to the internet again.
+
+Most commands you can operate on multiple accession numbers at a time.
 
     bio NC_045512 MN996532 --fetch
     
@@ -21,20 +37,20 @@ There will be commands like `--rename` where it makes no sense to apply the oper
 
 ### Rename  (--rename)
 
-Accession numbers are tedious to handle. Almost always we rename data to be meaningful
+Accession numbers are tedious to handle. Almost always we rename data to be meaningful.
 
     bio NC_045512 --fetch --rename ncov
 
-the command above will rename store the data under the name `ncov`. Within the data the sequence will still be labeled as `NC_045512`. We can change the internal id of the sequence with:
+the command above will store the data under the name `ncov`. Within the data the sequence will still be labeled as `NC_045512`. You may change both the name and sequence id:
 
     bio NC_045512 --fetch --rename ncov --seqid ncov
     bio NC_045512 --fetch --rename ratg13 --seqid ratg13
     
-Now, not just the file is called `ncov` but the sequence id is also set to `ncov` as well.
+Now, not only is your data called `ncov` but the sequence id inside the data is also set to `ncov`.
 
 ###  Listing the storage (--list)
 
-Each time data is fetched is stored in the cache system. The `bio` package will always find it no matter what directory you run it from. To list the content of the storage write:
+Each time data is fetched is will be stored locally. The `bio` package will look in this storage no matter what directory you run it from. To list the content of the storage write:
 
     bio --list
 
@@ -50,15 +66,15 @@ To drop data from storage use:
     bio ncov --delete
     
 This command will only drop the JSON representation not the downloaded GenBank if exists.
-If you need to update the original data use the `--update` parameter.
+If you want to update the original data use the `--update` parameter.
 
 ### Update data (--update)   
     
-To get the latest from NCBI update data:
+To force fetch to download again the data that you already have:
 
     bio NC_045512 --fetch --update
 
-Note that we can't update a renamed sequence, at that point the original accession number is lost. What we can do is fetch and update the accession number then rename all in one line like so:
+Note that you can't update a renamed sequence. At that point the original accession number is lost. You can however fetch, update and rename all in one go like so:
 
     bio NC_045512 --fetch --update --rename ncov --seqid ncov
 

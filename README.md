@@ -17,24 +17,50 @@ Having acces to all the utility described above makes the `bio` package well sui
 [biopython]: https://biopython.org/
 [emboss]: http://emboss.sourceforge.net/
 
-## Rationale
+## Why do we need this software?
 
 If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress. 
 
 Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium. 
 
-For example, suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, the think about the effort it would take to teach someone else how to do it.
+Suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. 
+
+If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, then think about the effort it would take you to teach someone else how to do the same. 
  
-Well, with the `bio` package it would work like so. First we get and rename the data to have more manageable labels:
+## Quick solutions for a fast paced world
+ 
+With the `bio` package bioinformatics looks more streamlined. 
+
+First get and rename the data to have more manageable labels:
 
     bio MN996532 --fetch --rename ratg13
     bio NC_045512 --fetch --rename ncov
+ 
+From now on `bio` can access `NC_045512` under the name `ncov` no matter where you are on your computer. It stores the data in its storage system and you can make use of it in any location. There is no clutter of files in your face. For example, in any directory you can type:
+
+    bio ncov --fasta --end 100
     
-Let's align the first 80 basepairs of DNA sequences for the `S` protein as annotated in each organism:
+and it will show you the first 100 bases of the genome     
+
+    >ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+    GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
+
+You could also convert the data stored under `ncov` name to formats. Let's say `GFF`:
+
+    bio ncov --gff --gene S --type CDS
+
+the command above will print:
+
+    ncov .  CDS  21563  25384   .  +  1  Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
+
+## Look Ma! It just works!
+
+Now, back to our problem of aligning proteins. Let's align the first 80 basepairs of DNA sequences for the `S` protein as annotated in each organism:
 
     bio align ncov:S ratg13:S --end 80
 
-the above command produces:
+That's it. The command above produces:
     
     ### 1: YP_009724390 vs QHR63300.2 ###
     
@@ -75,35 +101,29 @@ Now the output is:
 
 We can note right away that all differences in DNA are synonymous substitutions, both pieces of DNA code for the same proteins.
 
-What did `bio` do for us?
+## What did `bio` do for us?
  
 1. fetched the data from NCBI
 1. created a more efficient local representation the data
-1. stored this representation so that next time no internet connection is necessary
+1. stored this representation so that next time you need it is available much faster
 1. generated alignments 
 
-But wait there is more. Perhaps we wanted a subsection of  FASTA sequence of the genome
+## But wait there is more 
 
-    bio ncov --fasta --end 160
-    
-prints:
-    
-    >ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
-    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
-    GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
-    CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGG
+How about translating the reverse of the last 10 nucleotides of every feature labeled as `CDS`. `bio` can do that like so:
 
-But wait, there is even more, a lot more. How about translating the reverse of the last 10 nucleotides of every feature labeled as `CDS`. `bio` can do that like so:
-
-    bio ncov --fasta --type CDS --start -10 --translate
+    bio ncov --fasta --type CDS --start -10 --reverse --translate
     
 ah yes, just what I needed:    
-        
-    >YP_009724389.1 [-9:21291], translated DNA
-    *QL
+   
+    >YP_009724389.1 [-9:21291], reverse, translated DNA
+    NQQ
     
-    >YP_009725295.1 [-9:13218], translated DNA
-    CGV
+    >YP_009725295.1 [-9:13218], reverse, translated DNA
+    NVA
+    
+    >YP_009724390.1 [-9:3822], reverse, translated DNA
+    NTH
     ...
     
 Or what about GFF regions of type `gene` that overlap with a region 1000 to 2000

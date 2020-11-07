@@ -6,7 +6,7 @@
 
 To install the requirements with `conda` write:
 
-    conda install biopython pysam python-parasail 
+    conda install -c bioconda biopython pysam python-parasail 
     
 You may also install the requirements via `pip`:
 
@@ -22,13 +22,24 @@ Install the package with:
 
 Type `bio` followed by one or more accession numbers followed by one or more flags or options.
 
-    bio ACC1 [ACC2 ACC3] --option1 --option2 --flag1 ...
+    bio ACC1 [ACC2 ACC3] --option1 value1 --flag1 ...
     
 1. A `flag` is a parameter that does not take additional values: `--fetch`
 1. An `option` is a parameter that takes an additional value: `--start 100`
     
-Use the `-v` command to produce verbose outputs for each command. 
+Use the `-v` flag to produce verbose outputs for each command. 
 
+### Subcommands
+
+Certain words may not be accession numbers as they carry additional meaning and trigger 
+alternative actions
+
+    bio align ACC1 [ACC2 ACC3] --option1 value1 --flag1 ...
+
+You may get help on alignments with:
+
+    bio align -h
+    
 ## Getting help
 
     bio -h
