@@ -11,12 +11,18 @@ from biorun import utils
 from urllib import request
 import plac
 
-HOME = os.path.expanduser("~/.taxonkit")
+JSON_DB = "taxdb.json"
+SQLITE_DB = "taxdb.sqlite"
+TAXDB_URL = "ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz"
+TAXDB_NAME = "taxdump.tar.gz"
 
 join = os.path.join
 
-nodes_fname = join(HOME, "nodes.dmp")
-names_fname = join(HOME, "names.dmp")
+# Create the full paths
+TAXDB_NAME = join(utils.DATADIR, TAXDB_NAME)
+SQLITE_DB = join(utils.DATADIR, SQLITE_DB)
+JSON_DB = join(utils.DATADIR, JSON_DB)
+
 
 # Create the thing here.
 
@@ -24,24 +30,31 @@ GRAPH, BACKLINK, NAMES = "GRAPH", "BACKLINK", "NAMES"
 
 LIMIT = None
 
-CHUNK = 10000
-
-# Taxonomy database
-TAXDB_URL = "ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz"
+CHUNK = 25000
 
 logger = utils.logger
 
-def download_taxdump(url=TAXDB_URL, fname="taxdump.tar.gz"):
+
+def download_taxdump(url=TAXDB_URL, fname=TAXDB_NAME):
     """
     Downloads taxdump file.
     """
     print(f"*** downloading taxdump: {url}")
-    path = os.path.join(utils.DATADIR, fname)
 
     # Download the data.
     src = request.urlopen(url)
-    dest = open(path, 'wb')
+    dest = open(fname, 'wb')
     shutil.copyfileobj(src, dest)
+
+
+
+def build_database(url=TAXDB_URL, fname=TAXDB_NAME):
+    """
+    Downloads taxdump file.
+    """
+    print(f"*** building database from: {fname}")
+    path = os.path.join(utils.DATADIR, fname)
+
 
     # The taxdump file.
     tar = tarfile.open(path, "r:gz")
@@ -63,13 +76,13 @@ def download_taxdump(url=TAXDB_URL, fname="taxdump.tar.gz"):
     name_dict = {}
     back_dict = {}
 
-    print("*** parsing names")
+    print("*** parsing: names.dmp")
     for index, elems in enumerate(name_stream):
         taxid, name, label = elems[0], elems[2], elems[6]
         if label == 'scientific name':
             name_dict[taxid] = [name, ""]
 
-    print("*** parsing nodes")
+    print("*** parsing: nodes.dmp")
     for elems in node_stream:
         child, parent, rank = elems[0], elems[2], elems[4]
         back_dict[child] = parent
@@ -86,6 +99,7 @@ def download_taxdump(url=TAXDB_URL, fname="taxdump.tar.gz"):
             perc = round(index / nsize * 100)
             print(f"*** saving {nsize:,} names ({perc:.0f}%)", end="\r")
             names.commit()
+    names.commit()
     names.close()
 
     print("")
@@ -99,16 +113,23 @@ def download_taxdump(url=TAXDB_URL, fname="taxdump.tar.gz"):
             perc = round(index / gsize * 100)
             print(f"*** saving {gsize:,} nodes ({perc:.0f}%)", end="\r")
             graph.commit()
+    graph.commit()
     graph.close()
 
     print ("")
 
-def open_db(table, fname="taxonomy.db", flag='c'):
+    print ("*** saving the JSON model")
+    json_path = os.path.join(utils.DATADIR, JSON_DB)
+    store = dict(NAMES=name_dict, GRAPH=node_dict)
+    fp = open(json_path,'wt')
+    json.dump(store, fp, indent=4)
+    fp.close()
+
+def open_db(table, fname=SQLITE_DB, flag='c'):
     """
     Opens a connection to a data table.
     """
-    path = os.path.join(utils.DATADIR, fname)
-    conn = SqliteDict(path, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
+    conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
     return conn
 
 
@@ -119,7 +140,7 @@ def dfs(visited, graph, node, names, depth=0):
     if node not in visited:
         sciname, rank = names.get(node, ("MISSING", "NO RANK"))
         indent = "   " * depth
-        print(f"{indent}{rank}, {sciname} ({node})")
+        print(f"{indent}{rank}, {sciname}, taxid={node}")
         visited.add(node)
         for neighbour in graph.get(node, []):
             dfs(visited, graph, neighbour, names, depth=depth + 1)
@@ -140,10 +161,16 @@ def bfs(visited, graph, node, names, ):
                 queue.append(nbr)
 
 
-def query(taxid):
+def query(taxid, mode=False):
 
-    names = open_db(NAMES)
-    graph = open_db(GRAPH)
+    if mode:
+        store = json.load(open(JSON_DB))
+        names = store[NAMES]
+        graph = store[GRAPH]
+    else:
+        names = open_db(NAMES)
+        graph = open_db(GRAPH)
+
 
     if taxid in names:
         visited = set()
@@ -154,21 +181,25 @@ def query(taxid):
 
 
 @plac.flg('build', "download and build a new database")
+@plac.flg('json', "download and build a new database")
 @plac.flg('verbose', "verbose mode, prints more messages")
-def run(build=False, verbose=False, *words):
+def run(build=False, json=False, verbose=False, *words):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
 
     if build:
-        download_taxdump()
+        build_database()
     else:
         for word in words:
-            query(word)
+            query(word, mode=json)
 
 if __name__ == '__main__':
     # Bony fish: 117565
     # Betacoronavirus: 694002
     # SARS-COV2: 2697049
+
+    # Jawless vertebrates: 1476529
+    # Vertebrata: 7742
 
     plac.call(run)
