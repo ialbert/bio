@@ -13,7 +13,7 @@ ORIGIN_SIZE = "origin_len"
 # Alignment modes.
 GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
-ALIGN = "align"
+ALIGN, TAXON = "align", "taxon"
 
 # Actions that the bio package recognizes
 ACTIONS_WORDS = [ ALIGN ]

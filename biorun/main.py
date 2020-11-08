@@ -152,6 +152,13 @@ def router():
         # Delegate parameter parsing to aligner.
         plac.call(align.run)
 
+    elif  const.TAXON in sys.argv:
+        from biorun.models import taxdb
+
+        sys.argv.remove(const.TAXON)
+
+        plac.call(taxdb.run)
+
     # Default action is to convert a file.
     else:
 

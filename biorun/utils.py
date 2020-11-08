@@ -68,7 +68,7 @@ def sizeof_fmt(num, suffix=''):
     return "%.1f%s%s" % (num, '??', suffix)
 
 
-def save_stream(stream, fname, trigger=50000, file=sys.stdout):
+def save_stream(stream, fname, trigger=50000, file=sys.stdout, flag='wt'):
     """
     Write a input 'stream' as the fname filename
     """
@@ -91,7 +91,7 @@ def save_stream(stream, fname, trigger=50000, file=sys.stdout):
     tmp.seek(0)
 
     # Copy over the content from the temporary file to the final gzipped file destination.
-    out = gzip.open(fname, 'wt') if fname.endswith(".gz") else open('wt')
+    out = gzip.open(fname, flag) if fname.endswith(".gz") else open(fname, flag)
     for line in tmp:
         out.write(line)
     out.close()
