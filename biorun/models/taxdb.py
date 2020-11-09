@@ -55,6 +55,8 @@ def build_database(url=TAXDB_URL, fname=TAXDB_NAME):
     print(f"*** building database from: {fname}")
     path = os.path.join(utils.DATADIR, fname)
 
+    if not os.path.isfile(path):
+        utils.error(f"*** no taxdump file found at {path}")
 
     # The taxdump file.
     tar = tarfile.open(path, "r:gz")
@@ -180,19 +182,23 @@ def query(taxid, mode=False):
         print(f"Invalid taxid: {taxid}")
 
 
-@plac.flg('build', "download and build a new database")
-@plac.flg('json', "download and build a new database")
+@plac.flg('build', "build a database from a taxdump")
+@plac.flg('download', "download newest taxdump from NCBI")
+@plac.flg('preload', "loads entire database in memory")
 @plac.flg('verbose', "verbose mode, prints more messages")
-def run(build=False, json=False, verbose=False, *words):
+def run(build=False, download=False, preload=False, verbose=False, *words):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
 
+    if download:
+        download_taxdump()
+
     if build:
         build_database()
-    else:
-        for word in words:
-            query(word, mode=json)
+
+    for word in words:
+        query(word, mode=preload)
 
 if __name__ == '__main__':
     # Bony fish: 117565
