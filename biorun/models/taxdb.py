@@ -1,7 +1,3 @@
-# Needs:
-# 
-# pip install sqlitedict
-#
 
 import os, csv, json, gzip, sys, tarfile
 import shutil
@@ -56,7 +52,7 @@ def build_database(url=TAXDB_URL, fname=TAXDB_NAME):
     path = os.path.join(utils.DATADIR, fname)
 
     if not os.path.isfile(path):
-        utils.error(f"*** no taxdump file found at {path}")
+        utils.error(f"no taxdump file found")
 
     # The taxdump file.
     tar = tarfile.open(path, "r:gz")
