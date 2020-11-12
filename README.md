@@ -8,32 +8,30 @@
 
 If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress. 
 
-Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium.  With `bio` you can write this do this:
+Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium.  With `bio` you can write things like this:
 
-    # Fetch the data
+    # Fetch the data from NCBI.
     bio NC_045512 --fetch --rename ncov
     bio MN996532  --fetch --rename ratg13
     
-    # Run an alignment.
+    # Align the DNA for the S protein.
+    bio align ncov:S ratg13:S --end 90 
+
+to align the first 90 basepairs of DNA sequence of the `S` protein,  taken from SARS-COV-2 and its closest (known) relative bat coronavirus RatG13. If you wanted to align the sequences as translated proteins you would write:
+
     bio align ncov:S ratg13:S --end 90 --translate
-
-to align the first 90 basepairs DNA sequence translated into proteins taken from SARS-COV-2 and its closest (known) relative Bat coronavirus RatG13. Read more about the process in the documentation.
-
+    
 ## Learn more about how `bio` works
 
 The documentation is maintained at
 
 * https://ialbert.github.io/bio/
 
-Or in the github repository as markdown files:
-
-* https://github.com/ialbert/bio/tree/master/md
-
 ## Quick install
     
 Install the package with:
 
-    # Prerequisites
+    # Install prerequisites with conda, pip should also work.
     conda install -c bioconda biopython pysam parasail-python
     
     # Install the bio package.
@@ -56,6 +54,8 @@ To run all tests use:
 Tests are automatically built from a test script that mimics real life usage scenarios.
 
 * https://github.com/ialbert/bio/blob/master/test/test_bio_data.sh
+
+## Adding new tests
 
 To add a new test first run the command you wish to test
 
