@@ -60,6 +60,8 @@ def run(cmd, capsys, out=None):
             lines1 = expect.splitlines()
             lines2 = result.splitlines()
             diffs = difflib.unified_diff(lines1, lines2)
+            print (cmd)
+            print ("-" * 10)
             for diff in diffs:
                 print(diff)
             assert result == expect
