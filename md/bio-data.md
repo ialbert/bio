@@ -1,4 +1,4 @@
-# Data handling {#data}
+# Accessing data {#data}
 
 The `bio` package solves the ongoing struggle of how to maintain sanity among diverse datasets.
 
@@ -6,15 +6,15 @@ When you obtain data with `bio` it becomes universally available to all tools in
 
 ### Local data
 
-There is an  automated data storage in `bio` that makes using data from NCBI quite convenient. But before we even go ther let's make it clear that `bio` can read and process data from local file just as well. If you have a genbank or fasta file you can use that as input:
+There is an  automated data storage in `bio` that makes using data from NCBI quite convenient. But before we even go ther let's make it clear that `bio` can read and process data from local files just fine. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:
 
-    bio  mydata.gb --fasta 
+    bio  mydata.gb --gff 
 
-Moreover there is a so called command line input of data (`-i`) where the data is read as listed on the command line:
+Moreover there is a so called command line input of data (`-i`) where the data may be listed at the command line:
 
     bio ATGAATATATAC -i --translate
    
-will operate on the sequence listed as if it were a DNA sequence:     
+The above command will operate on the sequence as if it were stored in a FASTA file to produce:     
     
     >S1 translated DNA
     MNIY
@@ -24,12 +24,11 @@ will operate on the sequence listed as if it were a DNA sequence:
 The `--fetch` command downloads data identified via accession numbers from NCBI then stores 
 this data in a storage directory (`~/.bio`). All subsequent commands in the `bio` package can seamlessly access the stored  data from any location and would not need to connect to the internet to use it.
 
-    # Get data for a single accession number.
     bio NC_045512 --fetch
     
-Running the fetch command once you already have the data will not connect to the internet again.
+Running the fetch command after you've already fetched it will not connect to the internet again it will just exit silently. 
 
-Most commands you can operate on multiple accession numbers at a time.
+Most commands can operate on multiple accession numbers at a time.
 
     bio NC_045512 MN996532 --fetch
     
@@ -70,7 +69,7 @@ If you want to update the original data use the `--update` parameter.
 
 ### Update data (--update)   
     
-To force fetch to download again the data that you already have:
+To force fetch to download data that already seems to be present  do:
 
     bio NC_045512 --fetch --update
 
@@ -78,9 +77,7 @@ Note that you can't update a renamed sequence. At that point the original access
 
     bio NC_045512 --fetch --update --rename ncov --seqid ncov
 
-Since the update needs internet access, and depending on datasize waiting for download use it only if you have reason to believe the data has changed.
-
-There is a builtin order of operations, does not matter what order you list commands. For example deletion would take place first before the fetch and so on.
+There is a builtin order of operations, does not matter what order you list commands. For example `--delete` would take place first before the `--fetch` and so on.
 
 ### View data
 
@@ -96,6 +93,8 @@ Many other combinations are valid:
 
     bio ncov --type CDS 
     
+When viewing the data directly you are shown the JSON based data that `bio` uses internally.
+
 ## Example output
 
 ```{bash, comment=NA}

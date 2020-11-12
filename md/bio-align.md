@@ -1,4 +1,4 @@
-# Alignments {#align}
+# Sequence alignments {#align}
 
 
 ```{bash, comment=NA}
