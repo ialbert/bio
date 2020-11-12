@@ -1,8 +1,6 @@
-# Introduction
+# bio: making bioinformatics fun again
 
 > Under development (the package is functional but not fully vetted)
-
-**Making bioinformatics fun again.**
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 

@@ -1,8 +1,6 @@
-# Introduction
+# bio: making bioinformatics fun again
 
 > Under development (the package is functional but not fully vetted)
-
-**Making bioinformatics fun again.**
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
@@ -17,9 +15,9 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
     bio MN996532  --fetch --rename ratg13
     
     # Run an alignment.
-    bio align ncov:S ratg13:S --end 80 --translate
+    bio align ncov:S ratg13:S --end 90 --translate
 
-to align the first 80 basepairs DNA sequence translated as for the proteins taken from SARS-COV-2 and its closest (known) relative Bat coronavirus RatG13. Read more about the process in the documentation.
+to align the first 90 basepairs DNA sequence translated into proteins taken from SARS-COV-2 and its closest (known) relative Bat coronavirus RatG13. Read more about the process in the documentation.
 
 ## Learn more about how `bio` works
 
