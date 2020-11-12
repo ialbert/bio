@@ -1,6 +1,6 @@
 # Introduction
 
-> Under development (package is functional but not fully vetted)
+> Under development (the package is functional but not fully vetted)
 
 **Making bioinformatics fun again.**
 
@@ -49,15 +49,17 @@ If you clone the repository we recommend to install as development package with:
 
     python setup.py develop
     
-run tests:
+## Testing
+
+To run all tests use:
 
     make test
     
-## Testing
+Tests are automatically built from a test script that mimics real life usage scenarios.
 
-Tests are automatically built from a demonstration script. 
+* https://github.com/ialbert/bio/blob/master/test/test_bio_data.sh
 
-To add a new test run the command you wish to test
+To add a new test first run the command you wish to test
 
     bio foo --gff > output.gff
 
@@ -69,7 +71,5 @@ followed by:
 
     make build_tests
     
-The latter build command will automatically generate a Python test for each line in the script
-that checks that the command works and that the output matches the expected output.
-
-    
+The latter command will automatically generate a Python test for each line in the master script.
+The automatically generated test will verify that the command is operational and that the output matches the expectations.

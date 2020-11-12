@@ -1,6 +1,6 @@
 # Introduction
 
-> Under development (package is functional but not fully vetted)
+> Under development (the package is functional but not fully vetted)
 
 **Making bioinformatics fun again.**
 
