@@ -137,7 +137,7 @@ And so on. `bio` has a wealth of utility that makes bioinformatics more accessib
 
 The documentation is maintained at
 
-* https://bio.github.io
+* https://ialbert.github.io/bio/
 
 Or in the github repository as markdown files:
 
