@@ -1,6 +1,6 @@
-# Taxonomy {#taxon}
+# NCBI Taxonomy {#taxon}
 
-The `bio` provides utility to visualize NCBI taxonomies.
+The `bio` package provides utility to visualize NCBI taxonomies.
 
 ## Building the taxonomy
 
