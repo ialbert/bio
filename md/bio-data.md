@@ -35,13 +35,24 @@ Most commands can operate on multiple accession numbers at a time.
     
 There will be commands like `--rename` where it makes no sense to apply the operation on multiple data at the same time. In those cases only the first accession number is acted upon.
 
-A few observed benchmarks that will heavily depend on NCBI performance:
+## Data performance
 
-- Viral, SARS-COV-2: NC_045512 (1 second)
-- Viral, Ebola: AF086833 (1 second)
-- Bacteria, Escherichia coli: NC_002695 (2 minutes, 10MB)
-- Insect, fruit fly (chromosome 2L): NT_033779 (2 minutes, 44MB)
-- Mammal, human genome (chromosome 1): NC_000001 (2 minutes, 300MB)
+All fetched data is stored in a compressed JSON format. A few observed benchmarks that will heavily depend on NCBI performance:
+
+- `NC_045512`, SARS-COV-2 virus:  2 seconds, 1,200 lines, 77KB downloaded, 22KB when stored.
+- `NC_002695`, Escherichia coli bacteria:  1 minute, 170,000 lines, 11MB downloaded, 2.7MB when stored.
+- `NT_033779`, Fruit fly chromosome 2L:  2 minutes, 660,000 lines, 45MB downloaded, 12MB when stored.
+- `NC_000001`, Human genome chromosome 1: 12 minutes, 4,920,000 lines, 300MB downloaded, 64MB when stored.
+
+Note that the internal representation is both efficient and speedy. Even the largest of files takes just a few seconds to be converted to say `fasta` format.:
+
+    time bio NC_000001 --fasta | wc -l
+    4149276
+    
+    real    0m6.189s
+    user    0m3.844s
+    sys     0m2.359s
+    
 
 ### Rename  (--rename)
 

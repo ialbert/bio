@@ -131,15 +131,23 @@ bio NC_045512 --fetch -v</code></pre>
 <p>Most commands can operate on multiple accession numbers at a time.</p>
 <pre><code>bio NC_045512 MN996532 --fetch</code></pre>
 <p>There will be commands like <code>--rename</code> where it makes no sense to apply the operation on multiple data at the same time. In those cases only the first accession number is acted upon.</p>
-<p>A few observed benchmarks that will heavily depend on NCBI performance:</p>
-<ul>
-<li>Viral, SARS-COV-2: NC_045512 (1 second)</li>
-<li>Viral, Ebola: AF086833 (1 second)</li>
-<li>Bacteria, Escherichia coli: NC_002695 (2 minutes, 10MB)</li>
-<li>Insect, fruit fly (chromosome 2L): NT_033779 (2 minutes, 44MB)</li>
-<li>Mammal, human genome (chromosome 1): NC_000001 (2 minutes, 300MB)</li>
-</ul>
 </div>
+<div id="data-performance" class="section level2">
+<h2>Data performance</h2>
+<p>All fetched data is stored in a compressed JSON format. A few observed benchmarks that will heavily depend on NCBI performance:</p>
+<ul>
+<li><code>NC_045512</code>, SARS-COV-2 virus: 2 seconds, 1,200 lines, 77KB downloaded, 22KB when stored.</li>
+<li><code>NC_002695</code>, Escherichia coli bacteria: 1 minute, 170,000 lines, 11MB downloaded, 2.7MB when stored.</li>
+<li><code>NT_033779</code>, Fruit fly chromosome 2L: 2 minutes, 660,000 lines, 45MB downloaded, 12MB when stored.</li>
+<li><code>NC_000001</code>, Human genome chromosome 1: 12 minutes, 4,920,000 lines, 300MB downloaded, 64MB when stored.</li>
+</ul>
+<p>Note that the internal representation is both efficient and speedy. Even the largest of files takes just a few seconds to be converted to say <code>fasta</code> format.:</p>
+<pre><code>time bio NC_000001 --fasta | wc -l
+4149276
+
+real    0m6.189s
+user    0m3.844s
+sys     0m2.359s</code></pre>
 <div id="rename-rename" class="section level3">
 <h3>Rename (–rename)</h3>
 <p>Accession numbers are tedious to handle. Almost always we rename data to be meaningful.</p>
@@ -181,6 +189,7 @@ If you want to update the original data use the <code>--update</code> parameter.
 <p>Many other combinations are valid:</p>
 <pre><code>bio ncov --type CDS </code></pre>
 <p>When viewing the data directly you are shown the JSON based data that <code>bio</code> uses internally.</p>
+</div>
 </div>
 <div id="example-output" class="section level2">
 <h2>Example output</h2>
