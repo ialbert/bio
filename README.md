@@ -17,10 +17,21 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
     # Align the DNA for the S protein.
     bio align ncov:S ratg13:S --end 90 
 
-to align the first 90 basepairs of DNA sequence of the `S` protein,  taken from SARS-COV-2 and its closest (known) relative bat coronavirus RatG13. If you wanted to align the sequences as translated proteins you would write:
+to align the first 90 basepairs of the DNA sequence of the `S` protein,  taken from SARS-COV-2 and its closest (known) relative bat coronavirus RatG13. If you wanted to align the sequences as translated proteins you would write:
 
     bio align ncov:S ratg13:S --end 90 --translate
     
+but just to make sure, there is a lot more to `bio` than alignments.
+
+## Who is `bio` designed for?
+
+- Students learning about bioinformatics.
+- Bioinformatics educators that need a platform to demonstrate bioinformatics concepts. 
+- Scientists working with large numbers of similar genomes (bacterial/viral strains).
+- Scientists that need to closely investigate and understand particular details of a genomic region.
+
+`bio` is designed for detail oriented investigations. 
+
 ## Learn more about how `bio` works
 
 The documentation is maintained at
