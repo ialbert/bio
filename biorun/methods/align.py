@@ -28,10 +28,6 @@ except ImportError as exc:
     HAS_PARASAIL = False
     sys.exit(-1)
 
-with warnings.catch_warnings():
-    warnings.simplefilter('ignore', BiopythonExperimentalWarning)
-    from Bio.Align import substitution_matrices
-
 
 # The default logging function.
 logger = utils.logger
