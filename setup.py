@@ -21,6 +21,7 @@ setup(
     ],
     install_requires=[
         'plac==1.2.0',
+        'pytest',
     ],
 
     entry_points={

@@ -1,5 +1,5 @@
 #
-# Build the new test sets when the output formats change.
+# This script is used to generate Python tests.
 #
 
 # Stop on errors.
