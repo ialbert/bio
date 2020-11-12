@@ -4,7 +4,8 @@ rmd_files: [
   "bio-data.md",
   "bio-convert.md",
   "bio-align.md",
-  "bio-tips.md",
+  "bio-taxonomy.md",
+  "bio-usage-tips.md",
 ]
 
 book_filename: bio

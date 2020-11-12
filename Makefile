@@ -4,9 +4,6 @@ all: serve
 
 publish: build sync
 
-init:
-	rm -rf _book
-
 test:
 	pytest
 
@@ -17,8 +14,13 @@ build_test:
 	(cd test && python generate.py)
 	pytest
 
-serve: init
-	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='_book', port=8000)"
+docs:
+	rm -rf doc/html
+	(cd doc && Rscript -e "bookdown::render_book(input='index.txt', output_dir='html', output_format='bookdown::gitbook')")
+
+serve:
+	rm -rf doc/html
+	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='html', port=8000)"
 
 clean:
 	rm -rf dist build bio.egg-info

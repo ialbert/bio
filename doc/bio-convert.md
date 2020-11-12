@@ -1,4 +1,4 @@
-# bio: convert {#convert}
+# Format conversions {#convert}
 
 The `bio` package may be used to 
 

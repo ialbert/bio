@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Installation | bio.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Installation | bio.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Installation | bio.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="data.html"/>
+<script src="libs/header-attrs-2.1/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<script src="assets/prism.js"></script>
+
+<link rel="stylesheet" type="text/css" href="assets/bio.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/asciinema-player.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/prism.css" />
+
+<script>
+
+    $(document).ready(function () {
+        $('pre').addClass('language-bash');
+        Prism.highlightAll();
+    });
+
+</script>
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="index.html">bio: making bioinformatics fun again</a></li>
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Installation</a></li>
+<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data handling</a></li>
+<li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
+<li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Alignments</a></li>
+<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy</a></li>
+<li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>Usage tips</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="install" class="section level1">
+<h1>Installation</h1>
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<p>We don’t fully automate the dependency installation to give users the option of using the approach they prefer.</p>
+<p>To install the requirements with <code>conda</code> write:</p>
+<pre><code>conda install -c bioconda biopython pysam python-parasail </code></pre>
+<p>You may also install the requirements via <code>pip</code>:</p>
+<pre><code>pip install biopython pysam python-parasail</code></pre>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>Install the package with:</p>
+<pre><code>pip install bio --upgrade</code></pre>
+</div>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<p>Type <code>bio</code> followed by one or more accession numbers followed by one or more flags or options.</p>
+<pre><code>bio ACC1 [ACC2 ACC3] --option1 value1 --flag1 ...</code></pre>
+<ol style="list-style-type: decimal">
+<li>A <code>flag</code> is a parameter that does not take additional values: <code>--fetch</code></li>
+<li>An <code>option</code> is a parameter that takes an additional value: <code>--start 100</code></li>
+</ol>
+<p>Use the <code>-v</code> flag to produce verbose outputs for each command.</p>
+<div id="subcommands" class="section level3">
+<h3>Subcommands</h3>
+<p>Certain words may not be accession numbers as they carry additional meaning and trigger
+alternative actions</p>
+<pre><code>bio align ACC1 [ACC2 ACC3] --option1 value1 --flag1 ...</code></pre>
+<p>You may get help on alignments with:</p>
+<pre><code>bio align -h</code></pre>
+</div>
+</div>
+<div id="getting-help" class="section level2">
+<h2>Getting help</h2>
+<pre><code>bio -h</code></pre>
+<p>to get help for a specific command:</p>
+</div>
+<div id="help-pages" class="section level2">
+<h2>Help pages</h2>
+<p>Besides the default actions <code>bio</code> may also take subcommands such as <code>align</code>. Each subcommand
+has its own command line help page.</p>
+<div id="help-page-for-default-actions" class="section level4">
+<h4>1. Help page for default actions</h4>
+<pre class="bash"><code>bio -h</code></pre>
+<pre><code>usage: bio [-h] [-F] [-G] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C] [-R]
+           [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;] [-i] [-v]
+           [acc [acc ...]]
+
+bio - making bioinformatics fun again
+
+command line utility for manipulating bioinformatics data
+
+positional arguments:
+  acc
+
+optional arguments:
+  -h, --help          show this help message and exit
+  -F, --fasta         produce FASTA format
+  -G, --gff           produce GFF format
+  -f, --fetch         download data as accessions
+  -u, --update        updates data in storage
+  -d, --delete        delete data in storage
+  -l, --list          list data in storage
+  -P, --protein       operate on proteins
+  -T, --translate     translate DNA to protein
+  -X, --transcribe    transrcribe DNA to RNA
+  -E, --reverse       reverse sequence
+  -C, --complement    complement sequence
+  -R, --revcomp       reverse complement sequence
+  -r &#39;&#39;, --rename &#39;&#39;  set the name
+  -S &#39;&#39;, --seqid &#39;&#39;   set the sequence id
+  -s &#39;&#39;, --start &#39;&#39;   start coordinate
+  -e &#39;&#39;, --end &#39;&#39;     end coordinate
+  -t &#39;&#39;, --type &#39;&#39;    select feature by type
+  -g &#39;&#39;, --gene &#39;&#39;    select features associated with gene
+  -m &#39;&#39;, --match &#39;&#39;   select features by rexep match
+  -i, --inter         interactive (data from command line)
+  -v, --verbose       verbose mode</code></pre>
+</div>
+<div id="help-page-for-alignments" class="section level4">
+<h4>2. Help page for alignments</h4>
+<pre class="bash"><code>bio align -h</code></pre>
+<pre><code>usage: bio [-h] [-s 1] [-e &#39;&#39;] [-m local] [-o 11] [-x 1] [-p] [-t] [-i] [-v]
+           [&#39;&#39;] [&#39;&#39;]
+
+Handles an alignment request.
+
+positional arguments:
+  &#39;&#39;                    []
+  &#39;&#39;                    []
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s 1, --start 1       start coordinate
+  -e &#39;&#39;, --end &#39;&#39;       end coordinate
+  -m local, --mode local
+                        alignment mode (local, global, semiglobal,
+                        strictglobal
+  -o 11, --gap-open 11  scoring matrix
+  -x 1, --gap-extend 1  scoring matrix
+  -p, --protein         use the translated protein sequences from the data
+  -t, --translate       use the translated protein sequences from the data
+  -i, --inter           interactive mode, data from command line
+  -v, --verbose         verbose mode, progress messages printed</code></pre>
+
+</div>
+</div>
+</div>
+
+<script src="assets/asciinema-player.js"></script>
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

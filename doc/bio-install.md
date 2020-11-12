@@ -1,4 +1,4 @@
-# bio: install {#install}
+# Installation {#install}
 
 ## Prerequisites
 

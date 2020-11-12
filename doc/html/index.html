@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Introduction | bio.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Introduction | bio.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Introduction | bio.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="install.html"/>
+<script src="libs/header-attrs-2.1/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+<script src="assets/prism.js"></script>
+
+<link rel="stylesheet" type="text/css" href="assets/bio.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/asciinema-player.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/prism.css" />
+
+<script>
+
+    $(document).ready(function () {
+        $('pre').addClass('language-bash');
+        Prism.highlightAll();
+    });
+
+</script>
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="index.html">bio: making bioinformatics fun again</a></li>
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Installation</a></li>
+<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data handling</a></li>
+<li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
+<li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Alignments</a></li>
+<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy</a></li>
+<li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>Usage tips</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!--bookdown:title:end-->
+<!--bookdown:title:start-->
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<blockquote>
+<p>Under development (package is functional but not fully vetted)</p>
+</blockquote>
+<p><strong>Making bioinformatics fun again.</strong></p>
+<p><code>bio</code> - command-line utilities to make bioinformatics explorations more enjoyable.</p>
+<p>Built on top of <a href="https://biopython.org/">BioPython</a>, <a href="https://github.com/jeffdaily/parasail">Parasail</a> and other existing packages; <code>bio</code> streamlines bioinformatics tasks such as:</p>
+<ul>
+<li>downloading data from NCBI</li>
+<li>converting between data formats</li>
+<li>extracting partial information from files: select by gene, by coordinate, by matching a pattern …</li>
+<li>aligning sequences</li>
+<li>visualizing taxonomies</li>
+<li>… and others …</li>
+</ul>
+<p>Having access to all the utility described above makes the <code>bio</code> package well suited for exploratory analysis of genomes.</p>
+<div id="why-do-we-need-this-software" class="section level2">
+<h2>Why do we need this software?</h2>
+<p>If you’ve ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress.</p>
+<p>Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The <code>bio</code> package is meant to solve that tedium.</p>
+</div>
+<div id="a-realistic-example" class="section level2">
+<h2>A realistic example</h2>
+<p>Suppose you wanted to identify the differences between the <code>S</code> protein of the bat coronavirus deposited as <code>MN996532</code> and the <code>S</code> protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number <code>NC_045512</code>.</p>
+<p>If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, then think about the effort it would take you to teach someone else how to do the same.</p>
+</div>
+<div id="the-solution-with-bio" class="section level2">
+<h2>The solution with <code>bio</code></h2>
+<p>With the <code>bio</code> package the process takes simple, concise steps.</p>
+<p>First we download and rename the data to have more manageable labels:</p>
+<pre><code>bio NC_045512 --fetch --rename ncov
+bio MN996532  --fetch --rename ratg13</code></pre>
+<p>From now on <code>bio</code> can operate on <code>NC_045512</code> using the name <code>ncov</code> and on <code>MN996532</code> using the name <code>ratg13</code> no matter where you are on your computer! It stores the data in an internal storage system that can be used from any folder. There is no clutter of files or paths to remember. For example, in any directory you now can type:</p>
+<pre><code>bio ncov --fasta --end 100</code></pre>
+<p>and it will show you the first 100 bases of the genome</p>
+<pre><code>&gt;ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC</code></pre>
+<p>You could also convert the data stored under <code>ncov</code> name to formats. Let’s convert just the <code>CDS</code> features annotated for gene <code>S</code> to say <code>GFF</code>:</p>
+<pre><code>bio ncov --gff --gene S --type CDS</code></pre>
+<p>the command above will print:</p>
+<pre><code>ncov .  CDS  21563  25384   .  +  1  Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568</code></pre>
+<p>Now, back to our problem of aligning proteins. Let’s align the first 80 basepairs of DNA sequences for the <code>S</code> protein for each organism, <code>bio</code> even gives you a shortcut, instead of typing <code>--gene S --type CDS</code> you can write it as <code>ncov:S</code> :</p>
+<pre><code>bio align ncov:S ratg13:S --end 80</code></pre>
+<p>That’s it. The command above produces:</p>
+<pre><code>### 1: YP_009724390 vs QHR63300.2 ###
+
+Length: 3827 (local) 
+Query:  3822 [1, 3822]
+Target: 3810 [1, 3810]
+Score:  16694
+Ident:  3554/3827 (92.9%)
+Simil:  3554/3827 (92.9%)
+Gaps:   22/3827 (0.6%)
+Matrix: nuc44(-11, -1) 
+
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGC
+             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGC</code></pre>
+<p>If instead we wanted to align the 80bp DNA sequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
+<pre><code>bio align ncov:S ratg13:S --translate --end 80</code></pre>
+<p>Now the output is:</p>
+<pre><code>### 1: YP_009724390 vs QHR63300.2 ###
+
+Length: 26 (local)
+Query:  26 [1, 26]
+Target: 26 [1, 26]
+Score:  131
+Ident:  26/26 (100.0%)
+Simil:  26/26 (100.0%)
+Gaps:   0/26 (0.0%)
+Matrix: blosum62(-11, -1)
+
+QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP
+             ||||||||||||||||||||||||||
+YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP</code></pre>
+<p>We can note right away that all differences in the first 80bp of DNA are synonymous substitutions, the protein translations are the same.</p>
+</div>
+<div id="what-did-bio-do-for-us" class="section level2">
+<h2>What did <code>bio</code> do for us?</h2>
+<ol style="list-style-type: decimal">
+<li>fetched the data from NCBI</li>
+<li>created a more efficient local representation the data</li>
+<li>stored this representation so that next time you need it is available much faster</li>
+<li>generated alignments</li>
+</ol>
+</div>
+<div id="but-wait-there-is-more" class="section level2">
+<h2>But wait there is more</h2>
+<p>How about translating the reverse of the last 10 nucleotides of every feature labeled as <code>CDS</code>. <code>bio</code> can do that like so:</p>
+<pre><code>bio ncov --fasta --type CDS --start -10 --reverse --translate</code></pre>
+<p>ah yes, just what I needed:</p>
+<pre><code>&gt;YP_009724389.1 [-9:21291], reverse, translated DNA
+NQQ
+
+&gt;YP_009725295.1 [-9:13218], reverse, translated DNA
+NVA
+
+&gt;YP_009724390.1 [-9:3822], reverse, translated DNA
+NTH
+...</code></pre>
+<p>And so on. <code>bio</code> has a wealth of utility that makes bioinformatics more accessible.</p>
+</div>
+<div id="documentation" class="section level2">
+<h2>Documentation</h2>
+<p>The documentation is maintained at</p>
+<ul>
+<li><a href="https://bio.github.io" class="uri">https://bio.github.io</a></li>
+</ul>
+<p>Or in the github repository as markdown files:</p>
+<ul>
+<li><a href="https://github.com/ialbert/bio/tree/master/doc" class="uri">https://github.com/ialbert/bio/tree/master/doc</a></li>
+</ul>
+</div>
+<div id="comparisons-to-emboss" class="section level2">
+<h2>Comparisons to EMBOSS</h2>
+<p>The software with the most similar goals to <code>bio</code> is the <a href="http://emboss.sourceforge.net/">emboss suite</a>, a revolutionary software package developed decades ahead of its time. Unfortunately, perhaps because of being developed so early, the amazing feats of software engineering within <code>emboss</code> are distributed with nearly incomprehensible documentation that attempt in vain to describe the uncommonly obtuse user interfaces.</p>
+<p>We love the concept of <code>emboss</code> but even after many years we don’t understand how to use it. We constantly have to consult the manual for details. Moreover commands that use <code>emboss</code> suites tend to end up as a series of hard to read arcane commands that are surprisingly difficult to comprehend even for experienced scientists.</p>
+<p>Criticism aside, imitation is the greatest form of flatter, <code>bio</code> is an homage to <code>emboss</code> with the hope that one day, we can replace the functionality from <code>emboss</code> in a form that brings joy rather than frustrations.</p>
+
+</div>
+</div>
+
+<script src="assets/asciinema-player.js"></script>
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="install.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

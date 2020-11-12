@@ -1,19 +1,19 @@
-# bio: introduction
+# Introduction
+
+> Under development (package is functional but not fully vetted)
 
 **Making bioinformatics fun again.**
 
-Command-line utilities to make bioinformatics explorations more enjoyable.
+`bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
 Built on top of [BioPython][biopython], [Parasail][parasail] and other existing packages; `bio` streamlines bioinformatics tasks such as:
  
 - downloading data from NCBI
 - converting between data formats 
-- extracting information from files (by gene, by coordinate etc)
+- extracting partial information from files: select by gene, by coordinate, by matching a pattern ...
 - aligning sequences
 - visualizing taxonomies
-- exploring the effects of mutations
-
-... and many more
+- ... and others ... 
 
 Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
@@ -38,12 +38,12 @@ If you are a trained bioinformatician, think about all the steps you would need 
 
 With the `bio` package the process takes simple, concise steps.
 
-First get and rename the data to have more manageable labels:
+First we download and rename the data to have more manageable labels:
 
-    bio MN996532 --fetch --rename ratg13
     bio NC_045512 --fetch --rename ncov
- 
-From now on `bio` can access `NC_045512` under the name `ncov` no matter where you are on your computer. It stores the data in its storage system and you can make use of it in any location. There is no clutter of files in your face. For example, in any directory you can type:
+    bio MN996532  --fetch --rename ratg13
+
+From now on `bio` can operate on  `NC_045512` using the name `ncov` and on `MN996532` using the name `ratg13` no matter where you are on your computer! It stores the data in an internal storage system that can be used from any folder. There is no clutter of files or paths to remember. For example, in any directory you now can type:
 
     bio ncov --fasta --end 100
     
@@ -61,7 +61,7 @@ the command above will print:
 
     ncov .  CDS  21563  25384   .  +  1  Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
 
-Now, back to our problem of aligning proteins. Let's align the first 80 basepairs of DNA sequences for the `S` protein for each organism:
+Now, back to our problem of aligning proteins. Let's align the first 80 basepairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut, instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
     bio align ncov:S ratg13:S --end 80
 
@@ -104,7 +104,7 @@ Now the output is:
                  ||||||||||||||||||||||||||
     YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
 
-We can note right away that all differences in DNA are synonymous substitutions, both pieces of DNA code for the same proteins.
+We can note right away that all differences in the first 80bp of DNA are synonymous substitutions, the protein translations are the same.
 
 ## What did `bio` do for us?
  
