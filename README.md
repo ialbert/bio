@@ -4,18 +4,23 @@
 
 Command-line utilities to make bioinformatics explorations more enjoyable.
 
-Built on top of [BioPython][biopython] and other existing packages; the `bio` software package streamlines bioinformatics tasks such as:
+Built on top of [BioPython][biopython], [Parasail][parasail] and other existing packages; `bio` streamlines bioinformatics tasks such as:
  
 - downloading data from NCBI
 - converting between data formats 
 - extracting information from files (by gene, by coordinate etc)
 - aligning sequences
-- and ... many more
+- visualizing taxonomies
+- exploring the effects of mutations
 
-Having acces to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
+... and many more
+
+Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
 [biopython]: https://biopython.org/
 [emboss]: http://emboss.sourceforge.net/
+[parasail]: https://github.com/jeffdaily/parasail
+[simplesam]: https://github.com/mdshw5/simplesam 
 
 ## Why do we need this software?
 
@@ -23,13 +28,15 @@ If you've ever done bioinformatics you know how even seemingly straightforward t
 
 Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium. 
 
+## A realistic example
+
 Suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. 
 
 If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, then think about the effort it would take you to teach someone else how to do the same. 
- 
-## Quick solutions for a fast paced world
- 
-With the `bio` package bioinformatics looks more streamlined. 
+
+## The solution with `bio`
+
+With the `bio` package the process takes simple, concise steps.
 
 First get and rename the data to have more manageable labels:
 
@@ -46,7 +53,7 @@ and it will show you the first 100 bases of the genome
     ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
     GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
 
-You could also convert the data stored under `ncov` name to formats. Let's say `GFF`:
+You could also convert the data stored under `ncov` name to formats. Let's convert just the `CDS` features annotated for gene `S` to say `GFF`:
 
     bio ncov --gff --gene S --type CDS
 
@@ -54,9 +61,7 @@ the command above will print:
 
     ncov .  CDS  21563  25384   .  +  1  Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
 
-## Look Ma! It just works!
-
-Now, back to our problem of aligning proteins. Let's align the first 80 basepairs of DNA sequences for the `S` protein as annotated in each organism:
+Now, back to our problem of aligning proteins. Let's align the first 80 basepairs of DNA sequences for the `S` protein for each organism:
 
     bio align ncov:S ratg13:S --end 80
 
@@ -126,36 +131,23 @@ ah yes, just what I needed:
     NTH
     ...
     
-Or what about GFF regions of type `gene` that overlap with a region 1000 to 2000
-
-    bio ncov --gff --start 1000 --end 2000 | head
-
-it prints:
-
-    ##gff-version 3
-    ncov	.	gene	266	21555	.	+	1	Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
-    ncov	.	CDS	266	21555	.	+	1	Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
-    ncov	.	mature_protein_region	806	2719	.	+	1	Name=YP_009725298.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725298.1;product=nsp2
-    ncov	.	CDS	266	13483	.	+	1	Name=YP_009725295.1;type=CDS;gene=ORF1ab;protein_id=YP_009725295.1;product=ORF1a polyprotein;db_xref=GeneID:43740578
-    ncov	.	mature_protein_region	806	2719	.	+	1	Name=YP_009742609.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009742609.1;product=nsp2
-
 And so on. `bio` has a wealth of utility that makes bioinformatics more accessible.
 
 ## Documentation
 
 The documentation is maintained at
 
-    https://bio.github.io
+* https://bio.github.io
 
 Or in the github repository as markdown files:
 
-    https://github.com/ialbert/bio/tree/master/doc
+* https://github.com/ialbert/bio/tree/master/doc
 
 ## Comparisons to EMBOSS
 
-The software with the most similar goals to `bio` is the [emboss suite][emboss] a revolutionary software package developed decades ahead of its time. Alas perhaps the seminal nature of `emboss` is also the reason why its amazing feats of software engineering are packaged with nearly incomprehensible documentation and uncommonly obtuse user interfaces. 
+The software with the most similar goals to `bio` is the [emboss suite][emboss], a revolutionary software package developed decades ahead of its time. Unfortunately, perhaps because of being developed so early, the amazing feats of software engineering within `emboss` are distributed with nearly incomprehensible documentation that attempt in vain to describe the uncommonly obtuse user interfaces. 
 
-We love the concept of `emboss` but even after many years we don't understand how to use it. We constantly have to consult the manual for details. Moreover commands that use `emboss` suites tend to end up as a series of hard to read jumbles of commands that are surprisingly difficult to comprehend even for experienced scientists.
+We love the concept of `emboss` but even after many years we don't understand how to use it. We constantly have to consult the manual for details. Moreover commands that use `emboss` suites tend to end up as a series of hard to read arcane commands that are surprisingly difficult to comprehend even for experienced scientists. 
 
-`bio` is an homage to `emboss` with the hope that one day we can replace all the functionality from `emboss` in a form that brings joy rather than frustrations.
+Criticism aside, imitation is the greatest form of flatter, `bio` is an homage to `emboss` with the hope that one day, we can replace the functionality from `emboss` in a form that brings joy rather than frustrations. 
 
