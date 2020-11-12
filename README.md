@@ -28,6 +28,7 @@ If you've ever done bioinformatics you know how even seemingly straightforward t
 
 Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium. 
 
+
 ## A realistic example
 
 Suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. 
@@ -132,6 +133,18 @@ ah yes, just what I needed:
     ...
     
 And so on. `bio` has a wealth of utility that makes bioinformatics more accessible.
+
+## Quick install
+    
+Install the package with:
+
+    # Prerequisites
+    conda install -c bioconda biopython pysam python-parasail 
+    
+    # Package install
+    pip install bio --upgrade
+    
+See more details in the documentation.
 
 ## Documentation
 
