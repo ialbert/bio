@@ -154,7 +154,7 @@ The documentation is maintained at
 
 Or in the github repository as markdown files:
 
-* https://github.com/ialbert/bio/tree/master/doc
+* https://github.com/ialbert/bio/tree/master/md
 
 ## Comparisons to EMBOSS
 

@@ -7,5 +7,5 @@ from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
 
 # Global package version
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
