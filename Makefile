@@ -15,12 +15,12 @@ build_test:
 	pytest
 
 docs:
-	rm -rf www/*
-	(cd doc && Rscript -e "bookdown::render_book(input='index.txt', output_dir='../www', output_format='bookdown::gitbook')")
+	rm -rf docs/*
+	(cd md && Rscript -e "bookdown::render_book(input='index.txt', output_dir='../docs', output_format='bookdown::gitbook')")
 
 serve:
-	rm -rf doc/html
-	Rscript -e "bookdown::serve_book(dir='doc', preview=TRUE, output_dir='html', port=8000)"
+	rm -rf md/_book
+	Rscript -e "bookdown::serve_book(dir='md', preview=TRUE, output_dir='_book', port=8000)"
 
 clean:
 	rm -rf dist build bio.egg-info
