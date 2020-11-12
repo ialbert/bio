@@ -113,14 +113,20 @@
 <h2>Prerequisites</h2>
 <p>We don’t fully automate the dependency installation to give users the option of using the approach they prefer.</p>
 <p>To install the requirements with <code>conda</code> write:</p>
-<pre><code>conda install -c bioconda biopython pysam python-parasail </code></pre>
+<pre><code>conda install -c bioconda biopython pysam parasail-python</code></pre>
 <p>You may also install the requirements via <code>pip</code>:</p>
-<pre><code>pip install biopython pysam python-parasail</code></pre>
+<pre><code>pip install biopython pysam parasail-python</code></pre>
 </div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <p>Install the package with:</p>
 <pre><code>pip install bio --upgrade</code></pre>
+<p>Try it out (set verbose mode to see what is happening):</p>
+<pre><code>bio NC_045512 --fetch -v</code></pre>
+<p>then, list the known data:</p>
+<pre><code>bio --list</code></pre>
+<p>try out a conversion:</p>
+<pre><code>bio NC_045512 --gff</code></pre>
 </div>
 <div id="usage" class="section level2">
 <h2>Usage</h2>

@@ -21,7 +21,6 @@ setup(
     ],
     install_requires=[
         'plac==1.2.0',
-        'sqlitedict',
     ],
 
     entry_points={

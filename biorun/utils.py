@@ -68,7 +68,7 @@ def sizeof_fmt(num, suffix=''):
     return "%.1f%s%s" % (num, '??', suffix)
 
 
-def save_stream(stream, fname, trigger=50000, file=sys.stdout, flag='wt'):
+def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
     """
     Write a input 'stream' as the fname filename
     """
@@ -81,9 +81,10 @@ def save_stream(stream, fname, trigger=50000, file=sys.stdout, flag='wt'):
     sequence = count(1)
     for index, line in zip(sequence, stream):
         if (index % trigger) == 0:
-            logger.info(f"*** wrote {index:,d} lines", file=file)
+            print(f"*** downloaded {index:,d} lines\r", file=file, end='')
         tmp.write(line)
 
+    print()
     # Not sure if this is needed. Can't hurt.
     tmp.flush()
 

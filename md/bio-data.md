@@ -24,15 +24,24 @@ The above command will operate on the sequence as if it were stored in a FASTA f
 The `--fetch` command downloads data identified via accession numbers from NCBI then stores 
 this data in a storage directory (`~/.bio`). All subsequent commands in the `bio` package can seamlessly access the stored  data from any location and would not need to connect to the internet to use it.
 
-    bio NC_045512 --fetch
+    # Run fetch in verbose mode.
+    bio NC_045512 --fetch -v
     
-Running the fetch command after you've already fetched it will not connect to the internet again it will just exit silently. 
+Running the fetch command the next time for the accession number will not connect to the internet again, it will exit instead. Use the `--fetch --update` (see later) to force a re-downloading of data from NCBI. 
 
 Most commands can operate on multiple accession numbers at a time.
 
     bio NC_045512 MN996532 --fetch
     
 There will be commands like `--rename` where it makes no sense to apply the operation on multiple data at the same time. In those cases only the first accession number is acted upon.
+
+A few observed benchmarks that will heavily depend on NCBI performance:
+
+- Viral, SARS-COV-2: NC_045512 (1 second)
+- Viral, Ebola: AF086833 (1 second)
+- Bacteria, Escherichia coli: NC_002695 (2 minutes, 10MB)
+- Insect, fruit fly (chromosome 2L): NT_033779 (2 minutes, 44MB)
+- Mammal, human genome (chromosome 1): NC_000001 (2 minutes, 300MB)
 
 ### Rename  (--rename)
 

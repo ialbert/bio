@@ -47,6 +47,9 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
         Creates a parameter for each accession.
 
         """
+        # Set the verbosity
+        utils.set_verbosity(logger, level=int(verbose))
+
         # A very common error to pass a fragment as
         if name.startswith("-"):
             msg = f"Invalid accession number: {name}"
@@ -63,9 +66,6 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
 
     # Make a list of parameters for each name.
     params = [make_param(n) for n in acc]
-
-    # Set the verbosity
-    utils.set_verbosity(logger, level=int(verbose))
 
     # Delete should be the first to execute.
     if delete:

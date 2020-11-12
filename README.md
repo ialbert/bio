@@ -139,7 +139,7 @@ And so on. `bio` has a wealth of utility that makes bioinformatics more accessib
 Install the package with:
 
     # Prerequisites
-    conda install -c bioconda biopython pysam python-parasail 
+    conda install -c bioconda biopython pysam parasail-python
     
     # Package install
     pip install bio --upgrade

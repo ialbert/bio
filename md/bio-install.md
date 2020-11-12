@@ -6,11 +6,11 @@
 
 To install the requirements with `conda` write:
 
-    conda install -c bioconda biopython pysam python-parasail 
+    conda install -c bioconda biopython pysam parasail-python
     
 You may also install the requirements via `pip`:
 
-    pip install biopython pysam python-parasail
+    pip install biopython pysam parasail-python
 
 ## Installation
     
@@ -18,6 +18,18 @@ Install the package with:
 
     pip install bio --upgrade
 
+Try it out (set verbose mode to see what is happening):
+
+    bio NC_045512 --fetch -v
+ 
+then, list the known data:
+
+    bio --list
+    
+try out a conversion:
+
+    bio NC_045512 --gff
+    
 ## Usage
 
 Type `bio` followed by one or more accession numbers followed by one or more flags or options.

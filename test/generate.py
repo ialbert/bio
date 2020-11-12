@@ -88,18 +88,24 @@ def generate_tests(infile, outfile="test_bio.py"):
 
     stream = open(infile)
     lines = map(lambda x: x.strip(), stream)
-    lines = filter(lambda x: ">" in x, lines)
-    lines = map(lambda x: tuple(x.split(">")), lines)
+    # Test only bio commands.
+    lines = filter(lambda x: x[:3] == "bio", lines)
     lines = list(lines)
 
     collect = []
-    for cmd, fname in lines:
-        fname = fname.strip()
+    for line in lines:
+        if ">" in line:
+            cmd, fname = line.split(">")
+            cmd = cmd.strip()
+            fname = fname.strip()
+            fname = f'"{fname}"'
+        else:
+            cmd, fname = line, None
+
         patt = f"""
         def test_{next(counter)}(capsys):
             cmd = "{cmd}"
-            run(cmd, capsys=capsys, out="{fname}")
-
+            run(cmd, capsys=capsys, out={fname})
         """
         collect.append(dedent(patt))
 
