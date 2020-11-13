@@ -10,7 +10,7 @@ Simil:	2/2 (100.0%)
 Gaps:	0/2 (0.0%)
 Matrix:	blosum62(-11, -1) 
 
-S2           NE
-             ||
 S1           NE
+             ||
+S2           NE
 

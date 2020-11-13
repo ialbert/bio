@@ -9,7 +9,7 @@ Each line in the shell script will be a line in the
 from itertools import count
 from textwrap import dedent
 import os, sys, difflib
-import plac
+import biorun.libs.placlib as plac
 from biorun import main, const
 from biorun.methods import align
 

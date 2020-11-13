@@ -58,6 +58,10 @@ If you clone the repository we recommend to install as development package with:
     
 ## Testing
 
+Testing uses the pytest framework:
+
+    pip install pytest
+
 To run all tests use:
 
     make test

@@ -65,18 +65,13 @@ bio align ncov:S ratg13:S --protein > align-protein-s.txt
 # Align the translated regions.
 bio align ncov:S ratg13:S --end 80 --translate > align-translated-s.txt
 
-# Test alignments
-bio align THISLINE ISALIGNED  -i > align-local.txt
-
-# Default alignment is local.
-bio align THISLINE ISALIGNED  -i > align-local.txt
+# Local alignment.
+bio align THISLINE ISALIGNED  -i --local > align-local.txt
 
 # Global alignment.
-bio align THISLINE ISALIGNED -i --mode global > align-global.txt
+bio align THISLINE ISALIGNED -i --global > align-global.txt
 
 # Semiglobal alignment.
-bio align THISLINE ISALIGNED -i --mode semiglobal > align-semiglobal.txt
+bio align THISLINE ISALIGNED -i --semiglobal > align-semiglobal.txt
 
-# Strict global.
-bio align THISLINE ISALIGNED -i --mode strictglobal > align-strictglobal.txt
 

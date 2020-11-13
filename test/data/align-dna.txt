@@ -1,7 +1,7 @@
 
 ### 1: ncov vs ratg13 ###
 
-Length:	200 (local) 
+Length:	200 (semiglobal) 
 Query:	200 [1, 200]
 Target:	200 [1, 200]
 Score:	946
@@ -10,15 +10,15 @@ Simil:	194/200 (97.0%)
 Gaps:	0/200 (0.0%)
 Matrix:	nuc44(-11, -1) 
 
-ratg13       ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAA
-             ||||||||||||||||||.|||||||||||||||||.||||.||||||||||||||||||||||||||||||||||||||
 ncov         ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAA
+             ||||||||||||||||||.|||||||||||||||||.||||.||||||||||||||||||||||||||||||||||||||
+ratg13       ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAA
 
-ratg13       AATCTGTGTGACTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGG
-             ||||||||||.|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ncov         AATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGG
+             ||||||||||.|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ratg13       AATCTGTGTGACTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGG
 
-ratg13       ACACGAGTAACTCATCTATCTTCTGCAGGTTGCTTACGGT
-             |||||||||||||.|||||||||||||||.||||||||||
 ncov         ACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGT
+             |||||||||||||.|||||||||||||||.||||||||||
+ratg13       ACACGAGTAACTCATCTATCTTCTGCAGGTTGCTTACGGT
 

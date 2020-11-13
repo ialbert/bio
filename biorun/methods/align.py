@@ -1,9 +1,9 @@
 import warnings, sys, os
-import plac
+import biorun.libs.placlib as plac
 from itertools import islice, count
 import textwrap
 
-from biorun.const import *
+from biorun import const
 from biorun import utils, storage, objects
 from biorun.models import jsonrec, fastarec
 
@@ -103,9 +103,9 @@ class Alignment():
         print(header)
         for start in range(0, len(self.trace), width):
             end = start + width
-            print(t_name, self.target[start:end])
-            print(p_name, self.trace[start:end])
             print(q_name, self.query[start:end])
+            print(p_name, self.trace[start:end])
+            print(t_name, self.target[start:end])
             print("")
 
 
@@ -117,6 +117,17 @@ def get_matrix(seq, matrix):
         raise Exception("No matrix found")
     return matrix
 
+# Maps constant to parasail functions.
+FUNC_MAPPER = {
+    # Smith-Waterman local alignment.
+    const.LOCAL_ALIGN: parasail.sw_trace_scan,
+
+    # Needleman-Wunsch global alignment.
+    const.GLOBAL_ALIGN: parasail.nw_trace_scan,
+
+    # Semiglobal alignment, no gap penalites on either end.
+    const.SEMIGLOBAL_ALIGN: parasail.sg_trace_scan,
+}
 
 def parasail_align(qseq, tseq, param):
     q = str(qseq.seq)
@@ -125,13 +136,10 @@ def parasail_align(qseq, tseq, param):
     # Guess matrix type
     matrix = get_matrix(t, param.matrix)
 
-    # Pick the algorithm for the alignment method.
-    if param.mode in (GLOBAL_ALIGN, SEMIGLOBAL_ALIGN):
-        func = parasail.sg_trace_scan
-    elif param.mode == STRICT_ALIGN:
-        func = parasail.nw_trace_scan
-    else:
-        func = parasail.sw_trace_scan
+    mode = param.mode if (param.mode in FUNC_MAPPER) else const.SEMIGLOBAL_ALIGN
+
+    # Select the function mapper
+    func = FUNC_MAPPER[mode]
 
     res = func(q, t, param.gap_open, param.gap_extend, matrix=matrix)
 
@@ -152,19 +160,10 @@ def parasail_align(qseq, tseq, param):
     for coord in coords:
         attrs[coord] = getattr(res, coord, 0) + 1
 
-    # Semiglobal mode needs to compute alignment start/end differently.
-    if param.mode == SEMIGLOBAL_ALIGN and t.comp:
-        # Find the indices of the nonzero elements.
-        idx = list(idx for (idx, chr) in enumerate(t.comp) if not chr.isspace())
-        start, end = min(idx), max(idx) + 1
-        query = query[start:end]
-        target = target[start: end]
-        trace = trace[start:end]
-        attrs['start_ref'], attrs['end_ref'] = start + 1, end
-    else:
-        # Populate from cigar string.
-        attrs['start_query'] = res.cigar.beg_query + 1
-        attrs['start_ref'] = res.cigar.beg_ref + 1
+
+    # Populate from cigar string.
+    attrs['start_query'] = res.cigar.beg_query + 1
+    attrs['start_ref'] = res.cigar.beg_ref + 1
 
     # Decode the CIGAR string
     attrs['cigar'] = res.cigar.decode.decode("ascii")
@@ -184,12 +183,15 @@ def parasail_align(qseq, tseq, param):
 @plac.opt('matrix', "scoring matrix", abbrev='M')
 @plac.opt('gap_open', "scoring matrix", abbrev='o')
 @plac.opt('gap_extend', "scoring matrix", abbrev='x')
-@plac.opt('mode', "alignment mode (local, global, semiglobal, strictglobal")
+@plac.flg('local_', "perform local alignment", abbrev='L')
+@plac.flg('global_', "perform global alignment (zero end gap penalty)", abbrev='G')
+@plac.flg('semiglobal', "perform a semiglobal alignment", abbrev='S')
 @plac.flg('inter', "interactive mode, data from command line")
 @plac.flg('protein', "use the translated protein sequences from the data")
 @plac.flg('translate', "use the translated protein sequences from the data")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, protein=False, translate=False, inter=False, verbose=False, query='',  target=''):
+def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
+        protein=False, translate=False, inter=False, verbose=False, query='',  target=''):
     """
     Handles an alignment request.
     """
@@ -204,6 +206,14 @@ def run(start=1, end='', mode=LOCAL_ALIGN, gap_open=11, gap_extend=1, protein=Fa
     if not (query and target):
         utils.error(f"Please specify both a QUERY and a TARGET")
 
+    if global_:
+        mode = const.GLOBAL_ALIGN
+    elif local_:
+        mode = const.LOCAL_ALIGN
+    elif semiglobal:
+        mode = const.SEMIGLOBAL_ALIGN
+    else:
+        mode = const.SEMIGLOBAL_ALIGN
 
     param1 = objects.Param(name=query, protein=protein, translate=translate,
                            start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)

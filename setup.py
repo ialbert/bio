@@ -20,8 +20,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'plac==1.2.0',
-        'pytest',
+        'biopython',
     ],
 
     entry_points={

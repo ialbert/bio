@@ -1,16 +1,16 @@
 
 ### 1: S1 vs S2 ###
 
-Length:	11 (global) 
+Length:	9 (global) 
 Query:	8 [1, 8]
-Target:	9 [1, 8]
-Score:	8
-Ident:	4/11 (36.4%)
-Simil:	5/11 (45.5%)
-Gaps:	5/11 (45.5%)
+Target:	9 [1, 9]
+Score:	-7
+Ident:	2/9 (22.2%)
+Simil:	3/9 (33.3%)
+Gaps:	1/9 (11.1%)
 Matrix:	blosum62(-11, -1) 
 
-S2           --ISALIGNED
-               ||.:  || 
-S1           THISLI--NE-
+S1           THISLINE-
+             ....:.|| 
+S2           ISALIGNED
 

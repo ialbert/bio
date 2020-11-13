@@ -2,7 +2,7 @@
 The main job runner. Register functions here.
 """
 import sys
-import plac
+import biorun.libs.placlib as plac
 
 from biorun import utils, const, storage, objects
 from biorun.models import fastarec, gffrec, jsonrec
