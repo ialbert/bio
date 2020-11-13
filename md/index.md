@@ -1,4 +1,4 @@
-# bio: making bioinformatics fun again
+# Introduction
 
 > Under development (the package is functional but not fully vetted)
 
