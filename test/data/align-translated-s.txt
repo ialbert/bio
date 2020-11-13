@@ -11,6 +11,6 @@ Gaps:	0/26 (0.0%)
 Matrix:	blosum62(-11, -1) 
 
 YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
-             ||||||||||||||||||||||||||
+           1 |||||||||||||||||||||||||| 26
 QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP
 

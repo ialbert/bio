@@ -109,6 +109,22 @@
             <section class="normal" id="section-">
 <div id="align" class="section level1">
 <h1>Sequence alignments</h1>
+<pre class="bash"><code>bio align THISLINE ISALIGNED -i </code></pre>
+<pre><code>
+### 1: S1 vs S2 ###
+
+Length: 11 (semiglobal) 
+Query:  8 [1, 8]
+Target: 9 [1, 8]
+Score:  8
+Ident:  4/11 (36.4%)
+Simil:  5/11 (45.5%)
+Gaps:   5/11 (45.5%)
+Matrix: blosum62(-11, -1) 
+
+S1           THISLI--NE-
+           1   ||.:  ||  11
+S2           --ISALIGNED</code></pre>
 <pre><code># Align the extracted protein.
 bio align ncov:S ratg13:S --end 80 &gt; align-dna-s.txt
 
@@ -121,47 +137,15 @@ bio align ncov:S ratg13:S --end 80 --translate &gt; align-translated-s.txt
 # Test alignments
 bio align THISLINE ISALIGNED  -i &gt; align-local.txt
 
-# Default alignment is local.
+# Default alignment is semiglobal.
 bio align THISLINE ISALIGNED  -i &gt; align-local.txt
 
 # Global alignment.
-bio align THISLINE ISALIGNED -i --mode global &gt; align-global.txt
+bio align THISLINE ISALIGNED -i --global &gt; align-global.txt
 
 # Semiglobal alignment.
-bio align THISLINE ISALIGNED -i --mode semiglobal &gt; align-semiglobal.txt
+bio align THISLINE ISALIGNED -i --local &gt; align-semiglobal.txt
 </code></pre>
-<pre class="bash"><code>bio align THISLINE ISALIGNED -i --mode strictglobal</code></pre>
-<pre><code>
-### 1: S1 vs S2 ###
-
-Length: 9 (strictglobal) 
-Query:  8 [1, 8]
-Target: 9 [1, 9]
-Score:  -7
-Ident:  2/9 (22.2%)
-Simil:  3/9 (33.3%)
-Gaps:   1/9 (11.1%)
-Matrix: blosum62(-11, -1) 
-
-S2           ISALIGNED
-             ....:.|| 
-S1           THISLINE-</code></pre>
-<pre class="bash"><code>bio align -i THISLINE ISALIGNED</code></pre>
-<pre><code>
-### 1: S1 vs S2 ###
-
-Length: 2 (local) 
-Query:  8 [7, 8]
-Target: 9 [7, 8]
-Score:  11
-Ident:  2/2 (100.0%)
-Simil:  2/2 (100.0%)
-Gaps:   0/2 (0.0%)
-Matrix: blosum62(-11, -1) 
-
-S2           NE
-             ||
-S1           NE</code></pre>
 
 </div>
 

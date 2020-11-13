@@ -11,6 +11,6 @@ Gaps:	1/9 (11.1%)
 Matrix:	blosum62(-11, -1) 
 
 S1           THISLINE-
-             ....:.|| 
+           1 ....:.||  9
 S2           ISALIGNED
 

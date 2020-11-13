@@ -120,7 +120,16 @@
 <h2>Using taxonomies</h2>
 <p>Pass an NCBI taxid to view the child nodes:</p>
 <pre class="bash"><code>bio taxon 117565 | head</code></pre>
-<pre><code>Invalid taxid: 117565</code></pre>
+<pre><code>Traceback (most recent call last):
+  File &quot;/home/ialbert/miniconda3/envs/bioinfo/bin/bio&quot;, line 11, in &lt;module&gt;
+    load_entry_point(&#39;bio&#39;, &#39;console_scripts&#39;, &#39;bio&#39;)()
+  File &quot;/mnt/c/Users/ialbert/Desktop/unix/app/bio/biorun/__main__.py&quot;, line 14, in run
+    router()
+  File &quot;/mnt/c/Users/ialbert/Desktop/unix/app/bio/biorun/main.py&quot;, line 156, in router
+    from biorun.models import taxdb
+  File &quot;/mnt/c/Users/ialbert/Desktop/unix/app/bio/biorun/models/taxdb.py&quot;, line 8, in &lt;module&gt;
+    import plac
+ModuleNotFoundError: No module named &#39;plac&#39;</code></pre>
 </div>
 <div id="preloading-into-memory" class="section level2">
 <h2>Preloading into memory</h2>

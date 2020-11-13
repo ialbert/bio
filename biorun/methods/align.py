@@ -21,11 +21,9 @@ except ImportError as exc:
 
 try:
     import parasail
-    HAS_PARASAIL = True
 except ImportError as exc:
     print(f"*** Warning: {exc}", file=sys.stderr)
     print(f"*** Please install parasail: conda install -y parasail-python", file=sys.stderr)
-    HAS_PARASAIL = False
     sys.exit(-1)
 
 
@@ -73,7 +71,7 @@ class Alignment():
 
         self.counter = count(1)
 
-    def print_wrapped(self, width=80, **kwargs):
+    def print_wrapped(self, width=100, **kwargs):
         """
         Wraps and prints alignments
         """
@@ -102,11 +100,14 @@ class Alignment():
         header = textwrap.dedent(header)
         print(header)
         for start in range(0, len(self.trace), width):
-            end = start + width
+            end = min(start + width, self.len)
             print(q_name, self.query[start:end])
-            print(p_name, self.trace[start:end])
+            patt = f"{start + 1}"
+            print(f"{patt:>12.12s} ", end="")
+            print(self.trace[start:end], end="")
+            print (f" {end}")
             print(t_name, self.target[start:end])
-            print("")
+            print ("")
 
 
 def get_matrix(seq, matrix):
@@ -117,7 +118,7 @@ def get_matrix(seq, matrix):
         raise Exception("No matrix found")
     return matrix
 
-# Maps constant to parasail functions.
+# Maps constants to parasail functions.
 FUNC_MAPPER = {
     # Smith-Waterman local alignment.
     const.LOCAL_ALIGN: parasail.sw_trace_scan,

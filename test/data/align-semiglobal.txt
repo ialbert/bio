@@ -11,6 +11,6 @@ Gaps:	5/11 (45.5%)
 Matrix:	blosum62(-11, -1) 
 
 S1           THISLI--NE-
-               ||.:  || 
+           1   ||.:  ||  11
 S2           --ISALIGNED
 
