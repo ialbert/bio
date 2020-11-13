@@ -36,12 +36,14 @@ class Alignment():
     A wrapper class to represent an alignment.
     """
 
-    def __init__(self, query, target, trace,
+    def __init__(self, query, target, trace, qseq, tseq,
                  gap_open=11, gap_extend=1, matrix='', mode='',
                  ichr='|', mchr='.', gchr=' ', schr=':', attrs={}):
         self.query = query
         self.target = target
         self.trace = trace
+        self.qseq = qseq
+        self.tseq = tseq
         self.len = len(trace)
         self.mode = mode
         self.gap_open = gap_open
@@ -71,43 +73,44 @@ class Alignment():
 
         self.counter = count(1)
 
-    def print_wrapped(self, width=100, **kwargs):
-        """
-        Wraps and prints alignments
-        """
+def print_emboss(aln, width=100):
+    """
+    Prints alignments in Emboss style.
+    """
 
-        # Enforce a fixed width on each name.
-        get = lambda name: f'{kwargs.get(name, ""):12.12s}'
+    # Enforce a fixed width on each name.
+    def pad(value, right=False):
+        value = str(value)
+        if right:
+            return f'{value:>12.12s}'
+        else:
+            return f'{value:12.12s}'
 
-        # Fetch the query names from additional attributes.
-        q_name = get("q_name")
-        p_name = get("p_name")
-        t_name = get("t_name")
+    # Fetch the query names from additional attributes.
+    q_name = pad(aln.qseq.id)
+    t_name = pad(aln.tseq.id)
 
-        header = f'''
-        ### {next(self.counter)}: {q_name.strip()} vs {t_name.strip()} ###
+    header = f'''
+    ### {next(aln.counter)}: {q_name.strip()} vs {t_name.strip()} ###
 
-        Length:\t{self.len} ({self.mode}) 
-        Query:\t{self.len_query} [{self.start_query}, {self.end_query}]
-        Target:\t{self.len_ref} [{self.start_ref}, {self.end_ref}]
-        Score:\t{self.score}
-        Ident:\t{self.icount}/{self.len} ({self.iperc:.1f}%)
-        Simil:\t{self.scount}/{self.len} ({self.sperc:.1f}%)
-        Gaps:\t{self.gcount}/{self.len} ({self.gperc:.1f}%)
-        Matrix:\t{self.matrix}(-{self.gap_open}, -{self.gap_extend}) 
-        '''
+    Length:\t{aln.len} ({aln.mode}) 
+    Query:\t{aln.len_query} [{aln.start_query}, {aln.end_query}]
+    Target:\t{aln.len_ref} [{aln.start_ref}, {aln.end_ref}]
+    Score:\t{aln.score}
+    Ident:\t{aln.icount}/{aln.len} ({aln.iperc:.1f}%)
+    Simil:\t{aln.scount}/{aln.len} ({aln.sperc:.1f}%)
+    Gaps:\t{aln.gcount}/{aln.len} ({aln.gperc:.1f}%)
+    Matrix:\t{aln.matrix}(-{aln.gap_open}, -{aln.gap_extend}) 
+    '''
 
-        header = textwrap.dedent(header)
-        print(header)
-        for start in range(0, len(self.trace), width):
-            end = min(start + width, self.len)
-            print(q_name, self.query[start:end])
-            patt = f"{start + 1}"
-            print(f"{patt:>12.12s} ", end="")
-            print(self.trace[start:end], end="")
-            print (f" {end}")
-            print(t_name, self.target[start:end])
-            print ("")
+    header = textwrap.dedent(header)
+    print(header)
+    for start in range(0, len(aln.trace), width):
+        end = min(start + width, aln.len)
+        print(q_name, aln.query[start:end])
+        print(f"{pad(start+1, True)} {aln.trace[start:end]} {end}")
+        print(t_name, aln.target[start:end])
+        print ("")
 
 
 def get_matrix(seq, matrix):
@@ -173,10 +176,11 @@ def parasail_align(qseq, tseq, param):
     mname = str(matrix.name.decode("ascii"))
 
     aln = Alignment(query=query, target=target, gap_open=param.gap_open, gap_extend=param.gap_extend,
-                    trace=trace, attrs=attrs, matrix=mname, mode=param.mode)
+                    trace=trace, attrs=attrs, matrix=mname, mode=param.mode, qseq=qseq, tseq=tseq,
+                    )
 
     # For semiglobal alignment need to manually find the start/end from the pattern.
-    aln.print_wrapped(q_name=qseq.id, t_name=tseq.id)
+    print_emboss(aln=aln)
 
 
 @plac.opt('start', "start coordinate ", type=int)
