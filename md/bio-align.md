@@ -1,6 +1,6 @@
 # Sequence alignments {#align}
 
-
+```
 # Align the extracted protein.
 bio align ncov:S ratg13:S --end 80 > align-dna-s.txt
 
@@ -22,7 +22,7 @@ bio align THISLINE ISALIGNED -i --mode global > align-global.txt
 # Semiglobal alignment.
 bio align THISLINE ISALIGNED -i --mode semiglobal > align-semiglobal.txt
 
-Strict global.
+```
 
 ```{bash, comment=NA}
 bio align THISLINE ISALIGNED -i --mode strictglobal
