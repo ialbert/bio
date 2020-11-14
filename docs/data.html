@@ -88,7 +88,7 @@
 <li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data access</a></li>
 <li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
 <li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
-<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>NCBI Taxonomy</a></li>
+<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy</a></li>
 <li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>Usage tips</a></li>
 </ul>
 
@@ -115,11 +115,18 @@
 <h3>Local data</h3>
 <p>There is an automated data storage in <code>bio</code> that makes using data from NCBI quite convenient. But before we even go ther let’s make it clear that <code>bio</code> can read and process data from local files just fine. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:</p>
 <pre><code>bio  mydata.gb --gff </code></pre>
-<p>Moreover there is a so called command line input of data (<code>-i</code>) where the data may be listed at the command line:</p>
+<p>Moreover there is a so called <em>interactive</em> input of data (<code>-i</code>) where the data can be listed at the command line:</p>
 <pre><code>bio ATGAATATATAC -i --translate</code></pre>
-<p>The above command will operate on the sequence as if it were stored in a FASTA file to produce:</p>
+<p>The above command will operate on the sequence as if it were stored in a FASTA file, the above prints:</p>
 <pre><code>&gt;S1 translated DNA
 MNIY</code></pre>
+<p>It is a neat way to demonstrate translation that takes place in different phases:</p>
+<pre class="bash"><code>bio ATGAATATATACT -i --translate --start 1</code></pre>
+<pre><code>&gt;A1 translated DNA
+MNIY</code></pre>
+<pre class="bash"><code>bio ATGAATATATACT -i --translate --start 2</code></pre>
+<pre><code>&gt;A1 [2:13], translated DNA
+*IYT</code></pre>
 </div>
 <div id="getting-data-from-ncbi-fetch" class="section level3">
 <h3>Getting data from NCBI (–fetch)</h3>
@@ -131,23 +138,12 @@ bio NC_045512 --fetch -v</code></pre>
 <p>Most commands can operate on multiple accession numbers at a time.</p>
 <pre><code>bio NC_045512 MN996532 --fetch</code></pre>
 <p>There will be commands like <code>--rename</code> where it makes no sense to apply the operation on multiple data at the same time. In those cases only the first accession number is acted upon.</p>
-</div>
-<div id="data-performance" class="section level2">
-<h2>Data performance</h2>
-<p>All fetched data is stored in a compressed JSON format. A few observed benchmarks that will heavily depend on NCBI performance:</p>
-<ul>
-<li><code>NC_045512</code>, SARS-COV-2 virus: 2 seconds, 1,200 lines, 77KB downloaded, 22KB when stored.</li>
-<li><code>NC_002695</code>, Escherichia coli bacteria: 1 minute, 170,000 lines, 11MB downloaded, 2.7MB when stored.</li>
-<li><code>NT_033779</code>, Fruit fly chromosome 2L: 2 minutes, 660,000 lines, 45MB downloaded, 12MB when stored.</li>
-<li><code>NC_000001</code>, Human genome chromosome 1: 12 minutes, 4,920,000 lines, 300MB downloaded, 64MB when stored.</li>
-</ul>
-<p>Note that the internal representation is both efficient and speedy. Even the largest of files takes just a few seconds to be converted to say <code>fasta</code> format.:</p>
-<pre><code>time bio NC_000001 --fasta | wc -l
-4149276
+<p>The internal, gzip compressed, JSON based representation used by <code>bio</code> is simple, efficient and highly performant. A 330MB GenBank file for chromosome 1 of the human genome obtained from NCBI will in our data representation take just 67MB to store. More importantly our data representation can read and converted to <code>fasta</code> format in 6 seconds:</p>
+<pre><code>time bio NC_000001 --fasta | wc -c
+253105766
 
-real    0m6.189s
-user    0m3.844s
-sys     0m2.359s</code></pre>
+real    0m6.189s</code></pre>
+</div>
 <div id="rename-rename" class="section level3">
 <h3>Rename (–rename)</h3>
 <p>Accession numbers are tedious to handle. Almost always we rename data to be meaningful.</p>
@@ -189,7 +185,6 @@ If you want to update the original data use the <code>--update</code> parameter.
 <p>Many other combinations are valid:</p>
 <pre><code>bio ncov --type CDS </code></pre>
 <p>When viewing the data directly you are shown the JSON based data that <code>bio</code> uses internally.</p>
-</div>
 </div>
 <div id="example-output" class="section level2">
 <h2>Example output</h2>

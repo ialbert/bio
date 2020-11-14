@@ -1,4 +1,4 @@
-# NCBI Taxonomy {#taxon}
+# Taxonomy {#taxon}
 
 The `bio` package provides utility to visualize NCBI taxonomies.
 

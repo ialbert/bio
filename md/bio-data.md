@@ -10,15 +10,26 @@ There is an  automated data storage in `bio` that makes using data from NCBI qui
 
     bio  mydata.gb --gff 
 
-Moreover there is a so called command line input of data (`-i`) where the data may be listed at the command line:
+Moreover there is a so called *interactive* input of data (`-i`) where the data can be listed at the command line:
 
     bio ATGAATATATAC -i --translate
    
-The above command will operate on the sequence as if it were stored in a FASTA file to produce:     
+The above command will operate on the sequence as if it were stored in a FASTA file, the above prints:
     
     >S1 translated DNA
     MNIY
 
+It is a neat way to demonstrate translation that takes place in different phases:
+
+```{bash, comment=NA}
+bio ATGAATATATACT -i --translate --start 1
+```
+
+```{bash, comment=NA}
+bio ATGAATATATACT -i --translate --start 2
+```
+
+   
 ### Getting data from NCBI (--fetch)
 
 The `--fetch` command downloads data identified via accession numbers from NCBI then stores 
@@ -35,25 +46,13 @@ Most commands can operate on multiple accession numbers at a time.
     
 There will be commands like `--rename` where it makes no sense to apply the operation on multiple data at the same time. In those cases only the first accession number is acted upon.
 
-## Data performance
+The internal, gzip compressed, JSON based representation used by `bio` is simple, efficient and highly performant. A 330MB GenBank file for chromosome 1 of the human genome obtained from NCBI will in our data representation take just 67MB to store. More importantly our data representation can read and  converted to `fasta` format in 6 seconds:
 
-All fetched data is stored in a compressed JSON format. A few observed benchmarks that will heavily depend on NCBI performance:
-
-- `NC_045512`, SARS-COV-2 virus:  2 seconds, 1,200 lines, 77KB downloaded, 22KB when stored.
-- `NC_002695`, Escherichia coli bacteria:  1 minute, 170,000 lines, 11MB downloaded, 2.7MB when stored.
-- `NT_033779`, Fruit fly chromosome 2L:  2 minutes, 660,000 lines, 45MB downloaded, 12MB when stored.
-- `NC_000001`, Human genome chromosome 1: 12 minutes, 4,920,000 lines, 300MB downloaded, 64MB when stored.
-
-Note that the internal representation is both efficient and speedy. Even the largest of files takes just a few seconds to be converted to say `fasta` format.:
-
-    time bio NC_000001 --fasta | wc -l
-    4149276
+    time bio NC_000001 --fasta | wc -c
+    253105766
     
     real    0m6.189s
-    user    0m3.844s
-    sys     0m2.359s
     
-
 ### Rename  (--rename)
 
 Accession numbers are tedious to handle. Almost always we rename data to be meaningful.
