@@ -20,3 +20,15 @@ Mammal, human genome (chromosome 1): NC_000001 (2 minutes, 300MB)
 
     time bio NC_000001  --fetch
     
+
+# Taxonomy test
+
+    # Flowering plant
+    bio taxon 70730 --lineage
+     
+    # Bacillus subtilis 
+    bio taxon 564286 --lineage
+    
+    # Yucatan goby
+    bio taxon 70730 --lineage
+         

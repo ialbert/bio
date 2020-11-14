@@ -1,11 +1,11 @@
-
-import os, csv, json, gzip, sys, tarfile, re
+import os, csv, json, gzip, sys, tarfile, re, codecs
 import shutil
 from itertools import islice
 from biorun.libs.sqlitedict import SqliteDict
 from biorun import utils
 from urllib import request
 from biorun.libs import placlib as plac
+from itertools import count
 
 JSON_DB = "taxdb.json"
 SQLITE_DB = "taxdb.sqlite"
@@ -19,12 +19,16 @@ TAXDB_NAME = join(utils.DATADIR, TAXDB_NAME)
 SQLITE_DB = join(utils.DATADIR, SQLITE_DB)
 JSON_DB = join(utils.DATADIR, JSON_DB)
 
-
 # Create the thing here.
 
 GRAPH, BACK, NAMES, SYNON = "GRAPH", "BACKLINKS", "NAMES", "SYNONYMS"
 
-LIMIT = None
+# Indentation character
+INDENT = '  '
+
+# Fields separator
+
+SEP = ', '
 
 CHUNK = 25000
 
@@ -42,12 +46,14 @@ def download_taxdump(url=TAXDB_URL, fname=TAXDB_NAME):
     dest = open(fname, 'wb')
     shutil.copyfileobj(src, dest)
 
+
 def get_stream(tar, name, limit=None):
     mem = tar.getmember(name)
     stream = tar.extractfile(mem)
     stream = map(lambda x: x.decode("ascii"), stream)
     stream = islice(stream, limit)
     return stream
+
 
 def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
     """
@@ -68,6 +74,7 @@ def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
             if patt.search(name):
                 yield taxid, name
 
+
 def parse_names(fname, name="names.dmp", limit=None):
     """
     Parses the names.dmp component of the taxdump.
@@ -85,14 +92,15 @@ def parse_names(fname, name="names.dmp", limit=None):
     for index, elems in enumerate(stream):
         taxid, name, label = elems[0], elems[2], elems[6]
         if label == 'scientific name':
-            name_dict[taxid] = [name, "", ""]
+            # Store name, rank, common name, parent
+            name_dict[taxid] = [name, "", "", ""]
         elif label == 'genbank common name':
-            comm_dict[taxid]= name
+            comm_dict[taxid] = name
 
     # Fill in common genbank names when exist
     for key, cname in comm_dict.items():
         if key in name_dict:
-            sciname, rank, _ = name_dict[key]
+            sciname, rank, _1, _2 = name_dict[key]
             if sciname != cname:
                 name_dict[key][2] = cname
 
@@ -120,8 +128,10 @@ def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
         node_dict.setdefault(parent, []).append(child)
         if child in name_dict:
             name_dict[child][1] = rank
+            name_dict[child][3] = parent
 
     return node_dict, back_dict
+
 
 def build_database(fname=TAXDB_NAME, limit=None):
     """
@@ -150,7 +160,7 @@ def build_database(fname=TAXDB_NAME, limit=None):
                 print(f"*** saving {name} with {size:,} elements ({perc:.0f}%)", end="\r")
                 table.commit()
         print(f"*** saved {name} with {size:,} elements (100%)", end="\r")
-        print ("")
+        print("")
         table.commit()
         table.close()
 
@@ -160,14 +170,15 @@ def build_database(fname=TAXDB_NAME, limit=None):
     # Save the nodes.
     save_table(GRAPH, node_dict)
 
-    print ("*** saving the JSON model")
+    print("*** saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
 
     # JSON will only have the graph and names.
     store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={})
-    fp = open(json_path,'wt')
+    fp = open(json_path, 'wt')
     json.dump(store, fp, indent=4)
     fp.close()
+
 
 def open_db(table, fname=SQLITE_DB, flag='c'):
     """
@@ -182,20 +193,21 @@ queue = list()
 
 def dfs(visited, graph, node, names, depth=0):
     if node not in visited:
-        sciname, rank, comm = names.get(node, ("MISSING", "NO RANK", ""))
-        indent = "   " * depth
-        print_node(node=node, indent=indent, names=names)
+        print_node(node=node, depth=depth, names=names)
         visited.add(node)
         for neighbour in graph.get(node, []):
             dfs(visited, graph, neighbour, names, depth=depth + 1)
 
 
-def print_node(node, names, indent=''):
-    sciname, rank, cname = names.get(node, ("MISSING", "NO RANK", ""))
+def print_node(node, names, depth):
+    sep = SEP
+    indent = INDENT * depth
+    sciname, rank, cname, parent = names.get(node, ("MISSING", "NO RANK", "", ""))
     if cname and cname != sciname:
-        print(f"{indent}{rank}, {sciname} ({cname}), {node}")
+        print(f"{indent}{rank}{sep}{sciname} ({cname}){sep}{node}")
     else:
-        print(f"{indent}{rank}, {sciname}, {node}")
+        print(f"{indent}{rank}{sep}{sciname}{sep}{node}")
+
 
 def bfs(visited, graph, node, names):
     visited.add(node)
@@ -212,8 +224,25 @@ def bfs(visited, graph, node, names):
                 queue.append(nbr)
 
 
-def get_data(preload=False):
+def backprop(node, names, collect=[]):
+    if node in names:
+        sciname, rank, cname, parent = names[node]
+        if parent and parent != node:
+            collect.append(parent)
+            backprop(parent, names, collect)
 
+
+def print_lineage(taxid, preload=False):
+    names, graph = get_data(preload=preload)
+    step = count(0)
+    if taxid in names:
+        collect = [taxid]
+        backprop(taxid, names, collect=collect)
+        for elem in reversed(collect):
+            print_node(elem, names=names, depth=next(step))
+
+
+def get_data(preload=False):
     if preload:
         store = json.load(open(JSON_DB))
         names = store[NAMES]
@@ -224,48 +253,66 @@ def get_data(preload=False):
 
     return names, graph
 
+
 def print_stats(preload=False):
     names, graph = get_data(preload=preload)
     node_size, edge_size = len(names), len(graph)
-    print (f"TaxDB nodes={node_size:,d} edges={edge_size:,d}")
+    print(f"TaxDB nodes={node_size:,d} edges={edge_size:,d}")
+
+
+def search_taxa(word, preload=False):
+    names, graph = get_data(preload=preload)
+
+    print(f"# searching taxonomy for: {word}")
+    for taxid, name in search_names(word):
+        print_node(taxid, names=names, depth=0)
+
 
 def query(taxid, preload=False):
-
-
     names, graph = get_data(preload=preload)
 
     if taxid in names:
         visited = set()
         dfs(visited, graph, taxid, names=names)
-
     else:
-        print(f"# searching taxonomy for: {taxid}")
-        for taxid, name in search_names(taxid):
-            print_node(taxid, names=names)
+        search_taxa(taxid, preload=preload)
 
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('download', "download newest taxdump from NCBI")
 @plac.flg('preload', "loads entire database in memory")
+@plac.flg('lineage', "show the lineage for a taxon term", abbrev="L")
+@plac.opt('indent', "the indentation string")
+@plac.opt('sep', "separator string", abbrev="S")
 @plac.opt('limit', "limit the number of entries", type=int)
 @plac.flg('verbose', "verbose mode, prints more messages")
-def run(limit=0, build=False, download=False, preload=False, verbose=False, *words):
+def run(limit=0, indent='   ', sep=', ', lineage=False, build=False, download=False, preload=False, verbose=False, *words):
+    global SEP, INDENT
 
     limit = limit or None
+
+    # Recognize string encodings: \t etc.
+    INDENT = codecs.decode(indent, 'unicode_escape')
+    SEP = codecs.decode(sep, 'unicode_escape')
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
 
     if download:
         download_taxdump()
-
-    if build:
+    elif build:
         build_database(limit=limit)
+    elif lineage:
+        for word in words:
+            print_lineage(word, preload=preload)
+    else:
+        # No terms listed. Print database stats.
+        if not words:
+            print_stats(preload=preload)
 
-    for word in words:
-        query(word, preload=preload)
+        # Print the query
+        for word in words:
+            query(word, preload=preload)
 
-    if not words:
-        print_stats(preload=preload)
 
 if __name__ == '__main__':
     # Bony fish: 117565
