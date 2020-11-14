@@ -1,11 +1,11 @@
 
-import os, csv, json, gzip, sys, tarfile
+import os, csv, json, gzip, sys, tarfile, re
 import shutil
 from itertools import islice
 from biorun.libs.sqlitedict import SqliteDict
 from biorun import utils
 from urllib import request
-import plac
+from biorun.libs import placlib as plac
 
 JSON_DB = "taxdb.json"
 SQLITE_DB = "taxdb.sqlite"
@@ -22,7 +22,7 @@ JSON_DB = join(utils.DATADIR, JSON_DB)
 
 # Create the thing here.
 
-GRAPH, BACKLINK, NAMES = "GRAPH", "BACKLINK", "NAMES"
+GRAPH, BACK, NAMES, SYNON = "GRAPH", "BACKLINKS", "NAMES", "SYNONYMS"
 
 LIMIT = None
 
@@ -42,83 +42,124 @@ def download_taxdump(url=TAXDB_URL, fname=TAXDB_NAME):
     dest = open(fname, 'wb')
     shutil.copyfileobj(src, dest)
 
+def get_stream(tar, name, limit=None):
+    mem = tar.getmember(name)
+    stream = tar.extractfile(mem)
+    stream = map(lambda x: x.decode("ascii"), stream)
+    stream = islice(stream, limit)
+    return stream
 
-
-def build_database(url=TAXDB_URL, fname=TAXDB_NAME):
+def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
     """
-    Downloads taxdump file.
+    Parses the names.dmp component of the taxdump.
     """
-    print(f"*** building database from: {fname}")
-    path = os.path.join(utils.DATADIR, fname)
-
-    if not os.path.isfile(path):
-        utils.error(f"no taxdump file found")
 
     # The taxdump file.
-    tar = tarfile.open(path, "r:gz")
+    tar = tarfile.open(fname, "r:gz")
 
-    def get_stream(name):
-        mem = tar.getmember(name)
-        stream = tar.extractfile(mem)
-        stream = map(lambda x: x.decode("ascii"), stream)
-        stream = islice(stream, LIMIT)
-        return stream
+    stream = get_stream(tar=tar, name=name, limit=limit)
+    stream = csv.reader(stream, delimiter="\t")
 
-    name_stream = get_stream("names.dmp")
-    name_stream = csv.reader(name_stream, delimiter="\t")
+    patt = re.compile(word, re.IGNORECASE)
 
-    node_stream = get_stream("nodes.dmp")
-    node_stream = csv.reader(node_stream, delimiter="\t")
+    for index, elems in enumerate(stream):
+        taxid, name, label = elems[0], elems[2], elems[6]
+        if label == 'scientific name' or label == 'equivalent name' or label == 'genbank common name':
+            if patt.search(name):
+                yield taxid, name
 
-    node_dict = {}
+def parse_names(fname, name="names.dmp", limit=None):
+    """
+    Parses the names.dmp component of the taxdump.
+    """
+
+    # The taxdump file.
+    tar = tarfile.open(fname, "r:gz")
+
+    stream = get_stream(tar=tar, name=name, limit=limit)
+    stream = csv.reader(stream, delimiter="\t")
+
     name_dict = {}
-    back_dict = {}
+    syn_dict  = {}
 
-    print("*** parsing: names.dmp")
-    for index, elems in enumerate(name_stream):
+    print(f"*** parsing: {name}")
+    for index, elems in enumerate(stream):
         taxid, name, label = elems[0], elems[2], elems[6]
         if label == 'scientific name':
             name_dict[taxid] = [name, ""]
+            syn_dict[name] = taxid
+        elif label == 'equivalent name':
+            syn_dict[name] = taxid
+
+    return name_dict, syn_dict
+
+
+def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
+    """
+    Parses the names.dmp component of the taxdump.
+    """
+
+    # The taxdump file.
+    tar = tarfile.open(fname, "r:gz")
+
+    stream = get_stream(tar=tar, name=name, limit=limit)
+    stream = csv.reader(stream, delimiter="\t")
+
+    node_dict = {}
+    back_dict = {}
 
     print("*** parsing: nodes.dmp")
-    for elems in node_stream:
+    for elems in stream:
         child, parent, rank = elems[0], elems[2], elems[4]
         back_dict[child] = parent
         node_dict.setdefault(parent, []).append(child)
         if child in name_dict:
             name_dict[child][1] = rank
 
-    # Save the names into the database
-    nsize = len(name_dict)
-    names = open_db(table=NAMES, flag='w')
-    for index, (key, value) in enumerate(name_dict.items()):
-        names[key] = value
-        if index % CHUNK == 0:
-            perc = round(index / nsize * 100)
-            print(f"*** saving {nsize:,} names ({perc:.0f}%)", end="\r")
-            names.commit()
-    names.commit()
-    names.close()
+    return node_dict, back_dict
 
-    print("")
+def build_database(fname=TAXDB_NAME, limit=None):
+    """
+    Downloads taxdump file.
+    """
+    print(f"*** building database from: {fname}")
+    path = os.path.join(utils.DATADIR, fname)
+
+    # Check the file.
+    if not os.path.isfile(path):
+        utils.error(f"no taxdump file found, run the --download flag")
+
+    # Parse the names
+    name_dict, syn_dict = parse_names(fname, limit=limit)
+
+    # Parse the nodes.
+    node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
+
+    def save_table(name, obj):
+        size = len(obj)
+        table = open_db(table=name, flag='w')
+        for index, (key, value) in enumerate(obj.items()):
+            table[key] = value
+            if index % CHUNK == 0:
+                perc = round(index / size * 100)
+                print(f"*** saving {name} with {size:,} elements ({perc:.0f}%)", end="\r")
+                table.commit()
+        print(f"*** saved {name} with {size:,} elements (100%)", end="\r")
+        print ("")
+        table.commit()
+        table.close()
+
+    # Save the names into the database
+    save_table(NAMES, name_dict)
 
     # Save the nodes.
-    gsize = len(node_dict)
-    graph = open_db(table=GRAPH, flag='w')
-    for index, (key, value) in enumerate(node_dict.items()):
-        graph[key] = value
-        if index % CHUNK == 0:
-            perc = round(index / gsize * 100)
-            print(f"*** saving {gsize:,} nodes ({perc:.0f}%)", end="\r")
-            graph.commit()
-    graph.commit()
-    graph.close()
-
-    print ("")
+    save_table(GRAPH, node_dict)
 
     print ("*** saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
-    store = dict(NAMES=name_dict, GRAPH=node_dict)
+
+    # JSON will only have the graph and names.
+    store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={})
     fp = open(json_path,'wt')
     json.dump(store, fp, indent=4)
     fp.close()
@@ -138,7 +179,7 @@ def dfs(visited, graph, node, names, depth=0):
     if node not in visited:
         sciname, rank = names.get(node, ("MISSING", "NO RANK"))
         indent = "   " * depth
-        print(f"{indent}{rank}, {sciname}, taxid={node}")
+        print(f"{indent}{rank}, {sciname}, {node}")
         visited.add(node)
         for neighbour in graph.get(node, []):
             dfs(visited, graph, neighbour, names, depth=depth + 1)
@@ -159,9 +200,9 @@ def bfs(visited, graph, node, names, ):
                 queue.append(nbr)
 
 
-def query(taxid, mode=False):
+def get_data(preload=False):
 
-    if mode:
+    if preload:
         store = json.load(open(JSON_DB))
         names = store[NAMES]
         graph = store[GRAPH]
@@ -169,20 +210,39 @@ def query(taxid, mode=False):
         names = open_db(NAMES)
         graph = open_db(GRAPH)
 
+    return names, graph
+
+def print_stats(preload=False):
+    names, graph = get_data(preload=preload)
+    node_size, edge_size = len(names), len(graph)
+    print (f"TaxDB nodes={node_size:,d} edges={edge_size:,d}")
+
+def query(taxid, preload=False):
+
+
+    names, graph = get_data(preload=preload)
 
     if taxid in names:
         visited = set()
         dfs(visited, graph, taxid, names=names)
 
     else:
-        print(f"Invalid taxid: {taxid}")
-
+        print(f"# searching taxonomy for: {taxid}")
+        for taxid, name in search_names(taxid):
+            sciname, rank = names.get(taxid, ('', ''))
+            if sciname != name:
+                print(f"{taxid}\t{rank}\t{sciname} ({name})")
+            else:
+                print (f"{taxid}\t{rank}\t{sciname}")
 
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('download', "download newest taxdump from NCBI")
 @plac.flg('preload', "loads entire database in memory")
+@plac.opt('limit', "limit the number of entries", type=int)
 @plac.flg('verbose', "verbose mode, prints more messages")
-def run(build=False, download=False, preload=False, verbose=False, *words):
+def run(limit=0, build=False, download=False, preload=False, verbose=False, *words):
+
+    limit = limit or None
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
@@ -191,10 +251,13 @@ def run(build=False, download=False, preload=False, verbose=False, *words):
         download_taxdump()
 
     if build:
-        build_database()
+        build_database(limit=limit)
 
     for word in words:
-        query(word, mode=preload)
+        query(word, preload=preload)
+
+    if not words:
+        print_stats(preload=preload)
 
 if __name__ == '__main__':
     # Bony fish: 117565

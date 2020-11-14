@@ -34,7 +34,8 @@ logger = utils.logger
 @plac.flg('verbose', "verbose mode")
 def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, list=False, protein=False,
               translate=False, transcribe=False,
-              reverse=False, complement=False, revcomp=False, rename='',  seqid='', start='', end='', type='', gene='', match='', inter=False,
+              reverse=False, complement=False, revcomp=False, rename='', seqid='', start='', end='', type='', gene='',
+              match='', inter=False,
               verbose=False, *acc):
     """
     bio - making bioinformatics fun again
@@ -57,8 +58,9 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
 
         # A simple wrapper class to carry all parameters around.
         p = objects.Param(start=start, end=end, seqid=seqid, protein=protein, revcomp=revcomp,
-                        update=update, name=name, gff=gff, translate=translate, reverse=reverse, complement=complement,
-                        fasta=fasta, type=type, gene=gene, regexp=match, transcribe=transcribe)
+                          update=update, name=name, gff=gff, translate=translate, reverse=reverse,
+                          complement=complement,
+                          fasta=fasta, type=type, gene=gene, regexp=match, transcribe=transcribe)
 
         # Fill the json data for the parameter.
         p.json = storage.get_json(p.name, seqid=seqid, inter=inter)
@@ -96,6 +98,7 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
     elif not fetch:
         jsonrec.json_view(params)
 
+
 def proofreader(value):
     """
     Bridges the gap between short and longforms. Allows the use of both by remapping to canonical forms.
@@ -128,6 +131,16 @@ def proofreader(value):
 
     return value
 
+
+def interrupt(func):
+    def wrapper(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except KeyboardInterrupt:
+            sys.exit(0)
+    return wrapper
+
+@interrupt
 def router():
     """
     Routes the tasks based on incoming parameters.
@@ -152,12 +165,13 @@ def router():
         # Delegate parameter parsing to aligner.
         plac.call(align.run)
 
-    elif  const.TAXON in sys.argv:
+    elif const.TAXON in sys.argv:
         from biorun.models import taxdb
 
         sys.argv.remove(const.TAXON)
 
         plac.call(taxdb.run)
+
 
     # Default action is to convert a file.
     else:

@@ -78,13 +78,17 @@ def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
 
     tmp = tempfile.NamedTemporaryFile(mode="w+t")
 
+    index = 0
+
     sequence = count(1)
+
     for index, line in zip(sequence, stream):
         if (index % trigger) == 0:
-            print(f"*** downloaded {index:,d} lines\r", file=file, end='')
+            print(f"*** downloading {index:,d} lines\r", file=file, end='')
         tmp.write(line)
 
-    print()
+    print(f"*** downloaded {index:,d} lines", file=file)
+
     # Not sure if this is needed. Can't hurt.
     tmp.flush()
 
