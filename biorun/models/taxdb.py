@@ -267,9 +267,20 @@ def search_taxa(word, preload=False):
     for taxid, name in search_names(word):
         print_node(taxid, names=names, depth=0)
 
+def check_num(value):
+    try:
+        int(value)
+        return True
+    except ValueError as exc:
+        return False
 
 def query(taxid, preload=False):
     names, graph = get_data(preload=preload)
+
+    isnum = check_num(taxid)
+    if isnum and (taxid not in names):
+        print(f"# taxid not found in database: {taxid}")
+        sys.exit()
 
     if taxid in names:
         visited = set()
