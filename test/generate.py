@@ -12,6 +12,7 @@ import os, sys, difflib
 import biorun.libs.placlib as plac
 from biorun import main, const
 from biorun.methods import align
+from biorun.models import taxdb
 
 # Test naming index.
 counter = count(1)
@@ -45,6 +46,10 @@ def run(cmd, capsys, out=None):
         # Run the alignment tests.
         params.remove(const.ALIGN)
         assert plac.call(align.run, params) is None
+    elif params and const.TAXON in params:
+        # Run the alignment tests.
+        params.remove(const.TAXON)
+        assert plac.call(taxdb.run, params) is None
     else:
         # Run converter commands.
         assert plac.call(main.converter, params) is None

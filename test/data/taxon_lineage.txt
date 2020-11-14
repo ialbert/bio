@@ -1,0 +1,31 @@
+no rank, cellular organisms, 131567
+   superkingdom, Eukaryota (eucaryotes), 2759
+      clade, Opisthokonta, 33154
+         kingdom, Metazoa (metazoans), 33208
+            clade, Eumetazoa, 6072
+               clade, Bilateria, 33213
+                  clade, Deuterostomia, 33511
+                     phylum, Chordata (chordates), 7711
+                        subphylum, Craniata, 89593
+                           clade, Vertebrata (vertebrates), 7742
+                              clade, Gnathostomata (jawed vertebrates), 7776
+                                 clade, Teleostomi, 117570
+                                    clade, Euteleostomi (bony vertebrates), 117571
+                                       superclass, Sarcopterygii, 8287
+                                          clade, Dipnotetrapodomorpha, 1338369
+                                             clade, Tetrapoda (tetrapods), 32523
+                                                clade, Amniota (amniotes), 32524
+                                                   class, Mammalia (mammals), 40674
+                                                      clade, Theria, 32525
+                                                         clade, Eutheria (placentals), 9347
+                                                            clade, Boreoeutheria, 1437010
+                                                               superorder, Euarchontoglires, 314146
+                                                                  order, Primates, 9443
+                                                                     suborder, Haplorrhini, 376913
+                                                                        infraorder, Simiiformes, 314293
+                                                                           parvorder, Catarrhini, 9526
+                                                                              superfamily, Hominoidea (apes), 314295
+                                                                                 family, Hominidae (great apes), 9604
+                                                                                    subfamily, Homininae, 207598
+                                                                                       genus, Homo, 9605
+                                                                                          species, Homo sapiens (human), 9606

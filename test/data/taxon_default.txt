@@ -1,0 +1,3 @@
+species, Homo sapiens (human), 9606
+   subspecies, Homo sapiens neanderthalensis (Neandertal), 63221
+   subspecies, Homo sapiens subsp. 'Denisova' (Denisova hominin), 741158

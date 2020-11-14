@@ -99,3 +99,15 @@ def test_23(capsys):
     cmd = "bio align THISLINE ISALIGNED -i --semiglobal"
     run(cmd, capsys=capsys, out="align-semiglobal.txt")
 
+def test_24(capsys):
+    cmd = "bio taxon 9606 --nostdin"
+    run(cmd, capsys=capsys, out="taxon_default.txt")
+
+def test_25(capsys):
+    cmd = "bio taxon 9606 --lineage --nostdin"
+    run(cmd, capsys=capsys, out="taxon_lineage.txt")
+
+def test_26(capsys):
+    cmd = "bio taxon 9606 --lineage --flat --nostdin"
+    run(cmd, capsys=capsys, out="taxon_flat_lineage.txt")
+

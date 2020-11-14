@@ -191,37 +191,41 @@ def open_db(table, fname=SQLITE_DB, flag='c'):
 queue = list()
 
 
-def dfs(visited, graph, node, names, depth=0):
+def dfs(graph, node, names, depth=0, collect=[], visited=None):
+
+    # Initialize the visited nodes once.
+    visited = visited if visited else set()
+
     if node not in visited:
-        print_node(node=node, depth=depth, names=names)
+        text = node_formatter(node, names=names, depth=depth)
+        print(text)
+        collect.append( (depth, node) )
         visited.add(node)
-        for neighbour in graph.get(node, []):
-            dfs(visited, graph, neighbour, names, depth=depth + 1)
+        for nbr in graph.get(node, []):
+            dfs(graph=graph, node=nbr, names=names, depth=depth + 1, collect=collect, visited=visited)
 
 
-def print_node(node, names, depth):
+def get_values(node, names):
+   # Avoiding code duplication everywhere
+   sname, rank, cname, parent = names.get(node, ("MISSING", "NO RANK", "", ""))
+   return sname, rank, cname, parent
+
+
+def node_formatter(node, names, depth):
+    """
+    Creates a long form representation of a node.
+    """
     sep = SEP
     indent = INDENT * depth
-    sciname, rank, cname, parent = names.get(node, ("MISSING", "NO RANK", "", ""))
-    if cname and cname != sciname:
-        print(f"{indent}{rank}{sep}{sciname} ({cname}){sep}{node}")
+    sname, rank, cname, parent = get_values(node, names)
+
+    # Decide what to do with common names.
+    if cname and cname != sname:
+        text = f"{indent}{rank}{sep}{sname} ({cname}){sep}{node}"
     else:
-        print(f"{indent}{rank}{sep}{sciname}{sep}{node}")
+        text = f"{indent}{rank}{sep}{sname}{sep}{node}"
 
-
-def bfs(visited, graph, node, names):
-    visited.add(node)
-    queue.append(node)
-
-    while queue:
-        curr = queue.pop(0)
-
-        print_node(curr, names=names)
-
-        for nbr in graph.get(curr, []):
-            if nbr not in visited:
-                visited.add(nbr)
-                queue.append(nbr)
+    return text
 
 
 def backprop(node, names, collect=[]):
@@ -232,14 +236,28 @@ def backprop(node, names, collect=[]):
             backprop(parent, names, collect)
 
 
-def print_lineage(taxid, preload=False):
-    names, graph = get_data(preload=preload)
+def print_lineage(taxid, names, flat=1):
     step = count(0)
     if taxid in names:
         collect = [taxid]
         backprop(taxid, names, collect=collect)
-        for elem in reversed(collect):
-            print_node(elem, names=names, depth=next(step))
+
+        collect = collect[:-1]
+        collect = reversed(collect)
+
+        if flat:
+            output = []
+            for node in collect:
+                sname, rank, cname, parent = get_values(node, names)
+                output.append(sname)
+
+            result = [ taxid, ";".join(output)]
+            print ("\t".join(result))
+
+        else:
+            for node in collect:
+                text = node_formatter(node, names=names, depth=next(step))
+                print (text)
 
 
 def get_data(preload=False):
@@ -254,18 +272,20 @@ def get_data(preload=False):
     return names, graph
 
 
-def print_stats(preload=False):
-    names, graph = get_data(preload=preload)
-    node_size, edge_size = len(names), len(graph)
-    print(f"TaxDB nodes={node_size:,d} edges={edge_size:,d}")
+def print_stats(names, graph):
+    node_size, graph_size = len(names), len(graph)
+    print(f"TaxDB: nodes={node_size:,d} parents={graph_size:,d}")
 
 
 def search_taxa(word, preload=False):
     names, graph = get_data(preload=preload)
 
+    word = codecs.decode(word, 'unicode_escape')
+
     print(f"# searching taxonomy for: {word}")
     for taxid, name in search_names(word):
-        print_node(taxid, names=names, depth=0)
+        text = node_formatter(taxid, names=names, depth=0)
+        print(text)
 
 def check_num(value):
     try:
@@ -274,29 +294,41 @@ def check_num(value):
     except ValueError as exc:
         return False
 
-def query(taxid, preload=False):
-    names, graph = get_data(preload=preload)
+def print_database(names, graph):
+    for name in names:
+        text = node_formatter(name, names=names, depth=0)
+        print(text)
 
+def query(taxid, names, graph):
+    """
+    Prints the descendants of node
+    """
     isnum = check_num(taxid)
     if isnum and (taxid not in names):
         print(f"# taxid not found in database: {taxid}")
         sys.exit()
 
     if taxid in names:
-        visited = set()
-        dfs(visited, graph, taxid, names=names)
+        collect = []
+        dfs(graph, taxid, names=names, collect=collect)
+
+
     else:
-        search_taxa(taxid, preload=preload)
+        search_taxa(taxid)
 
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('download', "download newest taxdump from NCBI")
 @plac.flg('preload', "loads entire database in memory")
+@plac.flg('list_', "lists database content")
+@plac.flg('flat', "flattened output")
 @plac.flg('lineage', "show the lineage for a taxon term", abbrev="L")
 @plac.opt('indent', "the indentation string")
 @plac.opt('sep', "separator string", abbrev="S")
-@plac.opt('limit', "limit the number of entries", type=int)
+@plac.opt('limit', "limit the number of entries", type=int, abbrev='T')
 @plac.flg('verbose', "verbose mode, prints more messages")
-def run(limit=0, indent='   ', sep=', ', lineage=False, build=False, download=False, preload=False, verbose=False, *words):
+@plac.flg('nostdin', "do not detect standard input")
+def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, download=False, preload=False,
+        verbose=False, nostdin=False,  *words):
     global SEP, INDENT
 
     limit = limit or None
@@ -308,21 +340,36 @@ def run(limit=0, indent='   ', sep=', ', lineage=False, build=False, download=Fa
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
 
-    if download:
+    # Access the database.
+    names, graph = get_data(preload=preload)
+
+    if nostdin or sys.stdin.isatty():
+        data = words
+    else:
+        # Detect stdin and get data from there if incoming.
+        lines = sys.stdin.read().splitlines()
+        lines = map(lambda x: x.strip(), lines)
+        lines = filter(None, lines)
+        data = list(lines)
+
+    if list_:
+        print_database(names=names, graph=graph)
+    elif download:
         download_taxdump()
     elif build:
         build_database(limit=limit)
-    elif lineage:
-        for word in words:
-            print_lineage(word, preload=preload)
     else:
-        # No terms listed. Print database stats.
-        if not words:
-            print_stats(preload=preload)
 
-        # Print the query
-        for word in words:
-            query(word, preload=preload)
+        for word in data:
+            if lineage:
+                print_lineage(word, names=names, flat=flat)
+            else:
+                query(word, names=names, graph=graph)
+
+        # No terms listed. Print database stats.
+        if not data:
+            print_stats(names=names, graph=graph)
+
 
 
 if __name__ == '__main__':

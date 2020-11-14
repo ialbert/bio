@@ -1,6 +1,9 @@
 #
 # This script is used to generate Python tests.
 #
+#
+# --nostdin is used to not interfere with the pytesting
+#
 
 # Stop on errors.
 set -uex
@@ -74,4 +77,12 @@ bio align THISLINE ISALIGNED -i --global > align-global.txt
 # Semiglobal alignment.
 bio align THISLINE ISALIGNED -i --semiglobal > align-semiglobal.txt
 
+# Check taxonomy defaults
+bio taxon 9606 --nostdin > taxon_default.txt
+
+# Lineage
+bio taxon 9606 --lineage --nostdin > taxon_lineage.txt
+
+# Flat lineage
+bio taxon 9606 --lineage --flat --nostdin > taxon_flat_lineage.txt
 
