@@ -80,18 +80,23 @@ def parse_names(fname, name="names.dmp", limit=None):
     stream = csv.reader(stream, delimiter="\t")
 
     name_dict = {}
-    syn_dict  = {}
-
+    comm_dict = {}
     print(f"*** parsing: {name}")
     for index, elems in enumerate(stream):
         taxid, name, label = elems[0], elems[2], elems[6]
         if label == 'scientific name':
-            name_dict[taxid] = [name, ""]
-            syn_dict[name] = taxid
-        elif label == 'equivalent name':
-            syn_dict[name] = taxid
+            name_dict[taxid] = [name, "", ""]
+        elif label == 'genbank common name':
+            comm_dict[taxid]= name
 
-    return name_dict, syn_dict
+    # Fill in common genbank names when exist
+    for key, cname in comm_dict.items():
+        if key in name_dict:
+            sciname, rank, _ = name_dict[key]
+            if sciname != cname:
+                name_dict[key][2] = cname
+
+    return name_dict
 
 
 def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
@@ -130,7 +135,7 @@ def build_database(fname=TAXDB_NAME, limit=None):
         utils.error(f"no taxdump file found, run the --download flag")
 
     # Parse the names
-    name_dict, syn_dict = parse_names(fname, limit=limit)
+    name_dict = parse_names(fname, limit=limit)
 
     # Parse the nodes.
     node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
@@ -177,24 +182,31 @@ queue = list()
 
 def dfs(visited, graph, node, names, depth=0):
     if node not in visited:
-        sciname, rank = names.get(node, ("MISSING", "NO RANK"))
+        sciname, rank, comm = names.get(node, ("MISSING", "NO RANK", ""))
         indent = "   " * depth
-        print(f"{indent}{rank}, {sciname}, {node}")
+        print_node(node=node, indent=indent, names=names)
         visited.add(node)
         for neighbour in graph.get(node, []):
             dfs(visited, graph, neighbour, names, depth=depth + 1)
 
 
-def bfs(visited, graph, node, names, ):
+def print_node(node, names, indent=''):
+    sciname, rank, cname = names.get(node, ("MISSING", "NO RANK", ""))
+    if cname and cname != sciname:
+        print(f"{indent}{rank}, {sciname} ({cname}), {node}")
+    else:
+        print(f"{indent}{rank}, {sciname}, {node}")
+
+def bfs(visited, graph, node, names):
     visited.add(node)
     queue.append(node)
 
     while queue:
-        tgt = queue.pop(0)
-        sciname, rank = names.get(tgt, ("MISSING", "NO RANK"))
-        print(f"{tgt}, {rank}, {sciname}")
+        curr = queue.pop(0)
 
-        for nbr in graph.get(tgt, []):
+        print_node(curr, names=names)
+
+        for nbr in graph.get(curr, []):
             if nbr not in visited:
                 visited.add(nbr)
                 queue.append(nbr)
@@ -229,11 +241,7 @@ def query(taxid, preload=False):
     else:
         print(f"# searching taxonomy for: {taxid}")
         for taxid, name in search_names(taxid):
-            sciname, rank = names.get(taxid, ('', ''))
-            if sciname != name:
-                print(f"{taxid}\t{rank}\t{sciname} ({name})")
-            else:
-                print (f"{taxid}\t{rank}\t{sciname}")
+            print_node(taxid, names=names)
 
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('download', "download newest taxdump from NCBI")
