@@ -316,6 +316,7 @@ def query(taxid, names, graph):
     else:
         search_taxa(taxid)
 
+@plac.pos("words", "taxids or search queries")
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('download', "download newest taxdump from NCBI")
 @plac.flg('preload', "loads entire database in memory")

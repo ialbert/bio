@@ -11,6 +11,7 @@ from biorun.models import fastarec, gffrec, jsonrec
 logger = utils.logger
 
 
+@plac.pos("acc", "data names")
 @plac.flg('fasta', "produce FASTA format", abbrev='F')
 @plac.flg('gff', "produce GFF format", abbrev='G')
 @plac.flg('fetch', "download data as accessions")

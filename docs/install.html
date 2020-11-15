@@ -111,8 +111,7 @@
 <h1>Software installation</h1>
 <div id="prerequisites" class="section level2">
 <h2>Prerequisites</h2>
-<p>We don’t fully automate the dependency installation to give users the option of using the approach they prefer.</p>
-<p>To install the requirements with <code>conda</code> write:</p>
+<p>We don’t fully automate the dependency installation to give users the option of using the approach they prefer. To install the requirements with <code>conda</code> write:</p>
 <pre><code>conda install -c bioconda biopython pysam parasail-python</code></pre>
 <p>You may also install the requirements via <code>pip</code>:</p>
 <pre><code>pip install biopython pysam parasail-python</code></pre>
@@ -121,9 +120,12 @@
 <h2>Installation</h2>
 <p>Install the package with:</p>
 <pre><code>pip install bio --upgrade</code></pre>
-<p>Try it out (set verbose mode to see what is happening):</p>
+</div>
+<div id="quick-start" class="section level2">
+<h2>Quick start</h2>
+<p>Run a simple fetch command, set the verbose mode to see what is happening:</p>
 <pre><code>bio NC_045512 --fetch -v</code></pre>
-<p>then, list the known data:</p>
+<p>now list the known data:</p>
 <pre><code>bio --list</code></pre>
 <p>try out a conversion:</p>
 <pre><code>bio NC_045512 --gff</code></pre>
@@ -131,17 +133,20 @@
 <div id="usage" class="section level2">
 <h2>Usage</h2>
 <p>Type <code>bio</code> followed by one or more accession numbers followed by one or more flags or options.</p>
-<pre><code>bio ACC1 [ACC2 ACC3] --option1 value1 --flag1 ...</code></pre>
+<pre><code>bio [command] [words] --option value --flag </code></pre>
 <ol style="list-style-type: decimal">
-<li>A <code>flag</code> is a parameter that does not take additional values: <code>--fetch</code></li>
-<li>An <code>option</code> is a parameter that takes an additional value: <code>--start 100</code></li>
+<li>Commands may be: <code>align</code>, <code>taxon</code>. When no commands are passed the default actions take place.</li>
+<li>The <code>words</code> may be one or more data names.<br />
+</li>
+<li>A <code>flag</code> is a parameter that does not take additional values: <code>--fetch</code> or <code>--list</code></li>
+<li>An <code>option</code> is a parameter that takes an additional value: <code>--start 100</code> or <code>--gap-open 10</code></li>
 </ol>
-<p>Use the <code>-v</code> flag to produce verbose outputs for each command.</p>
+<p>Use the <code>-v</code> flag to produce verbose outputs for a run.</p>
 <div id="subcommands" class="section level3">
 <h3>Subcommands</h3>
-<p>Certain words may not be accession numbers as they carry additional meaning and trigger
+<p>Certain words may not be used as data names as they carry additional meaning and trigger
 alternative actions</p>
-<pre><code>bio align ACC1 [ACC2 ACC3] --option1 value1 --flag1 ...</code></pre>
+<pre><code>bio align data1 data2 --option value --flag</code></pre>
 <p>You may get help on alignments with:</p>
 <pre><code>bio align -h</code></pre>
 </div>
@@ -155,8 +160,8 @@ alternative actions</p>
 <h2>Help pages</h2>
 <p>Besides the default actions <code>bio</code> may also take subcommands such as <code>align</code>. Each subcommand
 has its own command line help page.</p>
-<div id="help-page-for-default-actions" class="section level4">
-<h4>1. Help page for default actions</h4>
+<div id="help-page-for-default-actions" class="section level3">
+<h3>1. Help page for default actions</h3>
 <pre class="bash"><code>bio -h</code></pre>
 <pre><code>usage: bio [-h] [-F] [-G] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C] [-R]
            [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;] [-i] [-v]
@@ -167,7 +172,7 @@ bio - making bioinformatics fun again
 command line utility for manipulating bioinformatics data
 
 positional arguments:
-  acc
+  acc                 data names
 
 optional arguments:
   -h, --help          show this help message and exit
@@ -193,18 +198,18 @@ optional arguments:
   -i, --inter         interactive (data from command line)
   -v, --verbose       verbose mode</code></pre>
 </div>
-<div id="help-page-for-alignments" class="section level4">
-<h4>2. Help page for alignments</h4>
+<div id="help-page-for-alignments" class="section level3">
+<h3>2. Help page for alignments</h3>
 <pre class="bash"><code>bio align -h</code></pre>
 <pre><code>usage: bio [-h] [-s 1] [-e &#39;&#39;] [-o 11] [-x 1] [-L] [-G] [-S] [-p] [-t] [-i]
            [-v]
-           [&#39;&#39;] [&#39;&#39;]
+           [query] [target]
 
-Handles an alignment request.
+Performs an alignment between the query and target.
 
 positional arguments:
-  &#39;&#39;                    []
-  &#39;&#39;                    []
+  query                 query sequence to align
+  target                target sequence to align
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -219,6 +224,29 @@ optional arguments:
   -t, --translate       use the translated protein sequences from the data
   -i, --inter           interactive mode, data from command line
   -v, --verbose         verbose mode, progress messages printed</code></pre>
+</div>
+<div id="help-page-for-taxonomy" class="section level3">
+<h3>3. Help page for taxonomy</h3>
+<pre class="bash"><code>bio taxon -h</code></pre>
+<pre><code>usage: bio [-h] [-T 0] [-l] [-f] [-i   ] [-S ,] [-L] [-b] [-d] [-p] [-v] [-n]
+           [words [words ...]]
+
+positional arguments:
+  words                 taxids or search queries
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -T 0, --limit 0       limit the number of entries
+  -l, --list            lists database content
+  -f, --flat            flattened output
+  -i    , --indent      the indentation string
+  -S , , --sep ,        separator string
+  -L, --lineage         show the lineage for a taxon term
+  -b, --build           build a database from a taxdump
+  -d, --download        download newest taxdump from NCBI
+  -p, --preload         loads entire database in memory
+  -v, --verbose         verbose mode, prints more messages
+  -n, --nostdin         do not detect standard input</code></pre>
 
 </div>
 </div>

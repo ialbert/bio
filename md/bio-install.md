@@ -2,9 +2,7 @@
 
 ## Prerequisites
 
-   We don't fully automate the dependency installation to give users the option of using the approach they prefer.
-
-To install the requirements with `conda` write:
+We don't fully automate the dependency installation to give users the option of using the approach they prefer. To install the requirements with `conda` write:
 
     conda install -c bioconda biopython pysam parasail-python
     
@@ -18,11 +16,13 @@ Install the package with:
 
     pip install bio --upgrade
 
-Try it out (set verbose mode to see what is happening):
+## Quick start
+
+Run a simple fetch command, set the verbose mode to see what is happening:
 
     bio NC_045512 --fetch -v
  
-then, list the known data:
+now list the known data:
 
     bio --list
     
@@ -34,19 +34,21 @@ try out a conversion:
 
 Type `bio` followed by one or more accession numbers followed by one or more flags or options.
 
-    bio ACC1 [ACC2 ACC3] --option1 value1 --flag1 ...
+    bio [command] [words] --option value --flag 
     
-1. A `flag` is a parameter that does not take additional values: `--fetch`
-1. An `option` is a parameter that takes an additional value: `--start 100`
+1. Commands may be: `align`, `taxon`.  When no commands are passed the default actions take place.
+1. The `words` may be one or more data names.    
+1. A `flag` is a parameter that does not take additional values: `--fetch` or `--list`
+1. An `option` is a parameter that takes an additional value: `--start 100` or `--gap-open 10`
     
-Use the `-v` flag to produce verbose outputs for each command. 
+Use the `-v` flag to produce verbose outputs for a run. 
 
 ### Subcommands
 
-Certain words may not be accession numbers as they carry additional meaning and trigger 
+Certain words may not be used as data names  as they carry additional meaning and trigger 
 alternative actions
 
-    bio align ACC1 [ACC2 ACC3] --option1 value1 --flag1 ...
+    bio align data1 data2 --option value --flag
 
 You may get help on alignments with:
 
@@ -64,15 +66,21 @@ to get help for a specific command:
 Besides the default actions `bio` may also take subcommands such as `align`. Each subcommand
 has its own command line help page.
 
-#### 1\. Help page for default actions
+### 1\. Help page for default actions
 
 ```{bash, comment=NA}
 bio -h
 ```
 
-#### 2\. Help page for alignments 
+### 2\. Help page for alignments 
 
 ```{bash, comment=NA}
 bio align -h
+```
+
+### 3\. Help page for taxonomy 
+
+```{bash, comment=NA}
+bio taxon -h
 ```
 

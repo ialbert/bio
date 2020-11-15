@@ -182,7 +182,8 @@ def parasail_align(qseq, tseq, param):
     # For semiglobal alignment need to manually find the start/end from the pattern.
     print_emboss(aln=aln)
 
-
+@plac.pos("query", "query sequence to align")
+@plac.pos("target", "target sequence to align")
 @plac.opt('start', "start coordinate ", type=int)
 @plac.opt('end', "end coordinate")
 @plac.opt('matrix', "scoring matrix", abbrev='M')
@@ -196,9 +197,9 @@ def parasail_align(qseq, tseq, param):
 @plac.flg('translate', "use the translated protein sequences from the data")
 @plac.flg('verbose', "verbose mode, progress messages printed")
 def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
-        protein=False, translate=False, inter=False, verbose=False, query='',  target=''):
+        protein=False, translate=False, inter=False, verbose=False, query=None,  target=None):
     """
-    Handles an alignment request.
+    Performs an alignment between the query and target.
     """
 
     # Set the verbosity of the process.

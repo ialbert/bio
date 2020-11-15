@@ -6,6 +6,8 @@
 
 Documentation: https://ialbert.github.io/bio/
 
+[docs]: https://ialbert.github.io/bio/
+
 ## Why do we need this software?
 
 If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress. 
@@ -79,17 +81,19 @@ The documentation is maintained at
 
 * https://ialbert.github.io/bio/
 
+
 ## Quick install
     
+`bio` works on Linux and Mac copmuters and on Windows with using the Linux Subsystem.
 Install the package with:
 
-    # Install prerequisites with conda, pip should also work.
-    conda install -c bioconda biopython pysam parasail-python
+    # We recommend install prerequisites with conda.
+    conda install -c bioconda biopython parasail-python
     
     # Install the bio package.
     pip install bio --upgrade
     
-See more details in the documentation.
+See more details in the [documentation][docs].
 
 ## Development
 
@@ -111,9 +115,9 @@ Tests are automatically built from a test script that mimics real life usage sce
 
 * https://github.com/ialbert/bio/blob/master/test/test_bio_data.sh
 
-## Adding new tests
+## New tests
 
-To add a new test first run the command you wish to test
+To add a new test first run the command you wish to test, for example:
 
     bio foo --gff > output.gff
 
@@ -126,4 +130,6 @@ followed by:
     make build_tests
     
 The latter command will automatically generate a Python test for each line in the master script.
+
 The automatically generated test will verify that the command is operational and that the output matches the expectations.
+
