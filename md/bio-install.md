@@ -1,16 +1,16 @@
 # Software installation {#install}
 
-`bio` works on Linux and Mac copmuters and on Windows with using the Linux Subsystem. 
+`bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
 
 ## Prerequisites
 
 We don't fully automate the dependency installation to give users the option of using the approach they prefer. To install the requirements with `conda` write:
 
-    conda install -c bioconda biopython pysam parasail-python
+    conda install -c bioconda biopython parasail-python
     
 You may also install the requirements via `pip`:
 
-    pip install biopython pysam parasail-python
+    pip install biopython parasail-python
 
 ## Installation
     

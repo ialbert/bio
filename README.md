@@ -77,7 +77,7 @@ The ideas and motivations fueling the creation of `bio` developed while writing 
 
 [handbook]: https://www.biostarhandbook.com/
 
-## Learn more about how `bio` works
+## Documentation
 
 The documentation is maintained at
 
@@ -86,7 +86,8 @@ The documentation is maintained at
 
 ## Quick install
     
-`bio` works on Linux and Mac copmuters and on Windows with using the Linux Subsystem.
+`bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem.
+
 Install the package with:
 
     # We recommend install prerequisites with conda.
