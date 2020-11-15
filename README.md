@@ -19,11 +19,50 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
     # Align the DNA for the S protein.
     bio align ncov:S ratg13:S --end 90 
 
-to align the first 90 basepairs of the DNA sequence of the `S` protein,  taken from SARS-COV-2 and its closest (known) relative bat coronavirus RatG13. If you wanted to align the sequences as translated proteins you would write:
+to align the first 90 basepairs of the DNA sequence of the `S` protein,  taken from SARS-COV-2 and its closest (known) relative bat coronavirus RatG13 to obtain:
+
+```
+### 1: YP_009724390 vs QHR63300.2 ###
+
+Length: 90 (semiglobal)
+Query:  90 [1, 90]
+Target: 90 [1, 90]
+Score:  387
+Ident:  83/90 (92.2%)
+Simil:  83/90 (92.2%)
+Gaps:   0/90 (0.0%)
+Matrix: nuc44(-11, -1)
+
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
+           1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC
+```
+
+If you wanted to align the sequences as translated proteins you would write:
+
 
     bio align ncov:S ratg13:S --end 90 --translate
     
-but just to make sure, there is a lot more to `bio` than alignments.
+to generate:
+
+```
+### 1: YP_009724390 vs QHR63300.2 ###
+
+Length: 30 (semiglobal)
+Query:  30 [1, 30]
+Target: 30 [1, 30]
+Score:  153
+Ident:  30/30 (100.0%)
+Simil:  30/30 (100.0%)
+Gaps:   0/30 (0.0%)
+Matrix: blosum62(-11, -1)
+
+YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
+           1 |||||||||||||||||||||||||||||| 30
+QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
+```
+
+And there is a lot more to `bio` than alignments.
 
 ## Who is `bio` designed for?
 
