@@ -100,14 +100,18 @@ def test_23(capsys):
     run(cmd, capsys=capsys, out="align-semiglobal.txt")
 
 def test_24(capsys):
-    cmd = "bio 9606 --nostdin --taxon"
+    cmd = "bio 9606 --taxon"
     run(cmd, capsys=capsys, out="taxon_default.txt")
 
 def test_25(capsys):
-    cmd = "bio 9606 --lineage --nostdin --taxon"
+    cmd = "bio 9606 --lineage --taxon"
     run(cmd, capsys=capsys, out="taxon_lineage.txt")
 
 def test_26(capsys):
-    cmd = "bio 9606 --lineage --flat --nostdin --taxon"
+    cmd = "bio 9606 --lineage --flat --taxon"
     run(cmd, capsys=capsys, out="taxon_flat_lineage.txt")
+
+def test_27(capsys):
+    cmd = "bio ratg13 ncov 9606 --taxon"
+    run(cmd, capsys=capsys, out="taxon_mixed.txt")
 

@@ -27,10 +27,12 @@ logger = utils.logger
 
 counter = count(1)
 
+
 # Allow for resetting the global counter. Needed for keeping test labeled consistenly.
 def reset_counter():
     global counter
     counter = count(1)
+
 
 def has_feature(item, name="gene"):
     """
@@ -64,6 +66,24 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
         items = filter(lambda f: regexp.search(str(f)), items)
 
     return items
+
+
+def find_taxid(rec):
+    """
+    Attempts to extract the taxonomy id from a record.
+
+    For GenBank files the taxid is the listed in the first feature (the source)
+
+    "db_xref": [
+                "taxon:11191"
+    ],
+
+    """
+    feats = rec.get(const.FEATURES, [])
+    db_xref = feats[0].get("db_xref", []) if feats else []
+    values = [x for x in db_xref if x.startswith("taxon:")]
+    taxids = [ x.split(":")[1] for x in values ]
+    return taxids
 
 
 def first(item, key, default=""):
@@ -200,7 +220,6 @@ def get_feature_records(data, param):
 
         # Slice the resulting DNA sequence.
         seq = dna[start:end]
-
 
         try:
             # Preforme reverse complement if needed.

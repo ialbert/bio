@@ -78,11 +78,13 @@ bio THISLINE ISALIGNED -i --align --global > align-global.txt
 bio THISLINE ISALIGNED -i --align --semiglobal > align-semiglobal.txt
 
 # Check taxonomy defaults
-bio 9606 --nostdin --taxon > taxon_default.txt
+bio 9606 --taxon > taxon_default.txt
 
 # Lineage
-bio 9606 --lineage --nostdin --taxon > taxon_lineage.txt
+bio 9606 --lineage --taxon > taxon_lineage.txt
 
 # Flat lineage
-bio 9606 --lineage --flat --nostdin --taxon > taxon_flat_lineage.txt
+bio 9606 --lineage --flat --taxon > taxon_flat_lineage.txt
 
+# Taxonomy information from data as well
+bio ratg13 ncov 9606 --taxon > taxon_mixed.txt

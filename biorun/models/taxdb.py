@@ -6,6 +6,8 @@ from biorun import utils
 from urllib import request
 from biorun.libs import placlib as plac
 from itertools import count
+from biorun.models import jsonrec
+from biorun import storage
 
 JSON_DB = "taxdb.json"
 SQLITE_DB = "taxdb.sqlite"
@@ -192,23 +194,22 @@ queue = list()
 
 
 def dfs(graph, node, names, depth=0, collect=[], visited=None):
-
     # Initialize the visited nodes once.
     visited = visited if visited else set()
 
     if node not in visited:
         text = node_formatter(node, names=names, depth=depth)
         print(text)
-        collect.append( (depth, node) )
+        collect.append((depth, node))
         visited.add(node)
         for nbr in graph.get(node, []):
             dfs(graph=graph, node=nbr, names=names, depth=depth + 1, collect=collect, visited=visited)
 
 
 def get_values(node, names):
-   # Avoiding code duplication everywhere
-   sname, rank, cname, parent = names.get(node, ("MISSING", "NO RANK", "", ""))
-   return sname, rank, cname, parent
+    # Avoiding code duplication everywhere
+    sname, rank, cname, parent = names.get(node, ("MISSING", "NO RANK", "", ""))
+    return sname, rank, cname, parent
 
 
 def node_formatter(node, names, depth):
@@ -251,13 +252,13 @@ def print_lineage(taxid, names, flat=1):
                 sname, rank, cname, parent = get_values(node, names)
                 output.append(sname)
 
-            result = [ taxid, ";".join(output)]
-            print ("\t".join(result))
+            result = [taxid, ";".join(output)]
+            print("\t".join(result))
 
         else:
             for node in collect:
                 text = node_formatter(node, names=names, depth=next(step))
-                print (text)
+                print(text)
 
 
 def get_data(preload=False):
@@ -287,6 +288,7 @@ def search_taxa(word, preload=False):
         text = node_formatter(taxid, names=names, depth=0)
         print(text)
 
+
 def check_num(value):
     try:
         int(value)
@@ -294,10 +296,12 @@ def check_num(value):
     except ValueError as exc:
         return False
 
+
 def print_database(names, graph):
     for name in names:
         text = node_formatter(name, names=names, depth=0)
         print(text)
+
 
 def query(taxid, names, graph):
     """
@@ -316,6 +320,7 @@ def query(taxid, names, graph):
     else:
         search_taxa(taxid)
 
+
 @plac.pos("words", "taxids or search queries")
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('download', "download newest taxdump from NCBI")
@@ -327,9 +332,10 @@ def query(taxid, names, graph):
 @plac.opt('sep', "separator string", abbrev="S")
 @plac.opt('limit', "limit the number of entries", type=int, abbrev='T')
 @plac.flg('verbose', "verbose mode, prints more messages")
-@plac.flg('nostdin', "do not detect standard input")
-def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, download=False, preload=False,
-        verbose=False, nostdin=False,  *words):
+
+def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, download=False,
+        preload=False,
+        verbose=False, *words):
     global SEP, INDENT
 
     limit = limit or None
@@ -344,15 +350,6 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     # Access the database.
     names, graph = get_data(preload=preload)
 
-    if nostdin or sys.stdin.isatty():
-        data = words
-    else:
-        # Detect stdin and get data from there if incoming.
-        lines = sys.stdin.read().splitlines()
-        lines = map(lambda x: x.strip(), lines)
-        lines = filter(None, lines)
-        data = list(lines)
-
     if list_:
         print_database(names=names, graph=graph)
     elif download:
@@ -361,16 +358,27 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
         build_database(limit=limit)
     else:
 
-        for word in data:
+        terms = []
+        # Attempts to fetch data if possible.
+        for word in words:
+            json = storage.get_json(word)
+            doubles = [jsonrec.find_taxid(rec) for rec in json] if json else [[]]
+            taxids = [elem for sublist in doubles for elem in sublist]
+            if taxids:
+                terms.extend(taxids)
+            else:
+                terms.append(word)
+
+        for word in terms:
+
             if lineage:
                 print_lineage(word, names=names, flat=flat)
             else:
                 query(word, names=names, graph=graph)
 
         # No terms listed. Print database stats.
-        if not data:
+        if not terms:
             print_stats(names=names, graph=graph)
-
 
 
 if __name__ == '__main__':
