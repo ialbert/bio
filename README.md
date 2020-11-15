@@ -73,7 +73,9 @@ Beyond alignments there is a lot more to `bio` and we recommend looking at the [
 - Scientists working with large numbers of similar genomes (bacterial/viral strains).
 - Scientists that need to closely investigate and understand particular details of a genomic region.
 
-The ideas and motivations fueling the creation of `bio` developed while writing and maintainng the [Biostar Handbook][handbook] and educating the many cohorts of students that used the handbook in the classrom. In bioinformatics, many tasks that should be straightforward are, instead, needlessly complicated. `bio` is an opinionated take on how bioinformatics should be simplified. 
+The ideas and motivations fueling the creation of `bio` developed while writing and maintainng the [Biostar Handbook][handbook] and educating the many cohorts of students that used the handbook in the classrom. 
+
+You see, in bioinformatics, many tasks that should be straightforward are, instead, needlessly complicated. `bio` is an opinionated take on how bioinformatics, particularly data presentation and access, should be simplified. 
 
 [handbook]: https://www.biostarhandbook.com/
 
@@ -86,11 +88,9 @@ The documentation is maintained at
 
 ## Quick install
     
-`bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem.
+`bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. Install the package with:
 
-Install the package with:
-
-    # We recommend install prerequisites with conda.
+    # We recommend installing prerequisites with conda.
     conda install -c bioconda biopython parasail-python
     
     # Install the bio package.
