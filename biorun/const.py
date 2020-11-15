@@ -13,10 +13,7 @@ ORIGIN_SIZE = "origin_len"
 # Alignment modes.
 GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
-ALIGN, TAXON = "align", "taxon"
-
-# Actions that the bio package recognizes
-ACTIONS_WORDS = [ ALIGN ]
+ALIGN_FLAG, TAXON_FLAG = "--align", "--taxon"
 
 #
 # Remaps types from GenBank to Sequence Ontology when converting to GFF files

@@ -57,32 +57,32 @@ bio ncov:S --fasta --protein --seqid foo > s_prot_foo.fa
 bio MN996532 --fetch --rename ratg13 --seqid ratg13
 
 # Align DNA
-bio align ncov ratg13 --end 200 > align-dna.txt
+bio ncov ratg13 --end 200 --align > align-dna.txt
 
 # Align the extracted protein.
-bio align ncov:S ratg13:S --end 80 > align-dna-s.txt
+bio ncov:S ratg13:S --end 80 --align > align-dna-s.txt
 
 # Align the extracted protein.
-bio align ncov:S ratg13:S --protein > align-protein-s.txt
+bio ncov:S ratg13:S --protein --align > align-protein-s.txt
 
 # Align the translated regions.
-bio align ncov:S ratg13:S --end 80 --translate > align-translated-s.txt
+bio ncov:S ratg13:S --end 80 --translate --align > align-translated-s.txt
 
 # Local alignment.
-bio align THISLINE ISALIGNED  -i --local > align-local.txt
+bio THISLINE ISALIGNED  -i --align --local > align-local.txt
 
 # Global alignment.
-bio align THISLINE ISALIGNED -i --global > align-global.txt
+bio THISLINE ISALIGNED -i --align --global > align-global.txt
 
 # Semiglobal alignment.
-bio align THISLINE ISALIGNED -i --semiglobal > align-semiglobal.txt
+bio THISLINE ISALIGNED -i --align --semiglobal > align-semiglobal.txt
 
 # Check taxonomy defaults
-bio taxon 9606 --nostdin > taxon_default.txt
+bio 9606 --nostdin --taxon > taxon_default.txt
 
 # Lineage
-bio taxon 9606 --lineage --nostdin > taxon_lineage.txt
+bio 9606 --lineage --nostdin --taxon > taxon_lineage.txt
 
 # Flat lineage
-bio taxon 9606 --lineage --flat --nostdin > taxon_flat_lineage.txt
+bio 9606 --lineage --flat --nostdin --taxon > taxon_flat_lineage.txt
 

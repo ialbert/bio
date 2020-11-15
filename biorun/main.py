@@ -21,6 +21,7 @@ logger = utils.logger
 @plac.flg('protein', "operate on proteins", abbrev='P')
 @plac.flg('translate', "translate DNA to protein", abbrev='T')
 @plac.flg('transcribe', "transrcribe DNA to RNA", abbrev='X')
+@plac.flg('align', "aligne the sequences", abbrev='A')
 @plac.opt('rename', "set the name", abbrev='r')
 @plac.opt('seqid', "set the sequence id", abbrev='S')
 @plac.opt('type', "select feature by type")
@@ -35,7 +36,7 @@ logger = utils.logger
 @plac.flg('verbose', "verbose mode")
 def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, list=False, protein=False,
               translate=False, transcribe=False,
-              reverse=False, complement=False, revcomp=False, rename='', seqid='', start='', end='', type='', gene='',
+              reverse=False, complement=False, revcomp=False, align=False, rename='', seqid='', start='', end='', type='', gene='',
               match='', inter=False,
               verbose=False, *acc):
     """
@@ -151,10 +152,10 @@ def router():
     sys.argv = list(map(proofreader, sys.argv))
 
     # Alignment requested.
-    if const.ALIGN in sys.argv:
+    if const.ALIGN_FLAG in sys.argv:
 
         # Drop the alignment command from paramters.
-        sys.argv.remove(const.ALIGN)
+        sys.argv.remove(const.ALIGN_FLAG)
 
         # Delayed import to allow other functionality to work even when the parasail library is missing.
         from biorun.methods import align
@@ -166,10 +167,10 @@ def router():
         # Delegate parameter parsing to aligner.
         plac.call(align.run)
 
-    elif const.TAXON in sys.argv:
+    elif const.TAXON_FLAG in sys.argv:
         from biorun.models import taxdb
 
-        sys.argv.remove(const.TAXON)
+        sys.argv.remove(const.TAXON_FLAG)
 
         plac.call(taxdb.run)
 

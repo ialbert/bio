@@ -42,13 +42,13 @@ def run(cmd, capsys, out=None):
     params = cmd.split()[1:]
 
     # Different functions to be called based on the command.
-    if params and const.ALIGN in params:
+    if params and const.ALIGN_FLAG in params:
         # Run the alignment tests.
-        params.remove(const.ALIGN)
+        params.remove(const.ALIGN_FLAG)
         assert plac.call(align.run, params) is None
-    elif params and const.TAXON in params:
+    elif params and const.TAXON_FLAG in params:
         # Run the alignment tests.
-        params.remove(const.TAXON)
+        params.remove(const.TAXON_FLAG)
         assert plac.call(taxdb.run, params) is None
     else:
         # Run converter commands.
