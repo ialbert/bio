@@ -1,6 +1,6 @@
 # Introduction
 
-> Under development (the package is functional but not fully vetted)
+> Software under development. Operational but not fully vetted.
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 

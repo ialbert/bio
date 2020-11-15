@@ -1,4 +1,4 @@
-# Taxonomy {#taxon}
+# Taxonomy operations {#taxon}
 
 The `bio` package provides utility to visualize NCBI taxonomies.
 
@@ -8,9 +8,9 @@ Before using the taxonomy related functionality the representation needs to be b
 
     bio taxon --download --build
 
-The command above will download and process the NCBI taxonomy to prepare it for fast access.
+The command above has to be run once (perhaps on a monthly basis) to download and process the latest NCBI taxonomy. The efficiency of the process depends on the speed of the hard drive and takes around 30 minutes.
 
-## Quick database check
+## Check database
 
     bio taxon
     
@@ -18,10 +18,9 @@ prints:
 
     TaxDB: nodes=2,288,072 parents=198,666
 
-There are a total of `2,288,072` nodes (taxonomical entries) out of which `198,666` are nodes that are non-terminal (leaf) nodes that have
-children nodes attached to them. Above we see that the vast majority of the taxonomy annotates leaf nodes.
+There are a total of `2,288,072` nodes (taxonomical entries) out of which `198,666` are nodes that are non-terminal (non-leaf) nodes. For these numbers we see that the vast majority of the taxonomy annotations are for terminal, leaf nodes.
 
-## View a tax id
+## View a tax id 
 
 Pass a NCBI taxonomical id to see all the descendants of it:
 
@@ -29,7 +28,7 @@ Pass a NCBI taxonomical id to see all the descendants of it:
 bio taxon 117565 | head
 ```
 
-## Print lineages
+## Taxonomic lineage
 
 To print the lineage of a term use:
 
@@ -51,20 +50,18 @@ it is also possible to pipe data into the tool:
 
 Searches the taxonomy for a word
 
-    bio taxon jaw | head
+    bio taxon jawed 
 
 prints:
 
-    # searching taxonomy for: jaw
+    # searching taxonomy for: jawed
     clade, Gnathostomata (jawed vertebrates), 7776
     species, Gillichthys mirabilis (long-jawed mudsucker), 8222
-    family, Oplegnathidae (knifejaws), 30858
-    species, Gonostoma atlanticum (Atlantic fangjaw), 48456
-    species, Sigmops gracilis (slender fangjaw), 48457
-    species, Coregonus zenithicus (shortjaw cisco), 56554
-    species, Malacosteus niger (stoplight loosejaw), 76143
-    species, Gillichthys seta (shortjaw mudsucker), 79683
-    species, Galaxias postvectis (shortjaw kokopu), 89561
+    species, Pseudamia amblyuroptera (white-jawed cardinalfish), 1431476
+    species, Myctophum brachygnathum (short-jawed lanternfish), 1519985
+    species, Oryzias orthognathus (sharp-jawed buntingi), 1645897
+    species, Longjawed orbweaver circular virus 1, 2293294
+    species, Longjawed orbweaver circular virus 2, 2293295
 
 The search words may use regular expression control characters:
 
@@ -100,15 +97,15 @@ Note: this command benefits greatly from using `--preload`.
 
 ## Preloading data
 
-For many usecases,  the default behavior is plenty fast and can produce family, genus and species level information in a fraction of a second.
+For many use cases,  the default behavior is plenty fast and can produce family, genus and species level information in a fraction of a second.
 
-Internally, during operation the software will query the database for each child node. When selecting a rank where the number of descendant nodes happens to be large (over 10,000) the independent queries will  add up to a substantial overhead.
+Internally, during operation, the software will query the database for each child node. When selecting a rank where the number of descendant nodes is large (over 10,000 nodes) the run time of the independent queries adds up to a substantial overhead.
 
-For example the command below attempts to render the complete NCBI taxonomic tree that has over 2.2 million descendant nodes. When run like so it will take a long time to produce the output (more than two hours):
+For example the command below attempts to render the complete NCBI taxonomic tree with over 2.2 million descendant nodes. When run like so it will take a very long time to produce the output (more than two hours):
 
     bio taxon 1 
 
-The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 6 second loading penalty.
+The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 6 second pre-loading penalty.
 
     bio taxon 1 --preload
     

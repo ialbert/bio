@@ -1,4 +1,4 @@
-# Data access {#data}
+# Data management {#data}
 
 The `bio` package solves the ongoing struggle of how to maintain sanity among diverse datasets.
 

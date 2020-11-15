@@ -1,4 +1,4 @@
-# Installation {#install}
+# Software installation {#install}
 
 ## Prerequisites
 
