@@ -1,4 +1,4 @@
-# Introduction
+# Welcome to `bio`
 
 > Software under development. Operational but not fully vetted.
 
@@ -15,10 +15,13 @@ Built on top of [BioPython][biopython], [Parasail][parasail] and other existing 
 
 Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
+If you are new to bioinformatics and would like to get traind in how to use `bio` see the [Biostar Handbook][handbook]
+ 
 [biopython]: https://biopython.org/
 [emboss]: http://emboss.sourceforge.net/
 [parasail]: https://github.com/jeffdaily/parasail
 [simplesam]: https://github.com/mdshw5/simplesam 
+[handbook]: https://www.biostarhandbook.com/
 
 ## Source code
 

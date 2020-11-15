@@ -73,7 +73,9 @@ And there is a lot more to `bio` than alignments.
 - Scientists working with large numbers of similar genomes (bacterial/viral strains).
 - Scientists that need to closely investigate and understand particular details of a genomic region.
 
-`bio` is designed for detail oriented investigations. 
+The idea and motivation to develop `bio` came to me while writing and maintainng the [Biostar Handbook][handbook] and educating the many cohorts of students that used it. In bioinformatics, many tasks that should be straightforward are, instead, needlessly complicated. `bio` is an opinion of bioinformatics should be simplified. 
+
+[handbook]: https://www.biostarhandbook.com/
 
 ## Learn more about how `bio` works
 

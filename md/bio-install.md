@@ -1,5 +1,7 @@
 # Software installation {#install}
 
+`bio` works on Linux and Mac copmuters and on Windows with using the Linux Subsystem. 
+
 ## Prerequisites
 
 We don't fully automate the dependency installation to give users the option of using the approach they prefer. To install the requirements with `conda` write:
