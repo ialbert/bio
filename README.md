@@ -4,6 +4,8 @@
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
+Documentation: https://ialbert.github.io/bio/
+
 ## Why do we need this software?
 
 If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress. 
