@@ -85,7 +85,7 @@
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a></li>
 <li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Software installation</a></li>
-<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data handling</a></li>
+<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
 <li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
 <li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
 <li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
@@ -114,15 +114,14 @@
 <h2>Building the taxonomy</h2>
 <p>Before using the taxonomy related functionality the representation needs to be built:</p>
 <pre><code>bio taxon --download --build</code></pre>
-<p>The command above will download and process the NCBI taxonomy to prepare it for fast access.</p>
+<p>The command above has to be run once (perhaps on a monthly basis) to download and process the latest NCBI taxonomy. The efficiency of the process depends on the speed of the hard drive and takes around 30 minutes.</p>
 </div>
-<div id="quick-database-check" class="section level2">
-<h2>Quick database check</h2>
+<div id="check-database" class="section level2">
+<h2>Check database</h2>
 <pre><code>bio taxon</code></pre>
 <p>prints:</p>
 <pre><code>TaxDB: nodes=2,288,072 parents=198,666</code></pre>
-<p>There are a total of <code>2,288,072</code> nodes (taxonomical entries) out of which <code>198,666</code> are nodes that are non-terminal (leaf) nodes that have
-children nodes attached to them. Above we see that the vast majority of the taxonomy annotates leaf nodes.</p>
+<p>There are a total of <code>2,288,072</code> nodes (taxonomical entries) out of which <code>198,666</code> are nodes that are non-terminal (non-leaf) nodes. For these numbers we see that the vast majority of the taxonomy annotations are for terminal, leaf nodes.</p>
 </div>
 <div id="view-a-tax-id" class="section level2">
 <h2>View a tax id</h2>
@@ -139,8 +138,8 @@ children nodes attached to them. Above we see that the vast majority of the taxo
                species, Eptatretus atami, 50612
                species, Eptatretus cirrhatus (broadgilled hagfish), 78394</code></pre>
 </div>
-<div id="print-lineages" class="section level2">
-<h2>Print lineages</h2>
+<div id="taxonomic-lineage" class="section level2">
+<h2>Taxonomic lineage</h2>
 <p>To print the lineage of a term use:</p>
 <pre class="bash"><code>    bio taxon 564286 --lineage</code></pre>
 <pre><code>no rank, cellular organisms, 131567
@@ -163,18 +162,16 @@ children nodes attached to them. Above we see that the vast majority of the taxo
 <div id="searching-for-taxids" class="section level2">
 <h2>Searching for taxids</h2>
 <p>Searches the taxonomy for a word</p>
-<pre><code>bio taxon jaw | head</code></pre>
+<pre><code>bio taxon jawed </code></pre>
 <p>prints:</p>
-<pre><code># searching taxonomy for: jaw
+<pre><code># searching taxonomy for: jawed
 clade, Gnathostomata (jawed vertebrates), 7776
 species, Gillichthys mirabilis (long-jawed mudsucker), 8222
-family, Oplegnathidae (knifejaws), 30858
-species, Gonostoma atlanticum (Atlantic fangjaw), 48456
-species, Sigmops gracilis (slender fangjaw), 48457
-species, Coregonus zenithicus (shortjaw cisco), 56554
-species, Malacosteus niger (stoplight loosejaw), 76143
-species, Gillichthys seta (shortjaw mudsucker), 79683
-species, Galaxias postvectis (shortjaw kokopu), 89561</code></pre>
+species, Pseudamia amblyuroptera (white-jawed cardinalfish), 1431476
+species, Myctophum brachygnathum (short-jawed lanternfish), 1519985
+species, Oryzias orthognathus (sharp-jawed buntingi), 1645897
+species, Longjawed orbweaver circular virus 1, 2293294
+species, Longjawed orbweaver circular virus 2, 2293295</code></pre>
 <p>The search words may use regular expression control characters:</p>
 <pre><code>bio taxon &#39;^jawed&#39;</code></pre>
 <p>produces:</p>
@@ -203,11 +200,11 @@ genus, Methylophilus, 16</code></pre>
 </div>
 <div id="preloading-data" class="section level2">
 <h2>Preloading data</h2>
-<p>For many usecases, the default behavior is plenty fast and can produce family, genus and species level information in a fraction of a second.</p>
-<p>Internally, during operation the software will query the database for each child node. When selecting a rank where the number of descendant nodes happens to be large (over 10,000) the independent queries will add up to a substantial overhead.</p>
-<p>For example the command below attempts to render the complete NCBI taxonomic tree that has over 2.2 million descendant nodes. When run like so it will take a long time to produce the output (more than two hours):</p>
+<p>For many use cases, the default behavior is plenty fast and can produce family, genus and species level information in a fraction of a second.</p>
+<p>Internally, during operation, the software will query the database for each child node. When selecting a rank where the number of descendant nodes is large (over 10,000 nodes) the run time of the independent queries adds up to a substantial overhead.</p>
+<p>For example the command below attempts to render the complete NCBI taxonomic tree with over 2.2 million descendant nodes. When run like so it will take a very long time to produce the output (more than two hours):</p>
 <pre><code>bio taxon 1 </code></pre>
-<p>The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 6 second loading penalty.</p>
+<p>The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 6 second pre-loading penalty.</p>
 <pre><code>bio taxon 1 --preload</code></pre>
 <p>When run with the <code>--preload</code> flag the command takes a total of just 11 seconds to generate the same large tree of the entire NCBI taxonomical tree. We don’t apply this mode by default because all queries would then take at least 6 seconds, even those that currently finish very quickly.</p>
 <p>For queries that take more than 10 seconds to complete (have more than 10,000 descendant nodes) we recommend applying the <code>--preload</code> flag.</p>
