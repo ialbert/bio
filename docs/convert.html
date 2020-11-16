@@ -83,7 +83,7 @@
 <ul class="summary">
 <li><a href="index.html">bio: making bioinformatics fun again</a></li>
 <li class="divider"></li>
-<li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome to bioinformatics</a></li>
 <li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Software installation</a></li>
 <li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
 <li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
@@ -120,7 +120,7 @@
 <pre class="bash"><code>bio ncov | head</code></pre>
 <pre><code>[
     {
-        &quot;id&quot;: &quot;NC_045512.2&quot;,
+        &quot;id&quot;: &quot;ncov&quot;,
         &quot;definition&quot;: &quot;Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome&quot;,
         &quot;dblink&quot;: [
             &quot;BioProject:PRJNA485481&quot;
@@ -147,40 +147,40 @@
 <h3>Convert all features to GFF:</h3>
 <pre class="bash"><code>bio ncov --gff | head -5</code></pre>
 <pre><code>##gff-version 3
-NC_045512.2 .   five_prime_UTR  1   265 .   +   1   Name=;type=5&#39;UTR
-NC_045512.2 .   gene    266 21555   .   +   1   Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
-NC_045512.2 .   CDS 266 21555   .   +   1   Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
-NC_045512.2 .   mature_protein_region   266 805 .   +   1   Name=YP_009725297.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725297.1;product=leader protein</code></pre>
+ncov    .   five_prime_UTR  1   265 .   +   1   Name=;type=5&#39;UTR
+ncov    .   gene    266 21555   .   +   1   Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
+ncov    .   CDS 266 21555   .   +   1   Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
+ncov    .   mature_protein_region   266 805 .   +   1   Name=YP_009725297.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725297.1;product=leader protein</code></pre>
 </div>
 <div id="convert-to-gff-only-the-features-with-type-cds" class="section level3">
 <h3>Convert to GFF only the features with type <code>CDS</code></h3>
 <pre class="bash"><code>bio ncov --gff --type CDS | head -5</code></pre>
 <pre><code>##gff-version 3
-NC_045512.2 .   CDS 266 21555   .   +   1   Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
-NC_045512.2 .   CDS 266 13483   .   +   1   Name=YP_009725295.1;type=CDS;gene=ORF1ab;protein_id=YP_009725295.1;product=ORF1a polyprotein;db_xref=GeneID:43740578
-NC_045512.2 .   CDS 21563   25384   .   +   1   Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
-NC_045512.2 .   CDS 25393   26220   .   +   1   Name=YP_009724391.1;type=CDS;gene=ORF3a;protein_id=YP_009724391.1;product=ORF3a protein;db_xref=GeneID:43740569</code></pre>
+ncov    .   CDS 266 21555   .   +   1   Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
+ncov    .   CDS 266 13483   .   +   1   Name=YP_009725295.1;type=CDS;gene=ORF1ab;protein_id=YP_009725295.1;product=ORF1a polyprotein;db_xref=GeneID:43740578
+ncov    .   CDS 21563   25384   .   +   1   Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
+ncov    .   CDS 25393   26220   .   +   1   Name=YP_009724391.1;type=CDS;gene=ORF3a;protein_id=YP_009724391.1;product=ORF3a protein;db_xref=GeneID:43740569</code></pre>
 </div>
 <div id="convert-to-gff-only-the-features-tagged-with-gene-s" class="section level3">
 <h3>Convert to GFF only the features tagged with gene <code>S</code></h3>
 <pre class="bash"><code>bio ncov --gff --gene S | head -5</code></pre>
 <pre><code>##gff-version 3
-NC_045512.2 .   gene    21563   25384   .   +   1   Name=S;type=gene;gene=S;db_xref=GeneID:43740568
-NC_045512.2 .   CDS 21563   25384   .   +   1   Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568</code></pre>
+ncov    .   gene    21563   25384   .   +   1   Name=S;type=gene;gene=S;db_xref=GeneID:43740568
+ncov    .   CDS 21563   25384   .   +   1   Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568</code></pre>
 </div>
 <div id="convert-to-gff-only-the-features-that-overlap-a-interval" class="section level3">
 <h3>Convert to GFF only the features that overlap a interval</h3>
 <pre class="bash"><code>bio ncov --gff --start 2000 --end 3000 | head -5</code></pre>
 <pre><code>##gff-version 3
-NC_045512.2 .   gene    266 21555   .   +   1   Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
-NC_045512.2 .   CDS 266 21555   .   +   1   Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
-NC_045512.2 .   mature_protein_region   806 2719    .   +   1   Name=YP_009725298.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725298.1;product=nsp2
-NC_045512.2 .   mature_protein_region   2720    8554    .   +   1   Name=YP_009725299.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725299.1;product=nsp3</code></pre>
+ncov    .   gene    266 21555   .   +   1   Name=ORF1ab;type=gene;gene=ORF1ab;db_xref=GeneID:43740578
+ncov    .   CDS 266 21555   .   +   1   Name=YP_009724389.1;type=CDS;gene=ORF1ab;protein_id=YP_009724389.1;product=ORF1ab polyprotein;db_xref=GeneID:43740578
+ncov    .   mature_protein_region   806 2719    .   +   1   Name=YP_009725298.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725298.1;product=nsp2
+ncov    .   mature_protein_region   2720    8554    .   +   1   Name=YP_009725299.1;type=mat_peptide;gene=ORF1ab;protein_id=YP_009725299.1;product=nsp3</code></pre>
 </div>
 <div id="convert-the-data-to-fasta-the-origin-of-the-genbank" class="section level3">
 <h3>Convert the data to FASTA (the origin of the GenBank)</h3>
 <pre class="bash"><code>bio ncov --fasta | head -5</code></pre>
-<pre><code>&gt;NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+<pre><code>&gt;ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
 ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
 GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
 CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC

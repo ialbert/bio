@@ -1,4 +1,4 @@
-# Welcome to `bio`
+# Welcome to bioinformatics
 
 > Software under development. Operational but not fully vetted.
 
