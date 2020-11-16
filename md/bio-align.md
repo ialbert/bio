@@ -6,7 +6,7 @@
 bio ncov:S ratg13:S --end 90 --align
 ```
 
-# Align the translated regions.
+Align the translated regions.
 
 ```{bash, comment=NA}
 bio ncov:S ratg13:S --end 90 --translate --align 
