@@ -61,55 +61,22 @@ and it will show you the first 100 bases of the genome
 
 You could also convert the data stored under `ncov` name to formats. Let's convert just the `CDS` features annotated for gene `S` to say `GFF`:
 
+```{bash, comment=NA}
     bio ncov --gff --gene S --type CDS
-
-the command above will print:
-
-    ncov .  CDS  21563  25384   .  +  1  Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
+```
 
 Now, back to our problem of aligning proteins. Let's align the first 80 basepairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut, instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
-    bio align ncov:S ratg13:S --end 80
-
-That's it. The command above produces:
-    
-    ### 1: YP_009724390 vs QHR63300.2 ###
-    
-    Length:	3827 (local) 
-    Query:	3822 [1, 3822]
-    Target:	3810 [1, 3810]
-    Score:	16694
-    Ident:	3554/3827 (92.9%)
-    Simil:	3554/3827 (92.9%)
-    Gaps:	22/3827 (0.6%)
-    Matrix:	nuc44(-11, -1) 
-    
-    QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGC
-                 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||
-    YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGC
-    
+```{bash, comment=NA}
+    bio ncov:S ratg13:S --end 90 --align
+```
     
 If instead we wanted to align the 80bp DNA sequences for `S` protein after their translation into proteins we could do it like so:
 
-    bio align ncov:S ratg13:S --translate --end 80
+```{bash, comment=NA}
+    bio ncov:S ratg13:S --translate --end 80 --align
+```
     
-Now the output is:
-
-    ### 1: YP_009724390 vs QHR63300.2 ###
-    
-    Length: 26 (local)
-    Query:  26 [1, 26]
-    Target: 26 [1, 26]
-    Score:  131
-    Ident:  26/26 (100.0%)
-    Simil:  26/26 (100.0%)
-    Gaps:   0/26 (0.0%)
-    Matrix: blosum62(-11, -1)
-    
-    QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP
-                 ||||||||||||||||||||||||||
-    YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
-
 We can note right away that all differences in the first 80bp of DNA are synonymous substitutions, the protein translations are the same.
 
 ## What did `bio` do for us?

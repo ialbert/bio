@@ -19,7 +19,7 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
     bio MN996532  --fetch --rename ratg13
     
     # Align the DNA for the S protein.
-    bio align ncov:S ratg13:S --end 90 
+    bio ncov:S ratg13:S --end 90 --align
 
 to align the first 90 basepairs of the DNA sequence of the  `S` protein from the SARS-COV-2 novel coronavirus to its closest (known) relative, the bat coronavirus RaTG13 to obtain:
 
@@ -43,7 +43,7 @@ QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTC
 If you wanted to align the same sequences as translated proteins `bio` lets you write:
 
 
-    bio align ncov:S ratg13:S --end 90 --translate
+    bio ncov:S ratg13:S --end 90 --translate --align
     
 to generate:
 

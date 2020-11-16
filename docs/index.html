@@ -88,6 +88,7 @@
 <li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
 <li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
 <li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="align-the-translated-regions-.html"><a href="align-the-translated-regions-.html"><i class="fa fa-check"></i>Align the translated regions.</a></li>
 <li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
 <li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>Usage tips</a></li>
 </ul>
@@ -155,43 +156,43 @@ bio MN996532  --fetch --rename ratg13</code></pre>
 ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
 GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC</code></pre>
 <p>You could also convert the data stored under <code>ncov</code> name to formats. Let’s convert just the <code>CDS</code> features annotated for gene <code>S</code> to say <code>GFF</code>:</p>
-<pre><code>bio ncov --gff --gene S --type CDS</code></pre>
-<p>the command above will print:</p>
-<pre><code>ncov .  CDS  21563  25384   .  +  1  Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568</code></pre>
+<pre class="bash"><code>    bio ncov --gff --gene S --type CDS</code></pre>
+<pre><code>##gff-version 3
+NC_045512.2 .   CDS 21563   25384   .   +   1   Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568</code></pre>
 <p>Now, back to our problem of aligning proteins. Let’s align the first 80 basepairs of DNA sequences for the <code>S</code> protein for each organism, <code>bio</code> even gives you a shortcut, instead of typing <code>--gene S --type CDS</code> you can write it as <code>ncov:S</code> :</p>
-<pre><code>bio align ncov:S ratg13:S --end 80</code></pre>
-<p>That’s it. The command above produces:</p>
-<pre><code>### 1: YP_009724390 vs QHR63300.2 ###
+<pre class="bash"><code>    bio ncov:S ratg13:S --end 90 --align</code></pre>
+<pre><code>
+### 1: YP_009724390 vs QHR63300.2 ###
 
-Length: 3827 (local) 
-Query:  3822 [1, 3822]
-Target: 3810 [1, 3810]
-Score:  16694
-Ident:  3554/3827 (92.9%)
-Simil:  3554/3827 (92.9%)
-Gaps:   22/3827 (0.6%)
+Length: 90 (semiglobal) 
+Query:  90 [1, 90]
+Target: 90 [1, 90]
+Score:  387
+Ident:  83/90 (92.2%)
+Simil:  83/90 (92.2%)
+Gaps:   0/90 (0.0%)
 Matrix: nuc44(-11, -1) 
 
-QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGC
-             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||
-YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGC</code></pre>
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
+           1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
 <p>If instead we wanted to align the 80bp DNA sequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
-<pre><code>bio align ncov:S ratg13:S --translate --end 80</code></pre>
-<p>Now the output is:</p>
-<pre><code>### 1: YP_009724390 vs QHR63300.2 ###
+<pre class="bash"><code>    bio ncov:S ratg13:S --translate --end 80 --align</code></pre>
+<pre><code>
+### 1: YP_009724390 vs QHR63300.2 ###
 
-Length: 26 (local)
+Length: 26 (semiglobal) 
 Query:  26 [1, 26]
 Target: 26 [1, 26]
 Score:  131
 Ident:  26/26 (100.0%)
 Simil:  26/26 (100.0%)
 Gaps:   0/26 (0.0%)
-Matrix: blosum62(-11, -1)
+Matrix: blosum62(-11, -1) 
 
-QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP
-             ||||||||||||||||||||||||||
-YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP</code></pre>
+YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
+           1 |||||||||||||||||||||||||| 26
+QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP</code></pre>
 <p>We can note right away that all differences in the first 80bp of DNA are synonymous substitutions, the protein translations are the same.</p>
 </div>
 <div id="what-did-bio-do-for-us" class="section level2">

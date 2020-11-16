@@ -62,6 +62,9 @@ def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
     Parses the names.dmp component of the taxdump.
     """
 
+    if not os.path.isfile(fname):
+        utils.error("taxdump file not found (download and build it first)")
+
     # The taxdump file.
     tar = tarfile.open(fname, "r:gz")
 
@@ -263,6 +266,8 @@ def print_lineage(taxid, names, flat=1):
 
 def get_data(preload=False):
     if preload:
+        if not os.path.isfile(JSON_DB):
+            utils.error(f"taxonomy file not found (you must build it first): {JSON_DB}")
         store = json.load(open(JSON_DB))
         names = store[NAMES]
         graph = store[GRAPH]

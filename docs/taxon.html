@@ -29,7 +29,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="align.html"/>
+<link rel="prev" href="align-the-translated-regions-.html"/>
 <link rel="next" href="tips.html"/>
 <script src="libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -88,6 +88,7 @@
 <li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
 <li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
 <li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="align-the-translated-regions-.html"><a href="align-the-translated-regions-.html"><i class="fa fa-check"></i>Align the translated regions.</a></li>
 <li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
 <li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>Usage tips</a></li>
 </ul>
@@ -118,46 +119,10 @@
 </div>
 <div id="check-database" class="section level2">
 <h2>Check database</h2>
-<pre><code>bio taxon</code></pre>
+<pre><code>bio --taxon</code></pre>
 <p>prints:</p>
 <pre><code>TaxDB: nodes=2,288,072 parents=198,666</code></pre>
 <p>There are a total of <code>2,288,072</code> nodes (taxonomical entries) out of which <code>198,666</code> are nodes that are non-terminal (non-leaf) nodes. For these numbers we see that the vast majority of the taxonomy annotations are for terminal, leaf nodes.</p>
-</div>
-<div id="view-a-tax-id" class="section level2">
-<h2>View a tax id</h2>
-<p>Pass a NCBI taxonomical id to see all the descendants of it:</p>
-<pre class="bash"><code>bio taxon 117565 | head</code></pre>
-<pre><code>class, Myxini, 117565
-   order, Myxiniformes, 7761
-      family, Myxinidae (hagfishes), 7762
-         subfamily, Eptatretinae, 30309
-            genus, Eptatretus, 7763
-               species, Eptatretus burgeri (inshore hagfish), 7764
-               species, Eptatretus stoutii (Pacific hagfish), 7765
-               species, Eptatretus okinoseanus, 7767
-               species, Eptatretus atami, 50612
-               species, Eptatretus cirrhatus (broadgilled hagfish), 78394</code></pre>
-</div>
-<div id="taxonomic-lineage" class="section level2">
-<h2>Taxonomic lineage</h2>
-<p>To print the lineage of a term use:</p>
-<pre class="bash"><code>    bio taxon 564286 --lineage</code></pre>
-<pre><code>no rank, cellular organisms, 131567
-   superkingdom, Bacteria (eubacteria), 2
-      clade, Terrabacteria group, 1783272
-         phylum, Firmicutes, 1239
-            class, Bacilli, 91061
-               order, Bacillales, 1385
-                  family, Bacillaceae, 186817
-                     genus, Bacillus, 1386
-                        species group, Bacillus subtilis group, 653685
-                           species, Bacillus subtilis, 1423
-                              strain, Bacillus subtilis str. 10, 564286</code></pre>
-<p>the lineage may be flattened:</p>
-<pre class="bash"><code>    bio taxon 564286 --lineage --flat</code></pre>
-<pre><code>564286  cellular organisms;Bacteria;Terrabacteria group;Firmicutes;Bacilli;Bacillales;Bacillaceae;Bacillus;Bacillus subtilis group;Bacillus subtilis;Bacillus subtilis str. 10</code></pre>
-<p>it is also possible to pipe data into the tool:</p>
-<pre><code>cat taxids | bio taxon --lineage </code></pre>
 </div>
 <div id="searching-for-taxids" class="section level2">
 <h2>Searching for taxids</h2>
@@ -178,13 +143,82 @@ species, Longjawed orbweaver circular virus 2, 2293295</code></pre>
 <pre><code># searching taxonomy for: ^jawed
 clade, Gnathostomata (jawed vertebrates), 7776</code></pre>
 </div>
+<div id="view-taxonomy-for-data" class="section level2">
+<h2>View taxonomy for data</h2>
+<p>Once you fetch the data</p>
+<pre><code>bio NC_045512 --fetch --rename ncov</code></pre>
+<p>you can view the descendants:</p>
+<pre class="bash"><code>    bio ncov --taxon</code></pre>
+<pre><code>no rank, Severe acute respiratory syndrome coronavirus 2, 2697049</code></pre>
+<p>or view the lineage:</p>
+<pre class="bash"><code>bio ncov --taxon --lineage</code></pre>
+<pre><code>superkingdom, Viruses, 10239
+   clade, Riboviria, 2559587
+      kingdom, Orthornavirae, 2732396
+         phylum, Pisuviricota, 2732408
+            class, Pisoniviricetes, 2732506
+               order, Nidovirales, 76804
+                  suborder, Cornidovirineae, 2499399
+                     family, Coronaviridae, 11118
+                        subfamily, Orthocoronavirinae, 2501931
+                           genus, Betacoronavirus, 694002
+                              subgenus, Sarbecovirus, 2509511
+                                 species, Severe acute respiratory syndrome-related coronavirus, 694009
+                                    no rank, Severe acute respiratory syndrome coronavirus 2, 2697049</code></pre>
+</div>
+<div id="view-taxonomy-by-tax-id" class="section level2">
+<h2>View taxonomy by tax id</h2>
+<p>Pass a NCBI taxonomical id to see all the descendants of it:</p>
+<pre class="bash"><code>bio 117565 --taxon | head</code></pre>
+<pre><code>class, Myxini, 117565
+   order, Myxiniformes, 7761
+      family, Myxinidae (hagfishes), 7762
+         subfamily, Eptatretinae, 30309
+            genus, Eptatretus, 7763
+               species, Eptatretus burgeri (inshore hagfish), 7764
+               species, Eptatretus stoutii (Pacific hagfish), 7765
+               species, Eptatretus okinoseanus, 7767
+               species, Eptatretus atami, 50612
+               species, Eptatretus cirrhatus (broadgilled hagfish), 78394</code></pre>
+</div>
+<div id="view-a-tax-id" class="section level2">
+<h2>View a tax id</h2>
+<p>Pass a NCBI taxonomical id to see all the descendants of it:</p>
+<pre class="bash"><code>bio 117565 --taxon | head</code></pre>
+<pre><code>class, Myxini, 117565
+   order, Myxiniformes, 7761
+      family, Myxinidae (hagfishes), 7762
+         subfamily, Eptatretinae, 30309
+            genus, Eptatretus, 7763
+               species, Eptatretus burgeri (inshore hagfish), 7764
+               species, Eptatretus stoutii (Pacific hagfish), 7765
+               species, Eptatretus okinoseanus, 7767
+               species, Eptatretus atami, 50612
+               species, Eptatretus cirrhatus (broadgilled hagfish), 78394</code></pre>
+<p>To print the lineage of a term use:</p>
+<pre class="bash"><code>    bio 564286 --taxon --lineage</code></pre>
+<pre><code>no rank, cellular organisms, 131567
+   superkingdom, Bacteria (eubacteria), 2
+      clade, Terrabacteria group, 1783272
+         phylum, Firmicutes, 1239
+            class, Bacilli, 91061
+               order, Bacillales, 1385
+                  family, Bacillaceae, 186817
+                     genus, Bacillus, 1386
+                        species group, Bacillus subtilis group, 653685
+                           species, Bacillus subtilis, 1423
+                              strain, Bacillus subtilis str. 10, 564286</code></pre>
+<p>the lineage may be flattened:</p>
+<pre class="bash"><code>    bio 564286 --taxon --lineage --flat</code></pre>
+<pre><code>564286  cellular organisms;Bacteria;Terrabacteria group;Firmicutes;Bacilli;Bacillales;Bacillaceae;Bacillus;Bacillus subtilis group;Bacillus subtilis;Bacillus subtilis str. 10</code></pre>
+</div>
 <div id="filter-blast-results" class="section level2">
 <h2>Filter blast results</h2>
 <p>(TODO) - filters BLAST alignment for species that fall within a taxonomical clade</p>
 </div>
 <div id="list-the-content-of-the-database" class="section level2">
 <h2>List the content of the database:</h2>
-<pre><code>bio taxon --list | head</code></pre>
+<pre><code>bio --taxon --list | head</code></pre>
 <p>prints:</p>
 <pre><code>no rank, root, 1
 superkingdom, Bacteria (eubacteria), 2
@@ -203,9 +237,9 @@ genus, Methylophilus, 16</code></pre>
 <p>For many use cases, the default behavior is plenty fast and can produce family, genus and species level information in a fraction of a second.</p>
 <p>Internally, during operation, the software will query the database for each child node. When selecting a rank where the number of descendant nodes is large (over 10,000 nodes) the run time of the independent queries adds up to a substantial overhead.</p>
 <p>For example the command below attempts to render the complete NCBI taxonomic tree with over 2.2 million descendant nodes. When run like so it will take a very long time to produce the output (more than two hours):</p>
-<pre><code>bio taxon 1 </code></pre>
+<pre><code>bio 1 --taxon </code></pre>
 <p>The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 6 second pre-loading penalty.</p>
-<pre><code>bio taxon 1 --preload</code></pre>
+<pre><code>bio 1 --taxon --preload</code></pre>
 <p>When run with the <code>--preload</code> flag the command takes a total of just 11 seconds to generate the same large tree of the entire NCBI taxonomical tree. We don’t apply this mode by default because all queries would then take at least 6 seconds, even those that currently finish very quickly.</p>
 <p>For queries that take more than 10 seconds to complete (have more than 10,000 descendant nodes) we recommend applying the <code>--preload</code> flag.</p>
 
@@ -219,7 +253,7 @@ genus, Methylophilus, 16</code></pre>
           </div>
         </div>
       </div>
-<a href="align.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="align-the-translated-regions-.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="tips.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>

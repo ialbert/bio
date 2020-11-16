@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="convert.html"/>
-<link rel="next" href="taxon.html"/>
+<link rel="next" href="align-the-translated-regions-.html"/>
 <script src="libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -88,6 +88,7 @@
 <li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
 <li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
 <li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="align-the-translated-regions-.html"><a href="align-the-translated-regions-.html"><i class="fa fa-check"></i>Align the translated regions.</a></li>
 <li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
 <li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>Usage tips</a></li>
 </ul>
@@ -109,44 +110,23 @@
             <section class="normal" id="section-">
 <div id="align" class="section level1">
 <h1>Sequence alignments</h1>
-<pre class="bash"><code>bio align THISLINE ISALIGNED -i </code></pre>
+<pre class="bash"><code># Align the extracted protein.
+bio ncov:S ratg13:S --end 90 --align</code></pre>
 <pre><code>
-### 1: S1 vs S2 ###
+### 1: YP_009724390 vs QHR63300.2 ###
 
-Length: 11 (semiglobal) 
-Query:  8 [1, 8]
-Target: 9 [1, 8]
-Score:  8
-Ident:  4/11 (36.4%)
-Simil:  5/11 (45.5%)
-Gaps:   5/11 (45.5%)
-Matrix: blosum62(-11, -1) 
+Length: 90 (semiglobal) 
+Query:  90 [1, 90]
+Target: 90 [1, 90]
+Score:  387
+Ident:  83/90 (92.2%)
+Simil:  83/90 (92.2%)
+Gaps:   0/90 (0.0%)
+Matrix: nuc44(-11, -1) 
 
-S1           THISLI--NE-
-           1   ||.:  ||  11
-S2           --ISALIGNED</code></pre>
-<pre><code># Align the extracted protein.
-bio align ncov:S ratg13:S --end 80 &gt; align-dna-s.txt
-
-# Align the extracted protein.
-bio align ncov:S ratg13:S --protein &gt; align-protein-s.txt
-
-# Align the translated regions.
-bio align ncov:S ratg13:S --end 80 --translate &gt; align-translated-s.txt
-
-# Test alignments
-bio align THISLINE ISALIGNED  -i &gt; align-local.txt
-
-# Default alignment is semiglobal.
-bio align THISLINE ISALIGNED  -i &gt; align-local.txt
-
-# Global alignment.
-bio align THISLINE ISALIGNED -i --global &gt; align-global.txt
-
-# Semiglobal alignment.
-bio align THISLINE ISALIGNED -i --local &gt; align-semiglobal.txt
-</code></pre>
-
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
+           1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
 </div>
 
 <script src="assets/asciinema-player.js"></script>
@@ -157,7 +137,7 @@ bio align THISLINE ISALIGNED -i --local &gt; align-semiglobal.txt
         </div>
       </div>
 <a href="convert.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="taxon.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="align-the-translated-regions-.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

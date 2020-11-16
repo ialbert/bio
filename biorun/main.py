@@ -37,7 +37,7 @@ logger = utils.logger
 def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, list=False, protein=False,
               translate=False, transcribe=False,
               reverse=False, complement=False, revcomp=False, align=False, rename='', seqid='', start='', end='', type='', gene='',
-              match='', inter=False, 
+              match='', inter=False,
               verbose=False, *acc):
     """
     bio - making bioinformatics fun again

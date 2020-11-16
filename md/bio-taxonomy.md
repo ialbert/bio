@@ -12,7 +12,8 @@ The command above has to be run once (perhaps on a monthly basis) to download an
 
 ## Check database
 
-    bio taxon
+
+    bio --taxon
     
 prints:
 
@@ -20,32 +21,6 @@ prints:
 
 There are a total of `2,288,072` nodes (taxonomical entries) out of which `198,666` are nodes that are non-terminal (non-leaf) nodes. For these numbers we see that the vast majority of the taxonomy annotations are for terminal, leaf nodes.
 
-## View a tax id 
-
-Pass a NCBI taxonomical id to see all the descendants of it:
-
-```{bash, comment=NA}
-bio taxon 117565 | head
-```
-
-## Taxonomic lineage
-
-To print the lineage of a term use:
-
-```{bash, comment=NA}
-    bio taxon 564286 --lineage
-```
-
-the lineage may be flattened:
-
-```{bash, comment=NA}
-    bio taxon 564286 --lineage --flat
-```
-
-it is also possible to pipe data into the tool:
-
-    cat taxids | bio taxon --lineage 
-    
 ## Searching for taxids
 
 Searches the taxonomy for a word
@@ -72,13 +47,60 @@ produces:
     # searching taxonomy for: ^jawed
     clade, Gnathostomata (jawed vertebrates), 7776
 
+## View taxonomy for data 
+
+Once you fetch the data
+    
+    bio NC_045512 --fetch --rename ncov
+    
+    
+you can view the descendants:
+
+```{bash, comment=NA}
+    bio ncov --taxon
+```
+
+or view the lineage:
+
+```{bash, comment=NA}
+bio ncov --taxon --lineage
+```
+
+## View taxonomy by tax id
+    
+Pass a NCBI taxonomical id to see all the descendants of it:
+
+```{bash, comment=NA}
+bio 117565 --taxon | head
+```
+
+## View a tax id 
+
+Pass a NCBI taxonomical id to see all the descendants of it:
+
+```{bash, comment=NA}
+bio 117565 --taxon | head
+```
+
+To print the lineage of a term use:
+
+```{bash, comment=NA}
+    bio 564286 --taxon --lineage
+```
+
+the lineage may be flattened:
+
+```{bash, comment=NA}
+    bio 564286 --taxon --lineage --flat
+```
+   
 ## Filter blast results
 
 (TODO) - filters BLAST alignment for species that fall within a taxonomical clade
 
 ## List the content of the database:
 
-    bio taxon --list | head
+    bio --taxon --list | head
     
 prints:
 
@@ -103,11 +125,11 @@ Internally, during operation, the software will query the database for each chil
 
 For example the command below attempts to render the complete NCBI taxonomic tree with over 2.2 million descendant nodes. When run like so it will take a very long time to produce the output (more than two hours):
 
-    bio taxon 1 
+    bio 1 --taxon 
 
 The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 6 second pre-loading penalty.
 
-    bio taxon 1 --preload
+    bio 1 --taxon --preload
     
 When run with the `--preload` flag the command takes a total of just 11 seconds to generate the same large tree of the entire NCBI taxonomical tree. We don't apply this mode by default because all queries would then take at least 6 seconds, even those that currently finish very quickly.
 

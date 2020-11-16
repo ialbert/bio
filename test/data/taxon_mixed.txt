@@ -1,0 +1,5 @@
+no rank, Bat coronavirus RaTG13, 2709072
+no rank, Severe acute respiratory syndrome coronavirus 2, 2697049
+species, Homo sapiens (human), 9606
+   subspecies, Homo sapiens neanderthalensis (Neandertal), 63221
+   subspecies, Homo sapiens subsp. 'Denisova' (Denisova hominin), 741158

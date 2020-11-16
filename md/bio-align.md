@@ -2,29 +2,36 @@
 
 
 ```{bash, comment=NA}
-bio align THISLINE ISALIGNED -i 
-```
-
-```
 # Align the extracted protein.
-bio align ncov:S ratg13:S --end 80 > align-dna-s.txt
-
-# Align the extracted protein.
-bio align ncov:S ratg13:S --protein > align-protein-s.txt
+bio ncov:S ratg13:S --end 90 --align
+```
 
 # Align the translated regions.
-bio align ncov:S ratg13:S --end 80 --translate > align-translated-s.txt
 
-# Test alignments
-bio align THISLINE ISALIGNED  -i > align-local.txt
+```{bash, comment=NA}
+bio ncov:S ratg13:S --end 90 --translate --align 
+```
 
-# Default alignment is semiglobal.
-bio align THISLINE ISALIGNED  -i > align-local.txt
+Default alignment is semiglobal.
 
-# Global alignment.
-bio align THISLINE ISALIGNED -i --global > align-global.txt
+```{bash, comment=NA}
+bio THISLINE ISALIGNED  -i --align
+```
 
-# Semiglobal alignment.
-bio align THISLINE ISALIGNED -i --local > align-semiglobal.txt
+Local alignment.
 
+```{bash, comment=NA}
+bio THISLINE ISALIGNED -i --align --local
+```
+
+Global alignment.
+
+```{bash, comment=NA}
+bio THISLINE ISALIGNED -i --align --global
+```
+
+Semiglobal alignment
+
+```{bash, comment=NA}
+bio  THISLINE ISALIGNED -i --align --semiglobal
 ```
