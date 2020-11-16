@@ -154,11 +154,11 @@ bio MN996532  --fetch --rename ratg13</code></pre>
 <pre><code>&gt;ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
 ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
 GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC</code></pre>
-<p>You could also convert the data stored under <code>ncov</code> name to formats. Let’s convert just the <code>CDS</code> features annotated for gene <code>S</code> to say <code>GFF</code>:</p>
+<p>You could also convert the data stored under <code>ncov</code> name to other formats. Let’s convert the <code>CDS</code> features annotated for gene <code>S</code> to <code>GFF</code>:</p>
 <pre class="bash"><code>    bio ncov --gff --gene S --type CDS</code></pre>
 <pre><code>##gff-version 3
 ncov    .   CDS 21563   25384   .   +   1   Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568</code></pre>
-<p>Now, back to our problem of aligning proteins. Let’s align the first 80 basepairs of DNA sequences for the <code>S</code> protein for each organism, <code>bio</code> even gives you a shortcut, instead of typing <code>--gene S --type CDS</code> you can write it as <code>ncov:S</code> :</p>
+<p>Now, back to our problem of aligning proteins. Let’s align the first 90 basepairs of DNA sequences for the <code>S</code> protein for each organism, <code>bio</code> even gives you a shortcut, instead of typing <code>--gene S --type CDS</code> you can write it as <code>ncov:S</code> :</p>
 <pre class="bash"><code>    bio ncov:S ratg13:S --end 90 --align</code></pre>
 <pre><code>
 ### 1: YP_009724390 vs QHR63300.2 ###
@@ -175,7 +175,7 @@ Matrix: nuc44(-11, -1)
 YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
            1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
 QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
-<p>If instead we wanted to align the 80bp DNA sequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
+<p>If instead we wanted to align the 90bp DNA sequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
 <pre class="bash"><code>    bio ncov:S ratg13:S --translate --end 80 --align</code></pre>
 <pre><code>
 ### 1: YP_009724390 vs QHR63300.2 ###

@@ -59,19 +59,19 @@ and it will show you the first 100 bases of the genome
     ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
     GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
 
-You could also convert the data stored under `ncov` name to formats. Let's convert just the `CDS` features annotated for gene `S` to say `GFF`:
+You could also convert the data stored under `ncov` name to other formats. Let's convert the `CDS` features annotated for gene `S` to `GFF`:
 
 ```{bash, comment=NA}
     bio ncov --gff --gene S --type CDS
 ```
 
-Now, back to our problem of aligning proteins. Let's align the first 80 basepairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut, instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
+Now, back to our problem of aligning proteins. Let's align the first 90 basepairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut, instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
 ```{bash, comment=NA}
     bio ncov:S ratg13:S --end 90 --align
 ```
     
-If instead we wanted to align the 80bp DNA sequences for `S` protein after their translation into proteins we could do it like so:
+If instead we wanted to align the 90bp DNA sequences for `S` protein after their translation into proteins we could do it like so:
 
 ```{bash, comment=NA}
     bio ncov:S ratg13:S --translate --end 80 --align
