@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="taxon.html"/>
-
+<link rel="next" href="related.html"/>
 <script src="libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -90,6 +90,7 @@
 <li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
 <li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
 <li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>Usage tips</a></li>
+<li class="chapter" data-level="" data-path="related.html"><a href="related.html"><i class="fa fa-check"></i>Related software</a></li>
 </ul>
 
       </nav>
@@ -113,13 +114,9 @@
 <h2>Interactive mode</h2>
 <p>Passing the <code>-i</code> flag allows data to be passed from command line. For example:</p>
 <pre class="bash"><code>bio --translate -i ATGATTATATATA </code></pre>
-<pre><code>&gt;A1 translated DNA
-MIIY</code></pre>
 <p>Note how the input was read as parameters from the command line. We make use of this feature when exploring simple data in an explicit way.
 Here we’re using a different phase to translate the same sequence above.</p>
 <pre class="bash"><code>bio --translate -i ATGATTATATATA --start 2</code></pre>
-<pre><code>&gt;A1 [2:13], translated DNA
-*LYI</code></pre>
 </div>
 <div id="the-command-line-is-more-forgiving" class="section level2">
 <h2>The command line is more forgiving:</h2>
@@ -158,8 +155,8 @@ that is independent of the order the parameters are listed.</p>
           </div>
         </div>
       </div>
-<a href="taxon.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="taxon.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="related.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

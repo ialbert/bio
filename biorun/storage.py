@@ -45,7 +45,7 @@ def read_json_file(fname):
     """
     Returns the content of a JSON file.
     """
-    fp = gzip.open(fname, 'rt') if fname.endswith(".gz") else open(fname, 'rt')
+    fp = utils.gz_read(fname)
     data = json.load(fp)
     fp.close()
     return data
@@ -54,7 +54,7 @@ def save_json_file(fname, data):
     """
     Returns the content of a JSON file.
     """
-    fp = gzip.open(fname, 'wt', compresslevel=5) if fname.endswith(".gz") else open(fname, 'wt')
+    fp = utils.gz_write(fname)
     json.dump(data, fp)
     fp.close()
     logger.info(f"saved {fname}")
@@ -69,7 +69,7 @@ def change_seqid(json_name, seqid):
         data = read_json_file(json_name)
         for item in data:
             item[const.SEQID] = seqid
-        fp = gzip.open(json_name, 'wt', compresslevel=1)
+        fp = utils.gz_write(json_name)
         json.dump(data, fp)
         fp.close()
 
@@ -129,9 +129,9 @@ def genbank_view(params):
         altname =  resolve_fname(param.name, format="gb")
 
         if os.path.isfile(param.name):
-            stream = utils.gz_open(param.name)
+            stream = utils.gz_read(param.name)
         elif os.path.isfile(altname):
-            stream = utils.gz_open(altname)
+            stream = utils.gz_read(altname)
         else:
             stream = []
             utils.error(f"data not found: {param.name}")

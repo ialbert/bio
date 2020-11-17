@@ -90,6 +90,7 @@
 <li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
 <li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
 <li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>Usage tips</a></li>
+<li class="chapter" data-level="" data-path="related.html"><a href="related.html"><i class="fa fa-check"></i>Related software</a></li>
 </ul>
 
       </nav>
@@ -164,9 +165,9 @@ has its own command line help page.</p>
 <div id="help-page-for-default-actions" class="section level3">
 <h3>1. Help page for default actions</h3>
 <pre class="bash"><code>bio -h</code></pre>
-<pre><code>usage: bio [-h] [-F] [-G] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C] [-R]
-           [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;] [-i]
-           [-v]
+<pre><code>usage: bio [-h] [-F] [-G] [-K] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C]
+           [-R] [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;]
+           [-i] [-v]
            [acc [acc ...]]
 
 bio - making bioinformatics fun again
@@ -180,6 +181,7 @@ optional arguments:
   -h, --help          show this help message and exit
   -F, --fasta         produce FASTA format
   -G, --gff           produce GFF format
+  -K, --genbank       show the genbank file if exists
   -f, --fetch         download data as accessions
   -u, --update        updates data in storage
   -d, --delete        delete data in storage
@@ -204,9 +206,9 @@ optional arguments:
 <div id="help-page-for-alignments" class="section level3">
 <h3>2. Help page for alignments</h3>
 <pre class="bash"><code>bio align -h</code></pre>
-<pre><code>usage: bio [-h] [-F] [-G] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C] [-R]
-           [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;] [-i]
-           [-v]
+<pre><code>usage: bio [-h] [-F] [-G] [-K] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C]
+           [-R] [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;]
+           [-i] [-v]
            [acc [acc ...]]
 
 bio - making bioinformatics fun again
@@ -220,6 +222,7 @@ optional arguments:
   -h, --help          show this help message and exit
   -F, --fasta         produce FASTA format
   -G, --gff           produce GFF format
+  -K, --genbank       show the genbank file if exists
   -f, --fetch         download data as accessions
   -u, --update        updates data in storage
   -d, --delete        delete data in storage
@@ -244,9 +247,9 @@ optional arguments:
 <div id="help-page-for-taxonomy" class="section level3">
 <h3>3. Help page for taxonomy</h3>
 <pre class="bash"><code>bio taxon -h</code></pre>
-<pre><code>usage: bio [-h] [-F] [-G] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C] [-R]
-           [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;] [-i]
-           [-v]
+<pre><code>usage: bio [-h] [-F] [-G] [-K] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C]
+           [-R] [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;]
+           [-i] [-v]
            [acc [acc ...]]
 
 bio - making bioinformatics fun again
@@ -260,6 +263,7 @@ optional arguments:
   -h, --help          show this help message and exit
   -F, --fasta         produce FASTA format
   -G, --gff           produce GFF format
+  -K, --genbank       show the genbank file if exists
   -f, --fetch         download data as accessions
   -u, --update        updates data in storage
   -d, --delete        delete data in storage

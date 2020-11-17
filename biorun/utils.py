@@ -96,7 +96,7 @@ def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
     tmp.seek(0)
 
     # Copy over the content from the temporary file to the final gzipped file destination.
-    out = gz_open(fname)
+    out = gz_write(fname)
     for line in tmp:
         out.write(line)
     out.close()
@@ -106,7 +106,16 @@ def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
 
     return
 
-def gz_open(fname, flag='rt'):
+
+def gz_write(fname, flag='wt'):
+    """
+    Shortcut to opening gzipped or regular files
+    """
+    stream = gzip.open(fname, flag, compresslevel=3) if fname.endswith(".gz") else open(fname, flag)
+    return stream
+
+
+def gz_read(fname, flag='rt'):
     """
     Shortcut to opening gzipped or regular files
     """

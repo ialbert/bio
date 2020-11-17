@@ -6,6 +6,8 @@ rmd_files: [
   "bio-align.md",
   "bio-taxonomy.md",
   "bio-usage-tips.md",
+  "bio-related.md",
+
 ]
 
 book_filename: bio
