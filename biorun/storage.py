@@ -123,6 +123,25 @@ def fetch(params, seqid=None, db=None, update=False):
         # Save JSON file.
         save_json_file(fname=json_name, data=data)
 
+def genbank_view(params):
+
+    for param in params:
+        altname =  resolve_fname(param.name, format="gb")
+
+        print (altname)
+
+        if os.path.isfile(param.name):
+            stream = utils.gzopen(param.name)
+        elif os.path.isfile(altname):
+            stream = utils.gzopen(altname)
+        else:
+            stream = []
+            utils.error(f"data not found: {param.name}")
+
+        for line in stream:
+            print (line, end='')
+
+
 def get_json(name, seqid=None, update=False, inter=False, strict=False):
     """
     Attempts to return a JSON formatted data based on a name.
@@ -178,7 +197,7 @@ def rename(params, seqid=None, newname=None):
     # It only makes sense to rename one of the many
     name = params[0].name
 
-    # We can only rename files that we have
+    # We can only rename files that we have json representation.
     if get_json(name):
         src = resolve_fname(name=name, format="json")
         dest = resolve_fname(name=newname, format="json")
@@ -187,7 +206,10 @@ def rename(params, seqid=None, newname=None):
             os.rename(src, dest)
             if seqid:
                 change_seqid(dest, seqid=seqid)
-
+            # Link the GenBank file as well.
+            src_gb =  resolve_fname(name=name, format="gb")
+            dst_gb =  resolve_fname(name=newname, format="gb")
+            utils.symlink(src_gb, dst_gb)
         else:
             logger.error(f"not in storage: {src}")
     else:

@@ -31,10 +31,11 @@ logger = utils.logger
 @plac.opt('match', "select features by rexep match")
 @plac.flg('inter', "interactive (data from command line)", abbrev='i')
 @plac.flg('reverse', "reverse sequence", abbrev='E')
+@plac.flg('genbank', "show the genbank file if exists", abbrev='K')
 @plac.flg('complement', "complement sequence", abbrev='C')
 @plac.flg('revcomp', "reverse complement sequence", abbrev='R')
 @plac.flg('verbose', "verbose mode")
-def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, list=False, protein=False,
+def converter(fasta=False, gff=False, genbank=False, fetch=False, update=False, delete=False, list=False, protein=False,
               translate=False, transcribe=False,
               reverse=False, complement=False, revcomp=False, align=False, rename='', seqid='', start='', end='', type='', gene='',
               match='', inter=False,
@@ -93,7 +94,9 @@ def converter(fasta=False, gff=False, fetch=False, update=False, delete=False, l
         return
 
     # Decide which type of conversion based on incoming parameters.
-    if fasta or protein or translate:
+    if genbank:
+        storage.genbank_view(params)
+    elif fasta or protein or translate:
         fastarec.fasta_view(params)
     elif gff:
         gffrec.gff_view(params)

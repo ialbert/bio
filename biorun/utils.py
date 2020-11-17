@@ -106,6 +106,12 @@ def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
 
     return
 
+def gzopen(fname, flag='rt'):
+    """
+    Shortcut to opening gzipped or regular files
+    """
+    stream = gzip.open(fname, flag) if fname.endswith(".gz") else open(fname, flag)
+    return stream
 
 def get_logger(name, hnd=None, fmt=None, terminator='\n'):
     """
@@ -142,20 +148,20 @@ def set_verbosity(logger, level=1):
     logger.setLevel(level)
 
 
-def symlink(src, dest):
+def symlink(src, dst):
     """
     Creates a symlink.
     """
 
     # Allow link replacement.
-    if os.path.islink(dest):
-        os.remove(dest)
+    if os.path.islink(dst):
+        os.remove(dst)
 
     # Don't link to files.
-    if os.path.isfile(dest):
-        logger.error(f"invalid link destination {dest}")
+    if os.path.isfile(dst):
+        logger.error(f"invalid link destination {dst}")
 
-    os.symlink(src, dest)
+    os.symlink(src, dst)
 
 # Initialize the logger.
 logger = get_logger("main")

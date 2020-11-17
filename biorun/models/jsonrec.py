@@ -46,7 +46,7 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
     Filters features based on various parameters.
     """
     # Remove source as a valid feature.
-    items = filter(lambda f: f.get('type') != 'source', items)
+    #items = filter(lambda f: f.get('type') != 'source', items)
 
     # Filter by type.
     if ftype and ftype != "all":

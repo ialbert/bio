@@ -88,3 +88,4 @@ bio 9606 --lineage --flat --taxon > taxon_flat_lineage.txt
 
 # Taxonomy information from data as well
 bio ratg13 ncov 9606 --taxon > taxon_mixed.txt
+
