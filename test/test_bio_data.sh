@@ -11,16 +11,19 @@ set -uex
 # Delete the ncov data if exists
 bio ncov --delete
 
-# Rebuild the JSON
+# Rename the JSON and change the sequence id.
 bio NC_045512 --fetch --rename ncov --seqid ncov
 
-# JSON output.
+# JSON format.
 bio ncov > ncov.json
 
-# FASTA.
+# GenBank format.
+bio ncov --genbank > ncov.gb
+
+# FASTA format.
 bio ncov --fasta > ncov.fa
 
-# GFF formatting.
+# GFF format.
 bio ncov --gff > ncov.gff
 
 # JSON by type and match

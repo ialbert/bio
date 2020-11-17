@@ -41,16 +41,18 @@ def has_feature(item, name="gene"):
     return item.get(name, [''])[0]
 
 
-def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None):
+def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None, droporigin=False):
     """
     Filters features based on various parameters.
     """
     # Remove source as a valid feature.
-    #items = filter(lambda f: f.get('type') != 'source', items)
+    if droporigin:
+        items = filter(lambda f: f.get('type') != 'region', items)
 
     # Filter by type.
     if ftype and ftype != "all":
-        items = filter(lambda f: f.get('type') == ftype, items)
+        valid = set(ftype.split(","))
+        items = filter(lambda f: f.get('type') in valid, items)
 
     # Filter by name.
     if gene:
@@ -82,7 +84,7 @@ def find_taxid(rec):
     feats = rec.get(const.FEATURES, [])
     db_xref = feats[0].get("db_xref", []) if feats else []
     values = [x for x in db_xref if x.startswith("taxon:")]
-    taxids = [ x.split(":")[1] for x in values ]
+    taxids = [x.split(":")[1] for x in values]
     return taxids
 
 
@@ -98,29 +100,45 @@ def make_attr(feat):
     Creates GFF style attributes from JSON fields.
     """
 
-    # Generate a name.
-    name = rec_name(feat)
-
-    # Feature type
     ftype = feat['type']
 
-    # The minimally present features
-    data = [f"Name={name}", f"type={ftype}"]
 
-    # Fill in known GFF attributes.
-    for label in const.GFF_ATTRIBUTES:
-        value = first(feat, label)
-        if value:
-            data.append(f"{label}={value}")
+    pairs = [(k, v) for k, v in feat.items() if k not in const.SKIP_GFF_ATTR]
+
+    # Generate a name.
+    name = rec_name(feat)
+    uid = rec_id(feat)
+
+    if ftype == "gene" and uid:
+        data = [f"ID={uid}", f"Name={name}"]
+    elif ftype == "CDS" and uid:
+        data = [f"Parent={uid}", f"Name={name}"]
+    else:
+        data = [f"Name={name}"]
+
+    for key, value in pairs:
+        data.append(f"{key}={value[0]}")
+
+
 
     return ";".join(data)
+
+
+def rec_id(f):
+    """
+    Generates an id from a JSON feature.
+    """
+    name = first(f, 'locus_tag') or ''
+    return name
 
 
 def rec_name(f):
     """
     Generates a record name from a JSON feature.
     """
-    name = first(f, "protein_id") or first(f, "gene") or first(f, 'locus_tag') or first(f, 'db_xref')
+    name = first(f, "organism") or first(f, "protein_id") or first(f, "gene") or first(f, 'locus_tag') or first(f,
+                                                                                                                'db_xref') or \
+           f['type']
     return name
 
 
@@ -180,7 +198,7 @@ def get_feature_records(data, param):
     feats = data[const.FEATURES]
 
     # Filter the features.
-    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp)
+    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, droporigin=True)
 
     # We can extract DNA sequences from this if needed.
     origin = data[const.ORIGIN]
@@ -339,6 +357,9 @@ def convert_genbank(recs, seqid=None):
 
             # Feature type.
             ftype = feat.type
+
+            # Remap GenBank terms to Sequence Ontology terms.
+            ftype = const.SEQUENCE_ONTOLOGY.get(ftype, ftype)
 
             # Feature strand.
             strand = feat.strand

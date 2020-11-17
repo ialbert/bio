@@ -9,16 +9,21 @@ def feature2gff(feat, anchor):
     """
     Returns a SeqRecord as an 11 element  GFF3 list .
     """
-    start = feat['start']
-    end = feat['end']
+
     ftype = feat['type']
-    strand = feat['strand']
-    phase = feat.get("codon_start", [1])[0]
-    attr = jsonrec.make_attr(feat)
-    strand = "+" if strand else "-"
-    ftype = const.SEQUENCE_ONTOLOGY.get(ftype, ftype)
-    data = [anchor, ".", ftype, start, end, ".", strand, phase, attr]
-    return data
+
+    # TODO: is this the phase?
+    #phase = feat.get("codon_start", [1])[0] - 1
+    phase = "."
+
+    for start, end, strand in feat["location"]:
+        strand = feat['strand']
+        attr = jsonrec.make_attr(feat)
+        strand = "+" if strand else "-"
+
+        data = [anchor, ".", ftype, start, end, ".", strand, phase, attr]
+
+        yield data
 
 
 def gff_view(params):
@@ -49,6 +54,6 @@ def gff_view(params):
 
             # Generate the gff output
             for feat in feats:
-                values = feature2gff(feat, anchor=anchor)
-                values = map(str, values)
-                print("\t".join(values))
+                for values in feature2gff(feat, anchor=anchor):
+                    values = map(str, values)
+                    print("\t".join(values))

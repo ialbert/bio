@@ -15,10 +15,13 @@ GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "lo
 
 ALIGN_FLAG, TAXON_FLAG = "--align", "--taxon"
 
+SKIP_GFF_ATTR = {"type", "start", "end", "location", "translation", "strand", "operator"}
+
 #
 # Remaps types from GenBank to Sequence Ontology when converting to GFF files
 #
 SEQUENCE_ONTOLOGY = {
+    "source": "region",
     "5'UTR": "five_prime_UTR",
     "mat_peptide": "mature_protein_region",
 }
