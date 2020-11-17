@@ -128,8 +128,6 @@ def genbank_view(params):
     for param in params:
         altname =  resolve_fname(param.name, format="gb")
 
-        print (altname)
-
         if os.path.isfile(param.name):
             stream = utils.gzopen(param.name)
         elif os.path.isfile(altname):
