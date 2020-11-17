@@ -1,3 +1,3 @@
 ##gff-version 3
-ncov	.	gene	21563	25384	.	+	1	Name=S;type=gene;gene=S;db_xref=GeneID:43740568
-ncov	.	CDS	21563	25384	.	+	1	Name=YP_009724390.1;type=CDS;gene=S;protein_id=YP_009724390.1;product=surface glycoprotein;db_xref=GeneID:43740568
+ncov	.	gene	21563	25384	.	+	.	ID=GU280_gp02;Name=S;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;db_xref=GeneID:43740568
+ncov	.	CDS	21563	25384	.	+	.	Parent=GU280_gp02;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568

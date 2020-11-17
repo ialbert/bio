@@ -83,7 +83,7 @@
             {
                 "start": 1,
                 "end": 29903,
-                "type": "source",
+                "type": "region",
                 "strand": 1,
                 "location": [
                     [
@@ -118,7 +118,7 @@
             {
                 "start": 1,
                 "end": 265,
-                "type": "5'UTR",
+                "type": "five_prime_UTR",
                 "strand": 1,
                 "location": [
                     [
@@ -201,7 +201,7 @@
             {
                 "start": 266,
                 "end": 805,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -230,7 +230,7 @@
             {
                 "start": 806,
                 "end": 2719,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -259,7 +259,7 @@
             {
                 "start": 2720,
                 "end": 8554,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -288,7 +288,7 @@
             {
                 "start": 8555,
                 "end": 10054,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -317,7 +317,7 @@
             {
                 "start": 10055,
                 "end": 10972,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -346,7 +346,7 @@
             {
                 "start": 10973,
                 "end": 11842,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -375,7 +375,7 @@
             {
                 "start": 11843,
                 "end": 12091,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -404,7 +404,7 @@
             {
                 "start": 12092,
                 "end": 12685,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -433,7 +433,7 @@
             {
                 "start": 12686,
                 "end": 13024,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -462,7 +462,7 @@
             {
                 "start": 13025,
                 "end": 13441,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -491,7 +491,7 @@
             {
                 "start": 13442,
                 "end": 16236,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -525,7 +525,7 @@
             {
                 "start": 16237,
                 "end": 18039,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -554,7 +554,7 @@
             {
                 "start": 18040,
                 "end": 19620,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -583,7 +583,7 @@
             {
                 "start": 19621,
                 "end": 20658,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -612,7 +612,7 @@
             {
                 "start": 20659,
                 "end": 21552,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -679,7 +679,7 @@
             {
                 "start": 266,
                 "end": 805,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -708,7 +708,7 @@
             {
                 "start": 806,
                 "end": 2719,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -737,7 +737,7 @@
             {
                 "start": 2720,
                 "end": 8554,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -766,7 +766,7 @@
             {
                 "start": 8555,
                 "end": 10054,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -795,7 +795,7 @@
             {
                 "start": 10055,
                 "end": 10972,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -824,7 +824,7 @@
             {
                 "start": 10973,
                 "end": 11842,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -853,7 +853,7 @@
             {
                 "start": 11843,
                 "end": 12091,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -882,7 +882,7 @@
             {
                 "start": 12092,
                 "end": 12685,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -911,7 +911,7 @@
             {
                 "start": 12686,
                 "end": 13024,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -940,7 +940,7 @@
             {
                 "start": 13025,
                 "end": 13441,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -969,7 +969,7 @@
             {
                 "start": 13442,
                 "end": 13480,
-                "type": "mat_peptide",
+                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
