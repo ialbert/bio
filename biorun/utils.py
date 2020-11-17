@@ -84,10 +84,10 @@ def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
 
     for index, line in zip(sequence, stream):
         if (index % trigger) == 0:
-            print(f"*** downloading {index:,d} lines\r", file=file, end='')
+            print(f"*** downloaded {index:,d} lines\r", file=file, end='')
         tmp.write(line)
 
-    print(f"*** downloaded {index:,d} lines", file=file)
+    print(f"*** downloaded  {index:,d} lines", file=file)
 
     # Not sure if this is needed. Can't hurt.
     tmp.flush()
@@ -96,7 +96,7 @@ def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
     tmp.seek(0)
 
     # Copy over the content from the temporary file to the final gzipped file destination.
-    out = gzip.open(fname, flag) if fname.endswith(".gz") else open(fname, flag)
+    out = gz_open(fname)
     for line in tmp:
         out.write(line)
     out.close()
@@ -106,7 +106,7 @@ def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
 
     return
 
-def gzopen(fname, flag='rt'):
+def gz_open(fname, flag='rt'):
     """
     Shortcut to opening gzipped or regular files
     """

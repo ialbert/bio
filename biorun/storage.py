@@ -54,7 +54,7 @@ def save_json_file(fname, data):
     """
     Returns the content of a JSON file.
     """
-    fp = gzip.open(fname, 'wt') if fname.endswith(".gz") else open(fname, 'wt')
+    fp = gzip.open(fname, 'wt', compresslevel=5) if fname.endswith(".gz") else open(fname, 'wt')
     json.dump(data, fp)
     fp.close()
     logger.info(f"saved {fname}")
@@ -129,9 +129,9 @@ def genbank_view(params):
         altname =  resolve_fname(param.name, format="gb")
 
         if os.path.isfile(param.name):
-            stream = utils.gzopen(param.name)
+            stream = utils.gz_open(param.name)
         elif os.path.isfile(altname):
-            stream = utils.gzopen(altname)
+            stream = utils.gz_open(altname)
         else:
             stream = []
             utils.error(f"data not found: {param.name}")

@@ -393,6 +393,7 @@ def convert_genbank(recs, seqid=None):
         # Add the item to the list.
         data.append(item)
 
+    logger.info("genbank conversion completed")
     return data
 
 
