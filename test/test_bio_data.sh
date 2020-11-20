@@ -14,6 +14,9 @@ bio ncov --delete
 # Rename the JSON and change the sequence id.
 bio NC_045512 --fetch --rename ncov --seqid ncov
 
+# Fetch and convert at the same time
+bio NC_045512 --fetch --fasta --end 100 > fetch-convert.fa
+
 # JSON format.
 bio ncov > ncov.json
 

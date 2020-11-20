@@ -21,7 +21,6 @@ logger = utils.logger
 @plac.flg('protein', "operate on proteins", abbrev='P')
 @plac.flg('translate', "translate DNA to protein", abbrev='T')
 @plac.flg('transcribe', "transrcribe DNA to RNA", abbrev='X')
-@plac.flg('align', "aligne the sequences", abbrev='A')
 @plac.opt('rename', "set the name", abbrev='r')
 @plac.opt('seqid', "set the sequence id", abbrev='S')
 @plac.opt('type', "select feature by type")
@@ -30,6 +29,7 @@ logger = utils.logger
 @plac.opt('gene', "select features associated with gene")
 @plac.opt('match', "select features by rexep match")
 @plac.flg('inter', "interactive (data from command line)", abbrev='i')
+@plac.flg('origin', "use the origin (source) sequences", abbrev='O')
 @plac.flg('reverse', "reverse sequence", abbrev='E')
 @plac.flg('genbank', "show the genbank file if exists", abbrev='K')
 @plac.flg('complement', "complement sequence", abbrev='C')
@@ -37,8 +37,8 @@ logger = utils.logger
 @plac.flg('verbose', "verbose mode")
 def converter(fasta=False, gff=False, genbank=False, fetch=False, update=False, delete=False, list=False, protein=False,
               translate=False, transcribe=False,
-              reverse=False, complement=False, revcomp=False, align=False, rename='', seqid='', start='', end='', type='', gene='',
-              match='', inter=False,
+              reverse=False, complement=False, revcomp=False, rename='', seqid='', start='', end='', type='', gene='',
+              match='', inter=False, origin=False,
               verbose=False, *acc):
     """
     bio - making bioinformatics fun again
@@ -153,7 +153,6 @@ def router():
 
     # Allow multiple forms of parameters to be used.
     sys.argv = list(map(proofreader, sys.argv))
-
 
     # Alignment requested.
     if const.ALIGN_FLAG in sys.argv:
