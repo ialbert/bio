@@ -4,33 +4,56 @@ Generates GFF outputs from a JSON record.
 from biorun import utils, const
 from biorun.models import jsonrec
 
+def get_color(ftype):
+    """
+    Generates a color for a type.
+    """
+    color = const.COLOR_FOR_TYPE.get(ftype)
+    return f";color={color}" if color else ''
 
 def feature2gff(feat, anchor):
     """
     Returns a SeqRecord as an 11 element  GFF3 list .
     """
 
+    uid = feat['id']
     ftype = feat['type']
+    strand = feat['strand']
 
+    # Reformat the strand
+    strand = "+" if strand > 0 else "-"
 
     # TODO: is this the phase?
     #phase = feat.get("codon_start", [1])[0] - 1
     phase = "."
 
-    for start, end, strand in feat["location"]:
-        strand = feat['strand']
-        attr = jsonrec.make_attr(feat)
+    # Produce a GFF representation for the original feature.
+    attr1 = jsonrec.make_attr(feat)
 
-        # Generate a color for the feature type.
-        color = const.COLOR_FOR_TYPE.get(ftype)
-        if color:
-            attr += f";color={color}"
+    # Color the attribute.
+    attr1 = attr1 + get_color(ftype)
 
-        strand = "+" if strand else "-"
+    # Create the parent attribute.
+    data = [anchor, ".", ftype, feat['start'], feat['end'], ".", strand, phase, attr1]
 
-        data = [anchor, ".", ftype, start, end, ".", strand, phase, attr]
+    yield data
 
-        yield data
+    # Iterate over locations for mRNA to generate exons
+    if ftype == 'mRNA':
+
+        for start, end, strand in feat["location"]:
+
+            strand = "+" if strand > 0 else "-"
+
+            ctype = 'exon'
+
+            attr2 = jsonrec.make_attr(feat)
+
+            attr2 = attr2 + get_color(ctype)
+
+            data = [anchor, ".", ctype, start, end, ".", strand, phase, attr2]
+
+            yield data
 
 
 def gff_view(params):

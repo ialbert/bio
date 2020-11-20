@@ -15,7 +15,7 @@ GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "lo
 
 ALIGN_FLAG, TAXON_FLAG = "--align", "--taxon"
 
-SKIP_GFF_ATTR = {"type", "start", "end", "location", "translation", "strand", "operator"}
+SKIP_GFF_ATTR = {"id", "type", "start", "end", "location", "translation", "strand", "operator"}
 
 #
 # Remaps types from GenBank to Sequence Ontology when converting to GFF files

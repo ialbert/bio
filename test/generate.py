@@ -15,7 +15,7 @@ from biorun.methods import align
 from biorun.models import taxdb
 
 # Test naming index.
-counter = count(1)
+COUNTER = count(1)
 
 # The path to the current file.
 CURR_DIR = os.path.dirname(__file__)
@@ -108,7 +108,7 @@ def generate_tests(infile, outfile="test_bio.py"):
             cmd, fname = line, None
 
         patt = f"""
-        def test_{next(counter)}(capsys):
+        def test_{next(COUNTER)}(capsys):
             cmd = "{cmd}"
             run(cmd, capsys=capsys, out={fname})
         """

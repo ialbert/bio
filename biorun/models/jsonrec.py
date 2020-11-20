@@ -25,13 +25,13 @@ except ImportError as exc:
 
 logger = utils.logger
 
-counter = count(1)
+COUNTER = count(1)
 
 
 # Allow for resetting the global counter. Needed for keeping test labeled consistenly.
 def reset_counter():
-    global counter
-    counter = count(1)
+    global COUNTER
+    COUNTER = count(1)
 
 
 def has_feature(item, name="gene"):
@@ -96,10 +96,12 @@ def first(item, key, default=""):
     return item.get(key, [default])[0]
 
 
-def make_attr(feat):
+def make_attr(feat, uid=None):
     """
     Creates GFF style attributes from JSON fields.
     """
+
+    uid = uid or feat['id']
 
     ftype = feat['type']
 
@@ -108,15 +110,8 @@ def make_attr(feat):
     # Generate a name.
     name = rec_name(feat)
 
-    # Generate a unique id.
-    uid = rec_id(feat)
-
-    if ftype == "gene" and uid:
-        data = [f"ID={uid}", f"Name={name}"]
-    elif ftype == "CDS" and uid:
-        data = [f"Parent={uid}", f"Name={name}"]
-    else:
-        data = [f"Name={name}"]
+    # Each element will have an ID and a name.
+    data = [f"ID={uid}", f"Name={name}"]
 
     for key, value in pairs:
         data.append(f"{key}={value[0]}")
@@ -332,10 +327,53 @@ def json_ready(value):
     return value
 
 
+def parse_id(attrs):
+    """
+    Attempts to generate an unique id and a parent from a BioPython SeqRecord.
+    """
+    ftype = attrs['type']
+
+    uid = pid = name = ''
+
+    # Dealing with mRNA
+    if ftype == 'gene':
+        tag = first(attrs, "locus_tag") or next(COUNTER)
+        uid = f"{ftype}-{tag}"
+        pid = ""
+        name = uid
+    elif ftype == 'CDS':
+        tag = first(attrs, "locus_tag") or next(COUNTER)
+        uid = f"{ftype}-{tag}"
+        pid = f"gene-{tag}"
+        name = first(attrs, "protein_id") or uid
+    elif ftype == 'mRNA':
+        tag = first(attrs, "transcript_id") or next(COUNTER)
+        pid = first(attrs, "locus_tag") or next(COUNTER)
+        uid = f"{ftype}-{tag}"
+        pid = f"gene-{pid}"
+        name = tag
+    else:
+        tag = next(COUNTER)
+        uid = f"{ftype}-{tag}"
+        pid = ''
+
+    # Unique id.
+    attrs['uid'] = uid
+
+    # Parent id.
+    attrs['pid'] = pid
+
+    # Feature name
+    attrs['name'] = name
+
+    return attrs
+
+
 def convert_genbank(recs, seqid=None):
     """
     Converts BioPython SeqRecords obtained from a GENBANK file to a JSON representation.
     """
+    global COUNTER
 
     # The outer dictionary containing multiple records.
     data = []
@@ -382,11 +420,15 @@ def convert_genbank(recs, seqid=None):
             location = [(loc.start + 1, loc.end, loc.strand) for loc in feat.location.parts]
 
             # Feature attributes
-            attrs = dict(start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
+            attrs = dict(uid='', pid='', name='', start=start, end=end, type=ftype, strand=strand, location=location,
+                         operator=oper)
 
             # Fills in the additional qualifiers.
             for (k, v) in feat.qualifiers.items():
                 attrs[k] = json_ready(v)
+
+            # Correct uid, parent and name
+            attrs = parse_id(attrs)
 
             # Append the attributes as a record.
             feats.append(attrs)
@@ -424,7 +466,7 @@ def make_jsonrec(seq, seqid=None):
     """
     Makes a simple JSON representation for a text
     """
-    count = next(counter)
+    count = next(COUNTER)
     name = f"S{count}"
     data = []
     item = dict()
