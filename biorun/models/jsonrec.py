@@ -45,6 +45,7 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
     """
     Filters features based on various parameters.
     """
+
     # Remove source as a valid feature.
     if droporigin:
         items = filter(lambda f: f.get('type') != 'region', items)
@@ -102,7 +103,6 @@ def make_attr(feat):
 
     ftype = feat['type']
 
-
     pairs = [(k, v) for k, v in feat.items() if k not in const.SKIP_GFF_ATTR]
 
     # Generate a name.
@@ -118,8 +118,6 @@ def make_attr(feat):
 
     for key, value in pairs:
         data.append(f"{key}={value[0]}")
-
-
 
     return ";".join(data)
 
@@ -413,12 +411,12 @@ def convert_fasta(recs, seqid=None):
     return data
 
 
-def make_json(seq, seqid=None):
+def make_jsonrec(seq, seqid=None):
     """
     Makes a simple JSON representation for a text
     """
     count = next(counter)
-    name = f"A{count}"
+    name = f"S{count}"
     data = []
     item = dict()
     item[const.SEQID] = seqid or f"S{count}"
@@ -428,7 +426,7 @@ def make_json(seq, seqid=None):
     start, end, strand = 1, len(seq), 1
     oper = None,
     location = [[start, end, strand]]
-    ftype = "region"
+    ftype = "sequence"
     attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
     item[const.FEATURES] = [
         attrs

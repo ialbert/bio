@@ -2,6 +2,7 @@
 Simple classes designed to carry lots of attributes in a single instance.
 """
 import re
+import pprint
 from biorun import utils, const
 
 
@@ -38,6 +39,9 @@ class Param(object):
         Feature filtering parameters not set.
         """
         return not (self.start or self.end or self.type or self.gene or self.regexp)
+
+    def pprint(self):
+        pprint.pprint(self.__dict__)
 
     def __str__(self):
         return str(self.__dict__)

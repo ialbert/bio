@@ -80,42 +80,46 @@ def test_18(capsys):
     run(cmd, capsys=capsys, out="align-dna.txt")
 
 def test_19(capsys):
+    cmd = "bio GGC -i --translate"
+    run(cmd, capsys=capsys, out="dna-translate.txt")
+
+def test_20(capsys):
     cmd = "bio ncov:S ratg13:S --end 80 --align"
     run(cmd, capsys=capsys, out="align-dna-s.txt")
 
-def test_20(capsys):
+def test_21(capsys):
     cmd = "bio ncov:S ratg13:S --protein --align"
     run(cmd, capsys=capsys, out="align-protein-s.txt")
 
-def test_21(capsys):
+def test_22(capsys):
     cmd = "bio ncov:S ratg13:S --end 80 --translate --align"
     run(cmd, capsys=capsys, out="align-translated-s.txt")
 
-def test_22(capsys):
+def test_23(capsys):
     cmd = "bio THISLINE ISALIGNED  -i --align --local"
     run(cmd, capsys=capsys, out="align-local.txt")
 
-def test_23(capsys):
+def test_24(capsys):
     cmd = "bio THISLINE ISALIGNED -i --align --global"
     run(cmd, capsys=capsys, out="align-global.txt")
 
-def test_24(capsys):
+def test_25(capsys):
     cmd = "bio THISLINE ISALIGNED -i --align --semiglobal"
     run(cmd, capsys=capsys, out="align-semiglobal.txt")
 
-def test_25(capsys):
+def test_26(capsys):
     cmd = "bio 9606 --taxon"
     run(cmd, capsys=capsys, out="taxon_default.txt")
 
-def test_26(capsys):
+def test_27(capsys):
     cmd = "bio 9606 --lineage --taxon"
     run(cmd, capsys=capsys, out="taxon_lineage.txt")
 
-def test_27(capsys):
+def test_28(capsys):
     cmd = "bio 9606 --lineage --flat --taxon"
     run(cmd, capsys=capsys, out="taxon_flat_lineage.txt")
 
-def test_28(capsys):
+def test_29(capsys):
     cmd = "bio ratg13 ncov 9606 --taxon"
     run(cmd, capsys=capsys, out="taxon_mixed.txt")
 

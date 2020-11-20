@@ -177,7 +177,7 @@ def get_json(name, seqid=None, update=False, inter=False, strict=False):
 
     # If not found and interactive mode create a JSON from the name itself.
     if inter:
-        data = jsonrec.make_json(seq=name, seqid=seqid)
+        data = jsonrec.make_jsonrec(seq=name, seqid=seqid)
         return data
 
     # At this point the data was not found

@@ -62,6 +62,9 @@ bio MN996532 --fetch --rename ratg13 --seqid ratg13
 # Align DNA
 bio ncov ratg13 --end 200 --align > align-dna.txt
 
+# Translate in interactive mode
+bio GGC -i --translate > dna-translate.txt
+
 # Align the extracted protein.
 bio ncov:S ratg13:S --end 80 --align > align-dna-s.txt
 
