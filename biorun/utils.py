@@ -21,8 +21,6 @@ DATADIR = os.path.join(expanduser("~"), ".bio")
 os.makedirs(DATADIR, exist_ok=True)
 
 
-
-
 def time_it(func):
     @wraps(func)
     def timer(*args, **kwargs):
@@ -68,7 +66,34 @@ def sizeof_fmt(num, suffix=''):
     return "%.1f%s%s" % (num, '??', suffix)
 
 
-def save_stream(stream, fname, trigger=10000, file=sys.stdout, flag='wt'):
+def safe_int(text):
+    try:
+        return int(text)
+    except ValueError as exc:
+        error(f"not an integer value: {text}")
+
+
+def parse_number(text):
+    """
+    Parses a number from alternative representations: 100000, 100,000 or 100Kb or 100k all have the same representation.
+    """
+    text = text.lower()
+
+    text = text.replace(",", '')
+
+    if text.endswith("k") or text.endswith("kb"):
+        value = safe_int(text.split("k")[0])
+        text = f"{value * 1000}"
+
+    if text.endswith("m") or text.endswith("mb"):
+        value = safe_int(text.split("m")[0])
+        text = f"{value * 1000 * 1000}"
+
+
+    return text
+
+
+def save_stream(stream, fname, trigger=10000, file=sys.stderr, flag='wt'):
     """
     Write a input 'stream' as the fname filename
     """
@@ -122,6 +147,7 @@ def gz_read(fname, flag='rt'):
     stream = gzip.open(fname, flag) if fname.endswith(".gz") else open(fname, flag)
     return stream
 
+
 def get_logger(name, hnd=None, fmt=None, terminator='\n'):
     """
     Initializes a logger with a handler and formatter.
@@ -172,8 +198,10 @@ def symlink(src, dst):
 
     os.symlink(src, dst)
 
+
 # Initialize the logger.
 logger = get_logger("main")
+
 
 def error(msg, logger=logger):
     """

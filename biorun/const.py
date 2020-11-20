@@ -23,9 +23,26 @@ SKIP_GFF_ATTR = {"type", "start", "end", "location", "translation", "strand", "o
 SEQUENCE_ONTOLOGY = {
     "source": "region",
     "5'UTR": "five_prime_UTR",
+    "3'UTR": "three_prime_UTR",
     "mat_peptide": "mature_protein_region",
 }
 
+# Feature types where the name of the feature is predetermined.
+NAME_FROM_TYPE = {
+    "five_prime_UTR": "five_prime_UTR",
+    "three_prime_UTR": "three_prime_UTR",
+    "stem_loop": "stem_loop",
+}
+
+# Associates a color to a feature type.
+COLOR_FOR_TYPE = {
+    "five_prime_UTR": "#cc0e74",
+    "three_prime_UTR": "#cc0e74",
+    "stem_loop": "#fa7f72",
+    "mature_protein_region": "#f8b88b",
+    "CDS": "#b2cefe",
+    "region": "#ad9d9d",
+}
 #
 # The GFF attributes generated for a source type.
 #

@@ -69,6 +69,10 @@ def converter(fasta=False, gff=False, genbank=False, fetch=False, update=False, 
         p.json = storage.get_json(p.name, seqid=seqid, inter=inter)
         return p
 
+    # Allow commas in numbers, or sizes like 10Kb
+    start = utils.parse_number(start)
+    end = utils.parse_number(end)
+
     # Make a list of parameters for each name.
     params = [make_param(n) for n in acc]
 

@@ -12,6 +12,7 @@ def feature2gff(feat, anchor):
 
     ftype = feat['type']
 
+
     # TODO: is this the phase?
     #phase = feat.get("codon_start", [1])[0] - 1
     phase = "."
@@ -19,6 +20,12 @@ def feature2gff(feat, anchor):
     for start, end, strand in feat["location"]:
         strand = feat['strand']
         attr = jsonrec.make_attr(feat)
+
+        # Generate a color for the feature type.
+        color = const.COLOR_FOR_TYPE.get(ftype)
+        if color:
+            attr += f";color={color}"
+
         strand = "+" if strand else "-"
 
         data = [anchor, ".", ftype, start, end, ".", strand, phase, attr]

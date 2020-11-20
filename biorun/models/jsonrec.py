@@ -107,6 +107,8 @@ def make_attr(feat):
 
     # Generate a name.
     name = rec_name(feat)
+
+    # Generate a unique id.
     uid = rec_id(feat)
 
     if ftype == "gene" and uid:
@@ -134,9 +136,16 @@ def rec_name(f):
     """
     Generates a record name from a JSON feature.
     """
-    name = first(f, "organism") or first(f, "protein_id") or first(f, "gene") or first(f, 'locus_tag') or first(f,
-                                                                                                                'db_xref') or \
-           f['type']
+
+    ftype = f['type']
+
+    # The type of the feature is used  as name
+    name = const.NAME_FROM_TYPE.get(ftype)
+
+    # Cascade down a hierarchy to find a suitable name.
+    name = name or first(f, "organism") or first(f, "protein_id") or first(f, "gene") \
+           or first(f, 'locus_tag') or first(f, 'db_xref') or ftype
+
     return name
 
 
