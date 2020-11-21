@@ -1,4 +1,4 @@
-# Usage tips {#tips}
+# General tips {#tips}
 
 ## Interactive mode
 

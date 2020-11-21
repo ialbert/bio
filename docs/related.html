@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Sequence alignments | bio.utf8</title>
+  <title>Related software | bio.utf8</title>
   <meta name="description" content="" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Sequence alignments | bio.utf8" />
+  <meta property="og:title" content="Related software | bio.utf8" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Sequence alignments | bio.utf8" />
+  <meta name="twitter:title" content="Related software | bio.utf8" />
   
   
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="convert.html"/>
-<link rel="next" href="taxon.html"/>
+<link rel="prev" href="tips.html"/>
+
 <script src="libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -109,111 +109,56 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="align" class="section level1">
-<h1>Sequence alignments</h1>
-<pre class="bash"><code># Align the extracted protein.
-bio ncov:S ratg13:S --end 90 --align</code></pre>
-<pre><code>
-### 1: YP_009724390 vs QHR63300.2 ###
+<div id="related" class="section level1">
+<h1>Related software</h1>
+<p>Since the beginning of times mankind was hindered by suboptimal dataformats, clunky interfaces. A veritable cottage industry has formed <code>bio</code> being one of the proud entrants in the fray.</p>
+<p>Here is a list of packages we evaluated and sometimes borrowed ideas from. Alas none quite works as we needed it, hence like our father, our father’s father and great-great grandfather, we have also set out to finally, FINALLY fix the problem <strong>once for all</strong>. This time for real :-)</p>
+<div id="emboss" class="section level2">
+<h2>EMBOSS</h2>
+<p>EMBOSS is “The European Molecular Biology Open Software Suite”. EMBOSS is a free Open Source software analysis package specially developed for the needs of the molecular biology (e.g. EMBnet) user community. The software automatically copes with data in a variety of formats and even allows transparent retrieval of sequence data from the web. Also, as extensive libraries are provided with the package, it is a platform to allow other scientists to develop and release software in true open source spirit. EMBOSS also integrates a range of currently available packages and tools for sequence analysis into a seamless whole. EMBOSS breaks the historical trend towards commercial software packages.</p>
+<ul>
+<li><a href="http://emboss.sourceforge.net/" class="uri">http://emboss.sourceforge.net/</a></li>
+</ul>
+</div>
+<div id="entrez-direct" class="section level2">
+<h2>Entrez Direct</h2>
+<p>Entrez Direct (EDirect) provides access to the NCBI’s suite of interconnected databases (publication, sequence, structure, gene, variation, expression, etc.) from a Unix terminal window. Search terms are entered as command-line arguments. Individual operations are connected with Unix pipes to allow construction of multi-step queries. Selected records can then be retrieved in a variety of formats.</p>
+<ul>
+<li><a href="https://www.ncbi.nlm.nih.gov/books/NBK179288/" class="uri">https://www.ncbi.nlm.nih.gov/books/NBK179288/</a></li>
+</ul>
+</div>
+<div id="gffutils" class="section level2">
+<h2>gffutils</h2>
+<p>gffutils is a Python package for working with and manipulating the GFF and GTF format files typically used for genomic annotations. Files are loaded into a sqlite3 database, allowing much more complex manipulation of hierarchical features (e.g., genes, transcripts, and exons) than is possible with plain-text methods alone.</p>
+<ul>
+<li><a href="https://github.com/daler/gffutils" class="uri">https://github.com/daler/gffutils</a></li>
+</ul>
+</div>
+<div id="biocode" class="section level2">
+<h2>Biocode</h2>
+<p>This is a collection of bioinformatics scripts many have found useful and code modules which make writing new ones a lot faster.</p>
+<ul>
+<li><a href="https://github.com/jorvis/biocode" class="uri">https://github.com/jorvis/biocode</a></li>
+</ul>
+</div>
+<div id="genomepy" class="section level2">
+<h2>GenomePy</h2>
+<p>Easily install and use genomes in Python and elsewhere!</p>
+<p>The goal is to have a simple and straightforward way to download and use genomic sequences. Currently, genomepy supports UCSC, Ensembl and NCBI.</p>
+<ul>
+<li><a href="https://github.com/vanheeringen-lab/genomepy" class="uri">https://github.com/vanheeringen-lab/genomepy</a></li>
+</ul>
+</div>
+<div id="ncbi-genome-download" class="section level2">
+<h2>NCBI genome download</h2>
+<p>Some script to download bacterial and fungal genomes from NCBI after they restructured their FTP a while ago.</p>
+<p>Idea shamelessly stolen from Mick Watson’s Kraken downloader scripts that can also be found in Mick’s GitHub repo. However, Mick’s scripts are written in Perl specific to actually building a Kraken database (as advertised).</p>
+<p>So this is a set of scripts that focuses on the actual genome downloading.</p>
+<ul>
+<li><a href="https://github.com/kblin/ncbi-genome-download" class="uri">https://github.com/kblin/ncbi-genome-download</a></li>
+</ul>
 
-Length: 90 (semiglobal) 
-Query:  90 [1, 90]
-Target: 90 [1, 90]
-Score:  387
-Ident:  83/90 (92.2%)
-Simil:  83/90 (92.2%)
-Gaps:   0/90 (0.0%)
-Matrix: nuc44(-11, -1) 
-
-YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
-           1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
-QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
-<p>Align the translated regions.</p>
-<pre class="bash"><code>bio ncov:S ratg13:S --end 90 --translate --align </code></pre>
-<pre><code>
-### 1: YP_009724390 vs QHR63300.2 ###
-
-Length: 30 (semiglobal) 
-Query:  30 [1, 30]
-Target: 30 [1, 30]
-Score:  153
-Ident:  30/30 (100.0%)
-Simil:  30/30 (100.0%)
-Gaps:   0/30 (0.0%)
-Matrix: blosum62(-11, -1) 
-
-YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
-           1 |||||||||||||||||||||||||||||| 30
-QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN</code></pre>
-<p>Default alignment is semiglobal.</p>
-<pre class="bash"><code>bio THISLINE ISALIGNED  -i --align</code></pre>
-<pre><code>
-### 1: S1 vs S2 ###
-
-Length: 11 (semiglobal) 
-Query:  8 [1, 8]
-Target: 9 [1, 8]
-Score:  8
-Ident:  4/11 (36.4%)
-Simil:  5/11 (45.5%)
-Gaps:   5/11 (45.5%)
-Matrix: blosum62(-11, -1) 
-
-S1           THISLI--NE-
-           1   ||.:  ||  11
-S2           --ISALIGNED</code></pre>
-<p>Local alignment.</p>
-<pre class="bash"><code>bio THISLINE ISALIGNED -i --align --local</code></pre>
-<pre><code>
-### 1: S1 vs S2 ###
-
-Length: 2 (local) 
-Query:  8 [7, 8]
-Target: 9 [7, 8]
-Score:  11
-Ident:  2/2 (100.0%)
-Simil:  2/2 (100.0%)
-Gaps:   0/2 (0.0%)
-Matrix: blosum62(-11, -1) 
-
-S1           NE
-           1 || 2
-S2           NE</code></pre>
-<p>Global alignment.</p>
-<pre class="bash"><code>bio THISLINE ISALIGNED -i --align --global</code></pre>
-<pre><code>
-### 1: S1 vs S2 ###
-
-Length: 9 (global) 
-Query:  8 [1, 8]
-Target: 9 [1, 9]
-Score:  -7
-Ident:  2/9 (22.2%)
-Simil:  3/9 (33.3%)
-Gaps:   1/9 (11.1%)
-Matrix: blosum62(-11, -1) 
-
-S1           THISLINE-
-           1 ....:.||  9
-S2           ISALIGNED</code></pre>
-<p>Semiglobal alignment</p>
-<pre class="bash"><code>bio  THISLINE ISALIGNED -i --align --semiglobal</code></pre>
-<pre><code>
-### 1: S1 vs S2 ###
-
-Length: 11 (semiglobal) 
-Query:  8 [1, 8]
-Target: 9 [1, 8]
-Score:  8
-Ident:  4/11 (36.4%)
-Simil:  5/11 (45.5%)
-Gaps:   5/11 (45.5%)
-Matrix: blosum62(-11, -1) 
-
-S1           THISLI--NE-
-           1   ||.:  ||  11
-S2           --ISALIGNED</code></pre>
-
+</div>
 </div>
 
 <script src="assets/asciinema-player.js"></script>
@@ -223,8 +168,8 @@ S2           --ISALIGNED</code></pre>
           </div>
         </div>
       </div>
-<a href="convert.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="taxon.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="tips.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

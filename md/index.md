@@ -107,9 +107,9 @@ ah yes, if that is what you needed, here it is:
     
 And so on. `bio` has a wealth of utility that makes bioinformatics more accessible.
 
-## `bio` is a data model for the future
+## `bio` is a data model
 
-Beyond the functionality that we show, `bio` is also an exploration into modeling biological data. The current standards and practices at NCBI and EMBL are woefully antiquated and painfully inadequate. GenBank as a format is dishearteningly inefficient, and depressingly difficult do deal with. Now take a look under the hood in `bio` and its super fast, clear cut, simple and compressed JSON format that allows `bio` to read in the entire human chromosome 1 with its 253 million characters and 328 thousand genomic features in just three(!) seconds. In another 3 seconds, often less than six seconds in total, `bio`  can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:
+Beyond the functionality that we show, `bio` is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequate. GenBank or EMBL, as a data formats, are dishearteningly inefficient, and depressingly tedious to program with. In contrast, take a look under the hood, in `bio` all data are in a simple, efficient, quick to load, compressed in JSON format. The data layout allows `bio` to read in the entire human chromosome 1 with its 253 million characters and 328 thousand genomic features in just three(!) seconds. In another 3 seconds, often less than six seconds in total, `bio`  can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:
 
     time bio chr1 --fasta | wc -c
     253105766
@@ -118,7 +118,9 @@ Beyond the functionality that we show, `bio` is also an exploration into modelin
     user    0m4.156s
     sys     0m2.172s
 
-For shorter genomes the conversion times are under a fraction of a second.  Then, note how the data is all integrated, you don't need to install yet another toolkit if all you wanted is the lineage of SARS-COV-2. Taxonomies can be built and integrated alongside:
+Adding additional functionality that operates on the data frees the developer from additiona work. The data is already structured in an efficient layout that needs no additional parsing to load. For shorter genomes, bacterial or viral the conversion times are under a fraction of a second.  
+
+Then additional data source are integrated, for example taxonomies. You don't need to install just to find the taxonomical lineage of SARS-COV-2. It is as simple as:
 
 ```bash
 bio ncov --taxon --lineage
