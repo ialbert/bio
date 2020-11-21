@@ -90,7 +90,7 @@ How about translating the reverse of the last 10 nucleotides of every feature la
 
     bio ncov --fasta --type CDS --start -10 --reverse --translate
     
-ah yes, just what I needed:    
+ah yes, if that is what you needed, here it is:    
    
     >YP_009724389.1 [-9:21291], reverse, translated DNA
     NQQ
@@ -104,11 +104,28 @@ ah yes, just what I needed:
     
 And so on. `bio` has a wealth of utility that makes bioinformatics more accessible.
 
+## `bio` is a data model for the future
+
+Beyond the functionality that we show, `bio` is also an exploration into modeling biological data. The current standards and practices at NCBI and EMBL are woefully antiquated and painfully inadequate. GenBank as a format is dishearteningly inefficient, and depressingly difficult do deal with. Now take a look under the hood in `bio` and its super fast, clear cut, simple and compressed JSON format that allows `bio` to read in the entire human chromosome 1 with its 253 million characters and 328 thousand genomic features in just three(!) seconds. In another 3 seconds, often less than six seconds in total, `bio`  can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:
+
+    time bio chr1 --fasta | wc -c
+    253105766
+
+    real    0m6.238s
+    user    0m4.156s
+    sys     0m2.172s
+
+For shorter genomes the conversion times are under a fraction of a second.  Then, note how the data is all integrated, you don't need to install yet another toolkit if all you wanted is the lineage of SARS-COV-2. Taxonomies can be built and integrated alongside:
+
+```bash
+bio ncov --taxon --lineage
+```
+    
 ## Comparisons to EMBOSS
 
 The software with the most similar goals to `bio` is the [emboss suite][emboss], a revolutionary software package developed decades ahead of its time. Unfortunately, perhaps because of being developed so early on, the amazing feats of software engineering within `emboss` are deployed with a nearly incomprehensible documentation that attempts, in vain, to describe an incredibly obtuse command interface. 
 
 We love the concept of `emboss` but even after many years we don't understand how to use it. We constantly have to consult the manual for details. Moreover commands that use `emboss` suites tend to end up as a series of hard to read arcane commands that are surprisingly difficult to comprehend even for experienced scientists. 
 
-Criticism aside, imitation is the greatest form of flattery, `bio` is an homage to `emboss` with the hope that one day, we can replace the functionality from `emboss` with code brings joy rather than frustrations. 
+Criticism aside, imitation is the greatest form of flattery, `bio` is an homage to `emboss` with the hope that one day, we can replace some functionality from `emboss` with code that brings joy rather than frustrations. 
 
