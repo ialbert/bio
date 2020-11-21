@@ -157,7 +157,6 @@ GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC</code></pre>
 <p>You could also convert the data stored under <code>ncov</code> name to other formats. Let’s convert the <code>CDS</code> features annotated for gene <code>S</code> to <code>GFF</code>:</p>
 <pre class="bash"><code>    bio ncov --gff --gene S --type CDS</code></pre>
 <pre><code>##gff-version 3
-ncov    .   region  21563   25384   .   +   .   ID=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568
 ncov    .   CDS 21563   25384   .   +   .   Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568</code></pre>
 <p>Now, back to our problem of aligning proteins. Let’s align the first 90 basepairs of DNA sequences for the <code>S</code> protein for each organism, <code>bio</code> even gives you a shortcut, instead of typing <code>--gene S --type CDS</code> you can write it as <code>ncov:S</code> :</p>
 <pre class="bash"><code>    bio ncov:S ratg13:S --end 90 --align</code></pre>

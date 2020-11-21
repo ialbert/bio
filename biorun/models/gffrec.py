@@ -9,7 +9,7 @@ from itertools import count
 
 
 
-def feature2gff(feat, anchor):
+def feature2gff(feat, anchor, allow_parent=True):
     """
     Returns a SeqRecord as an 11 element  GFF3 list .
     """
@@ -49,8 +49,9 @@ def feature2gff(feat, anchor):
         # Generate the parent entry.
         data = [anchor, ".", ptype, feat['start'], feat['end'], ".", strand, phase, attr]
 
-        # Output the parent track.
-        yield data
+        # Output the parent track if allowed.
+        if allow_parent:
+            yield data
 
     # Generate an interval for each location.
     for start, end, strand in feat["location"]:
@@ -88,8 +89,7 @@ def gff_view(params):
                                             regexp=param.regexp)
 
             # Generate the gff output
-            collect = []
             for feat in feats:
-                for values in feature2gff(feat, anchor=anchor):
+                for values in feature2gff(feat, anchor=anchor, allow_parent=not(param.type)):
                     values = map(str, values)
                     print("\t".join(values))

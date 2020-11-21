@@ -156,10 +156,10 @@ ncov    .   region  266 21555   .   +   .   ID=YP_009724389.1;Name=YP_009724389.
 <h3>Convert to GFF only the features with type <code>CDS</code></h3>
 <pre class="bash"><code>bio ncov --gff --type CDS | head -5</code></pre>
 <pre><code>##gff-version 3
-ncov    .   region  266 21555   .   +   .   ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578
 ncov    .   CDS 266 13468   .   +   .   Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578
 ncov    .   CDS 13468   21555   .   +   .   Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578
-ncov    .   region  266 13483   .   +   .   ID=YP_009725295.1;Name=YP_009725295.1;gene=ORF1ab;locus_tag=GU280_gp01;note=pp1a;codon_start=1;product=ORF1a polyprotein;protein_id=YP_009725295.1;db_xref=GeneID:43740578</code></pre>
+ncov    .   CDS 266 13483   .   +   .   Parent=YP_009725295.1;Name=YP_009725295.1;gene=ORF1ab;locus_tag=GU280_gp01;note=pp1a;codon_start=1;product=ORF1a polyprotein;protein_id=YP_009725295.1;db_xref=GeneID:43740578
+ncov    .   CDS 21563   25384   .   +   .   Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568</code></pre>
 </div>
 <div id="convert-to-gff-only-the-features-tagged-with-gene-s" class="section level3">
 <h3>Convert to GFF only the features tagged with gene <code>S</code></h3>
