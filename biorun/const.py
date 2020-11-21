@@ -15,7 +15,7 @@ GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "lo
 
 ALIGN_FLAG, TAXON_FLAG = "--align", "--taxon"
 
-SKIP_GFF_ATTR = {"id", "type", "start", "end", "location", "translation", "strand", "operator"}
+SKIP_GFF_ATTR = { "id", "name",  "type", "start", "end", "location", "translation", "strand", "operator"}
 
 #
 # Remaps types from GenBank to Sequence Ontology when converting to GFF files
@@ -39,9 +39,10 @@ COLOR_FOR_TYPE = {
     "five_prime_UTR": "#cc0e74",
     "three_prime_UTR": "#cc0e74",
     "stem_loop": "#fa7f72",
-    "mature_protein_region": "#f8b88b",
-    "CDS": "#b2cefe",
-    "region": "#ad9d9d",
+    "mature_protein_region": "#CBAEBB",
+    "region": "#CECECE",
+    "mRNA": "#799351",
+    "gene": "#DF9881",
 }
 #
 # The GFF attributes generated for a source type.

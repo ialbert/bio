@@ -9,6 +9,7 @@ import sys, os, gzip, json
 from collections import OrderedDict
 from biorun import utils, const
 from itertools import count
+from collections import defaultdict
 
 from pprint import pprint
 
@@ -96,35 +97,6 @@ def first(item, key, default=""):
     return item.get(key, [default])[0]
 
 
-def make_attr(feat, uid=None):
-    """
-    Creates GFF style attributes from JSON fields.
-    """
-
-    uid = uid or feat['id']
-
-    ftype = feat['type']
-
-    pairs = [(k, v) for k, v in feat.items() if k not in const.SKIP_GFF_ATTR]
-
-    # Generate a name.
-    name = rec_name(feat)
-
-    # Each element will have an ID and a name.
-    data = [f"ID={uid}", f"Name={name}"]
-
-    for key, value in pairs:
-        data.append(f"{key}={value[0]}")
-
-    return ";".join(data)
-
-
-def rec_id(f):
-    """
-    Generates an id from a JSON feature.
-    """
-    name = first(f, 'locus_tag') or ''
-    return name
 
 
 def rec_name(f):
@@ -326,48 +298,42 @@ def json_ready(value):
 
     return value
 
+UNIQUE = dict()
 
-def parse_id(attrs):
+def fill_name(f):
     """
     Attempts to generate an unique id and a parent from a BioPython SeqRecord.
     """
-    ftype = attrs['type']
+    global UNIQUE
 
-    uid = pid = name = ''
+    ftype = f['type']
+
+    uid = name = ''
 
     # Dealing with mRNA
     if ftype == 'gene':
-        tag = first(attrs, "locus_tag") or next(COUNTER)
-        uid = f"{ftype}-{tag}"
-        pid = ""
-        name = uid
+        name = first(f, "gene")
+        uid = first(f, "locus_tag")
     elif ftype == 'CDS':
-        tag = first(attrs, "locus_tag") or next(COUNTER)
-        uid = f"{ftype}-{tag}"
-        pid = f"gene-{tag}"
-        name = first(attrs, "protein_id") or uid
+        name = first(f, "protein_id")
+        uid = name
     elif ftype == 'mRNA':
-        tag = first(attrs, "transcript_id") or next(COUNTER)
-        pid = first(attrs, "locus_tag") or next(COUNTER)
-        uid = f"{ftype}-{tag}"
-        pid = f"gene-{pid}"
-        name = tag
+        name = first(f, "transcript_id")
+        uid = name
+    elif ftype == "exon":
+        name = first(f, "gene")
     else:
-        tag = next(COUNTER)
-        uid = f"{ftype}-{tag}"
-        pid = ''
+        name = first(f, "organism") or first(f, "protein_id") or first(f, "transcript_id") or ftype
 
     # Unique id.
-    attrs['uid'] = uid
+    uid = uid or next(COUNTER)
 
-    # Parent id.
-    attrs['pid'] = pid
+    f['id'] = uid or f"{ftype}-{next(COUNTER)}"
 
     # Feature name
-    attrs['name'] = name
+    f['name'] = name or ftype
 
-    return attrs
-
+    return f
 
 def convert_genbank(recs, seqid=None):
     """
@@ -420,7 +386,7 @@ def convert_genbank(recs, seqid=None):
             location = [(loc.start + 1, loc.end, loc.strand) for loc in feat.location.parts]
 
             # Feature attributes
-            attrs = dict(uid='', pid='', name='', start=start, end=end, type=ftype, strand=strand, location=location,
+            attrs = dict(id='', name='', start=start, end=end, type=ftype, strand=strand, location=location,
                          operator=oper)
 
             # Fills in the additional qualifiers.
@@ -428,7 +394,7 @@ def convert_genbank(recs, seqid=None):
                 attrs[k] = json_ready(v)
 
             # Correct uid, parent and name
-            attrs = parse_id(attrs)
+            attrs = fill_name(attrs)
 
             # Append the attributes as a record.
             feats.append(attrs)

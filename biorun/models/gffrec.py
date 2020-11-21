@@ -3,13 +3,42 @@ Generates GFF outputs from a JSON record.
 """
 from biorun import utils, const
 from biorun.models import jsonrec
+from itertools import count
 
-def get_color(ftype):
+
+def make_attr(feat, uid='', pid='', color=None):
     """
-    Generates a color for a type.
+    Creates GFF style attributes from JSON fields.
     """
-    color = const.COLOR_FOR_TYPE.get(ftype)
-    return f";color={color}" if color else ''
+
+    # The feature name.
+    name = feat['name']
+
+    data = [ ]
+
+    # Add ID and parent if these exists.
+    if uid:
+        data.append(f"ID={uid}")
+    if pid:
+        data.append(f"Parent={pid}")
+
+    # Add the data name.
+    data.append(f"Name={name}")
+
+    # Other gff attributes.
+    pairs = [(k, v) for k, v in feat.items() if k not in const.SKIP_GFF_ATTR]
+
+    # Fill in all the fields.
+    for key, value in pairs:
+        data.append(f"{key}={value[0]}")
+
+    # Attach a color to the feature.
+    if color:
+        data.append(f"color={color}")
+
+    return ";".join(data)
+
+
 
 def feature2gff(feat, anchor):
     """
@@ -27,33 +56,40 @@ def feature2gff(feat, anchor):
     #phase = feat.get("codon_start", [1])[0] - 1
     phase = "."
 
-    # Produce a GFF representation for the original feature.
-    attr1 = jsonrec.make_attr(feat)
+    color = const.COLOR_FOR_TYPE.get(ftype)
 
-    # Color the attribute.
-    attr1 = attr1 + get_color(ftype)
+    # Child type
 
-    # Create the parent attribute.
-    data = [anchor, ".", ftype, feat['start'], feat['end'], ".", strand, phase, attr1]
+    ctype = ftype
 
-    yield data
+    pid = None
 
-    # Iterate over locations for mRNA to generate exons
-    if ftype == 'mRNA':
+    # Handle hiearachical relationships.
+    if ftype == 'mRNA' or ftype== 'CDS':
+        pid = uid
 
-        for start, end, strand in feat["location"]:
+        # Set the parent/child types.
+        if ftype == 'mRNA':
+            ptype, ctype = 'mRNA', 'exon'
+        else:
+            ptype, ctype = 'region', 'CDS'
 
-            strand = "+" if strand > 0 else "-"
+        # Build the attributes for the parent.
+        attr = make_attr(feat, color=color, uid=uid)
 
-            ctype = 'exon'
+        # Generate the parent entry.
+        data = [anchor, ".", ptype, feat['start'], feat['end'], ".", strand, phase, attr]
 
-            attr2 = jsonrec.make_attr(feat)
+        # Separate mRNA track
+        yield data
 
-            attr2 = attr2 + get_color(ctype)
+    # Process the individual locations.
+    for start, end, strand in feat["location"]:
+        strand = "+" if strand > 0 else "-"
+        attr = make_attr(feat, color=color, pid=pid)
+        data = [anchor, ".", ctype, start, end, ".", strand, phase, attr]
 
-            data = [anchor, ".", ctype, start, end, ".", strand, phase, attr2]
-
-            yield data
+        yield data
 
 
 def gff_view(params):
@@ -83,6 +119,7 @@ def gff_view(params):
                                             regexp=param.regexp)
 
             # Generate the gff output
+            collect = []
             for feat in feats:
                 for values in feature2gff(feat, anchor=anchor):
                     values = map(str, values)
