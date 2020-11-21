@@ -114,9 +114,13 @@
 <h2>Interactive mode</h2>
 <p>Passing the <code>-i</code> flag allows data to be passed from command line. For example:</p>
 <pre class="bash"><code>bio --translate -i ATGATTATATATA </code></pre>
+<pre><code>&gt;S1 translated
+MIIY</code></pre>
 <p>Note how the input was read as parameters from the command line. We make use of this feature when exploring simple data in an explicit way.
 Here we’re using a different phase to translate the same sequence above.</p>
 <pre class="bash"><code>bio --translate -i ATGATTATATATA --start 2</code></pre>
+<pre><code>&gt;S1 [2:13], translated
+*LYI</code></pre>
 </div>
 <div id="the-command-line-is-more-forgiving" class="section level2">
 <h2>The command line is more forgiving:</h2>

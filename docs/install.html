@@ -166,8 +166,8 @@ has its own command line help page.</p>
 <h3>1. Help page for default actions</h3>
 <pre class="bash"><code>bio -h</code></pre>
 <pre><code>usage: bio [-h] [-F] [-G] [-K] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C]
-           [-R] [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;]
-           [-i] [-v]
+           [-R] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;] [-i]
+           [-O] [-v]
            [acc [acc ...]]
 
 bio - making bioinformatics fun again
@@ -192,7 +192,6 @@ optional arguments:
   -E, --reverse       reverse sequence
   -C, --complement    complement sequence
   -R, --revcomp       reverse complement sequence
-  -A, --align         aligne the sequences
   -r &#39;&#39;, --rename &#39;&#39;  set the name
   -S &#39;&#39;, --seqid &#39;&#39;   set the sequence id
   -s &#39;&#39;, --start &#39;&#39;   start coordinate
@@ -201,14 +200,15 @@ optional arguments:
   -g &#39;&#39;, --gene &#39;&#39;    select features associated with gene
   -m &#39;&#39;, --match &#39;&#39;   select features by rexep match
   -i, --inter         interactive (data from command line)
+  -O, --origin        use the origin (source) sequences
   -v, --verbose       verbose mode</code></pre>
 </div>
 <div id="help-page-for-alignments" class="section level3">
 <h3>2. Help page for alignments</h3>
 <pre class="bash"><code>bio align -h</code></pre>
 <pre><code>usage: bio [-h] [-F] [-G] [-K] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C]
-           [-R] [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;]
-           [-i] [-v]
+           [-R] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;] [-i]
+           [-O] [-v]
            [acc [acc ...]]
 
 bio - making bioinformatics fun again
@@ -233,7 +233,6 @@ optional arguments:
   -E, --reverse       reverse sequence
   -C, --complement    complement sequence
   -R, --revcomp       reverse complement sequence
-  -A, --align         aligne the sequences
   -r &#39;&#39;, --rename &#39;&#39;  set the name
   -S &#39;&#39;, --seqid &#39;&#39;   set the sequence id
   -s &#39;&#39;, --start &#39;&#39;   start coordinate
@@ -242,14 +241,15 @@ optional arguments:
   -g &#39;&#39;, --gene &#39;&#39;    select features associated with gene
   -m &#39;&#39;, --match &#39;&#39;   select features by rexep match
   -i, --inter         interactive (data from command line)
+  -O, --origin        use the origin (source) sequences
   -v, --verbose       verbose mode</code></pre>
 </div>
 <div id="help-page-for-taxonomy" class="section level3">
 <h3>3. Help page for taxonomy</h3>
 <pre class="bash"><code>bio taxon -h</code></pre>
 <pre><code>usage: bio [-h] [-F] [-G] [-K] [-f] [-u] [-d] [-l] [-P] [-T] [-X] [-E] [-C]
-           [-R] [-A] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;]
-           [-i] [-v]
+           [-R] [-r &#39;&#39;] [-S &#39;&#39;] [-s &#39;&#39;] [-e &#39;&#39;] [-t &#39;&#39;] [-g &#39;&#39;] [-m &#39;&#39;] [-i]
+           [-O] [-v]
            [acc [acc ...]]
 
 bio - making bioinformatics fun again
@@ -274,7 +274,6 @@ optional arguments:
   -E, --reverse       reverse sequence
   -C, --complement    complement sequence
   -R, --revcomp       reverse complement sequence
-  -A, --align         aligne the sequences
   -r &#39;&#39;, --rename &#39;&#39;  set the name
   -S &#39;&#39;, --seqid &#39;&#39;   set the sequence id
   -s &#39;&#39;, --start &#39;&#39;   start coordinate
@@ -283,6 +282,7 @@ optional arguments:
   -g &#39;&#39;, --gene &#39;&#39;    select features associated with gene
   -m &#39;&#39;, --match &#39;&#39;   select features by rexep match
   -i, --inter         interactive (data from command line)
+  -O, --origin        use the origin (source) sequences
   -v, --verbose       verbose mode</code></pre>
 
 </div>
