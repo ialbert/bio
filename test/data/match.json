@@ -1,5 +1,7 @@
 [
     {
+        "id": "GU280_gp01",
+        "name": "ORF1ab",
         "start": 266,
         "end": 21555,
         "type": "gene",

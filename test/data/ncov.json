@@ -81,6 +81,8 @@
         },
         "FEATURES": [
             {
+                "id": 1,
+                "name": "Severe acute respiratory syndrome coronavirus 2",
                 "start": 1,
                 "end": 29903,
                 "type": "region",
@@ -116,6 +118,8 @@
                 ]
             },
             {
+                "id": 2,
+                "name": "five_prime_UTR",
                 "start": 1,
                 "end": 265,
                 "type": "five_prime_UTR",
@@ -130,6 +134,8 @@
                 "operator": null
             },
             {
+                "id": "GU280_gp01",
+                "name": "ORF1ab",
                 "start": 266,
                 "end": 21555,
                 "type": "gene",
@@ -153,6 +159,8 @@
                 ]
             },
             {
+                "id": "YP_009724389.1",
+                "name": "YP_009724389.1",
                 "start": 266,
                 "end": 21555,
                 "type": "CDS",
@@ -199,6 +207,8 @@
                 ]
             },
             {
+                "id": 3,
+                "name": "YP_009725297.1",
                 "start": 266,
                 "end": 805,
                 "type": "mature_protein_region",
@@ -228,6 +238,8 @@
                 ]
             },
             {
+                "id": 4,
+                "name": "YP_009725298.1",
                 "start": 806,
                 "end": 2719,
                 "type": "mature_protein_region",
@@ -257,6 +269,8 @@
                 ]
             },
             {
+                "id": 5,
+                "name": "YP_009725299.1",
                 "start": 2720,
                 "end": 8554,
                 "type": "mature_protein_region",
@@ -286,6 +300,8 @@
                 ]
             },
             {
+                "id": 6,
+                "name": "YP_009725300.1",
                 "start": 8555,
                 "end": 10054,
                 "type": "mature_protein_region",
@@ -315,6 +331,8 @@
                 ]
             },
             {
+                "id": 7,
+                "name": "YP_009725301.1",
                 "start": 10055,
                 "end": 10972,
                 "type": "mature_protein_region",
@@ -344,6 +362,8 @@
                 ]
             },
             {
+                "id": 8,
+                "name": "YP_009725302.1",
                 "start": 10973,
                 "end": 11842,
                 "type": "mature_protein_region",
@@ -373,6 +393,8 @@
                 ]
             },
             {
+                "id": 9,
+                "name": "YP_009725303.1",
                 "start": 11843,
                 "end": 12091,
                 "type": "mature_protein_region",
@@ -402,6 +424,8 @@
                 ]
             },
             {
+                "id": 10,
+                "name": "YP_009725304.1",
                 "start": 12092,
                 "end": 12685,
                 "type": "mature_protein_region",
@@ -431,6 +455,8 @@
                 ]
             },
             {
+                "id": 11,
+                "name": "YP_009725305.1",
                 "start": 12686,
                 "end": 13024,
                 "type": "mature_protein_region",
@@ -460,6 +486,8 @@
                 ]
             },
             {
+                "id": 12,
+                "name": "YP_009725306.1",
                 "start": 13025,
                 "end": 13441,
                 "type": "mature_protein_region",
@@ -489,6 +517,8 @@
                 ]
             },
             {
+                "id": 13,
+                "name": "YP_009725307.1",
                 "start": 13442,
                 "end": 16236,
                 "type": "mature_protein_region",
@@ -523,6 +553,8 @@
                 ]
             },
             {
+                "id": 14,
+                "name": "YP_009725308.1",
                 "start": 16237,
                 "end": 18039,
                 "type": "mature_protein_region",
@@ -552,6 +584,8 @@
                 ]
             },
             {
+                "id": 15,
+                "name": "YP_009725309.1",
                 "start": 18040,
                 "end": 19620,
                 "type": "mature_protein_region",
@@ -581,6 +615,8 @@
                 ]
             },
             {
+                "id": 16,
+                "name": "YP_009725310.1",
                 "start": 19621,
                 "end": 20658,
                 "type": "mature_protein_region",
@@ -610,6 +646,8 @@
                 ]
             },
             {
+                "id": 17,
+                "name": "YP_009725311.1",
                 "start": 20659,
                 "end": 21552,
                 "type": "mature_protein_region",
@@ -639,6 +677,8 @@
                 ]
             },
             {
+                "id": "YP_009725295.1",
+                "name": "YP_009725295.1",
                 "start": 266,
                 "end": 13483,
                 "type": "CDS",
@@ -677,6 +717,8 @@
                 ]
             },
             {
+                "id": 18,
+                "name": "YP_009742608.1",
                 "start": 266,
                 "end": 805,
                 "type": "mature_protein_region",
@@ -706,6 +748,8 @@
                 ]
             },
             {
+                "id": 19,
+                "name": "YP_009742609.1",
                 "start": 806,
                 "end": 2719,
                 "type": "mature_protein_region",
@@ -735,6 +779,8 @@
                 ]
             },
             {
+                "id": 20,
+                "name": "YP_009742610.1",
                 "start": 2720,
                 "end": 8554,
                 "type": "mature_protein_region",
@@ -764,6 +810,8 @@
                 ]
             },
             {
+                "id": 21,
+                "name": "YP_009742611.1",
                 "start": 8555,
                 "end": 10054,
                 "type": "mature_protein_region",
@@ -793,6 +841,8 @@
                 ]
             },
             {
+                "id": 22,
+                "name": "YP_009742612.1",
                 "start": 10055,
                 "end": 10972,
                 "type": "mature_protein_region",
@@ -822,6 +872,8 @@
                 ]
             },
             {
+                "id": 23,
+                "name": "YP_009742613.1",
                 "start": 10973,
                 "end": 11842,
                 "type": "mature_protein_region",
@@ -851,6 +903,8 @@
                 ]
             },
             {
+                "id": 24,
+                "name": "YP_009742614.1",
                 "start": 11843,
                 "end": 12091,
                 "type": "mature_protein_region",
@@ -880,6 +934,8 @@
                 ]
             },
             {
+                "id": 25,
+                "name": "YP_009742615.1",
                 "start": 12092,
                 "end": 12685,
                 "type": "mature_protein_region",
@@ -909,6 +965,8 @@
                 ]
             },
             {
+                "id": 26,
+                "name": "YP_009742616.1",
                 "start": 12686,
                 "end": 13024,
                 "type": "mature_protein_region",
@@ -938,6 +996,8 @@
                 ]
             },
             {
+                "id": 27,
+                "name": "YP_009742617.1",
                 "start": 13025,
                 "end": 13441,
                 "type": "mature_protein_region",
@@ -967,6 +1027,8 @@
                 ]
             },
             {
+                "id": 28,
+                "name": "YP_009725312.1",
                 "start": 13442,
                 "end": 13480,
                 "type": "mature_protein_region",
@@ -996,6 +1058,8 @@
                 ]
             },
             {
+                "id": 29,
+                "name": "stem_loop",
                 "start": 13476,
                 "end": 13503,
                 "type": "stem_loop",
@@ -1022,6 +1086,8 @@
                 ]
             },
             {
+                "id": 30,
+                "name": "stem_loop",
                 "start": 13488,
                 "end": 13542,
                 "type": "stem_loop",
@@ -1048,6 +1114,8 @@
                 ]
             },
             {
+                "id": "GU280_gp02",
+                "name": "S",
                 "start": 21563,
                 "end": 25384,
                 "type": "gene",
@@ -1074,6 +1142,8 @@
                 ]
             },
             {
+                "id": "YP_009724390.1",
+                "name": "YP_009724390.1",
                 "start": 21563,
                 "end": 25384,
                 "type": "CDS",
@@ -1115,6 +1185,8 @@
                 ]
             },
             {
+                "id": "GU280_gp03",
+                "name": "ORF3a",
                 "start": 25393,
                 "end": 26220,
                 "type": "gene",
@@ -1138,6 +1210,8 @@
                 ]
             },
             {
+                "id": "YP_009724391.1",
+                "name": "YP_009724391.1",
                 "start": 25393,
                 "end": 26220,
                 "type": "CDS",
@@ -1173,6 +1247,8 @@
                 ]
             },
             {
+                "id": "GU280_gp04",
+                "name": "E",
                 "start": 26245,
                 "end": 26472,
                 "type": "gene",
@@ -1196,6 +1272,8 @@
                 ]
             },
             {
+                "id": "YP_009724392.1",
+                "name": "YP_009724392.1",
                 "start": 26245,
                 "end": 26472,
                 "type": "CDS",
@@ -1234,6 +1312,8 @@
                 ]
             },
             {
+                "id": "GU280_gp05",
+                "name": "M",
                 "start": 26523,
                 "end": 27191,
                 "type": "gene",
@@ -1257,6 +1337,8 @@
                 ]
             },
             {
+                "id": "YP_009724393.1",
+                "name": "YP_009724393.1",
                 "start": 26523,
                 "end": 27191,
                 "type": "CDS",
@@ -1295,6 +1377,8 @@
                 ]
             },
             {
+                "id": "GU280_gp06",
+                "name": "ORF6",
                 "start": 27202,
                 "end": 27387,
                 "type": "gene",
@@ -1318,6 +1402,8 @@
                 ]
             },
             {
+                "id": "YP_009724394.1",
+                "name": "YP_009724394.1",
                 "start": 27202,
                 "end": 27387,
                 "type": "CDS",
@@ -1353,6 +1439,8 @@
                 ]
             },
             {
+                "id": "GU280_gp07",
+                "name": "ORF7a",
                 "start": 27394,
                 "end": 27759,
                 "type": "gene",
@@ -1376,6 +1464,8 @@
                 ]
             },
             {
+                "id": "YP_009724395.1",
+                "name": "YP_009724395.1",
                 "start": 27394,
                 "end": 27759,
                 "type": "CDS",
@@ -1411,6 +1501,8 @@
                 ]
             },
             {
+                "id": "GU280_gp08",
+                "name": "ORF7b",
                 "start": 27756,
                 "end": 27887,
                 "type": "gene",
@@ -1434,6 +1526,8 @@
                 ]
             },
             {
+                "id": "YP_009725318.1",
+                "name": "YP_009725318.1",
                 "start": 27756,
                 "end": 27887,
                 "type": "CDS",
@@ -1469,6 +1563,8 @@
                 ]
             },
             {
+                "id": "GU280_gp09",
+                "name": "ORF8",
                 "start": 27894,
                 "end": 28259,
                 "type": "gene",
@@ -1492,6 +1588,8 @@
                 ]
             },
             {
+                "id": "YP_009724396.1",
+                "name": "YP_009724396.1",
                 "start": 27894,
                 "end": 28259,
                 "type": "CDS",
@@ -1527,6 +1625,8 @@
                 ]
             },
             {
+                "id": "GU280_gp10",
+                "name": "N",
                 "start": 28274,
                 "end": 29533,
                 "type": "gene",
@@ -1550,6 +1650,8 @@
                 ]
             },
             {
+                "id": "YP_009724397.2",
+                "name": "YP_009724397.2",
                 "start": 28274,
                 "end": 29533,
                 "type": "CDS",
@@ -1588,6 +1690,8 @@
                 ]
             },
             {
+                "id": "GU280_gp11",
+                "name": "ORF10",
                 "start": 29558,
                 "end": 29674,
                 "type": "gene",
@@ -1611,6 +1715,8 @@
                 ]
             },
             {
+                "id": "YP_009725255.1",
+                "name": "YP_009725255.1",
                 "start": 29558,
                 "end": 29674,
                 "type": "CDS",
@@ -1646,6 +1752,8 @@
                 ]
             },
             {
+                "id": 31,
+                "name": "stem_loop",
                 "start": 29609,
                 "end": 29644,
                 "type": "stem_loop",
@@ -1672,6 +1780,8 @@
                 ]
             },
             {
+                "id": 32,
+                "name": "stem_loop",
                 "start": 29629,
                 "end": 29657,
                 "type": "stem_loop",
@@ -1698,9 +1808,11 @@
                 ]
             },
             {
+                "id": 33,
+                "name": "three_prime_UTR",
                 "start": 29675,
                 "end": 29903,
-                "type": "3'UTR",
+                "type": "three_prime_UTR",
                 "strand": 1,
                 "location": [
                     [
@@ -1712,6 +1824,8 @@
                 "operator": null
             },
             {
+                "id": 34,
+                "name": "stem_loop",
                 "start": 29728,
                 "end": 29768,
                 "type": "stem_loop",

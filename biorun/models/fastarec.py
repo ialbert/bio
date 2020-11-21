@@ -12,8 +12,14 @@ def get_fasta(item, param):
     Identifies which type of data to return based on parameters.
     """
 
+    # Ignore translation warnings
+    if param.translate:
+        import warnings
+        from Bio import BiopythonWarning
+        warnings.simplefilter('ignore', BiopythonWarning)
+
     # If there is no other filtering, produce the origin.
-    origin = not (param.gene or param.type or param.protein or param.translate)
+    origin = param.origin or not (param.gene or param.type or param.protein or param.translate)
 
     if origin:
         recs = jsonrec.get_origin(item, param=param)

@@ -62,7 +62,7 @@ def converter(fasta=False, gff=False, genbank=False, fetch=False, update=False, 
         # A simple wrapper class to carry all parameters around.
         p = objects.Param(start=start, end=end, seqid=seqid, protein=protein, revcomp=revcomp,
                           update=update, name=name, gff=gff, translate=translate, reverse=reverse,
-                          complement=complement,
+                          complement=complement, origin=origin,
                           fasta=fasta, type=type, gene=gene, regexp=match, transcribe=transcribe)
 
         # Fill the json data for the parameter.
@@ -97,10 +97,13 @@ def converter(fasta=False, gff=False, genbank=False, fetch=False, update=False, 
     if (list or rename or delete):
         return
 
+    # Sequence operation
+    seqop = reverse or complement or revcomp
+
     # Decide which type of conversion based on incoming parameters.
     if genbank:
         storage.genbank_view(params)
-    elif fasta or protein or translate:
+    elif origin or fasta or protein or translate or seqop:
         fastarec.fasta_view(params)
     elif gff:
         gffrec.gff_view(params)

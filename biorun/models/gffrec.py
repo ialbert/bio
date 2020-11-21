@@ -6,37 +6,6 @@ from biorun.models import jsonrec
 from itertools import count
 
 
-def make_attr(feat, uid='', pid='', color=None):
-    """
-    Creates GFF style attributes from JSON fields.
-    """
-
-    # The feature name.
-    name = feat['name']
-
-    data = [ ]
-
-    # Add ID and parent if these exists.
-    if uid:
-        data.append(f"ID={uid}")
-    if pid:
-        data.append(f"Parent={pid}")
-
-    # Add the data name.
-    data.append(f"Name={name}")
-
-    # Other gff attributes.
-    pairs = [(k, v) for k, v in feat.items() if k not in const.SKIP_GFF_ATTR]
-
-    # Fill in all the fields.
-    for key, value in pairs:
-        data.append(f"{key}={value[0]}")
-
-    # Attach a color to the feature.
-    if color:
-        data.append(f"color={color}")
-
-    return ";".join(data)
 
 
 
@@ -56,16 +25,16 @@ def feature2gff(feat, anchor):
     #phase = feat.get("codon_start", [1])[0] - 1
     phase = "."
 
+    # The color for the feature.
     color = const.COLOR_FOR_TYPE.get(ftype)
 
-    # Child type
-
-    ctype = ftype
-
-    pid = None
+    # Used only during hierachical data.
+    ctype, pid = ftype, None
 
     # Handle hiearachical relationships.
     if ftype == 'mRNA' or ftype== 'CDS':
+
+        # Child nodes track parent.
         pid = uid
 
         # Set the parent/child types.
@@ -75,18 +44,18 @@ def feature2gff(feat, anchor):
             ptype, ctype = 'region', 'CDS'
 
         # Build the attributes for the parent.
-        attr = make_attr(feat, color=color, uid=uid)
+        attr = jsonrec.make_attr(feat, color=color, uid=uid)
 
         # Generate the parent entry.
         data = [anchor, ".", ptype, feat['start'], feat['end'], ".", strand, phase, attr]
 
-        # Separate mRNA track
+        # Output the parent track.
         yield data
 
-    # Process the individual locations.
+    # Generate an interval for each location.
     for start, end, strand in feat["location"]:
         strand = "+" if strand > 0 else "-"
-        attr = make_attr(feat, color=color, pid=pid)
+        attr = jsonrec.make_attr(feat, color=color, pid=pid)
         data = [anchor, ".", ctype, start, end, ".", strand, phase, attr]
 
         yield data

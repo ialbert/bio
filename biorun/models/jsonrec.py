@@ -104,17 +104,42 @@ def rec_name(f):
     Generates a record name from a JSON feature.
     """
 
-    ftype = f['type']
-
-    # The type of the feature is used  as name
-    name = const.NAME_FROM_TYPE.get(ftype)
-
-    # Cascade down a hierarchy to find a suitable name.
-    name = name or first(f, "organism") or first(f, "protein_id") or first(f, "gene") \
-           or first(f, 'locus_tag') or first(f, 'db_xref') or ftype
-
+    name = f['name']
     return name
 
+
+
+def make_attr(feat, uid='', pid='', color=None):
+    """
+    Creates GFF style attributes from JSON fields.
+    """
+
+    # The feature name.
+    name = feat['name']
+
+    data = [ ]
+
+    # Add ID and parent if these exists.
+    if uid:
+        data.append(f"ID={uid}")
+    if pid:
+        data.append(f"Parent={pid}")
+
+    # Add the data name.
+    data.append(f"Name={name}")
+
+    # Other gff attributes.
+    pairs = [(k, v) for k, v in feat.items() if k not in const.SKIP_GFF_ATTR]
+
+    # Fill in all the fields.
+    for key, value in pairs:
+        data.append(f"{key}={value[0]}")
+
+    # Attach a color to the feature.
+    if color:
+        data.append(f"color={color}")
+
+    return ";".join(data)
 
 def rec_desc(f):
     """
@@ -177,12 +202,6 @@ def get_feature_records(data, param):
     # We can extract DNA sequences from this if needed.
     origin = data[const.ORIGIN]
 
-    # Ignore translation warnings
-    if param.translate:
-        import warnings
-        from Bio import BiopythonWarning
-        warnings.simplefilter('ignore', BiopythonWarning)
-
     # Shortcuts to coordinates.
     start, end = param.start, param.end
 
@@ -217,19 +236,19 @@ def get_feature_records(data, param):
             # Preforme reverse complement if needed.
             if param.revcomp:
                 seq = seq.reverse_complement()
-                desc.append("reverse complement")
+                desc.append("reverse complemented")
 
             if param.reverse:
                 seq = seq[::-1]
-                desc.append("reverse")
+                desc.append("reversed")
 
             if param.complement:
                 seq = seq.complement()
-                desc.append("complement")
+                desc.append("complemented")
 
             if param.translate:
                 seq = seq.translate()
-                desc.append("translated DNA")
+                desc.append("translated")
 
             if param.transcribe:
                 seq = seq.transcribe()
@@ -444,7 +463,7 @@ def make_jsonrec(seq, seqid=None):
     oper = None,
     location = [[start, end, strand]]
     ftype = "sequence"
-    attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper)
+    attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper, name=name, id=name)
     item[const.FEATURES] = [
         attrs
     ]
