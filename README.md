@@ -6,8 +6,8 @@
 
 ## Quick links
 
-* Usage examples: [bio_examples.sh][examples]
 * Documentation: https://ialbert.github.io/bio/
+* Usage examples: [bio_examples.sh][examples]
 
 [docs]: https://ialbert.github.io/bio/
 [examples]: https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
