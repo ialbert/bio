@@ -1,16 +1,16 @@
 
 ### 1: YP_009724390 vs QHR63300.2 ###
 
-Length:	26 (semiglobal) 
-Query:	26 [1, 26]
-Target:	26 [1, 26]
-Score:	131
-Ident:	26/26 (100.0%)
-Simil:	26/26 (100.0%)
-Gaps:	0/26 (0.0%)
+Length:	70 (semiglobal) 
+Query:	70 [1, 70]
+Target:	70 [1, 70]
+Score:	357
+Ident:	68/70 (97.1%)
+Simil:	68/70 (97.1%)
+Gaps:	0/70 (0.0%)
 Matrix:	blosum62(-11, -1) 
 
-YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
-           1 |||||||||||||||||||||||||| 26
-QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP
+YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHV
+           1 |||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||| 70
+QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHV
 

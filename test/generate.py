@@ -11,6 +11,7 @@ from textwrap import dedent
 import os, sys, difflib
 import biorun.libs.placlib as plac
 from biorun import main, const
+from biorun.models import jsonrec
 from biorun.methods import align
 from biorun.models import taxdb
 
@@ -33,10 +34,13 @@ def read(fname, datadir=DATA_DIR):
     return text
 
 
-def run(cmd, capsys, out=None):
+def run(cmd, capsys, fname=None):
     """
     Runs a command and returns its out.
     """
+
+    # Ensure the counter starts at zero each time.
+    jsonrec.reset_counter()
 
     # Drop the leading command (bio)
     params = cmd.split()[1:]
@@ -59,13 +63,14 @@ def run(cmd, capsys, out=None):
     result = stream.out
 
     # Check the output if we pass expected value here.
-    if out:
-        expect = read(out)
+    if fname:
+        expect = read(fname)
         if expect != result:
             lines1 = expect.splitlines()
             lines2 = result.splitlines()
             diffs = difflib.unified_diff(lines1, lines2)
             print (cmd)
+            print (f"File: {fname}")
             print ("-" * 10)
             for diff in diffs:
                 print(diff)
@@ -110,7 +115,7 @@ def generate_tests(infile, outfile="test_bio.py"):
         patt = f"""
         def test_{next(COUNTER)}(capsys):
             cmd = "{cmd}"
-            run(cmd, capsys=capsys, out={fname})
+            run(cmd, capsys=capsys, fname={fname})
         """
         collect.append(dedent(patt))
 

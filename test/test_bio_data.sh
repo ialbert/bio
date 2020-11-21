@@ -1,100 +1,120 @@
 #
 # This script is used to generate Python tests.
 #
+
 #
-# --nostdin is used to not interfere with the pytesting
+# The output generate by each test can be seen at:
+#
+# https://github.com/ialbert/bio/tree/master/test/data
 #
 
 # Stop on errors.
 set -uex
 
-# Delete the ncov data if exists
+# Delete the ncov data if exists. Here for testing.
 bio ncov --delete
 
-# Rename the JSON and change the sequence id.
+# Fetch the accession, rename the data and change the sequence id.
 bio NC_045512 --fetch --rename ncov --seqid ncov
 
-# Fetch and convert at the same time
+# You can also fetch and convert at the same time.
 bio NC_045512 --fetch --fasta --end 100 > fetch-convert.fa
 
-# JSON format.
+# Shows the internal JSON format of the data.
 bio ncov > ncov.json
 
-# GenBank format.
+# Convert to GenBank.
 bio ncov --genbank > ncov.gb
 
-# FASTA format.
+# Convert to FASTA.
 bio ncov --fasta > ncov.fa
 
-# GFF format.
+# Convert to GFF.
 bio ncov --gff > ncov.gff
 
-# JSON by type and match
+# Filter the internal JSON by regular expression match and type.
 bio ncov --match ORF1ab --type gene > match.json
 
-# GFF by gene name.
+# Convert to GFF features associated with a gene.
 bio ncov --gff --gene S > gene1.gff
 
-# GFF by start and end.
+# Convert to GFF features that overalp with start to end.
 bio ncov --gff  --start 10000 --end 20000 > overlap.gff
 
-# GFF by type.
+# Convert to GFF by type.
 bio ncov --gff  --type CDS > type.gff
 
-# Sliced FASTA with different id .
+# Convert to GFF by multiple types.
+bio ncov --gff  --type gene,CDS,mRNA > multiple-types.gff
+
+# Slice a FASTA to a region and change the sequence id.
 bio ncov --fasta --seqid foo --start 10 --end 20 > fasta-start.fa
 
-# FASTA features
+# Convert to FASTA features with a certain type.
 bio ncov --fasta --type CDS > CDS.fa
 
-# Sliced FASTA features by type.
+# Convert to FASTA a sub region of type filtered data.
 bio ncov --fasta --type gene --end 10 > gene-start.fa
 
-# Protein FASTA.
-bio ncov --protein --start -10 > protein-end.fa
-
-# Translated CDS.
+# Translate the DNA for features that have the type CDS.
 bio ncov --translate --type CDS > translate.fa
 
-# Renamed protein.
+# Extract already(!) translated proteins from the data. The translation attribute must be filled in GenBank.
+bio ncov --protein --start -10 > protein-end.fa
+
+# There are shortcuts to accesing coding sequences for genes.
+# The following two commands are equivalent.
+bio ncov --fasta --type CDS --gene S --end 10 > shortcut.fa
+bio ncov:S --fasta --end 10 > shortcut.fa
+
+# Extract the already traslated protein from the data.
 bio ncov:S --fasta --protein --seqid foo > s_prot_foo.fa
 
-# Get the RatG13 data.
+# Interactive mode. Data obtained from the command line paramter
+bio ATGGGC -i --fasta > inter.fa
+
+# Translate in interactive mode.
+bio ATGGGC -i --translate >  inter-trans.fa
+
+# Translate on the reverse complement.
+bio ATGGGC -i --revcomp --translate > inter-revcomp1.fa
+
+# You can separately reverse and complement
+bio ATGGGC -i --reverse --complement --translate >  inter-revcomp2.fa
+
+# Get the RaTG13 data.
 bio MN996532 --fetch --rename ratg13 --seqid ratg13
 
-# Align DNA
-bio ncov ratg13 --end 200 --align > align-dna.txt
+# Align the first 200 bp across both genomes.
+bio ncov ratg13 --end 210 --align > align-dna.txt
 
-# Translate in interactive mode
-bio GGC -i --translate > dna-translate.txt
+# Align the DNA for the coding sequences of the S protein.
+bio ncov:S ratg13:S --end 210 --align > align-dna-s.txt
 
-# Align the extracted protein.
-bio ncov:S ratg13:S --end 80 --align > align-dna-s.txt
+# Align the translated DNA for the coding sequences of the S protein. Slice appled to DNA.
+bio ncov:S ratg13:S --end 210 --translate --align > align-translated-s.txt
 
-# Align the extracted protein.
-bio ncov:S ratg13:S --protein --align > align-protein-s.txt
+# Align the already translated proteins. Slice applied to the protein.
+bio ncov:S ratg13:S --protein --end 70 --align > align-protein-s.txt
 
-# Align the translated regions.
-bio ncov:S ratg13:S --end 80 --translate --align > align-translated-s.txt
-
-# Local alignment.
+# Local alignment in interactive mode.
 bio THISLINE ISALIGNED  -i --align --local > align-local.txt
 
-# Global alignment.
+# Global alignment in interactive mode.
 bio THISLINE ISALIGNED -i --align --global > align-global.txt
 
-# Semiglobal alignment.
+# Semiglobal alignment in interactive mode.
 bio THISLINE ISALIGNED -i --align --semiglobal > align-semiglobal.txt
 
 # Check taxonomy defaults
-bio 9606 --taxon > taxon_default.txt
+bio 9606 --taxon > taxon_9606.txt
 
-# Lineage
-bio 9606 --lineage --taxon > taxon_lineage.txt
+# Generate lineage.
+bio 9606 --lineage --taxon > taxon_9606_lineage.txt
 
-# Flat lineage
-bio 9606 --lineage --flat --taxon > taxon_flat_lineage.txt
+# The lineage may be flattened to a single line.
+bio 9606 --lineage --flat --taxon > taxon_9606_flat_lineage.txt
 
-# Taxonomy information from data as well
-bio ratg13 ncov 9606 --taxon > taxon_mixed.txt
+# Taxonomy information from data.
+bio ncov ratg13 --taxon > taxon_ncov_ratg13.txt
 

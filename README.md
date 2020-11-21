@@ -4,9 +4,10 @@
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
-Full documentation: 
+## Quick links
 
-* https://ialbert.github.io/bio/
+* Usage example: https://github.com/ialbert/bio/blob/master/test/test_bio_data.sh
+* Documentation: https://ialbert.github.io/bio/
 
 [docs]: https://ialbert.github.io/bio/
 
