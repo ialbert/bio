@@ -1,10 +1,12 @@
 # bio: making bioinformatics fun again
 
-> Under development (the package is functional but not fully vetted)
+> The software is currently under development. It is operational but not fully vetted.
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
-Documentation: https://ialbert.github.io/bio/
+Full documentation: 
+
+* https://ialbert.github.io/bio/
 
 [docs]: https://ialbert.github.io/bio/
 
@@ -21,7 +23,7 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
     # Align the DNA for the S protein.
     bio ncov:S ratg13:S --end 90 --align
 
-to align the first 90 basepairs of the DNA sequence of the  `S` protein from the SARS-COV-2 novel coronavirus to its closest (known) relative, the bat coronavirus RaTG13 to obtain:
+to align the first 90 basepairs of the DNA sequence of the  `S` protein from the SARS-COV-2 novel coronavirus to its closest (known) relative, the bat coronavirus RaTG13. The command above will print:
 
 ```
 ### 1: YP_009724390 vs QHR63300.2 ###
@@ -41,7 +43,6 @@ QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTC
 ```
 
 If you wanted to align the same sequences as translated proteins `bio` lets you write:
-
 
     bio ncov:S ratg13:S --end 90 --translate --align
     
@@ -68,12 +69,14 @@ Beyond alignments there is a lot more to `bio` and we recommend looking at the [
 
 ## Who is `bio` designed for?
 
+The software was written to teach bioinformatics and is the companion software to the [Biostar Handbook][handbook] textbook. The targeted audience comprises:
+
 - Students learning about bioinformatics.
 - Bioinformatics educators that need a platform to demonstrate bioinformatics concepts. 
 - Scientists working with large numbers of similar genomes (bacterial/viral strains).
 - Scientists that need to closely investigate and understand particular details of a genomic region.
 
-The ideas and motivations fueling the creation of `bio` developed while writing and maintainng the [Biostar Handbook][handbook] and educating the many cohorts of students that used the handbook in the classrom. 
+The ideas and motivations fueling the creation of `bio` came to us while educating the many cohorts of students that used the handbook in the classrom. 
 
 You see, in bioinformatics, many tasks that should be straightforward are, instead, needlessly complicated. `bio` is an opinionated take on how bioinformatics, particularly data presentation and access, should be simplified. 
 
@@ -135,4 +138,3 @@ followed by:
 The latter command will automatically generate a Python test for each line in the master script.
 
 The automatically generated test will verify that the command is operational and that the output matches the expectations.
-

@@ -1,21 +1,19 @@
 # Welcome to bioinformatics
 
-> Software under development. Operational but not fully vetted.
+> The software is currently under development. It is operational but not fully vetted.
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
-Built on top of [BioPython][biopython], [Parasail][parasail] and other existing packages; `bio` streamlines bioinformatics tasks such as:
+Built on top of [BioPython][biopython], [Parasail][parasail] and other existing packages; `bio` streamlines tedius bioinformatics tasks such as:
  
-- downloading data from NCBI
-- converting between data formats 
-- extracting partial information from files: select by gene, by coordinate, by matching a pattern ...
-- aligning sequences
-- visualizing taxonomies
-- ... and others ... 
+- downloading and storing data
+- converting between formats 
+- extracting a subset of information 
+- visualizing alignments 
+- exploring taxonomies
+- ... and more ...
 
-Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
-
-If you are new to bioinformatics and would like to get traind in how to use `bio` see the [Biostar Handbook][handbook]
+Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. The software was written to teach bioinformatics and is the companion software to the [Biostar Handbook][handbook]
  
 [biopython]: https://biopython.org/
 [emboss]: http://emboss.sourceforge.net/
