@@ -125,6 +125,6 @@ def generate_tests(infile, outfile="test_bio.py"):
     fp.close()
 
 if __name__ == '__main__':
-    infile = os.path.join(CURR_DIR, "test_bio_data.sh")
+    infile = os.path.join(CURR_DIR, "bio_examples.sh")
     outfile = os.path.join(CURR_DIR, "test_bio.py")
     generate_tests(infile=infile, outfile=outfile)

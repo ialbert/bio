@@ -8,7 +8,7 @@ test:
 	pytest
 
 build_data:
-	(cd test/data && bash ../test_bio_data.sh)
+	(cd test/data && bash ../bio_examples.sh)
 
 build_test:
 	(cd test && python generate.py)

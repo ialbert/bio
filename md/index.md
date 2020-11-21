@@ -21,9 +21,12 @@ Having access to all the utility described above makes the `bio` package well su
 [simplesam]: https://github.com/mdshw5/simplesam 
 [handbook]: https://www.biostarhandbook.com/
 
-## Source code
+## Quick links
 
-* https://github.com/ialbert/bio
+* Source code: https://github.com/ialbert/bio
+* Use cases: [bio_examples.sh][usage]
+
+[usage]: https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
 
 ## Why do we need this software?
 

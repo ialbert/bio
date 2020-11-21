@@ -6,10 +6,11 @@
 
 ## Quick links
 
-* Usage example: https://github.com/ialbert/bio/blob/master/test/test_bio_data.sh
+* Usage examples: [bio_examples.sh][examples]
 * Documentation: https://ialbert.github.io/bio/
 
 [docs]: https://ialbert.github.io/bio/
+[examples]: https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
 
 ## Why do we need this software?
 
@@ -120,7 +121,7 @@ To run all tests use:
     
 Tests are automatically built from a test script that mimics real life usage scenarios.
 
-* https://github.com/ialbert/bio/blob/master/test/test_bio_data.sh
+* https://github.com/ialbert/bio/blob/master/test/bio_usage.sh
 
 ## New tests
 
@@ -130,7 +131,7 @@ To add a new test first run the command you wish to test, for example:
 
 in the `test/data` directory. After that add the same command above into the master script:
 
-* https://github.com/ialbert/bio/blob/master/test/test_bio_data.sh
+* https://github.com/ialbert/bio/blob/master/test/bio_usage.sh
     
 followed by:
 
