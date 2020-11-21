@@ -1,9 +1,11 @@
 # Related software {#related}
 
-Since the beginning of times mankind was hindered by suboptimal dataformats, clunky interfaces. A veritable cottage industry has formed `bio` being one of the proud entrants in the fray.
+Since the beginning of times mankind was hindered by suboptimal dataformats, clunky interfaces, tedious procedures. A veritable cottage industry has formed to deal with the challegnes, `bio` being one of the proud entrants in the fray.
 
-Here is a list of packages we evaluated and sometimes borrowed ideas from. Alas none quite works as we needed it, hence like our father, our father's father and great-great grandfather, we have also set out to finally, FINALLY fix the problem **once for all**. This time for real :-)
+Here is a list of packages we evaluated and sometimes borrowed ideas from. Alas none quite works as we needed it, hence like our father, and our father's father and their great-great grandfather, we have also set out to finally fix the problem once for all.
 
+Descriptions are direct quotes from the project's homepage.
+ 
 ## EMBOSS
 
 EMBOSS is "The European Molecular Biology Open Software Suite". EMBOSS is a free Open Source software analysis package specially developed for the needs of the molecular biology (e.g. EMBnet) user community. The software automatically copes with data in a variety of formats and even allows transparent retrieval of sequence data from the web. Also, as extensive libraries are provided with the package, it is a platform to allow other scientists to develop and release software in true open source spirit. EMBOSS also integrates a range of currently available packages and tools for sequence analysis into a seamless whole. EMBOSS breaks the historical trend towards commercial software packages.
