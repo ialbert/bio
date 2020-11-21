@@ -48,106 +48,114 @@ def test_10(capsys):
     run(cmd, capsys=capsys, fname="overlap.gff")
 
 def test_11(capsys):
+    cmd = "bio ncov --gff  --start 10,000 --end 20,000"
+    run(cmd, capsys=capsys, fname="overlap.gff")
+
+def test_12(capsys):
+    cmd = "bio ncov --gff  --start 10kb --end 20kb"
+    run(cmd, capsys=capsys, fname="overlap.gff")
+
+def test_13(capsys):
     cmd = "bio ncov --gff  --type CDS"
     run(cmd, capsys=capsys, fname="type.gff")
 
-def test_12(capsys):
+def test_14(capsys):
     cmd = "bio ncov --gff  --type gene,CDS,mRNA"
     run(cmd, capsys=capsys, fname="multiple-types.gff")
 
-def test_13(capsys):
+def test_15(capsys):
     cmd = "bio ncov --fasta --seqid foo --start 10 --end 20"
     run(cmd, capsys=capsys, fname="fasta-start.fa")
 
-def test_14(capsys):
+def test_16(capsys):
     cmd = "bio ncov --fasta --type CDS"
     run(cmd, capsys=capsys, fname="CDS.fa")
 
-def test_15(capsys):
+def test_17(capsys):
     cmd = "bio ncov --fasta --type gene --end 10"
     run(cmd, capsys=capsys, fname="gene-start.fa")
 
-def test_16(capsys):
+def test_18(capsys):
     cmd = "bio ncov --translate --type CDS"
     run(cmd, capsys=capsys, fname="translate.fa")
 
-def test_17(capsys):
+def test_19(capsys):
     cmd = "bio ncov --protein --start -10"
     run(cmd, capsys=capsys, fname="protein-end.fa")
 
-def test_18(capsys):
+def test_20(capsys):
     cmd = "bio ncov --fasta --type CDS --gene S --end 10"
     run(cmd, capsys=capsys, fname="shortcut.fa")
 
-def test_19(capsys):
+def test_21(capsys):
     cmd = "bio ncov:S --fasta --end 10"
     run(cmd, capsys=capsys, fname="shortcut.fa")
 
-def test_20(capsys):
+def test_22(capsys):
     cmd = "bio ncov:S --fasta --protein --seqid foo"
     run(cmd, capsys=capsys, fname="s_prot_foo.fa")
 
-def test_21(capsys):
+def test_23(capsys):
     cmd = "bio ATGGGC -i --fasta"
     run(cmd, capsys=capsys, fname="inter.fa")
 
-def test_22(capsys):
+def test_24(capsys):
     cmd = "bio ATGGGC -i --translate"
     run(cmd, capsys=capsys, fname="inter-trans.fa")
 
-def test_23(capsys):
+def test_25(capsys):
     cmd = "bio ATGGGC -i --revcomp --translate"
     run(cmd, capsys=capsys, fname="inter-revcomp1.fa")
 
-def test_24(capsys):
+def test_26(capsys):
     cmd = "bio ATGGGC -i --reverse --complement --translate"
     run(cmd, capsys=capsys, fname="inter-revcomp2.fa")
 
-def test_25(capsys):
+def test_27(capsys):
     cmd = "bio MN996532 --fetch --rename ratg13 --seqid ratg13"
     run(cmd, capsys=capsys, fname=None)
 
-def test_26(capsys):
+def test_28(capsys):
     cmd = "bio ncov ratg13 --end 210 --align"
     run(cmd, capsys=capsys, fname="align-dna.txt")
 
-def test_27(capsys):
+def test_29(capsys):
     cmd = "bio ncov:S ratg13:S --end 210 --align"
     run(cmd, capsys=capsys, fname="align-dna-s.txt")
 
-def test_28(capsys):
+def test_30(capsys):
     cmd = "bio ncov:S ratg13:S --end 210 --translate --align"
     run(cmd, capsys=capsys, fname="align-translated-s.txt")
 
-def test_29(capsys):
+def test_31(capsys):
     cmd = "bio ncov:S ratg13:S --protein --end 70 --align"
     run(cmd, capsys=capsys, fname="align-protein-s.txt")
 
-def test_30(capsys):
+def test_32(capsys):
     cmd = "bio THISLINE ISALIGNED  -i --align --local"
     run(cmd, capsys=capsys, fname="align-local.txt")
 
-def test_31(capsys):
+def test_33(capsys):
     cmd = "bio THISLINE ISALIGNED -i --align --global"
     run(cmd, capsys=capsys, fname="align-global.txt")
 
-def test_32(capsys):
+def test_34(capsys):
     cmd = "bio THISLINE ISALIGNED -i --align --semiglobal"
     run(cmd, capsys=capsys, fname="align-semiglobal.txt")
 
-def test_33(capsys):
+def test_35(capsys):
     cmd = "bio 9606 --taxon"
     run(cmd, capsys=capsys, fname="taxon_9606.txt")
 
-def test_34(capsys):
+def test_36(capsys):
     cmd = "bio 9606 --lineage --taxon"
     run(cmd, capsys=capsys, fname="taxon_9606_lineage.txt")
 
-def test_35(capsys):
+def test_37(capsys):
     cmd = "bio 9606 --lineage --flat --taxon"
     run(cmd, capsys=capsys, fname="taxon_9606_flat_lineage.txt")
 
-def test_36(capsys):
+def test_38(capsys):
     cmd = "bio ncov ratg13 --taxon"
     run(cmd, capsys=capsys, fname="taxon_ncov_ratg13.txt")
 

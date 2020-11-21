@@ -1,8 +1,8 @@
 # Related software {#related}
 
-Since the beginning of times mankind was hindered by suboptimal dataformats, clunky interfaces, tedious procedures. A veritable cottage industry has formed to deal with the challegnes, `bio` being one of the proud entrants in the fray.
+Since the beginning of bioinformatic times mankind was held down, hindered and obstructed by suboptimal dataformats, clunky interfaces, tedious procedures, bureaucratic protocols. No wonder a thriving cottage industry was born to deal with the challenges, `bio` being one of the proud entrants in the fray.
 
-Here is a list of packages we evaluated and sometimes borrowed ideas from. Alas none quite works as we needed it, hence like our father, and our father's father and their great-great grandfather, we have also set out to finally fix the problem once for all.
+Here is a list of packages we've evaluated and sometimes borrowed ideas from. Alas none quite works as we needed it, hence like our father, and our father's father and their great grandfather, we have also set out to *finally* fix the problems once and for all. 
 
 Descriptions are direct quotes from the project's homepage.
  
