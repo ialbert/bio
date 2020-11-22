@@ -63,11 +63,11 @@ bio ncov --fasta --type gene --end 10 > gene-start.fa
 # Translate the DNA for features that have the type CDS.
 bio ncov --translate --type CDS > translate.fa
 
-# Extract already(!) translated proteins from the data.
+# Extract already translated proteins from the data.
 # The translation attribute must be filled in GenBank.
 bio ncov --protein --start -10 > protein-end.fa
 
-# There are shortcuts to accesing coding sequences for genes.
+# There are shortcuts to accessing coding sequences for genes.
 # The following two commands are equivalent.
 bio ncov --fasta --type CDS --gene S --end 10 > shortcut.fa
 bio ncov:S --fasta --end 10 > shortcut.fa

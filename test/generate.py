@@ -10,7 +10,7 @@ from itertools import count
 from textwrap import dedent
 import os, sys, difflib
 import biorun.libs.placlib as plac
-from biorun import main, const
+from biorun import main, const, convert
 from biorun.models import jsonrec
 from biorun.methods import align
 from biorun.models import taxdb
@@ -46,17 +46,17 @@ def run(cmd, capsys, fname=None):
     params = cmd.split()[1:]
 
     # Different functions to be called based on the command.
-    if params and const.ALIGN_FLAG in params:
+    if params and const.ALIGN_COMMAND in params:
         # Run the alignment tests.
-        params.remove(const.ALIGN_FLAG)
+        params.remove(const.ALIGN_COMMAND)
         assert plac.call(align.run, params) is None
-    elif params and const.TAXON_FLAG in params:
+    elif params and const.TAXON_COMMAND in params:
         # Run the alignment tests.
-        params.remove(const.TAXON_FLAG)
+        params.remove(const.TAXON_COMMAND)
         assert plac.call(taxdb.run, params) is None
     else:
         # Run converter commands.
-        assert plac.call(main.converter, params) is None
+        assert plac.call(convert.run, params) is None
 
     # Read the standard out
     stream = capsys.readouterr()

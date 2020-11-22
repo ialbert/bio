@@ -13,7 +13,7 @@ ORIGIN_SIZE = "origin_len"
 # Alignment modes.
 GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
-ALIGN_FLAG, TAXON_FLAG = "--align", "--taxon"
+ALIGN_COMMAND, TAXON_COMMAND, SRA_COMMAND = "--align", "--taxon", "--sra"
 
 SKIP_GFF_ATTR = { "id", "name",  "type", "start", "end", "location", "translation", "strand", "operator"}
 

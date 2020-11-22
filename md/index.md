@@ -50,7 +50,9 @@ First we download and rename the data to have more manageable labels:
     bio NC_045512 --fetch --rename ncov
     bio MN996532  --fetch --rename ratg13
 
-From now on `bio` can operate on  `NC_045512` using the name `ncov` and on `MN996532` using the name `ratg13` no matter where you are on your computer! It stores the data in an internal storage system that can be used from any folder. There is no clutter of files or paths to remember. For example, in any directory you now can type:
+From now on `bio` can operate on  `NC_045512` using the name `ncov` and on `MN996532` using the name `ratg13` no matter where you are on your computer! 
+
+`bio` stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory you now can type:
 
     bio ncov --fasta --end 100
     
