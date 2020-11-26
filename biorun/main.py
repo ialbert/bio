@@ -74,11 +74,11 @@ def router():
         sys.argv.remove(const.TAXON_COMMAND)
         plac.call(taxdb.run)
 
-    elif const.SRA_COMMAND in sys.argv:
+    elif const.DBLINK_COMMAND in sys.argv:
         # Run SRA specific functionality.
-        from biorun.models import sra
-        sys.argv.remove(const.SRA_COMMAND)
-        plac.call(sra.run)
+        from biorun.models import dblink
+        sys.argv.remove(const.DBLINK_COMMAND)
+        plac.call(dblink.run)
 
     else:
         # Default action is to convert a file.
