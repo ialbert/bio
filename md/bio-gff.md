@@ -13,15 +13,20 @@ convert it to gff:
     
 ## GFF created with `bio`
    
-Here is a region from the GFF file created with `bio` above:
+Here is a region from the GFF file created with the code above as visualized in IGV:
 
 ```{r fig.align='center', echo=FALSE}
 knitr::include_graphics('images/gff-model-bio.png', dpi = NA)
 ```
 
 The features are explicit, well separated, colored by type, and easier to see and interpret. 
+Below is the same region of the GFF file as downloaded from NCBI. We believe it is more difficult to understand.
 
-`bio` follows the definitions in the [Sequence Ontology][SO] that NCBI does not! In the GFF files created with `bio` an exon will parented to a transcript, a CDS will belong to an mRNA. NCBI will use the mRNA as the parent for both types.
+```{r fig.align='center', echo=FALSE}
+knitr::include_graphics('images/gff-model-ncbi.png', dpi = NA)
+```
+
+`bio` follows the definitions in the [Sequence Ontology][SO]. In the GFF files created with `bio` an exon will parented to a transcript, a CDS will belong to an mRNA. NCBI will use the mRNA as the parent for both types.
 
     gene --> transcript --> exon
     gene --> mRNA --> CDS
@@ -33,13 +38,6 @@ Other considerations:
 
 [SO]: http://www.sequenceontology.org/
 
-## GFF obtained from NCBI
-
-Here is the same region from a GFF file downloaded from NCBI, note how much more difficult it is to understand. Among the many reasons is that both exons and CDS features use mRNA as the parent.
-
-```{r fig.align='center', echo=FALSE}
-knitr::include_graphics('images/gff-model-ncbi.png', dpi = NA)
-```
 
 ## Convert all features to GFF:
 

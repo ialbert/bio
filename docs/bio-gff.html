@@ -126,10 +126,12 @@ bio NT_033779 --fetch --rename fly </code></pre>
 </div>
 <div id="gff-created-with-bio" class="section level2">
 <h2>GFF created with <code>bio</code></h2>
-<p>Here is a region from the GFF file created with <code>bio</code> above:</p>
+<p>Here is a region from the GFF file created with the code above as visualized in IGV:</p>
 <p><img src="images/gff-model-bio.png" style="display: block; margin: auto;" /></p>
-<p>The features are explicit, well separated, colored by type, and easier to see and interpret.</p>
-<p><code>bio</code> follows the definitions in the <a href="http://www.sequenceontology.org/">Sequence Ontology</a> that NCBI does not! In the GFF files created with <code>bio</code> an exon will parented to a transcript, a CDS will belong to an mRNA. NCBI will use the mRNA as the parent for both types.</p>
+<p>The features are explicit, well separated, colored by type, and easier to see and interpret.
+Below is the same region of the GFF file as downloaded from NCBI. We believe it is more difficult to understand.</p>
+<p><img src="images/gff-model-ncbi.png" style="display: block; margin: auto;" /></p>
+<p><code>bio</code> follows the definitions in the <a href="http://www.sequenceontology.org/">Sequence Ontology</a>. In the GFF files created with <code>bio</code> an exon will parented to a transcript, a CDS will belong to an mRNA. NCBI will use the mRNA as the parent for both types.</p>
 <pre><code>gene --&gt; transcript --&gt; exon
 gene --&gt; mRNA --&gt; CDS</code></pre>
 <p>Other considerations:</p>
@@ -138,45 +140,40 @@ gene --&gt; mRNA --&gt; CDS</code></pre>
 <li>CDS features have <code>protein_id</code> and <code>gene_id</code> attributes set.</li>
 </ul>
 </div>
-<div id="gff-obtained-from-ncbi" class="section level2">
-<h2>GFF obtained from NCBI</h2>
-<p>Here is the same region from a GFF file downloaded from NCBI, note how much more difficult it is to understand. Among the many reasons is that both exons and CDS features use mRNA as the parent.</p>
-<p><img src="images/gff-model-ncbi.png" style="display: block; margin: auto;" /></p>
-</div>
 <div id="convert-all-features-to-gff" class="section level2">
 <h2>Convert all features to GFF:</h2>
 <pre class="bash"><code>bio ncov --gff | head -5</code></pre>
 <pre><code>##gff-version 3
-ncov    .   region  1   29903   .   +   .   ID=1;Name=Severe acute respiratory syndrome coronavirus 2;organism=Severe acute respiratory syndrome coronavirus 2;mol_type=genomic RNA;isolate=Wuhan-Hu-1;host=Homo sapiens;db_xref=taxon:2697049;country=China;collection_date=Dec-2019;color=#CECECE
-ncov    .   five_prime_UTR  1   265 .   +   .   ID=2;Name=five_prime_UTR;color=#cc0e74
-ncov    .   gene    266 21555   .   +   .   ID=GU280_gp01;Name=ORF1ab;gene=ORF1ab;locus_tag=GU280_gp01;db_xref=GeneID:43740578;color=#cb7a77
-ncov    .   mRNA    266 21555   .   +   .   ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;color=#7a77cb</code></pre>
+NC_045512.2 .   region  1   29903   .   +   .   ID=1;Name=Severe acute respiratory syndrome coronavirus 2;organism=Severe acute respiratory syndrome coronavirus 2;mol_type=genomic RNA;isolate=Wuhan-Hu-1;host=Homo sapiens;db_xref=taxon:2697049;country=China;collection_date=Dec-2019;color=#CECECE
+NC_045512.2 .   five_prime_UTR  1   265 .   +   .   ID=2;Name=five_prime_UTR;color=#cc0e74
+NC_045512.2 .   gene    266 21555   .   +   .   ID=GU280_gp01;Name=ORF1ab;gene=ORF1ab;locus_tag=GU280_gp01;db_xref=GeneID:43740578;color=#cb7a77
+NC_045512.2 .   mRNA    266 21555   .   +   .   ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;color=#7a77cb</code></pre>
 </div>
 <div id="convert-to-gff-only-the-features-with-type-cds" class="section level2">
 <h2>Convert to GFF only the features with type <code>CDS</code></h2>
 <pre class="bash"><code>bio ncov --gff --type CDS | head -5</code></pre>
 <pre><code>##gff-version 3
-ncov    .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
-ncov    .   CDS 13468   21555   .   +   .   ID=CDS-2;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
-ncov    .   CDS 266 13483   .   +   .   ID=CDS-3;Parent=YP_009725295.1;Name=YP_009725295.1;gene=ORF1ab;locus_tag=GU280_gp01;note=pp1a;codon_start=1;product=ORF1a polyprotein;protein_id=YP_009725295.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
-ncov    .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02</code></pre>
+NC_045512.2 .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
+NC_045512.2 .   CDS 13468   21555   .   +   .   ID=CDS-2;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
+NC_045512.2 .   CDS 266 13483   .   +   .   ID=CDS-3;Parent=YP_009725295.1;Name=YP_009725295.1;gene=ORF1ab;locus_tag=GU280_gp01;note=pp1a;codon_start=1;product=ORF1a polyprotein;protein_id=YP_009725295.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
+NC_045512.2 .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02</code></pre>
 </div>
 <div id="convert-to-gff-only-the-features-tagged-with-gene-s" class="section level2">
 <h2>Convert to GFF only the features tagged with gene <code>S</code></h2>
 <pre class="bash"><code>bio ncov --gff --gene S | head -5</code></pre>
 <pre><code>##gff-version 3
-ncov    .   gene    21563   25384   .   +   .   ID=GU280_gp02;Name=S;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;db_xref=GeneID:43740568;color=#cb7a77
-ncov    .   mRNA    21563   25384   .   +   .   ID=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;color=#7a77cb
-ncov    .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02</code></pre>
+NC_045512.2 .   gene    21563   25384   .   +   .   ID=GU280_gp02;Name=S;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;db_xref=GeneID:43740568;color=#cb7a77
+NC_045512.2 .   mRNA    21563   25384   .   +   .   ID=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;color=#7a77cb
+NC_045512.2 .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02</code></pre>
 </div>
 <div id="convert-to-gff-only-the-features-that-overlap-a-interval" class="section level2">
 <h2>Convert to GFF only the features that overlap a interval</h2>
 <pre class="bash"><code>bio ncov --gff --start 2000 --end 3000 | head -5</code></pre>
 <pre><code>##gff-version 3
-ncov    .   region  1   29903   .   +   .   ID=1;Name=Severe acute respiratory syndrome coronavirus 2;organism=Severe acute respiratory syndrome coronavirus 2;mol_type=genomic RNA;isolate=Wuhan-Hu-1;host=Homo sapiens;db_xref=taxon:2697049;country=China;collection_date=Dec-2019;color=#CECECE
-ncov    .   gene    266 21555   .   +   .   ID=GU280_gp01;Name=ORF1ab;gene=ORF1ab;locus_tag=GU280_gp01;db_xref=GeneID:43740578;color=#cb7a77
-ncov    .   mRNA    266 21555   .   +   .   ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;color=#7a77cb
-ncov    .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01</code></pre>
+NC_045512.2 .   region  1   29903   .   +   .   ID=1;Name=Severe acute respiratory syndrome coronavirus 2;organism=Severe acute respiratory syndrome coronavirus 2;mol_type=genomic RNA;isolate=Wuhan-Hu-1;host=Homo sapiens;db_xref=taxon:2697049;country=China;collection_date=Dec-2019;color=#CECECE
+NC_045512.2 .   gene    266 21555   .   +   .   ID=GU280_gp01;Name=ORF1ab;gene=ORF1ab;locus_tag=GU280_gp01;db_xref=GeneID:43740578;color=#cb7a77
+NC_045512.2 .   mRNA    266 21555   .   +   .   ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;color=#7a77cb
+NC_045512.2 .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01</code></pre>
 
 </div>
 </div>
