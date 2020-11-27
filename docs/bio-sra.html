@@ -119,7 +119,6 @@
 <p><code>bio</code> has support to automatically query your data for additional information at sra.</p>
 <p>While Not all GenBank records are properly cross referenced, but for those that are <code>bio</code> can get you the SRA inforamation right away. Here is how it works. Get a strain of Ebola sequenced in 2014</p>
 <pre class="bash"><code>bio KM233118 --fetch --rename ebola </code></pre>
-<pre><code>*** not found: </code></pre>
 <p>First check to see if the record is being properly cross referenced:</p>
 <pre class="bash"><code>bio ebola --sra</code></pre>
 <pre><code>ebola   BioProject  PRJNA257197
