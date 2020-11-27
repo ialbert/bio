@@ -52,12 +52,11 @@ produces:
 Once you fetch the data
     
     bio NC_045512 --fetch --rename ncov
-    
-    
+        
 you can view the descendants:
 
 ```{bash, comment=NA}
-    bio ncov --taxon
+bio ncov --taxon
 ```
 
 or view the lineage:

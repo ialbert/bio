@@ -5,16 +5,34 @@ The `bio` package may be used to
 - convert data from GenBank to other formats: FASTA, GFF
 - extract only certain sections of data: features by name, coordinate, range
 
-### View the JSON representation of the data:
+Let's get the SARS-COV-2 data and rename it:
+
+    bio NC_045512 --fetch --rename ncov
+ 
+### The JSON representation of the entire data
+
+The data representation behind the hood. `bio` transforms all incoming data to this format:
 
 ```{bash, comment=NA}
 bio ncov | head
 ```
 
-### View the JSON representation for a feature:
+It is a flat JSON format, very useful in seeing what information is available altogether.
+
+### The JSON representation for a feature
+  
+We can explore the internal representation for a type and a gene name:
   
 ```{bash, comment=NA}
 bio ncov --type CDS --gene S | head 
+```
+
+### The GenBank version of the data
+
+This is the file downloaded from NCBI
+
+```{bash, comment=NA}
+bio ncov --genbank | head 
 ```
 
 ### Convert all features to GFF:
@@ -58,7 +76,6 @@ bio ncov --fasta --start 100 --end 200 --seqid foo | head -5
 ```{bash, comment=NA}
 bio ncov --fasta --start -10 --seqid last | head -5
 ```
-
 
 ### Extract the sequences for features of a certain type
 

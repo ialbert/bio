@@ -32,39 +32,27 @@ try out a conversion:
 
 ## Usage
 
-Type `bio` followed by one or more accession numbers followed by one or more flags or options.
+Type `bio` followed by one or more accession numbers or data names followed by one or more flags or options.
 
-    bio [command] [words] --option value --flag 
+## Subcommands
 
-1. Commands may be: `align`, `taxon`.  When no commands are passed the default actions take place.
-1. The `words` may be one or more data names.    
-1. A `flag` is a parameter that does not take additional values: `--fetch` or `--list`
-1. An `option` is a parameter that takes an additional value: `--start 100` or `--gap-open 10`
-    
-Use the `-v` flag to produce verbose outputs for a run. 
+Certain flags trigger different behaviors:
 
-### Subcommands
-
-Certain words may not be used as data names  as they carry additional meaning and trigger 
-alternative actions
-
-    bio align data1 data2 --option value --flag
-
-You may get help on alignments with:
-
-    bio align -h
+    bio --align
+    bio --taxon
+    bio --sra 
     
 ## Getting help
 
     bio -h
-    
-to get help for a specific command:
-        
-        
-## Help pages
 
-Besides the default actions `bio` may also take subcommands such as `align`. Each subcommand
-has its own command line help page.
+Subcommands will have separate help pages. For example:
+
+    bio --align -h
+
+## Actual help pages
+
+Below we include the help page for each active command
 
 ### 1\. Help page for default actions
 
@@ -75,12 +63,17 @@ bio -h
 ### 2\. Help page for alignments 
 
 ```{bash, comment=NA}
-bio align -h
+bio --align -h
 ```
 
 ### 3\. Help page for taxonomy 
 
 ```{bash, comment=NA}
-bio taxon -h
+bio --taxon -h
 ```
 
+### 4\. Help page for SRA search 
+
+```{bash, comment=NA}
+bio --sra -h
+```

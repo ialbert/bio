@@ -357,33 +357,35 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
 
     if list_:
         print_database(names=names, graph=graph)
-    elif download:
+        sys.exit()
+
+    if download:
         download_taxdump()
-    elif build:
+
+    if build:
         build_database(limit=limit)
-    else:
 
-        terms = []
-        # Attempts to fetch data if possible.
-        for word in words:
-            json = storage.get_json(word)
-            doubles = [jsonrec.find_taxid(rec) for rec in json] if json else [[]]
-            taxids = [elem for sublist in doubles for elem in sublist]
-            if taxids:
-                terms.extend(taxids)
-            else:
-                terms.append(word)
+    terms = []
+    # Attempts to fetch data if possible.
+    for word in words:
+        json = storage.get_json(word)
+        doubles = [jsonrec.find_taxid(rec) for rec in json] if json else [[]]
+        taxids = [elem for sublist in doubles for elem in sublist]
+        if taxids:
+            terms.extend(taxids)
+        else:
+            terms.append(word)
 
-        for word in terms:
+    for word in terms:
 
-            if lineage:
-                print_lineage(word, names=names, flat=flat)
-            else:
-                query(word, names=names, graph=graph)
+        if lineage:
+            print_lineage(word, names=names, flat=flat)
+        else:
+            query(word, names=names, graph=graph)
 
-        # No terms listed. Print database stats.
-        if not terms:
-            print_stats(names=names, graph=graph)
+    # No terms listed. Print database stats.
+    if not terms:
+        print_stats(names=names, graph=graph)
 
 
 if __name__ == '__main__':
