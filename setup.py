@@ -21,6 +21,7 @@ setup(
     ],
     install_requires=[
         'biopython',
+        'requests'
     ],
 
     entry_points={

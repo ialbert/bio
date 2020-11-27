@@ -159,3 +159,15 @@ def test_38(capsys):
     cmd = "bio ncov ratg13 --taxon"
     run(cmd, capsys=capsys, fname="taxon_ncov_ratg13.txt")
 
+def test_39(capsys):
+    cmd = "bio ebola --delete"
+    run(cmd, capsys=capsys, fname=None)
+
+def test_40(capsys):
+    cmd = "bio KM233118 --fetch --rename ebola"
+    run(cmd, capsys=capsys, fname=None)
+
+def test_41(capsys):
+    cmd = "bio ebola --sra"
+    run(cmd, capsys=capsys, fname="sra-test.txt")
+

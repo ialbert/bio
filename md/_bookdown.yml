@@ -3,6 +3,7 @@ rmd_files: [
   "bio-install.md",
   "bio-data.md",
   "bio-convert.md",
+  "bio-sra.md",
   "bio-align.md",
   "bio-taxonomy.md",
   "bio-examples.md",

@@ -125,3 +125,12 @@ bio 9606 --lineage --flat --taxon > taxon_9606_flat_lineage.txt
 # Taxonomy information from data.
 bio ncov ratg13 --taxon > taxon_ncov_ratg13.txt
 
+# Remove the old ebola if exists.
+bio ebola --delete
+
+# Fetch and rename the ebola data.
+bio KM233118 --fetch --rename ebola
+
+# Get the links to the data.
+bio ebola --sra > sra-test.txt
+

@@ -11,9 +11,9 @@ from textwrap import dedent
 import os, sys, difflib
 import biorun.libs.placlib as plac
 from biorun import main, const, convert
-from biorun.models import jsonrec
+from biorun.models import jsonrec, dblink, taxdb
 from biorun.methods import align
-from biorun.models import taxdb
+
 
 # Test naming index.
 COUNTER = count(1)
@@ -54,6 +54,10 @@ def run(cmd, capsys, fname=None):
         # Run the alignment tests.
         params.remove(const.TAXON_COMMAND)
         assert plac.call(taxdb.run, params) is None
+    elif params and const.DBLINK_COMMAND in params:
+        # Run the alignment tests.
+        params.remove(const.DBLINK_COMMAND)
+        assert plac.call(dblink.run, params) is None
     else:
         # Run converter commands.
         assert plac.call(convert.run, params) is None
