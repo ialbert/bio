@@ -22,6 +22,7 @@ setup(
     install_requires=[
         'biopython',
         'requests',
+        'parasail',
     ],
 
     entry_points={

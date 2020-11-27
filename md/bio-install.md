@@ -2,21 +2,20 @@
 
 `bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
 
-## Prerequisites
+## Installation
 
-We don't fully automate the dependency installation to give users the option of using the approach they prefer. To install the requirements with `conda` write:
+While the following command should work:
+
+    pip install bio --upgrade
+        
+we usually recommend installing prerequisites with conda like so:
 
     conda install -c bioconda biopython parasail-python
     
-You may also install the requirements via `pip`:
+then proceed with:
 
-    pip install biopython parasail-python
+    pip install bio --upgr
 
-## Installation
-    
-Install the package with:
-
-    pip install bio --upgrade
 
 ## Quick start
 

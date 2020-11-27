@@ -118,7 +118,7 @@
 <p>The software is currently under development. It is operational but not fully vetted.</p>
 </blockquote>
 <p><code>bio</code> - command-line utilities to make bioinformatics explorations more enjoyable.</p>
-<p>Built on top of <a href="https://biopython.org/">BioPython</a>, <a href="https://github.com/jeffdaily/parasail">Parasail</a> and other existing packages; <code>bio</code> streamlines tedius bioinformatics tasks such as:</p>
+<p>Built on top of <a href="https://biopython.org/">BioPython</a>, <a href="https://github.com/jeffdaily/parasail">Parasail</a> and other existing packages; <code>bio</code> streamlines tedious bioinformatics tasks such as:</p>
 <ul>
 <li>downloading and storing data</li>
 <li>converting between formats</li>
@@ -140,15 +140,42 @@
 <p>If you’ve ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress.</p>
 <p>Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The <code>bio</code> package is meant to solve that tedium.</p>
 </div>
-<div id="a-realistic-example" class="section level2">
-<h2>A realistic example</h2>
+<div id="diving-right-in" class="section level2">
+<h2>Diving right in</h2>
+<p>Here is how to align the first 1000 basepairs of SARS-COV-2 versus a mutated version of the same virus?</p>
+<pre><code># Get the data.
+bio NC_045512 MN996532 --fetch 
+
+# Align the data.
+bio NC_045512 MN996532 --align --end 1000</code></pre>
+<p>that’s it. <code>bio</code> will do it all for you and prints:</p>
+<pre><code>### 1: NC_045512.2 vs MN996532.2 ###
+
+Length: 1000 (semiglobal)
+Query:  1000 [1, 1000]
+Target: 1000 [1, 1000]
+Score:  4721
+Ident:  969/1000 (96.9%)
+Simil:  969/1000 (96.9%)
+Gaps:   0/1000 (0.0%)
+Matrix: nuc44(-11, -1)
+
+NC_045512.2  ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
+           1 ||||||||||||||||||.|||||||||||||||||.||||.||||||||||||||||||||||||||||||||||||||||||||||||.||||||||| 100
+MN996532.2   ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGACTGTCACTC
+
+NC_045512.2  GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGT
+         101 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||.|||||||||||||||.|||||||||| 200
+MN996532.2   GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCATCTATCTTCTGCAGGTTGCTTACGGT
+
+...    </code></pre>
+</div>
+<div id="a-more-realistic-example" class="section level2">
+<h2>A more realistic example</h2>
 <p>Suppose you wanted to identify the differences between the <code>S</code> protein of the bat coronavirus deposited as <code>MN996532</code> and the <code>S</code> protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number <code>NC_045512</code>.</p>
 <p>If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, then think about the effort it would take you to teach someone else how to do the same.</p>
-</div>
-<div id="the-solution-with-bio" class="section level2">
-<h2>The solution with <code>bio</code></h2>
 <p>With the <code>bio</code> package the process takes simple, concise steps.</p>
-<p>First we download and rename the data to have more manageable labels:</p>
+<p>First we download and rename the data keep our sanity:</p>
 <pre><code>bio NC_045512 --fetch --rename ncov
 bio MN996532  --fetch --rename ratg13</code></pre>
 <p>From now on <code>bio</code> can operate on <code>NC_045512</code> using the name <code>ncov</code> and on <code>MN996532</code> using the name <code>ratg13</code> no matter where you are on your computer!</p>

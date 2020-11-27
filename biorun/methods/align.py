@@ -12,7 +12,6 @@ try:
     from Bio import Align
     from Bio.Seq import Seq
     from Bio.SeqRecord import SeqRecord
-    from Bio.Alphabet import IUPAC
     from Bio import BiopythonExperimentalWarning
 except ImportError as exc:
     print(f"*** Error: {exc}", file=sys.stderr)

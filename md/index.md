@@ -4,7 +4,7 @@
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
-Built on top of [BioPython][biopython], [Parasail][parasail] and other existing packages; `bio` streamlines tedius bioinformatics tasks such as:
+Built on top of [BioPython][biopython], [Parasail][parasail] and other existing packages; `bio` streamlines tedious bioinformatics tasks such as:
  
 - downloading and storing data
 - converting between formats 
@@ -34,18 +34,48 @@ If you've ever done bioinformatics you know how even seemingly straightforward t
 
 Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium. 
 
+## Diving right in
 
-## A realistic example
+Here is how to align the first 1000 basepairs of SARS-COV-2 versus a mutated version of the same virus?
+
+    # Get the data.
+    bio NC_045512 MN996532 --fetch 
+    
+    # Align the data.
+    bio NC_045512 MN996532 --align --end 1000
+
+that's it. `bio` will do it all for you and prints:
+
+    ### 1: NC_045512.2 vs MN996532.2 ###
+    
+    Length: 1000 (semiglobal)
+    Query:  1000 [1, 1000]
+    Target: 1000 [1, 1000]
+    Score:  4721
+    Ident:  969/1000 (96.9%)
+    Simil:  969/1000 (96.9%)
+    Gaps:   0/1000 (0.0%)
+    Matrix: nuc44(-11, -1)
+    
+    NC_045512.2  ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
+               1 ||||||||||||||||||.|||||||||||||||||.||||.||||||||||||||||||||||||||||||||||||||||||||||||.||||||||| 100
+    MN996532.2   ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGACTGTCACTC
+    
+    NC_045512.2  GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGT
+             101 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||.|||||||||||||||.|||||||||| 200
+    MN996532.2   GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCATCTATCTTCTGCAGGTTGCTTACGGT
+    
+    ...    
+
+## A more realistic example
 
 Suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. 
 
 If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, then think about the effort it would take you to teach someone else how to do the same. 
 
-## The solution with `bio`
-
 With the `bio` package the process takes simple, concise steps.
 
-First we download and rename the data to have more manageable labels:
+First we download and rename the data keep our sanity:
 
     bio NC_045512 --fetch --rename ncov
     bio MN996532  --fetch --rename ratg13

@@ -113,17 +113,15 @@
 <div id="install" class="section level1">
 <h1>Software installation</h1>
 <p><code>bio</code> works on Linux and Mac computers and on Windows when using the Linux Subsystem.</p>
-<div id="prerequisites" class="section level2">
-<h2>Prerequisites</h2>
-<p>We don’t fully automate the dependency installation to give users the option of using the approach they prefer. To install the requirements with <code>conda</code> write:</p>
-<pre><code>conda install -c bioconda biopython parasail-python</code></pre>
-<p>You may also install the requirements via <code>pip</code>:</p>
-<pre><code>pip install biopython parasail-python</code></pre>
-</div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
-<p>Install the package with:</p>
-<pre><code>pip install bio --upgrade</code></pre>
+<p>While the following command should work:</p>
+<pre><code>pip install bio --upgrade
+    </code></pre>
+<p>we usually recommend installing prerequisites with conda like so:</p>
+<pre><code>conda install -c bioconda biopython parasail-python</code></pre>
+<p>then proceed with:</p>
+<pre><code>pip install bio --upgr</code></pre>
 </div>
 <div id="quick-start" class="section level2">
 <h2>Quick start</h2>
