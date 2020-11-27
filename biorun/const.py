@@ -51,10 +51,9 @@ COLOR_FOR_TYPE = {
     "stem_loop": "#fa7f72",
     "mature_protein_region": "#CBAEBB",
     "region": "#CECECE",
-    "mRNA": "#799351",
+    "transcript": "#799351",
     "gene": "#cb7a77",
-    "mRNA_region": "#7a77cb",
-    "CDS": "#7a77cb",
+    "mRNA": "#7a77cb",
 }
 #
 # The GFF attributes generated for a source type.

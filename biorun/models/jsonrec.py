@@ -224,10 +224,10 @@ def get_json_features(data):
             # Set the parent/child types.
             if ftype == 'mRNA':
                 # Keep the mRNA as parent of exons.
-                parent_type, location_type = 'mRNA', 'exon'
+                parent_type, location_type = 'transcript', 'exon'
             else:
                 # Make a new parent for CDS regions.
-                parent_type, location_type = 'mRNA_region', 'CDS'
+                parent_type, location_type = 'mRNA', 'CDS'
 
             # Copy the attributes
             parent_feat = dict(feat)
