@@ -21,6 +21,10 @@ Mammal, human genome (chromosome 1): NC_000001 (2 minutes, 300MB)
     time bio NC_000001  --fetch
     
 
+A weird join operator:
+
+    NC_003977
+
 # Taxonomy test
 
     # Flowering plant

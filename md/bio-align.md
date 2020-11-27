@@ -1,6 +1,10 @@
 # Sequence alignments {#align}
 
-## DNA align,emt
+The alignments in `bio` are primarily designed for exploratory use, for aligning short (a few thousand basepair long sequences), visually investigating the alignments, interacting with the sequences before and after alignment. In such cases the alignments will be generated within less than a second. The implementations are mathematically optimal but the libraries that we rely on do not scale well to longer sequences.
+
+Use a specially designed software, that relies on heuristics, to perform large scale studies. These tools will operate orders of magnitude faster. Depending on your needs `blast`, `blat`, `mummer`, `minimap2`, `lastz`, `exonerate` will be far better suited for genome wide analyses.
+ 
+## DNA alignment
 
 ```{bash, comment=NA}
 # Align the extracted protein.
