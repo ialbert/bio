@@ -126,7 +126,7 @@ To run all tests use:
     
 Tests are automatically built from a test script that mimics real life usage scenarios.
 
-* https://github.com/ialbert/bio/blob/master/test/bio_usage.sh
+* https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
 
 ## New tests
 
@@ -136,7 +136,7 @@ To add a new test first run the command you wish to test, for example:
 
 in the `test/data` directory. After that add the same command above into the master script:
 
-* https://github.com/ialbert/bio/blob/master/test/bio_usage.sh
+* https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
     
 followed by:
 
