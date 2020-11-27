@@ -41,10 +41,10 @@ Here is how to align the first 1000 basepairs of SARS-COV-2 versus to the same r
     # Get the data.
     bio NC_045512 MN996532 --fetch 
     
-    # Align the data.
+    # Align the sequences.
     bio NC_045512 MN996532 --align --end 1000
 
-that's it. `bio` will everything for you and prints:
+that's it. `bio` will take care of everything for you and prints:
 
     ### 1: NC_045512.2 vs MN996532.2 ###
     
@@ -75,6 +75,8 @@ If you are a trained bioinformatician, think about all the steps you would need 
 
 With the `bio` package the process takes simple, concise steps.
 
+## Download and rename
+
 First we download and rename the data keep our sanity:
 
     bio NC_045512 --fetch --rename ncov
@@ -94,10 +96,10 @@ and it will show you the first 100 bases of the genome
     ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
     GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
 
-You could also convert the data stored under `ncov` name to other formats. Let's convert the `CDS` features annotated for gene `S` to `GFF`:
+You could also convert the data stored under `ncov` name to other formats. Let's convert features with type `CDS` to `GFF`:
 
 ```{bash, comment=NA}
-bio ncov --gff --gene S --type CDS
+bio ncov --gff --type CDS  | head -5
 ```
 
 ## Align nucleotides or peptides
