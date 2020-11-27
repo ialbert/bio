@@ -20,11 +20,13 @@ def pprint(data):
     print(json.dumps(data, indent=4))
 
 
-def search(term, db='sra', tabular=False):
+def search(term, db='sra', tabular=False, limit=None):
+
+    limit = 10000 if not limit else limit
 
     env = entrez.esearch(db=db, term=term, usehistory="y")
 
-    data = entrez.efetch(db=db, env=env, retmax=2, rettype="runinfo")
+    data = entrez.efetch(db=db, env=env, retmax=limit, rettype="runinfo")
 
     elems = data['SraRunInfo']["Row"]
 
@@ -82,11 +84,12 @@ def get_runinfo(term):
 
 @plac.pos("acc", "accessions")
 @plac.flg('inter', "interactive (data from command line)")
+@plac.opt('limit', "limit the number of results")
 @plac.flg('project', "project run information")
 @plac.flg('sample', "sample information")
 @plac.flg('table', "tabular output")
 @plac.flg('verbose', "verbose mode, prints more messages")
-def run(project=False, sample=False, table=False, inter=False, verbose=False, *acc):
+def run(project=False, limit='', sample=False, table=False, inter=False, verbose=False, *acc):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
@@ -102,10 +105,10 @@ def run(project=False, sample=False, table=False, inter=False, verbose=False, *a
         name, metadata = row
         if project:
             term = metadata[PROJECT]
-            search(term, tabular=table)
+            search(term, tabular=table, limit=limit)
         elif sample:
             term = metadata[SAMPLE]
-            search(term, tabular=table)
+            search(term, tabular=table, limit=limit)
         else:
             print_links(row)
 

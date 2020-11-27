@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Welcome to bioinformatics | bio.utf8</title>
+  <title>Welcome to bio | bio.utf8</title>
   <meta name="description" content="" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Welcome to bioinformatics | bio.utf8" />
+  <meta property="og:title" content="Welcome to bio | bio.utf8" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Welcome to bioinformatics | bio.utf8" />
+  <meta name="twitter:title" content="Welcome to bio | bio.utf8" />
   
   
   
@@ -83,12 +83,13 @@
 <ul class="summary">
 <li><a href="index.html">bio: making bioinformatics fun again</a></li>
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome to bioinformatics</a></li>
+<li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
 <li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Software installation</a></li>
 <li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
 <li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
 <li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
 <li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="sra.html"><a href="sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
 <li class="chapter" data-level="" data-path="examples.html"><a href="examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
 <li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>General tips</a></li>
 <li class="chapter" data-level="" data-path="related.html"><a href="related.html"><i class="fa fa-check"></i>Related software</a></li>
@@ -111,8 +112,8 @@
             <section class="normal" id="section-">
 <!--bookdown:title:end-->
 <!--bookdown:title:start-->
-<div id="welcome-to-bioinformatics" class="section level1">
-<h1>Welcome to bioinformatics</h1>
+<div id="welcome-to-bio" class="section level1">
+<h1>Welcome to <code>bio</code></h1>
 <blockquote>
 <p>The software is currently under development. It is operational but not fully vetted.</p>
 </blockquote>
@@ -150,7 +151,8 @@
 <p>First we download and rename the data to have more manageable labels:</p>
 <pre><code>bio NC_045512 --fetch --rename ncov
 bio MN996532  --fetch --rename ratg13</code></pre>
-<p>From now on <code>bio</code> can operate on <code>NC_045512</code> using the name <code>ncov</code> and on <code>MN996532</code> using the name <code>ratg13</code> no matter where you are on your computer! It stores the data in an internal storage system that can be used from any folder. There is no clutter of files or paths to remember. For example, in any directory you now can type:</p>
+<p>From now on <code>bio</code> can operate on <code>NC_045512</code> using the name <code>ncov</code> and on <code>MN996532</code> using the name <code>ratg13</code> no matter where you are on your computer!</p>
+<p><code>bio</code> stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory you now can type:</p>
 <pre><code>bio ncov --fasta --end 100</code></pre>
 <p>and it will show you the first 100 bases of the genome</p>
 <pre><code>&gt;ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome

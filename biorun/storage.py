@@ -1,7 +1,7 @@
 """
 Deals with the data storage.
 """
-import sys, os, glob, re, gzip, json
+import sys, os, glob, re, gzip, json, pickle
 from biorun import const, utils
 from biorun.models import jsonrec
 
@@ -248,3 +248,4 @@ def print_data_list():
     for row in collect:
         line = "\t".join(row)
         print(line)
+

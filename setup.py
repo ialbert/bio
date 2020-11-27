@@ -21,7 +21,8 @@ setup(
     ],
     install_requires=[
         'biopython',
-        'requests'
+        'requests',
+        'cachier',
     ],
 
     entry_points={
