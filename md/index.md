@@ -82,6 +82,8 @@ First we download and rename the data keep our sanity:
 
 From now on `bio` can operate on  `NC_045512` using the name `ncov` and on `MN996532` using the name `ratg13` no matter where you are on your computer! 
 
+## Convert to different formats
+
 `bio` stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory you now can type:
 
     bio ncov --fasta --end 100
@@ -95,22 +97,57 @@ and it will show you the first 100 bases of the genome
 You could also convert the data stored under `ncov` name to other formats. Let's convert the `CDS` features annotated for gene `S` to `GFF`:
 
 ```{bash, comment=NA}
-    bio ncov --gff --gene S --type CDS
+bio ncov --gff --gene S --type CDS
 ```
+
+## Align nucleotides or peptides
 
 Now, back to our problem of aligning proteins. Let's align the first 90 basepairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut, instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
 ```{bash, comment=NA}
-    bio ncov:S ratg13:S --end 90 --align
+bio ncov:S ratg13:S --end 90 --align
 ```
     
 If instead we wanted to align the 90bp DNA sequences for `S` protein after their translation into proteins we could do it like so:
 
 ```{bash, comment=NA}
-    bio ncov:S ratg13:S --translate --end 80 --align
+bio ncov:S ratg13:S --translate --end 80 --align
 ```
     
 We can note right away that all differences in the first 80bp of DNA are synonymous substitutions, the protein translations are the same.
+
+## Look up the taxonomy
+
+Then additional data source are integrated, for example taxonomies. You don't need to install just to find the taxonomical lineage of SARS-COV-2. It is as simple as:
+
+```bash
+bio ncov --taxon --lineage
+```
+
+## See the bioproject
+
+What is stored in the SRA about our data?
+
+```bash
+bio ncov --sra
+```
+
+## `bio` is a data model
+
+Beyond the functionality that we show, `bio` is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequat. The default formats at GenBank or EMBL are dishearteningly inefficient, and depressingly tedious to program with. 
+
+In contrast, take a look under the hood, in `bio` all data are in a simple, efficient, quick to load, compressed in JSON format. The data layout allows `bio` to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds `bio`  can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:
+
+    time bio chr1 --fasta | wc -c
+    253105766
+
+    real    0m6.238s
+    user    0m4.156s
+    sys     0m2.172s
+
+For shorter genomes, bacterial or viral the conversion times are under a fraction of a second.  
+
+Thanks to the representation it is trivially easy to extend `bio`. The data is already structured in an efficient layout that needs no additional parsing to load. 
 
 ## What did `bio` do for us?
  
@@ -121,7 +158,7 @@ We can note right away that all differences in the first 80bp of DNA are synonym
 
 ## But wait there is more 
 
-How about translating the reverse of the last 10 nucleotides of every feature labeled as `CDS`. `bio` can do that like so:
+How about translating the reverse of the last 10 nucleotides of every feature labeled as `CDS`. `bio` can do that, just keep adding parameters :-) :
 
     bio ncov --fasta --type CDS --start -10 --reverse --translate
     
@@ -138,25 +175,6 @@ ah yes, if that is what you needed, here it is:
     ...
     
 And so on. `bio` has a wealth of utility that makes bioinformatics more accessible.
-
-## `bio` is a data model
-
-Beyond the functionality that we show, `bio` is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequate. GenBank or EMBL, as a data formats, are dishearteningly inefficient, and depressingly tedious to program with. In contrast, take a look under the hood, in `bio` all data are in a simple, efficient, quick to load, compressed in JSON format. The data layout allows `bio` to read in the entire human chromosome 1 with its 253 million characters and 328 thousand genomic features in just three(!) seconds. In another 3 seconds, often less than six seconds in total, `bio`  can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:
-
-    time bio chr1 --fasta | wc -c
-    253105766
-
-    real    0m6.238s
-    user    0m4.156s
-    sys     0m2.172s
-
-Adding additional functionality that operates on the data frees the developer from additiona work. The data is already structured in an efficient layout that needs no additional parsing to load. For shorter genomes, bacterial or viral the conversion times are under a fraction of a second.  
-
-Then additional data source are integrated, for example taxonomies. You don't need to install just to find the taxonomical lineage of SARS-COV-2. It is as simple as:
-
-```bash
-bio ncov --taxon --lineage
-```
     
 ## Comparisons to EMBOSS
 

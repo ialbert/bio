@@ -31,7 +31,7 @@
   
 
 <link rel="next" href="install.html"/>
-<script src="libs/header-attrs-2.1/header-attrs.js"></script>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -49,6 +49,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <script src="assets/prism.js"></script>
 
@@ -179,6 +181,9 @@ MN996532.2   GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAG
 <pre><code>bio NC_045512 --fetch --rename ncov
 bio MN996532  --fetch --rename ratg13</code></pre>
 <p>From now on <code>bio</code> can operate on <code>NC_045512</code> using the name <code>ncov</code> and on <code>MN996532</code> using the name <code>ratg13</code> no matter where you are on your computer!</p>
+</div>
+<div id="convert-to-different-formats" class="section level2">
+<h2>Convert to different formats</h2>
 <p><code>bio</code> stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory you now can type:</p>
 <pre><code>bio ncov --fasta --end 100</code></pre>
 <p>and it will show you the first 100 bases of the genome</p>
@@ -186,11 +191,14 @@ bio MN996532  --fetch --rename ratg13</code></pre>
 ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
 GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC</code></pre>
 <p>You could also convert the data stored under <code>ncov</code> name to other formats. Let’s convert the <code>CDS</code> features annotated for gene <code>S</code> to <code>GFF</code>:</p>
-<pre class="bash"><code>    bio ncov --gff --gene S --type CDS</code></pre>
+<pre class="bash"><code>bio ncov --gff --gene S --type CDS</code></pre>
 <pre><code>##gff-version 3
 ncov    .   CDS 21563   25384   .   +   .   Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568</code></pre>
+</div>
+<div id="align-nucleotides-or-peptides" class="section level2">
+<h2>Align nucleotides or peptides</h2>
 <p>Now, back to our problem of aligning proteins. Let’s align the first 90 basepairs of DNA sequences for the <code>S</code> protein for each organism, <code>bio</code> even gives you a shortcut, instead of typing <code>--gene S --type CDS</code> you can write it as <code>ncov:S</code> :</p>
-<pre class="bash"><code>    bio ncov:S ratg13:S --end 90 --align</code></pre>
+<pre class="bash"><code>bio ncov:S ratg13:S --end 90 --align</code></pre>
 <pre><code>
 ### 1: YP_009724390 vs QHR63300.2 ###
 
@@ -207,7 +215,7 @@ YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTC
            1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
 QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
 <p>If instead we wanted to align the 90bp DNA sequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
-<pre class="bash"><code>    bio ncov:S ratg13:S --translate --end 80 --align</code></pre>
+<pre class="bash"><code>bio ncov:S ratg13:S --translate --end 80 --align</code></pre>
 <pre><code>
 ### 1: YP_009724390 vs QHR63300.2 ###
 
@@ -225,6 +233,29 @@ YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
 QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP</code></pre>
 <p>We can note right away that all differences in the first 80bp of DNA are synonymous substitutions, the protein translations are the same.</p>
 </div>
+<div id="look-up-the-taxonomy" class="section level2">
+<h2>Look up the taxonomy</h2>
+<p>Then additional data source are integrated, for example taxonomies. You don’t need to install just to find the taxonomical lineage of SARS-COV-2. It is as simple as:</p>
+<pre class="bash"><code>bio ncov --taxon --lineage</code></pre>
+</div>
+<div id="see-the-bioproject" class="section level2">
+<h2>See the bioproject</h2>
+<p>What is stored in the SRA about our data?</p>
+<pre class="bash"><code>bio ncov --sra</code></pre>
+</div>
+<div id="bio-is-a-data-model" class="section level2">
+<h2><code>bio</code> is a data model</h2>
+<p>Beyond the functionality that we show, <code>bio</code> is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequat. The default formats at GenBank or EMBL are dishearteningly inefficient, and depressingly tedious to program with.</p>
+<p>In contrast, take a look under the hood, in <code>bio</code> all data are in a simple, efficient, quick to load, compressed in JSON format. The data layout allows <code>bio</code> to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds <code>bio</code> can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:</p>
+<pre><code>time bio chr1 --fasta | wc -c
+253105766
+
+real    0m6.238s
+user    0m4.156s
+sys     0m2.172s</code></pre>
+<p>For shorter genomes, bacterial or viral the conversion times are under a fraction of a second.</p>
+<p>Thanks to the representation it is trivially easy to extend <code>bio</code>. The data is already structured in an efficient layout that needs no additional parsing to load.</p>
+</div>
 <div id="what-did-bio-do-for-us" class="section level2">
 <h2>What did <code>bio</code> do for us?</h2>
 <ol style="list-style-type: decimal">
@@ -236,7 +267,7 @@ QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP</code></pre>
 </div>
 <div id="but-wait-there-is-more" class="section level2">
 <h2>But wait there is more</h2>
-<p>How about translating the reverse of the last 10 nucleotides of every feature labeled as <code>CDS</code>. <code>bio</code> can do that like so:</p>
+<p>How about translating the reverse of the last 10 nucleotides of every feature labeled as <code>CDS</code>. <code>bio</code> can do that, just keep adding parameters :-) :</p>
 <pre><code>bio ncov --fasta --type CDS --start -10 --reverse --translate</code></pre>
 <p>ah yes, if that is what you needed, here it is:</p>
 <pre><code>&gt;YP_009724389.1 [-9:21291], reverse, translated DNA
@@ -249,19 +280,6 @@ NVA
 NTH
 ...</code></pre>
 <p>And so on. <code>bio</code> has a wealth of utility that makes bioinformatics more accessible.</p>
-</div>
-<div id="bio-is-a-data-model" class="section level2">
-<h2><code>bio</code> is a data model</h2>
-<p>Beyond the functionality that we show, <code>bio</code> is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequate. GenBank or EMBL, as a data formats, are dishearteningly inefficient, and depressingly tedious to program with. In contrast, take a look under the hood, in <code>bio</code> all data are in a simple, efficient, quick to load, compressed in JSON format. The data layout allows <code>bio</code> to read in the entire human chromosome 1 with its 253 million characters and 328 thousand genomic features in just three(!) seconds. In another 3 seconds, often less than six seconds in total, <code>bio</code> can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:</p>
-<pre><code>time bio chr1 --fasta | wc -c
-253105766
-
-real    0m6.238s
-user    0m4.156s
-sys     0m2.172s</code></pre>
-<p>Adding additional functionality that operates on the data frees the developer from additiona work. The data is already structured in an efficient layout that needs no additional parsing to load. For shorter genomes, bacterial or viral the conversion times are under a fraction of a second.</p>
-<p>Then additional data source are integrated, for example taxonomies. You don’t need to install just to find the taxonomical lineage of SARS-COV-2. It is as simple as:</p>
-<pre class="bash"><code>bio ncov --taxon --lineage</code></pre>
 </div>
 <div id="comparisons-to-emboss" class="section level2">
 <h2>Comparisons to EMBOSS</h2>

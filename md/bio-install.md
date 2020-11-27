@@ -7,36 +7,35 @@
 While the following command should work:
 
     pip install bio --upgrade
-        
+
 we usually recommend installing prerequisites with conda like so:
 
     conda install -c bioconda biopython parasail-python
-    
+
 then proceed with:
 
-    pip install bio --upgr
-
+    pip install bio --upgrade
 
 ## Quick start
 
 Run a simple fetch command, set the verbose mode to see what is happening:
 
     bio NC_045512 --fetch -v
- 
+
 now list the known data:
 
     bio --list
-    
+
 try out a conversion:
 
     bio NC_045512 --gff
-    
+
 ## Usage
 
 Type `bio` followed by one or more accession numbers followed by one or more flags or options.
 
     bio [command] [words] --option value --flag 
-    
+
 1. Commands may be: `align`, `taxon`.  When no commands are passed the default actions take place.
 1. The `words` may be one or more data names.    
 1. A `flag` is a parameter that does not take additional values: `--fetch` or `--list`

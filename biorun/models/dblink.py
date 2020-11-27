@@ -28,14 +28,16 @@ def search(term, db='sra', tabular=False, limit=None):
 
     data = entrez.efetch(db=db, env=env, retmax=limit, rettype="runinfo")
 
-    elems = data['SraRunInfo']["Row"]
+    elems = data.get('SraRunInfo', {}).get("Row", {})
+
+    if not elems:
+        utils.error("the query at SRA has not returned results.")
 
     if tabular and elems:
         fieldnames = elems[0].keys()
         writer = csv.DictWriter(sys.stdout, delimiter="\t", fieldnames=fieldnames)
         writer.writeheader()
         for row in elems:
-            #print (row)
             writer.writerow(row)
 
     else:
