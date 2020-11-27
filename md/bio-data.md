@@ -6,11 +6,17 @@ When you obtain data with `bio` it becomes universally available to all tools in
 
 ### Local data
 
-There is an  automated data storage in `bio` that makes using data from NCBI quite convenient. But before we even go ther let's make it clear that `bio` can read and process data from local files just fine. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:
+There is an  automated data storage in `bio` that makes using data from NCBI quite convenient. 
+
+    bio NC_045512 --fetch --rename ncov
+
+But let's make it clear that `bio` can read and process data from local files just fine. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:
 
     bio  mydata.gb --gff 
 
-Moreover there is a so called *interactive* input of data (`-i`) where the data can be listed at the command line:
+### Data from command line
+
+In addition, there is a so called *interactive* input of data (`-i`) where the data can be listed at the command line:
 
     bio ATGAATATATAC -i --translate
    
@@ -19,17 +25,31 @@ The above command will operate on the sequence as if it were stored in a FASTA f
     >S1 translated DNA
     MNIY
 
-It is a neat way to demonstrate translation that takes place in different phases:
+### What is the point of getting data from command line?
+
+It is an explicit way to explore and demonstrate information. For example, suppose you wanted to see how the same DNA sequence would be 
+translated to different amino acides when using the  the first or second reading frame:
 
 ```{bash, comment=NA}
 bio ATGAATATATACT -i --translate --start 1
 ```
 
+versus
+
 ```{bash, comment=NA}
 bio ATGAATATATACT -i --translate --start 2
 ```
 
-   
+or you can explore alignments:
+
+    bio THISLINE ISALIGNED --align -i 
+
+to see:
+
+    S1           THISLI--NE-
+               1   ||.:  ||  11
+    S2           --ISALIGNED
+ 
 ### Getting data from NCBI (--fetch)
 
 The `--fetch` command downloads data identified via accession numbers from NCBI then stores 
@@ -38,7 +58,7 @@ this data in a storage directory (`~/.bio`). All subsequent commands in the `bio
     # Run fetch in verbose mode.
     bio NC_045512 --fetch -v
     
-Running the fetch command the next time for the accession number will not connect to the internet again, it will exit instead. Use the `--fetch --update` (see later) to force a re-downloading of data from NCBI. 
+Running the fetch command the next time for the same accession number will not connect to the internet again, it will use the existing data instead. Use the `--fetch --update` (see later) to force a re-downloading of data from NCBI. 
 
 Most commands can operate on multiple accession numbers at a time.
 

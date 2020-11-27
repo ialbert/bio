@@ -118,20 +118,36 @@
 <p>When you obtain data with <code>bio</code> it becomes universally available to all tools in the package.</p>
 <div id="local-data" class="section level3">
 <h3>Local data</h3>
-<p>There is an automated data storage in <code>bio</code> that makes using data from NCBI quite convenient. But before we even go ther let’s make it clear that <code>bio</code> can read and process data from local files just fine. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:</p>
+<p>There is an automated data storage in <code>bio</code> that makes using data from NCBI quite convenient.</p>
+<pre><code>bio NC_045512 --fetch --rename ncov</code></pre>
+<p>But let’s make it clear that <code>bio</code> can read and process data from local files just fine. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:</p>
 <pre><code>bio  mydata.gb --gff </code></pre>
-<p>Moreover there is a so called <em>interactive</em> input of data (<code>-i</code>) where the data can be listed at the command line:</p>
+</div>
+<div id="data-from-command-line" class="section level3">
+<h3>Data from command line</h3>
+<p>In addition, there is a so called <em>interactive</em> input of data (<code>-i</code>) where the data can be listed at the command line:</p>
 <pre><code>bio ATGAATATATAC -i --translate</code></pre>
 <p>The above command will operate on the sequence as if it were stored in a FASTA file, the above prints:</p>
 <pre><code>&gt;S1 translated DNA
 MNIY</code></pre>
-<p>It is a neat way to demonstrate translation that takes place in different phases:</p>
+</div>
+<div id="what-is-the-point-of-getting-data-from-command-line" class="section level3">
+<h3>What is the point of getting data from command line?</h3>
+<p>It is an explicit way to explore and demonstrate information. For example, suppose you wanted to see how the same DNA sequence would be
+translated to different amino acides when using the the first or second reading frame:</p>
 <pre class="bash"><code>bio ATGAATATATACT -i --translate --start 1</code></pre>
 <pre><code>&gt;S1 translated
 MNIY</code></pre>
+<p>versus</p>
 <pre class="bash"><code>bio ATGAATATATACT -i --translate --start 2</code></pre>
 <pre><code>&gt;S1 [2:13], translated
 *IYT</code></pre>
+<p>or you can explore alignments:</p>
+<pre><code>bio THISLINE ISALIGNED --align -i </code></pre>
+<p>to see:</p>
+<pre><code>S1           THISLI--NE-
+           1   ||.:  ||  11
+S2           --ISALIGNED</code></pre>
 </div>
 <div id="getting-data-from-ncbi-fetch" class="section level3">
 <h3>Getting data from NCBI (–fetch)</h3>
@@ -139,7 +155,7 @@ MNIY</code></pre>
 this data in a storage directory (<code>~/.bio</code>). All subsequent commands in the <code>bio</code> package can seamlessly access the stored data from any location and would not need to connect to the internet to use it.</p>
 <pre><code># Run fetch in verbose mode.
 bio NC_045512 --fetch -v</code></pre>
-<p>Running the fetch command the next time for the accession number will not connect to the internet again, it will exit instead. Use the <code>--fetch --update</code> (see later) to force a re-downloading of data from NCBI.</p>
+<p>Running the fetch command the next time for the same accession number will not connect to the internet again, it will use the existing data instead. Use the <code>--fetch --update</code> (see later) to force a re-downloading of data from NCBI.</p>
 <p>Most commands can operate on multiple accession numbers at a time.</p>
 <pre><code>bio NC_045512 MN996532 --fetch</code></pre>
 <p>There will be commands like <code>--rename</code> where it makes no sense to apply the operation on multiple data at the same time. In those cases only the first accession number is acted upon.</p>
