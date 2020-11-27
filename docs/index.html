@@ -144,13 +144,13 @@
 </div>
 <div id="diving-right-in" class="section level2">
 <h2>Diving right in</h2>
-<p>Here is how to align the first 1000 basepairs of SARS-COV-2 versus a mutated version of the same virus?</p>
+<p>Here is how to align the first 1000 basepairs of SARS-COV-2 versus to the same region of a bat coronavirus:</p>
 <pre><code># Get the data.
 bio NC_045512 MN996532 --fetch 
 
 # Align the data.
 bio NC_045512 MN996532 --align --end 1000</code></pre>
-<p>that’s it. <code>bio</code> will do it all for you and prints:</p>
+<p>that’s it. <code>bio</code> will everything for you and prints:</p>
 <pre><code>### 1: NC_045512.2 vs MN996532.2 ###
 
 Length: 1000 (semiglobal)
@@ -215,38 +215,78 @@ YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTC
            1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
 QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
 <p>If instead we wanted to align the 90bp DNA sequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
-<pre class="bash"><code>bio ncov:S ratg13:S --translate --end 80 --align</code></pre>
+<pre class="bash"><code>bio ncov:S ratg13:S --translate --end 90 --align</code></pre>
 <pre><code>
 ### 1: YP_009724390 vs QHR63300.2 ###
 
-Length: 26 (semiglobal) 
-Query:  26 [1, 26]
-Target: 26 [1, 26]
-Score:  131
-Ident:  26/26 (100.0%)
-Simil:  26/26 (100.0%)
-Gaps:   0/26 (0.0%)
+Length: 30 (semiglobal) 
+Query:  30 [1, 30]
+Target: 30 [1, 30]
+Score:  153
+Ident:  30/30 (100.0%)
+Simil:  30/30 (100.0%)
+Gaps:   0/30 (0.0%)
 Matrix: blosum62(-11, -1) 
 
-YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPP
-           1 |||||||||||||||||||||||||| 26
-QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPP</code></pre>
-<p>We can note right away that all differences in the first 80bp of DNA are synonymous substitutions, the protein translations are the same.</p>
+YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
+           1 |||||||||||||||||||||||||||||| 30
+QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN</code></pre>
+<p>We can note right away that all differences in the first 90bp of DNA are synonymous substitutions, the protein translations are the same.</p>
 </div>
 <div id="look-up-the-taxonomy" class="section level2">
 <h2>Look up the taxonomy</h2>
-<p>Then additional data source are integrated, for example taxonomies. You don’t need to install just to find the taxonomical lineage of SARS-COV-2. It is as simple as:</p>
+<p>Then additional data source can be fully integrated. Finding the lineage of the organism is as simple as:</p>
 <pre class="bash"><code>bio ncov --taxon --lineage</code></pre>
+<pre><code>superkingdom, Viruses, 10239
+   clade, Riboviria, 2559587
+      kingdom, Orthornavirae, 2732396
+         phylum, Pisuviricota, 2732408
+            class, Pisoniviricetes, 2732506
+               order, Nidovirales, 76804
+                  suborder, Cornidovirineae, 2499399
+                     family, Coronaviridae, 11118
+                        subfamily, Orthocoronavirinae, 2501931
+                           genus, Betacoronavirus, 694002
+                              subgenus, Sarbecovirus, 2509511
+                                 species, Severe acute respiratory syndrome-related coronavirus, 694009
+                                    no rank, Severe acute respiratory syndrome coronavirus 2, 2697049</code></pre>
 </div>
 <div id="see-the-bioproject" class="section level2">
 <h2>See the bioproject</h2>
-<p>What is stored in the SRA about our data?</p>
+<p><code>bio</code> knows about bioprojects and sequencing data, what is stored in the SRA about our data?</p>
 <pre class="bash"><code>bio ncov --sra</code></pre>
+<pre><code>ncov    BioProject  PRJNA485481
+ncov    BioSample   </code></pre>
+<p>Alas this particular data is not properly cross-referenced even at NCBI, thus we can’t quite get the SRR run numbers automatically. But for other data, that is deposited correctlywe could just do a:</p>
+<pre><code>bio ncov --sra --sample</code></pre>
+<p>to see the sample information as stored in the BioProject.</p>
 </div>
 <div id="bio-is-a-data-model" class="section level2">
 <h2><code>bio</code> is a data model</h2>
-<p>Beyond the functionality that we show, <code>bio</code> is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequat. The default formats at GenBank or EMBL are dishearteningly inefficient, and depressingly tedious to program with.</p>
-<p>In contrast, take a look under the hood, in <code>bio</code> all data are in a simple, efficient, quick to load, compressed in JSON format. The data layout allows <code>bio</code> to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds <code>bio</code> can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:</p>
+<p>Beyond the functionality that we show, <code>bio</code> is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequate, the default formats at GenBank or EMBL are dishearteningly inefficient, and depressingly tedious to program with.</p>
+<p>In contrast, take a look under the hood, in <code>bio</code> all data are in a simple, efficient, quick to load, compressed in JSON format.</p>
+<pre class="bash"><code>bio ncov | head -20</code></pre>
+<pre><code>[
+    {
+        &quot;id&quot;: &quot;ncov&quot;,
+        &quot;definition&quot;: &quot;Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome&quot;,
+        &quot;dblink&quot;: [
+            &quot;BioProject:PRJNA485481&quot;
+        ],
+        &quot;locus&quot;: &quot;NC_045512&quot;,
+        &quot;feature_count&quot;: 57,
+        &quot;origin_len&quot;: 29903,
+        &quot;molecule_type&quot;: &quot;ss-RNA&quot;,
+        &quot;topology&quot;: &quot;linear&quot;,
+        &quot;data_file_division&quot;: &quot;VRL&quot;,
+        &quot;date&quot;: &quot;18-JUL-2020&quot;,
+        &quot;accessions&quot;: [
+            &quot;NC_045512&quot;
+        ],
+        &quot;sequence_version&quot;: 2,
+        &quot;keywords&quot;: [
+            &quot;RefSeq&quot;</code></pre>
+<p>The data layout allows <code>bio</code> to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds <code>bio</code> can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:</p>
 <pre><code>time bio chr1 --fasta | wc -c
 253105766
 

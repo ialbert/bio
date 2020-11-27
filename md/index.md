@@ -36,7 +36,7 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
 
 ## Diving right in
 
-Here is how to align the first 1000 basepairs of SARS-COV-2 versus a mutated version of the same virus?
+Here is how to align the first 1000 basepairs of SARS-COV-2 versus to the same region of a bat coronavirus:
 
     # Get the data.
     bio NC_045512 MN996532 --fetch 
@@ -44,7 +44,7 @@ Here is how to align the first 1000 basepairs of SARS-COV-2 versus a mutated ver
     # Align the data.
     bio NC_045512 MN996532 --align --end 1000
 
-that's it. `bio` will do it all for you and prints:
+that's it. `bio` will everything for you and prints:
 
     ### 1: NC_045512.2 vs MN996532.2 ###
     
@@ -111,32 +111,44 @@ bio ncov:S ratg13:S --end 90 --align
 If instead we wanted to align the 90bp DNA sequences for `S` protein after their translation into proteins we could do it like so:
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --translate --end 80 --align
+bio ncov:S ratg13:S --translate --end 90 --align
 ```
     
-We can note right away that all differences in the first 80bp of DNA are synonymous substitutions, the protein translations are the same.
+We can note right away that all differences in the first 90bp of DNA are synonymous substitutions, the protein translations are the same.
 
 ## Look up the taxonomy
 
-Then additional data source are integrated, for example taxonomies. You don't need to install just to find the taxonomical lineage of SARS-COV-2. It is as simple as:
+Then additional data source can be fully integrated. Finding the lineage of the organism is as simple as:
 
-```bash
+```{bash, comment=NA}
 bio ncov --taxon --lineage
 ```
 
 ## See the bioproject
 
-What is stored in the SRA about our data?
+`bio` knows about bioprojects and sequencing data, what is stored in the SRA about our data?
 
-```bash
+```{bash, comment=NA}
 bio ncov --sra
 ```
 
+Alas this particular data is not properly cross-referenced even at NCBI, thus we can't quite get the SRR run numbers automatically. But for other data, that is deposited correctlywe could just do a:
+
+    bio ncov --sra --sample
+
+to see the sample information as stored in the BioProject.
+
 ## `bio` is a data model
 
-Beyond the functionality that we show, `bio` is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequat. The default formats at GenBank or EMBL are dishearteningly inefficient, and depressingly tedious to program with. 
+Beyond the functionality that we show, `bio` is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequate, the default formats at GenBank or EMBL are dishearteningly inefficient, and depressingly tedious to program with. 
 
-In contrast, take a look under the hood, in `bio` all data are in a simple, efficient, quick to load, compressed in JSON format. The data layout allows `bio` to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds `bio`  can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:
+In contrast, take a look under the hood, in `bio` all data are in a simple, efficient, quick to load, compressed in JSON format. 
+
+```{bash, comment=NA}
+bio ncov | head -20
+```
+
+The data layout allows `bio` to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds `bio`  can convert that information fasta or gff, it can filter it by type, translate the sequence, extract proteins, slice by coordinate etc:
 
     time bio chr1 --fasta | wc -c
     253105766
