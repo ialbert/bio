@@ -126,15 +126,15 @@ def fetch(params, seqid=None, db=None, update=False):
 def genbank_view(params):
 
     for param in params:
-        altname =  resolve_fname(param.name, format="gb")
+        altname =  resolve_fname(param.acc, format="gb")
 
-        if os.path.isfile(param.name):
-            stream = utils.gz_read(param.name)
+        if os.path.isfile(param.acc):
+            stream = utils.gz_read(param.acc)
         elif os.path.isfile(altname):
             stream = utils.gz_read(altname)
         else:
             stream = []
-            utils.error(f"data not found: {param.name}")
+            utils.error(f"data not found: {param.acc}")
 
         for line in stream:
             print (line, end='')

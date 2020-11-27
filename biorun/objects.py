@@ -19,6 +19,7 @@ class Param(object):
         self.gap_extend = 1
         self.matrix = None
         self.json = None
+        self.acc = None
         self.name = None
         self.origin = None
         self.reverse = self.complement = self.revcomp = self.transcribe = None
@@ -28,8 +29,8 @@ class Param(object):
         self.__dict__.update(kwds)
 
         # Parses out colon from data name if that exists.
-        if self.name and ":" in self.name:
-            self.name, word = self.name.split(":")
+        if self.acc and ":" in self.acc:
+            self.acc, word = self.acc.split(":")
             self.gene, self.type = word, 'CDS'
 
         self.start, self.end = utils.zero_based(start=self.start, end=self.end)

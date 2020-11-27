@@ -220,14 +220,14 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
     else:
         mode = const.SEMIGLOBAL_ALIGN
 
-    param1 = objects.Param(name=query, protein=protein, translate=translate,
+    param1 = objects.Param(acc=query, protein=protein, translate=translate,
                            start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
-    param2 = objects.Param(name=target, protein=protein, translate=translate,
+    param2 = objects.Param(acc=target, protein=protein, translate=translate,
                            start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
 
     # Get the JSON data.
-    param1.json = storage.get_json(param1.name, inter=inter, strict=True)
-    param2.json = storage.get_json(param2.name, inter=inter, strict=True)
+    param1.json = storage.get_json(param1.acc, inter=inter, strict=True)
+    param2.json = storage.get_json(param2.acc, inter=inter, strict=True)
 
     for rec1 in param1.json:
 

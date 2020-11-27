@@ -26,6 +26,7 @@ logger = utils.logger
 @plac.opt('start', "start coordinate")
 @plac.opt('end', "end coordinate")
 @plac.opt('gene', "select features associated with gene")
+@plac.opt('name', "select features associated with a name", abbrev='N')
 @plac.opt('match', "select features by rexep match")
 @plac.flg('inter', "interactive (data from command line)", abbrev='i')
 @plac.flg('origin', "use the origin (source) sequences", abbrev='O')
@@ -36,7 +37,7 @@ logger = utils.logger
 @plac.flg('verbose', "verbose mode")
 def run(fasta=False, gff=False, genbank=False, fetch=False, update=False, delete=False, list=False, protein=False,
               translate=False, transcribe=False,
-              reverse=False, complement=False, revcomp=False, rename='', seqid='', start='', end='', type='', gene='',
+              reverse=False, complement=False, revcomp=False, rename='', seqid='', start='', end='', type='', gene='', name='',
               match='', inter=False, origin=False,
               verbose=False, *acc):
     """
@@ -52,7 +53,7 @@ def run(fasta=False, gff=False, genbank=False, fetch=False, update=False, delete
 
     """
 
-    def make_param(name):
+    def make_param(acc):
         """
         Creates a parameter for each accession.
 
@@ -61,18 +62,18 @@ def run(fasta=False, gff=False, genbank=False, fetch=False, update=False, delete
         utils.set_verbosity(logger, level=int(verbose))
 
         # A very common error to pass a fragment as
-        if name.startswith("-"):
-            msg = f"Invalid accession number: {name}"
+        if acc.startswith("-"):
+            msg = f"Invalid accession number: {acc}"
             utils.error(msg)
 
         # A simple wrapper class to carry all parameters around.
         p = objects.Param(start=start, end=end, seqid=seqid, protein=protein, revcomp=revcomp,
-                          update=update, name=name, gff=gff, translate=translate, reverse=reverse,
-                          complement=complement, origin=origin,
+                          update=update, acc=acc, gff=gff, translate=translate, reverse=reverse,
+                          complement=complement, origin=origin, name=name,
                           fasta=fasta, type=type, gene=gene, regexp=match, transcribe=transcribe)
 
         # Fill the json data for the parameter.
-        p.json = storage.get_json(p.name, seqid=seqid, inter=inter)
+        p.json = storage.get_json(p.acc, seqid=seqid, inter=inter)
         return p
 
     # Allow commas in numbers, or sizes like 10Kb
@@ -80,7 +81,7 @@ def run(fasta=False, gff=False, genbank=False, fetch=False, update=False, delete
     end = utils.parse_number(end)
 
     # Make a list of parameters for each name.
-    params = [make_param(n) for n in acc]
+    params = [make_param(a) for a in acc]
 
     # Delete should be the first to execute.
     if delete:

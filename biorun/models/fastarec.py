@@ -48,7 +48,7 @@ def fasta_view(params):
 
         # Stop when data was not found.
         if not param.json:
-            utils.error(f"data not found: {param.name}")
+            utils.error(f"data not found: {param.acc}")
 
         # Each data may have multiple entries.
         for item in param.json:

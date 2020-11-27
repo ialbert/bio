@@ -49,20 +49,20 @@ def gff_view(params):
 
         # Stop when data was not found.
         if not param.json:
-            utils.error(f"data not found: {param.name}")
+            utils.error(f"data not found: {param.acc}")
 
         # Each data may have multiple entries.
         for item in param.json:
 
             # Pull out the features.
-            feats = jsonrec.get_features(item)
+            feats = jsonrec.get_json_features(item)
 
             # The name of the GFF anchor.
             anchor = param.seqid or item['id']
 
             # Subselect by coordinates.
             feats = jsonrec.filter_features(feats, start=param.start, end=param.end, gene=param.gene, ftype=param.type,
-                                            regexp=param.regexp)
+                                            regexp=param.regexp, name=param.name)
 
             # Generate the gff output
             for feat in feats:

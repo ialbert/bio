@@ -42,7 +42,7 @@ def has_feature(item, name="gene"):
     return item.get(name, [''])[0]
 
 
-def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None, droporigin=False):
+def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None, name=None, droporigin=False):
     """
     Filters features based on various parameters.
     """
@@ -56,9 +56,14 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
         valid = set(ftype.split(","))
         items = filter(lambda f: f.get('type') in valid, items)
 
-    # Filter by name.
+    # Filter by gene.
     if gene:
         items = filter(lambda f: gene in f.get("gene", []), items)
+
+    # Filter by name.
+    if name:
+        items = filter(lambda f: name in f.get("name", []), items)
+
 
     # Filter by coordinates.
     if start or end:
@@ -186,7 +191,7 @@ def get_translation_records(item, param):
         yield rec
 
 
-def get_features(data):
+def get_json_features(data):
     """
     Generates features from data.
     It will also generate the parent child relationships for hierachical features (mRNA and CDS).
@@ -254,7 +259,7 @@ def get_feature_records(data, param):
     """
 
     # The feature generator
-    feats = get_features(data)
+    feats = data[const.FEATURES]
 
     # Filter the features.
     feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, droporigin=True)
@@ -543,7 +548,7 @@ def json_view(params):
 
         # Stop when data was not found.
         if not param.json:
-            utils.error(f"data not found: {param.name}")
+            utils.error(f"data not found: {param.acc}")
 
         # Produce the full file when no parameters are set.
         if param.unset():
