@@ -33,7 +33,7 @@ def delete(params):
     Deletes data under a filename.
     """
     for p in params:
-        fname = resolve_fname(p.name)
+        fname = resolve_fname(p.acc)
         if os.path.isfile(fname):
             logger.info(f"removing: {fname}")
             os.remove(fname)
@@ -111,13 +111,13 @@ def fetch(params, seqid=None, db=None, update=False):
             continue
 
         # The JSON representation of the data.
-        json_name = resolve_fname(name=p.name, format="json")
+        json_name = resolve_fname(name=p.acc, format="json")
 
         # GenBank representation of the data.
-        gbk_name = resolve_fname(name=p.name, format="gb")
+        gbk_name = resolve_fname(name=p.acc, format="gb")
 
         # Fetch and store genbank from remote site.
-        ncbi_efetch(p.name, db=db, gbk_name=gbk_name)
+        ncbi_efetch(p.acc, db=db, gbk_name=gbk_name)
 
         # Convert genbank to JSON.
         data = jsonrec.parse_file(fname=gbk_name, seqid=seqid)
@@ -195,7 +195,7 @@ def rename(params, seqid=None, newname=None):
         return
 
     # It only makes sense to rename one of the many
-    name = params[0].name
+    name = params[0].acc
 
     # We can only rename files that we have json representation.
     if get_json(name):
