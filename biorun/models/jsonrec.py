@@ -97,8 +97,6 @@ def first(item, key, default=""):
     return item.get(key, [default])[0]
 
 
-
-
 def rec_name(f):
     """
     Generates a record name from a JSON feature.
@@ -108,20 +106,19 @@ def rec_name(f):
     return name
 
 
-
-def make_attr(feat, uid='', pid='', color=None):
+def make_attr(feat, color=None):
     """
     Creates GFF style attributes from JSON fields.
     """
 
     # The feature name.
     name = feat['name']
+    uid = feat['id']
+    pid = feat.get("parent_id")
 
-    data = [ ]
+    data = [f"ID={uid}"]
 
-    # Add ID and parent if these exists.
-    if uid:
-        data.append(f"ID={uid}")
+    # Add parent id
     if pid:
         data.append(f"Parent={pid}")
 
@@ -140,6 +137,7 @@ def make_attr(feat, uid='', pid='', color=None):
         data.append(f"color={color}")
 
     return ";".join(data)
+
 
 def rec_desc(f):
     """
@@ -188,13 +186,75 @@ def get_translation_records(item, param):
         yield rec
 
 
+def get_features(data):
+    """
+    Generates features from data.
+    It will also generate the parent child relationships for hierachical features (mRNA and CDS).
+    """
+
+    feats = data[const.FEATURES]
+
+    counter = count(1)
+
+    for feat in feats:
+
+        # The type of the location
+        ftype = feat['type']
+
+        # The unique id of the feature.
+        feature_id = feat['id']
+
+        # Overriden during hierachical data.
+        location_type = ftype
+
+        # Used for hierachical data.
+        parent_id = None
+
+        # Hierarchical data produce a parent feature.
+        if ftype == 'mRNA' or ftype == 'CDS':
+
+            # Child nodes will track parent.
+            parent_id = feature_id
+
+            # Set the parent/child types.
+            if ftype == 'mRNA':
+                # Keep the mRNA as parent of exons.
+                parent_type, location_type = 'mRNA', 'exon'
+            else:
+                # Make a new parent for CDS regions.
+                parent_type, location_type = 'mRNA_region', 'CDS'
+
+            # Copy the attributes
+            parent_feat = dict(feat)
+            parent_feat['type'] = parent_type
+
+            yield parent_feat
+
+        # Generate JSON record for each location separately.
+        for start, end, strand in feat["location"]:
+            loc_feat = dict(feat)
+            if parent_id:
+                # Needs a new ID as the parent keeps the original id.
+                loc_feat["id"] = f"{location_type}-{next(counter)}"
+
+                # Assign the parent.
+                loc_feat['parent_id'] = parent_id
+
+                # Add a gene id attribute.
+                loc_feat['gene_id'] = feat.get("locus_tag", ["missing"])
+
+            loc_feat['type'] = location_type
+            loc_feat['start'], loc_feat['end'], loc_feat['strand'] = start, end, strand
+            yield loc_feat
+
+
 def get_feature_records(data, param):
     """
     Yields BioPython SeqRecords from JSON data.
     """
 
-    # A shortcut to features.
-    feats = data[const.FEATURES]
+    # The feature generator
+    feats = get_features(data)
 
     # Filter the features.
     feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, droporigin=True)
@@ -317,7 +377,9 @@ def json_ready(value):
 
     return value
 
+
 UNIQUE = dict()
+
 
 def fill_name(f):
     """
@@ -353,6 +415,7 @@ def fill_name(f):
     f['name'] = name or ftype
 
     return f
+
 
 def convert_genbank(recs, seqid=None):
     """
@@ -463,7 +526,8 @@ def make_jsonrec(seq, seqid=None):
     oper = None,
     location = [[start, end, strand]]
     ftype = "sequence"
-    attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper, name=name, id=name)
+    attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper,
+                 name=name, id=name)
     item[const.FEATURES] = [
         attrs
     ]

@@ -14,12 +14,13 @@ def feature2gff(feat, anchor, allow_parent=True):
     Returns a SeqRecord as an 11 element  GFF3 list .
     """
 
-    uid = feat['id']
     ftype = feat['type']
     strand = feat['strand']
+    start = feat['start']
+    end = feat['end']
 
     # Reformat the strand
-    strand = "+" if strand > 0 else "-"
+    gffstrand = "+" if strand > 0 else "-"
 
     # TODO: is this the phase?
     #phase = feat.get("codon_start", [1])[0] - 1
@@ -28,38 +29,13 @@ def feature2gff(feat, anchor, allow_parent=True):
     # The color for the feature.
     color = const.COLOR_FOR_TYPE.get(ftype)
 
-    # Used only during hierachical data.
-    ctype, pid = ftype, None
+    # Make the attributes
+    attr = jsonrec.make_attr(feat, color=color)
 
-    # Handle hiearachical relationships.
-    if ftype == 'mRNA' or ftype== 'CDS':
+    # Create the GFF record.
+    data = [anchor, ".", ftype, start, end, ".", gffstrand, phase, attr]
 
-        # Child nodes track parent.
-        pid = uid
-
-        # Set the parent/child types.
-        if ftype == 'mRNA':
-            ptype, ctype = 'mRNA', 'exon'
-        else:
-            ptype, ctype = 'region', 'CDS'
-
-        # Build the attributes for the parent.
-        attr = jsonrec.make_attr(feat, color=color, uid=uid)
-
-        # Generate the parent entry.
-        data = [anchor, ".", ptype, feat['start'], feat['end'], ".", strand, phase, attr]
-
-        # Output the parent track if allowed.
-        if allow_parent:
-            yield data
-
-    # Generate an interval for each location.
-    for start, end, strand in feat["location"]:
-        strand = "+" if strand > 0 else "-"
-        attr = jsonrec.make_attr(feat, color=color, pid=pid)
-        data = [anchor, ".", ctype, start, end, ".", strand, phase, attr]
-
-        yield data
+    yield data
 
 
 def gff_view(params):
@@ -79,7 +55,7 @@ def gff_view(params):
         for item in param.json:
 
             # Pull out the features.
-            feats = item[const.FEATURES]
+            feats = jsonrec.get_features(item)
 
             # The name of the GFF anchor.
             anchor = param.seqid or item['id']
