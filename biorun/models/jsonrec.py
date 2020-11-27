@@ -166,7 +166,7 @@ def get_translation_records(item, param):
     feats = filter(has_translation, feats)
 
     # Additional filters that may have been passed.
-    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp)
+    feats = filter_features(feats, gene=param.gene, ftype=param.type, name=param.name, regexp=param.regexp)
 
     # Hoist the variables out.
     start, end = param.start, param.end
@@ -262,7 +262,7 @@ def get_feature_records(data, param):
     feats = data[const.FEATURES]
 
     # Filter the features.
-    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, droporigin=True)
+    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, name=param.name, droporigin=True)
 
     # We can extract DNA sequences from this if needed.
     origin = data[const.ORIGIN]

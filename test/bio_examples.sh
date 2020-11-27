@@ -67,10 +67,14 @@ bio ncov --translate --type CDS > translate.fa
 # The translation attribute must be filled in GenBank.
 bio ncov --protein --start -10 > protein-end.fa
 
-# There are shortcuts to accessing coding sequences for genes.
-# The following two commands are equivalent.
-bio ncov --fasta --type CDS --gene S --end 10 > shortcut.fa
-bio ncov:S --fasta --end 10 > shortcut.fa
+# Coding sequences for a gene.
+bio ncov --fasta --type CDS --gene S --end 10 > cds-gene-s.fa
+
+# Coding sequences for genes may be listed by gene name. Will list all coding sequences.
+bio ncov:S --fasta --end 10 >  cds-gene-s.fa
+
+# Another shortcut, this time we access coding sequences by the id. Will list just one specific sequence.
+bio ncov:YP_009724390.1 --fasta --end 10 >  cds-gene-s.fa
 
 # Extract the already traslated protein from the data.
 bio ncov:S --fasta --protein --seqid foo > s_prot_foo.fa

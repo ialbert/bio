@@ -81,7 +81,9 @@ def ncbi_efetch(name, gbk_name, db=None):
     format, retmode = "gbwithparts", "text"
 
     # Guess accession numbers that are proteins.
-    if name[:2] in ["AP", "NP", "YP", "XP", "WP", "AK"]:
+    # https: // www.ncbi.nlm.nih.gov / Sequin / acc.html
+
+    if utils.maybe_prot(name):
         db = db or "protein"
     else:
         db = db or "nuccore"

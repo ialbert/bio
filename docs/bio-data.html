@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Data management | bio.utf8</title>
+  <title>Fetching data | bio.utf8</title>
   <meta name="description" content="" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Data management | bio.utf8" />
+  <meta property="og:title" content="Fetching data | bio.utf8" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Data management | bio.utf8" />
+  <meta name="twitter:title" content="Fetching data | bio.utf8" />
   
   
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="install.html"/>
-<link rel="next" href="convert.html"/>
+<link rel="prev" href="bio-install.html"/>
+<link rel="next" href="bio-fasta.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -86,15 +86,17 @@
 <li><a href="index.html">bio: making bioinformatics fun again</a></li>
 <li class="divider"></li>
 <li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
-<li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Software installation</a></li>
-<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
-<li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
-<li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
-<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
-<li class="chapter" data-level="" data-path="sra.html"><a href="sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
-<li class="chapter" data-level="" data-path="examples.html"><a href="examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
-<li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>General tips</a></li>
-<li class="chapter" data-level="" data-path="related.html"><a href="related.html"><i class="fa fa-check"></i>Related software</a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
 </ul>
 
       </nav>
@@ -112,27 +114,77 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="data" class="section level1">
-<h1>Data management</h1>
-<p>The <code>bio</code> package solves the ongoing struggle of how to maintain sanity among diverse datasets.</p>
-<p>When you obtain data with <code>bio</code> it becomes universally available to all tools in the package.</p>
-<div id="local-data" class="section level3">
-<h3>Local data</h3>
-<p>There is an automated data storage in <code>bio</code> that makes using data from NCBI quite convenient.</p>
+<div id="bio-data" class="section level1">
+<h1>Fetching data</h1>
+<p>The <code>bio</code> package solves the ongoing struggle of how to maintain sanity among diverse datasets. When you obtain data with <code>bio</code> it becomes universally available to all tools in the package.</p>
+<div id="getting-data-from-ncbi-fetch" class="section level2">
+<h2>Getting data from NCBI (–fetch)</h2>
+<p>The <code>--fetch</code> command downloads data identified via accession numbers from NCBI then stores
+this data in a storage directory (<code>~/.bio</code>). All subsequent commands in the <code>bio</code> package can seamlessly access the stored data from any location and would not need to connect to the internet to use it.</p>
+<pre><code># Run fetch in verbose mode.
+bio NC_045512 --fetch -v</code></pre>
+<p>Running the fetch command the next time for the same accession number will not connect to the internet again, it will use the existing data instead. Use the <code>--fetch --update</code> (see later) to force a re-downloading of data from NCBI.</p>
+<p>Most commands can operate on multiple accession numbers at a time.</p>
+<pre><code>bio NC_045512 MN996532 --fetch</code></pre>
+<p>There will be commands like <code>--rename</code> where it makes no sense to apply the operation on multiple data at the same time. In those cases only the first accession number is acted upon.</p>
+<p>The internal, gzip compressed, JSON based representation used by <code>bio</code> is simple, efficient and highly performant. A 330MB GenBank file for chromosome 1 of the human genome obtained from NCBI will in our data representation take just 67MB to store. More importantly our data representation can read and converted to <code>fasta</code> format in 6 seconds:</p>
+<pre><code>time bio NC_000001 --fasta | wc -c
+253105766
+
+real    0m6.189s</code></pre>
+</div>
+<div id="rename-rename" class="section level2">
+<h2>Rename (–rename)</h2>
+<p>Accession numbers are tedious to handle. Almost always we rename data to be meaningful.</p>
 <pre><code>bio NC_045512 --fetch --rename ncov</code></pre>
-<p>But let’s make it clear that <code>bio</code> can read and process data from local files just fine. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:</p>
+<p>the command above will store the data under the name <code>ncov</code>. Within the data the sequence will still be labeled as <code>NC_045512</code>. You may change both the name and sequence id:</p>
+<pre><code>bio NC_045512 --fetch --rename ncov --seqid ncov
+bio NC_045512 --fetch --rename ratg13 --seqid ratg13</code></pre>
+<p>Now, not only is your data called <code>ncov</code> but the sequence id inside the data is also set to <code>ncov</code>.</p>
+</div>
+<div id="listing-the-storage-list" class="section level2">
+<h2>Listing the storage (–list)</h2>
+<p>Each time data is fetched is will be stored locally. The <code>bio</code> package will look in this storage no matter what directory you run it from. To list the content of the storage write:</p>
+<pre><code>bio --list</code></pre>
+<p>it prints:</p>
+<pre><code>22K   ncov     Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+19K   ratg13   Bat coronavirus RaTG13, complete genome</code></pre>
+</div>
+<div id="delete-data-delete" class="section level2">
+<h2>Delete data (–delete)</h2>
+<p>To drop data from storage use:</p>
+<pre><code>bio ncov --delete</code></pre>
+<p>This command will only drop the JSON representation not the downloaded GenBank if exists.
+If you want to update the original data use the <code>--update</code> parameter.</p>
+</div>
+<div id="update-data-update" class="section level2">
+<h2>Update data (–update)</h2>
+<p>To force fetch to download data that already seems to be present do:</p>
+<pre><code>bio NC_045512 --fetch --update</code></pre>
+<p>Note that you can’t update a renamed sequence. At that point the original accession number is lost. You can however fetch, update and rename all in one go like so:</p>
+<pre><code>bio NC_045512 --fetch --update --rename ncov --seqid ncov</code></pre>
+<p>There is a builtin order of operations, does not matter what order you list commands. For example <code>--delete</code> would take place first before the <code>--fetch</code> and so on.</p>
+</div>
+<div id="view-data" class="section level2">
+<h2>View data</h2>
+<p>The default action is to view the stored data. Locally the data is stored in a JSON format that makes processing it much faster than the original GenBank yet has no loss of information:</p>
+<pre><code>bio ncov | head </code></pre>
+</div>
+<div id="local-data" class="section level2">
+<h2>Local data</h2>
+<p><code>bio</code> can also read and process data from local files. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:</p>
 <pre><code>bio  mydata.gb --gff </code></pre>
 </div>
-<div id="data-from-command-line" class="section level3">
-<h3>Data from command line</h3>
+<div id="data-from-command-line" class="section level2">
+<h2>Data from command line</h2>
 <p>In addition, there is a so called <em>interactive</em> input of data (<code>-i</code>) where the data can be listed at the command line:</p>
 <pre><code>bio ATGAATATATAC -i --translate</code></pre>
 <p>The above command will operate on the sequence as if it were stored in a FASTA file, the above prints:</p>
 <pre><code>&gt;S1 translated DNA
 MNIY</code></pre>
 </div>
-<div id="what-is-the-point-of-getting-data-from-command-line" class="section level3">
-<h3>What is the point of getting data from command line?</h3>
+<div id="what-is-the-point-of-getting-data-from-command-line" class="section level2">
+<h2>What is the point of getting data from command line?</h2>
 <p>It is an explicit way to explore and demonstrate information. For example, suppose you wanted to see how the same DNA sequence would be
 translated to different amino acides when using the the first or second reading frame:</p>
 <pre class="bash"><code>bio ATGAATATATACT -i --translate --start 1</code></pre>
@@ -148,78 +200,6 @@ MNIY</code></pre>
 <pre><code>S1           THISLI--NE-
            1   ||.:  ||  11
 S2           --ISALIGNED</code></pre>
-</div>
-<div id="getting-data-from-ncbi-fetch" class="section level3">
-<h3>Getting data from NCBI (–fetch)</h3>
-<p>The <code>--fetch</code> command downloads data identified via accession numbers from NCBI then stores
-this data in a storage directory (<code>~/.bio</code>). All subsequent commands in the <code>bio</code> package can seamlessly access the stored data from any location and would not need to connect to the internet to use it.</p>
-<pre><code># Run fetch in verbose mode.
-bio NC_045512 --fetch -v</code></pre>
-<p>Running the fetch command the next time for the same accession number will not connect to the internet again, it will use the existing data instead. Use the <code>--fetch --update</code> (see later) to force a re-downloading of data from NCBI.</p>
-<p>Most commands can operate on multiple accession numbers at a time.</p>
-<pre><code>bio NC_045512 MN996532 --fetch</code></pre>
-<p>There will be commands like <code>--rename</code> where it makes no sense to apply the operation on multiple data at the same time. In those cases only the first accession number is acted upon.</p>
-<p>The internal, gzip compressed, JSON based representation used by <code>bio</code> is simple, efficient and highly performant. A 330MB GenBank file for chromosome 1 of the human genome obtained from NCBI will in our data representation take just 67MB to store. More importantly our data representation can read and converted to <code>fasta</code> format in 6 seconds:</p>
-<pre><code>time bio NC_000001 --fasta | wc -c
-253105766
-
-real    0m6.189s</code></pre>
-</div>
-<div id="rename-rename" class="section level3">
-<h3>Rename (–rename)</h3>
-<p>Accession numbers are tedious to handle. Almost always we rename data to be meaningful.</p>
-<pre><code>bio NC_045512 --fetch --rename ncov</code></pre>
-<p>the command above will store the data under the name <code>ncov</code>. Within the data the sequence will still be labeled as <code>NC_045512</code>. You may change both the name and sequence id:</p>
-<pre><code>bio NC_045512 --fetch --rename ncov --seqid ncov
-bio NC_045512 --fetch --rename ratg13 --seqid ratg13</code></pre>
-<p>Now, not only is your data called <code>ncov</code> but the sequence id inside the data is also set to <code>ncov</code>.</p>
-</div>
-<div id="listing-the-storage-list" class="section level3">
-<h3>Listing the storage (–list)</h3>
-<p>Each time data is fetched is will be stored locally. The <code>bio</code> package will look in this storage no matter what directory you run it from. To list the content of the storage write:</p>
-<pre><code>bio --list</code></pre>
-<p>it prints:</p>
-<pre><code>22K   ncov     Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
-19K   ratg13   Bat coronavirus RaTG13, complete genome</code></pre>
-</div>
-<div id="delete-data-delete" class="section level3">
-<h3>Delete data (–delete)</h3>
-<p>To drop data from storage use:</p>
-<pre><code>bio ncov --delete</code></pre>
-<p>This command will only drop the JSON representation not the downloaded GenBank if exists.
-If you want to update the original data use the <code>--update</code> parameter.</p>
-</div>
-<div id="update-data-update" class="section level3">
-<h3>Update data (–update)</h3>
-<p>To force fetch to download data that already seems to be present do:</p>
-<pre><code>bio NC_045512 --fetch --update</code></pre>
-<p>Note that you can’t update a renamed sequence. At that point the original accession number is lost. You can however fetch, update and rename all in one go like so:</p>
-<pre><code>bio NC_045512 --fetch --update --rename ncov --seqid ncov</code></pre>
-<p>There is a builtin order of operations, does not matter what order you list commands. For example <code>--delete</code> would take place first before the <code>--fetch</code> and so on.</p>
-</div>
-<div id="view-data" class="section level3">
-<h3>View data</h3>
-<p>The default action is to view the stored data. Locally the data is stored in a JSON format that makes processing it much faster than the original GenBank yet has no loss of information:</p>
-<pre><code>bio ncov | head </code></pre>
-<p>You can subselect and view sections of the data, for example the <code>S</code> gene:</p>
-<pre><code>bio ncov:S | head</code></pre>
-<p>Many other combinations are valid:</p>
-<pre><code>bio ncov --type CDS </code></pre>
-<p>When viewing the data directly you are shown the JSON based data that <code>bio</code> uses internally.</p>
-</div>
-<div id="example-output" class="section level2">
-<h2>Example output</h2>
-<pre class="bash"><code>bio ncov | head</code></pre>
-<pre><code>[
-    {
-        &quot;id&quot;: &quot;ncov&quot;,
-        &quot;definition&quot;: &quot;Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome&quot;,
-        &quot;dblink&quot;: [
-            &quot;BioProject:PRJNA485481&quot;
-        ],
-        &quot;locus&quot;: &quot;NC_045512&quot;,
-        &quot;feature_count&quot;: 57,
-        &quot;origin_len&quot;: 29903,</code></pre>
 
 </div>
 </div>
@@ -231,8 +211,8 @@ If you want to update the original data use the <code>--update</code> parameter.
           </div>
         </div>
       </div>
-<a href="install.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="convert.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bio-install.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-fasta.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

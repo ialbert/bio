@@ -1,4 +1,4 @@
-# Software installation {#install}
+# Software installation {#bio-install}
 
 `bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
 
@@ -12,9 +12,7 @@ we usually recommend installing prerequisites with conda like so:
 
     conda install -c bioconda biopython parasail-python
 
-then proceed with:
-
-    pip install bio --upgrade
+then proceed with `pip install bio --upgrade`.
 
 ## Quick start
 

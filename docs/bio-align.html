@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="convert.html"/>
-<link rel="next" href="taxon.html"/>
+<link rel="prev" href="bio-json.html"/>
+<link rel="next" href="bio-taxonomy.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -86,15 +86,17 @@
 <li><a href="index.html">bio: making bioinformatics fun again</a></li>
 <li class="divider"></li>
 <li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
-<li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Software installation</a></li>
-<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
-<li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
-<li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
-<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
-<li class="chapter" data-level="" data-path="sra.html"><a href="sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
-<li class="chapter" data-level="" data-path="examples.html"><a href="examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
-<li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>General tips</a></li>
-<li class="chapter" data-level="" data-path="related.html"><a href="related.html"><i class="fa fa-check"></i>Related software</a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
 </ul>
 
       </nav>
@@ -112,10 +114,12 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="align" class="section level1">
+<div id="bio-align" class="section level1">
 <h1>Sequence alignments</h1>
-<div id="dna-alignemt" class="section level2">
-<h2>DNA align,emt</h2>
+<p>The alignments in <code>bio</code> are primarily designed for exploratory use, for aligning short (a few thousand basepair long sequences), visually investigating the alignments, interacting with the sequences before and after alignment. In such cases the alignments will be generated within less than a second. The implementations are mathematically optimal but the libraries that we rely on do not scale well to longer sequences.</p>
+<p>Use a specially designed software, that relies on heuristics, to perform large scale studies. These tools will operate orders of magnitude faster. Depending on your needs <code>blast</code>, <code>blat</code>, <code>mummer</code>, <code>minimap2</code>, <code>lastz</code>, <code>exonerate</code> will be far better suited for genome wide analyses.</p>
+<div id="dna-alignment" class="section level2">
+<h2>DNA alignment</h2>
 <pre class="bash"><code># Align the extracted protein.
 bio ncov:S ratg13:S --end 90 --align</code></pre>
 <pre><code>
@@ -240,8 +244,8 @@ S2           --ISALIGNED</code></pre>
           </div>
         </div>
       </div>
-<a href="convert.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="taxon.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bio-json.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-taxonomy.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

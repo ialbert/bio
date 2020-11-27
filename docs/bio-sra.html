@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="taxon.html"/>
-<link rel="next" href="examples.html"/>
+<link rel="prev" href="bio-taxonomy.html"/>
+<link rel="next" href="bio-examples.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -86,15 +86,17 @@
 <li><a href="index.html">bio: making bioinformatics fun again</a></li>
 <li class="divider"></li>
 <li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
-<li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Software installation</a></li>
-<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
-<li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
-<li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
-<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
-<li class="chapter" data-level="" data-path="sra.html"><a href="sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
-<li class="chapter" data-level="" data-path="examples.html"><a href="examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
-<li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>General tips</a></li>
-<li class="chapter" data-level="" data-path="related.html"><a href="related.html"><i class="fa fa-check"></i>Related software</a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
 </ul>
 
       </nav>
@@ -112,11 +114,12 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="sra" class="section level1">
+<div id="bio-sra" class="section level1">
 <h1>Searching SRA</h1>
 <p><code>bio</code> has support to automatically query your data for additional information at sra.</p>
 <p>While Not all GenBank records are properly cross referenced, but for those that are <code>bio</code> can get you the SRA inforamation right away. Here is how it works. Get a strain of Ebola sequenced in 2014</p>
 <pre class="bash"><code>bio KM233118 --fetch --rename ebola </code></pre>
+<pre><code>*** not found: </code></pre>
 <p>First check to see if the record is being properly cross referenced:</p>
 <pre class="bash"><code>bio ebola --sra</code></pre>
 <pre><code>ebola   BioProject  PRJNA257197
@@ -195,8 +198,8 @@ SRR1972975  546366570   292 RNA-Seq PAIRED  Illumina HiSeq 2500 W219.0</code></p
           </div>
         </div>
       </div>
-<a href="taxon.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="examples.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bio-taxonomy.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-examples.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="sra.html"/>
-<link rel="next" href="tips.html"/>
+<link rel="prev" href="bio-sra.html"/>
+<link rel="next" href="bio-tips.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -86,15 +86,17 @@
 <li><a href="index.html">bio: making bioinformatics fun again</a></li>
 <li class="divider"></li>
 <li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
-<li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Software installation</a></li>
-<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
-<li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
-<li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
-<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
-<li class="chapter" data-level="" data-path="sra.html"><a href="sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
-<li class="chapter" data-level="" data-path="examples.html"><a href="examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
-<li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>General tips</a></li>
-<li class="chapter" data-level="" data-path="related.html"><a href="related.html"><i class="fa fa-check"></i>Related software</a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
 </ul>
 
       </nav>
@@ -112,7 +114,7 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="examples" class="section level1">
+<div id="bio-examples" class="section level1">
 <h1>Usage examples</h1>
 <p>The following script is the test file that we use to verify the various functionalities of <code>bio</code></p>
 <pre class="bash"><code>#
@@ -184,10 +186,14 @@ bio ncov --translate --type CDS &gt; translate.fa
 # The translation attribute must be filled in GenBank.
 bio ncov --protein --start -10 &gt; protein-end.fa
 
-# There are shortcuts to accessing coding sequences for genes.
-# The following two commands are equivalent.
-bio ncov --fasta --type CDS --gene S --end 10 &gt; shortcut.fa
-bio ncov:S --fasta --end 10 &gt; shortcut.fa
+# Coding sequences for a gene.
+bio ncov --fasta --type CDS --gene S --end 10 &gt; cds-gene-s.fa
+
+# Coding sequences for genes may be listed by gene name. Will list all coding sequences.
+bio ncov:S --fasta --end 10 &gt;  cds-gene-s.fa
+
+# Another shortcut, this time we access coding sequences by the id. Will list just one specific sequence.
+bio ncov:YP_009724390.1 --fasta --end 10 &gt;  cds-gene-s.fa
 
 # Extract the already traslated protein from the data.
 bio ncov:S --fasta --protein --seqid foo &gt; s_prot_foo.fa
@@ -261,8 +267,8 @@ bio ebola --sra &gt; sra-test.txt
           </div>
         </div>
       </div>
-<a href="sra.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="tips.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bio-sra.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-tips.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

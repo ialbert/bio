@@ -1,4 +1,4 @@
-# General tips {#tips}
+# General tips {#bio-tips}
 
 Effort has been devoted to make the command line a bit more user friendly.
 

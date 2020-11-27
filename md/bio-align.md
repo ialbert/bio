@@ -1,4 +1,4 @@
-# Sequence alignments {#align}
+# Sequence alignments {#bio-align}
 
 The alignments in `bio` are primarily designed for exploratory use, for aligning short (a few thousand basepair long sequences), visually investigating the alignments, interacting with the sequences before and after alignment. In such cases the alignments will be generated within less than a second. The implementations are mathematically optimal but the libraries that we rely on do not scale well to longer sequences.
 

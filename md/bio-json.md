@@ -1,8 +1,6 @@
-## JSON representation {#json}
+# Convert to JSON {#bio-json}
 
-`bio` obtains data from NCBI and transforms it into an internal, simpler format.
-
-You would only need to process this format to provide functionality that is not yet offered in `bio` 
+`bio` obtains data from NCBI and transforms it into an internal, simpler format. One would only need to process this format to provide functionality that is not yet offered in `bio` 
 
 ### Get a dataset
 
@@ -12,7 +10,7 @@ Get SARS-COV-2 data and rename it to `ncov`:
     bio NC_045512 --fetch --rename ncov
 ```
 
-### The GenBank content
+### The GenBank data
 
 Explore the contents of the file downloaded from NCBI
 

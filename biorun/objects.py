@@ -31,7 +31,12 @@ class Param(object):
         # Parses out colon from data name if that exists.
         if self.acc and ":" in self.acc:
             self.acc, word = self.acc.split(":")
-            self.gene, self.type = word, 'CDS'
+
+            # Word starts decide if it is a gene or an accession number
+            if utils.maybe_ncbi(word):
+                self.name, self.type = word, 'CDS'
+            else:
+                self.gene, self.type = word, 'CDS'
 
         self.start, self.end = utils.zero_based(start=self.start, end=self.end)
         self.regexp = re.compile(self.regexp) if self.regexp else None

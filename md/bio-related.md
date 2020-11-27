@@ -1,4 +1,4 @@
-# Related software {#related}
+# Related software {#bio-related}
 
 Since the beginning of bioinformatic times mankind was held down, hindered and obstructed by suboptimal dataformats, clunky interfaces, tedious procedures, bureaucratic protocols. No wonder a thriving cottage industry was born to deal with the challenges, `bio` being one of the proud entrants in the fray.
 

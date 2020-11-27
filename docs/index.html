@@ -30,7 +30,7 @@
   
   
 
-<link rel="next" href="install.html"/>
+<link rel="next" href="bio-install.html"/>
 <script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -86,15 +86,17 @@
 <li><a href="index.html">bio: making bioinformatics fun again</a></li>
 <li class="divider"></li>
 <li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
-<li class="chapter" data-level="" data-path="install.html"><a href="install.html"><i class="fa fa-check"></i>Software installation</a></li>
-<li class="chapter" data-level="" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i>Data management</a></li>
-<li class="chapter" data-level="" data-path="convert.html"><a href="convert.html"><i class="fa fa-check"></i>Format conversions</a></li>
-<li class="chapter" data-level="" data-path="align.html"><a href="align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
-<li class="chapter" data-level="" data-path="taxon.html"><a href="taxon.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
-<li class="chapter" data-level="" data-path="sra.html"><a href="sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
-<li class="chapter" data-level="" data-path="examples.html"><a href="examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
-<li class="chapter" data-level="" data-path="tips.html"><a href="tips.html"><i class="fa fa-check"></i>General tips</a></li>
-<li class="chapter" data-level="" data-path="related.html"><a href="related.html"><i class="fa fa-check"></i>Related software</a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
 </ul>
 
       </nav>
@@ -148,9 +150,9 @@
 <pre><code># Get the data.
 bio NC_045512 MN996532 --fetch 
 
-# Align the data.
+# Align the sequences.
 bio NC_045512 MN996532 --align --end 1000</code></pre>
-<p>that’s it. <code>bio</code> will everything for you and prints:</p>
+<p>that’s it. <code>bio</code> will take care of everything for you and prints:</p>
 <pre><code>### 1: NC_045512.2 vs MN996532.2 ###
 
 Length: 1000 (semiglobal)
@@ -177,6 +179,9 @@ MN996532.2   GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAG
 <p>Suppose you wanted to identify the differences between the <code>S</code> protein of the bat coronavirus deposited as <code>MN996532</code> and the <code>S</code> protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number <code>NC_045512</code>.</p>
 <p>If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, then think about the effort it would take you to teach someone else how to do the same.</p>
 <p>With the <code>bio</code> package the process takes simple, concise steps.</p>
+</div>
+<div id="download-and-rename" class="section level2">
+<h2>Download and rename</h2>
 <p>First we download and rename the data keep our sanity:</p>
 <pre><code>bio NC_045512 --fetch --rename ncov
 bio MN996532  --fetch --rename ratg13</code></pre>
@@ -190,10 +195,13 @@ bio MN996532  --fetch --rename ratg13</code></pre>
 <pre><code>&gt;ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
 ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
 GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC</code></pre>
-<p>You could also convert the data stored under <code>ncov</code> name to other formats. Let’s convert the <code>CDS</code> features annotated for gene <code>S</code> to <code>GFF</code>:</p>
-<pre class="bash"><code>bio ncov --gff --gene S --type CDS</code></pre>
+<p>You could also convert the data stored under <code>ncov</code> name to other formats. Let’s convert features with type <code>CDS</code> to <code>GFF</code>:</p>
+<pre class="bash"><code>bio ncov --gff --type CDS  | head -5</code></pre>
 <pre><code>##gff-version 3
-ncov    .   CDS 21563   25384   .   +   .   Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568</code></pre>
+ncov    .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;color=#7a77cb
+ncov    .   CDS 13468   21555   .   +   .   ID=CDS-2;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;color=#7a77cb
+ncov    .   CDS 266 13483   .   +   .   ID=CDS-3;Parent=YP_009725295.1;Name=YP_009725295.1;gene=ORF1ab;locus_tag=GU280_gp01;note=pp1a;codon_start=1;product=ORF1a polyprotein;protein_id=YP_009725295.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;color=#7a77cb
+ncov    .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02;color=#7a77cb</code></pre>
 </div>
 <div id="align-nucleotides-or-peptides" class="section level2">
 <h2>Align nucleotides or peptides</h2>
@@ -338,7 +346,7 @@ NTH
         </div>
       </div>
 
-<a href="install.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bio-install.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

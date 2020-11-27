@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Convert to GFF | bio.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Convert to GFF | bio.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Convert to GFF | bio.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="bio-fasta.html"/>
+<link rel="next" href="bio-json.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<script src="assets/prism.js"></script>
+
+<link rel="stylesheet" type="text/css" href="assets/bio.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/asciinema-player.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/prism.css" />
+
+<script>
+
+    $(document).ready(function () {
+        $('pre').addClass('language-bash');
+        Prism.highlightAll();
+    });
+
+</script>
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="index.html">bio: making bioinformatics fun again</a></li>
+<li class="divider"></li>
+<li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="bio-gff" class="section level1">
+<h1>Convert to GFF</h1>
+<div id="building-a-nicer-gene-model" class="section level2">
+<h2>Building a nicer gene model</h2>
+<p><code>bio</code> creates more meaningful and nicer GFF visualizations:</p>
+<pre><code># Get chromosome 2L for Drosophila melanogaster (fruit-fly)
+bio NT_033779 --fetch --rename fly </code></pre>
+<p>convert it to gff:</p>
+<pre><code>bio fly --gff &gt; annotations.gff</code></pre>
+</div>
+<div id="gff-created-with-bio" class="section level2">
+<h2>GFF created with <code>bio</code></h2>
+<p>Here is a region from the GFF file created with <code>bio</code> above:</p>
+<p><img src="images/gff-model-bio.png" style="display: block; margin: auto;" /></p>
+<p>The features are explict, separated and easy to see and interpret.</p>
+</div>
+<div id="gff-obtained-from-ncbi" class="section level2">
+<h2>GFF obtained from NCBI</h2>
+<p>Here is the same region from a GFF file downloaded from NCBI, note how much more difficult it is to understand it:</p>
+<p><img src="images/gff-model-ncbi.png" style="display: block; margin: auto;" /></p>
+</div>
+<div id="convert-all-features-to-gff" class="section level2">
+<h2>Convert all features to GFF:</h2>
+<pre class="bash"><code>bio ncov --gff | head -5</code></pre>
+<pre><code>##gff-version 3
+ncov    .   region  1   29903   .   +   .   ID=1;Name=Severe acute respiratory syndrome coronavirus 2;organism=Severe acute respiratory syndrome coronavirus 2;mol_type=genomic RNA;isolate=Wuhan-Hu-1;host=Homo sapiens;db_xref=taxon:2697049;country=China;collection_date=Dec-2019;color=#CECECE
+ncov    .   five_prime_UTR  1   265 .   +   .   ID=2;Name=five_prime_UTR;color=#cc0e74
+ncov    .   gene    266 21555   .   +   .   ID=GU280_gp01;Name=ORF1ab;gene=ORF1ab;locus_tag=GU280_gp01;db_xref=GeneID:43740578;color=#cb7a77
+ncov    .   mRNA_region 266 21555   .   +   .   ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;color=#7a77cb</code></pre>
+</div>
+<div id="convert-to-gff-only-the-features-with-type-cds" class="section level2">
+<h2>Convert to GFF only the features with type <code>CDS</code></h2>
+<pre class="bash"><code>bio ncov --gff --type CDS | head -5</code></pre>
+<pre><code>##gff-version 3
+ncov    .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;color=#7a77cb
+ncov    .   CDS 13468   21555   .   +   .   ID=CDS-2;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;color=#7a77cb
+ncov    .   CDS 266 13483   .   +   .   ID=CDS-3;Parent=YP_009725295.1;Name=YP_009725295.1;gene=ORF1ab;locus_tag=GU280_gp01;note=pp1a;codon_start=1;product=ORF1a polyprotein;protein_id=YP_009725295.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;color=#7a77cb
+ncov    .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02;color=#7a77cb</code></pre>
+</div>
+<div id="convert-to-gff-only-the-features-tagged-with-gene-s" class="section level2">
+<h2>Convert to GFF only the features tagged with gene <code>S</code></h2>
+<pre class="bash"><code>bio ncov --gff --gene S | head -5</code></pre>
+<pre><code>##gff-version 3
+ncov    .   gene    21563   25384   .   +   .   ID=GU280_gp02;Name=S;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;db_xref=GeneID:43740568;color=#cb7a77
+ncov    .   mRNA_region 21563   25384   .   +   .   ID=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;color=#7a77cb
+ncov    .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02;color=#7a77cb</code></pre>
+</div>
+<div id="convert-to-gff-only-the-features-that-overlap-a-interval" class="section level2">
+<h2>Convert to GFF only the features that overlap a interval</h2>
+<pre class="bash"><code>bio ncov --gff --start 2000 --end 3000 | head -5</code></pre>
+<pre><code>##gff-version 3
+ncov    .   region  1   29903   .   +   .   ID=1;Name=Severe acute respiratory syndrome coronavirus 2;organism=Severe acute respiratory syndrome coronavirus 2;mol_type=genomic RNA;isolate=Wuhan-Hu-1;host=Homo sapiens;db_xref=taxon:2697049;country=China;collection_date=Dec-2019;color=#CECECE
+ncov    .   gene    266 21555   .   +   .   ID=GU280_gp01;Name=ORF1ab;gene=ORF1ab;locus_tag=GU280_gp01;db_xref=GeneID:43740578;color=#cb7a77
+ncov    .   mRNA_region 266 21555   .   +   .   ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;color=#7a77cb
+ncov    .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;color=#7a77cb</code></pre>
+
+</div>
+</div>
+
+<script src="assets/asciinema-player.js"></script>
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="bio-fasta.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-json.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

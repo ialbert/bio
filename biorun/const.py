@@ -17,9 +17,19 @@ ALIGN_COMMAND, TAXON_COMMAND, DBLINK_COMMAND = "--align", "--taxon", "--sra"
 
 SKIP_GFF_ATTR = { "id", "parent_id", "name",  "type", "start", "end", "location", "translation", "strand", "operator"}
 
+
+# Guess accession numbers that are proteins based on start letters
+# https: // www.ncbi.nlm.nih.gov / Sequin / acc.html
+
 #
 # Remaps types from GenBank to Sequence Ontology when converting to GFF files
 #
+
+NCBI_PROTEIN_CODES = {"AP", "NP", "YP", "XP", "WP", "AK"}
+
+NCBI_NUCLEOTIDE_CODES = {"NM", "NX", "YP", "XP", "WP", "AK"}
+
+
 SEQUENCE_ONTOLOGY = {
     "source": "region",
     "5'UTR": "five_prime_UTR",

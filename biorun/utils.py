@@ -8,6 +8,7 @@ from functools import wraps
 import time
 import logging
 from os.path import expanduser
+from biorun import const
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -36,6 +37,38 @@ def time_it(func):
             logger.info(f"{func.__name__} runtime: {diff} {units}")
 
     return timer
+
+
+def maybe_prot(name):
+    """
+    Name may be a proteing accession
+    """
+    return name[:2] in const.NCBI_PROTEIN_CODES
+
+
+def is_int(text):
+    try:
+        int(text)
+        return True
+    except ValueError as exc:
+        return False
+
+def maybe_ncbi(text):
+    """
+    Guesses that a text is a valid NCBI accession
+    """
+    code = text[:2]
+
+    # Upper case letters
+    upper = code == code.upper()
+
+    # Get rid of underscores and version number
+    rest = text[2:].replace("_", "").split(".")[0]
+
+    # Sizes between 5 and 9
+    size = 5 <= len(rest) <= 9
+
+    return upper and size and is_int(rest)
 
 
 def zero_based(start, end):
@@ -88,7 +121,6 @@ def parse_number(text):
     if text.endswith("m") or text.endswith("mb"):
         value = safe_int(text.split("m")[0])
         text = f"{value * 1000 * 1000}"
-
 
     return text
 
