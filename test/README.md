@@ -6,7 +6,11 @@ Viral, SARS-COV-2: NC_045512 (1 second)
 
 Viral, Ebola: AF086833 (1 second)
 
-    time 
+    time bio AF086833  --fetch
+
+Another Ebola (2014):
+
+    time bio KJ660346 --fetch --rename ebola14
 
 Bacteria, Escherichia coli: NC_002695 (2 minutes, 10MB)
 

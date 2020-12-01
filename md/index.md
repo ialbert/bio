@@ -135,16 +135,44 @@ bio ncov --taxon --lineage
 ## See the bioproject
 
 `bio` knows about bioprojects and sequencing data, what is stored in the SRA about our data?
+As it turns out the data for `ncov`  data is not properly cross-referenced at NCBI ... thus we can't quite get the SRR run numbers automatically.
+
+Let's pick another data that has better cross references, perhaps a virus from the 2014 Ebola outbreak:
+
+    bio  KM233118 --fetch --rename ebola14
+
+and now print:
 
 ```{bash, comment=NA}
-bio ncov --sra
+bio ebola14 --sra 
 ```
+   
+if we wanted the SRR run numbers we could run:
 
-Alas this particular data is not properly cross-referenced even at NCBI, thus we can't quite get the SRR run numbers automatically. But for other data, that is deposited correctlywe could just do a:
+    bio ebola14 --sra --sample
+ 
+to get:
 
-    bio ncov --sra --sample
-
-to see the sample information as stored in the BioProject.
+     
+    [
+        {
+            "Run": "SRR1553609",
+            "ReleaseDate": "2014-08-19 11:41:53",
+            "LoadDate": "2014-08-19 11:18:49",
+            "spots": "464802",
+            "bases": "93890004",
+            "spots_with_mates": "464802",
+            "avgLength": "202",
+            "size_MB": "51",
+            "download_path": "https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/SRR1553609/SRR1553609.1",
+            "Experiment": "SRX674271",
+            "LibraryName": "NM042.3.FCH9",
+            "LibraryStrategy": "RNA-Seq",
+            "LibrarySelection": "cDNA",
+            "LibrarySource": "TRANSCRIPTOMIC",
+            "LibraryLayout": "PAIRED",
+    ...
+                
 
 ## `bio` is a data model
 

@@ -167,14 +167,14 @@ ebola   BioSample   SAMN02952049</code></pre>
 <pre class="bash"><code>bio ebola --sra --project --limit 10 | head -10</code></pre>
 <pre><code>[
     {
-        &quot;Run&quot;: &quot;SRR1972967&quot;,
+        &quot;Run&quot;: &quot;SRR1972969&quot;,
         &quot;ReleaseDate&quot;: &quot;2015-04-14 13:52:35&quot;,
-        &quot;LoadDate&quot;: &quot;2015-04-14 13:47:37&quot;,
-        &quot;spots&quot;: &quot;1013114&quot;,
-        &quot;bases&quot;: &quot;204649028&quot;,
-        &quot;spots_with_mates&quot;: &quot;1013114&quot;,
+        &quot;LoadDate&quot;: &quot;2015-04-14 13:47:33&quot;,
+        &quot;spots&quot;: &quot;612712&quot;,
+        &quot;bases&quot;: &quot;123767824&quot;,
+        &quot;spots_with_mates&quot;: &quot;612712&quot;,
         &quot;avgLength&quot;: &quot;202&quot;,
-        &quot;size_MB&quot;: &quot;114&quot;,</code></pre>
+        &quot;size_MB&quot;: &quot;66&quot;,</code></pre>
 <p>You can also produce the output in a tab delimited format:</p>
 <pre class="bash"><code>bio ebola --sra --project --table --limit 10 | cut -f 1,5,8,12,15,19,29 | head</code></pre>
 <pre><code>Run bases   size_MB LibraryStrategy LibraryLayout   Model   SampleName

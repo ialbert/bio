@@ -116,6 +116,11 @@
             <section class="normal" id="section-">
 <div id="bio-fasta" class="section level1">
 <h1>Convert to FASTA</h1>
+<div id="get-a-dataset" class="section level3">
+<h3>Get a dataset</h3>
+<p>Get SARS-COV-2 data and rename it to <code>ncov</code>:</p>
+<pre class="bash"><code>    bio NC_045512 --fetch --rename ncov</code></pre>
+</div>
 <div id="convert-the-data-to-fasta-the-origin-of-the-genbank" class="section level2">
 <h2>Convert the data to FASTA (the origin of the GenBank)</h2>
 <pre class="bash"><code>bio ncov --fasta | head -5</code></pre>
@@ -147,12 +152,36 @@ TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
 GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
 TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAACTGCACCT</code></pre>
 </div>
-<div id="gene-name-may-be-encoded-in-the-name" class="section level2">
-<h2>Gene name may be encoded in the name</h2>
+<div id="extract-sequence-by-gene-name" class="section level2">
+<h2>Extract sequence by gene name</h2>
 <pre class="bash"><code>bio ncov:S --fasta --start 100 --end 200 | head -5</code></pre>
 <pre><code>&gt;YP_009724390.1 [100:200]
 CGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGAC
 TTGTTCTTACCTTTCTTTTCCAATGTTACTTGGTTCCATGC</code></pre>
+</div>
+<div id="extract-sequence-by-feature-accession-number" class="section level2">
+<h2>Extract sequence by feature accession number</h2>
+<pre class="bash"><code>bio ncov:YP_009724390.1 --fasta --start 100 --end 200 | head -5</code></pre>
+<pre><code>&gt;YP_009724390.1 [100:200]
+CGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGAC
+TTGTTCTTACCTTTCTTTTCCAATGTTACTTGGTTCCATGC</code></pre>
+</div>
+<div id="translate-the-sequence" class="section level2">
+<h2>Translate the sequence</h2>
+<p>This command translates the DNA sequence to peptides:</p>
+<pre class="bash"><code>bio ncov:S --fasta --start 100 --end 200 --translate | head -5</code></pre>
+<pre><code>&gt;YP_009724390.1 [100:200], translated
+RGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFH</code></pre>
+<p>The slice 100 to 200 is applied on the DNA sequence before the translation.</p>
+</div>
+<div id="extract-the-protein-sequence" class="section level2">
+<h2>Extract the protein sequence</h2>
+<p>This flag extracts the protein sequence embedded in the original GenBank file:</p>
+<pre class="bash"><code>bio ncov:S --fasta --start 100 --end 200 --protein | head -5</code></pre>
+<pre><code>&gt;YP_009724390.1 ID=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568
+IIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRV
+YSSANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGY</code></pre>
+<p>Note how in this case the slice 100 to 200 is applied on the protein sequence.</p>
 
 </div>
 </div>
