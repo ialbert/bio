@@ -29,10 +29,13 @@ JSON_DB = join(utils.DATADIR, JSON_DB)
 # Table names
 
 # Node descriptions
-TERM = "term"
+TERM = "TERMS"
 
 # Graph following the is_a relation
-GRAPH = "graph"
+GRAPH = "GRAPH"
+
+# Names mapped to a GO id.
+NAMES = "NAMES"
 
 logger = utils.logger
 
@@ -66,10 +69,14 @@ def get_data(preload=False):
             utils.error(f"ontology file not found (you must build it first): {JSON_DB}")
         store = json.load(open(JSON_DB))
         terms = store[TERM]
+        nodes = store[GRAPH]
+        names = store[NAMES]
     else:
         terms = open_db(TERM)
+        nodes = open_db(GRAPH)
+        names = open_db(NAMES)
 
-    return terms
+    return terms, nodes, names
 
 
 def open_db(table, fname=SQLITE_DB, flag='c'):
@@ -117,7 +124,9 @@ def parse_term(fname):
     # The ontology file, with both sequence and gene info.
     stream = open(fname, mode="r")
 
-    term_dict = {}
+    terms = {}
+    names = {}
+    nodes = {}
     uid, parent, name, define = None, None, None, None
 
     print(f"*** parsing: {fname}")
@@ -143,20 +152,11 @@ def parse_term(fname):
             define = val[1].strip()
 
         if uid:
-            term_dict[uid] = [name, parent, define]
+            terms[uid] = [name, parent, define]
+            nodes[uid] = parent
+            names[name] = uid
 
-    return term_dict
-
-
-def parse_nodes(term_dict):
-    nodes = {}
-    for item in term_dict.items():
-        child, vals = item
-        name, parent, define = vals
-
-        nodes[child] = parent
-
-    return nodes
+    return terms, nodes, names
 
 
 def build_database():
@@ -171,28 +171,45 @@ def build_database():
         download_terms()
 
     # Parse the terms from file
-    term_dict = parse_term(fname=ONOTO_NAME)
-
-    # Parse nodes from terms dict.
-    nodes_dict = parse_nodes(term_dict=term_dict)
+    terms, nodes, names = parse_term(fname=ONOTO_NAME)
 
     # Save terms into the database
-    save_table(TERM, nodes_dict)
+    save_table(TERM, terms)
 
-    # Save terms into the database
-    save_table(GRAPH, nodes_dict)
+    # Save graph into the database
+    save_table(GRAPH, nodes)
+
+    # Save names into the database
+    save_table(NAMES, names)
 
     print("*** saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
 
-    store = dict(TERMS=term_dict, GRAPH=nodes_dict)
+    store = dict(TERMS=terms, GRAPH=nodes, NAMES=names)
     fp = open(json_path, 'wt')
     json.dump(store, fp, indent=4)
     fp.close()
 
 
-def walk_tree(nodes, start, depth=0, collect=[]):
-    return
+def walk_tree(nodes, start, collect=[]):
+
+    collect.append(start)
+    parent = nodes.get(start)
+
+    if parent:
+        walk_tree(nodes=nodes, start=parent, collect=collect)
+
+
+def printer(terms, tree=[]):
+
+    tree = reversed(tree)
+
+    for idx, oid in enumerate(tree):
+        vals = terms.get(oid)
+        if vals:
+            name, parent, define = vals
+            pad = '\t' * idx
+            print(f"{pad}{oid} {name}")
 
 
 def perform_query(query, preload=False):
@@ -201,27 +218,21 @@ def perform_query(query, preload=False):
     """
 
     # Get the graph and term dictionaries.
-
-    terms, nodes = get_data(preload=preload)
-    collect = []
+    terms, nodes, names = get_data(preload=preload)
     oid = get_id(query)
+    start = None
 
     # Search for term using ID then show it's linage.
-    if oid in terms:
-        vals = terms[query]
-        tree = walk_tree(nodes=nodes, start=oid, collect=collect)
+    if nodes.get(oid):
+        start = oid
+    elif names.get(query):
+        start = names[query]
 
-        pass
+    collect = []
+    walk_tree(nodes=nodes, start=start, collect=collect)
 
-    # Search for the 'word' in the terms
-    for item in terms.items():
-
-        key, vals = item
-        name, parent, define = vals
-
-        pass
-
-    return
+    # Print the tree.
+    printer(tree=collect, terms=terms)
 
 
 @plac.pos('query', "Search database by ontological name or GO/SO ids.")
@@ -241,4 +252,5 @@ def run(query=None, build=False, download=False, preload=False, verbose=False):
         build_database()
 
     if query:
+        query = '_'.join(query.split())
         perform_query(query=query, preload=preload)
