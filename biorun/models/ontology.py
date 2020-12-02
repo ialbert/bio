@@ -191,8 +191,9 @@ def build_database():
     fp.close()
 
 
-def walk_tree(nodes, start, collect=[]):
+def walk_tree(nodes, start, collect=None):
 
+    collect = [] if collect is None else collect
     collect.append(start)
     parent = nodes.get(start)
 
@@ -200,8 +201,9 @@ def walk_tree(nodes, start, collect=[]):
         walk_tree(nodes=nodes, start=parent, collect=collect)
 
 
-def printer(terms, tree=[]):
+def printer(terms, tree=None):
 
+    tree = [] if tree is None else tree
     tree = reversed(tree)
 
     for idx, oid in enumerate(tree):
@@ -222,9 +224,10 @@ def perform_query(query, preload=False):
     oid = get_id(query)
     start = None
 
-    # Search for term using ID then show it's linage.
+    # Search for term using ID
     if nodes.get(oid):
         start = oid
+    # Search for the name
     elif names.get(query):
         start = names[query]
 
@@ -252,5 +255,6 @@ def run(query=None, build=False, download=False, preload=False, verbose=False):
         build_database()
 
     if query:
-        query = '_'.join(query.split())
+        #query = '_'.join(query.split())
+        query = query.strip()
         perform_query(query=query, preload=preload)
