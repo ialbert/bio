@@ -154,7 +154,7 @@ def parse_term(fname):
             parent = match_id(elems)
 
         if "name:" in elems:
-            name = val[1].strip()
+            name = val[1].strip().lower()
 
         if elems.startswith("def:"):
             definition = ":".join(val[1:]).strip()
@@ -234,7 +234,7 @@ def printer(uids, terms):
         print(f"{uid}\t{name}")
 
 
-def show_linage(start, terms, nodes):
+def show_lineage(start, terms, nodes):
 
     collect = []
     walk_tree(nodes=nodes, start=start, collect=collect)
@@ -256,12 +256,12 @@ def search(query, terms, prefix=""):
             continue
 
         # Print all terms containing this name.
-        if (query in name) or (query in uid):
+        if (query.lower() in name) or (query in uid):
             name, definition = terms[uid]
             print(f"{uid} {name}")
 
 
-def perform_query(query, terms, nodes, names, back_prop, prefix="", linage=False):
+def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=False):
     """
     Search database based on a name or the ontological id.
     """
@@ -270,15 +270,15 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", linage=False
     if names.get(query) or terms.get(query):
         # Get the GO or SO id
         uid = names.get(query) or query
+        if lineage:
+            show_lineage(start=uid, terms=terms, nodes=back_prop)
+            return
         if prefix and not uid.startswith(prefix):
             return
 
         # Fetch the name and definition
         name, definition = terms[uid]
         print(f"{uid}\t{name}\t{definition}")
-        if linage:
-            show_linage(start=uid, terms=terms, nodes=back_prop)
-            return
 
         # Print children
         children = set(nodes.get(uid, []))
@@ -295,7 +295,8 @@ def print_stats(terms):
     gos = [k for k in terms.keys() if k.startswith('GO')]
     sos = [k for k in terms.keys() if k.startswith('SO')]
     ngos, nsos = len(gos), len(sos)
-    print(f"OntologyDB: gene={ngos:,d} sequence={nsos:,d}")
+    total = ngos + nsos
+    print(f"OntologyDB: total={total:,d}, gene={ngos:,d} sequence={nsos:,d}")
 
     return
 
@@ -304,12 +305,12 @@ def print_stats(terms):
 @plac.flg('build', "build a database of all gene and sequence ontology terms. ")
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('verbose', "verbose mode, prints more messages")
-@plac.flg('linage', "show the ontological linage")
+@plac.flg('lineage', "show the ontological lineage")
 @plac.flg('download', "download newest ontological data")
 @plac.flg('so', "Filter query for sequence ontology terms.")
 @plac.flg('go', "Filter query for gene ontology terms.")
 def run(query="", build=False, download=False, preload=False, so=False, go=False,
-        linage=False, verbose=False):
+        lineage=False, verbose=False):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
@@ -328,13 +329,12 @@ def run(query="", build=False, download=False, preload=False, so=False, go=False
 
     if query:
         perform_query(query=query,
-                      linage=linage,
+                      lineage=lineage,
                       terms=terms,
                       prefix=prefix,
                       nodes=nodes,
                       back_prop=back_prop,
                       names=names)
-
     else:
         print_stats(terms=terms)
 
