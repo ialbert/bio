@@ -19,6 +19,9 @@ DELIM = '[Term]'
 # GO or SO id patterns.
 ID_PATT = r"[G|S]O:\d+"
 
+GENE_ID = 'GO'
+SEQ_ID = 'SO'
+
 join = os.path.join
 
 # Create the full paths
@@ -36,6 +39,8 @@ GRAPH = "GRAPH"
 
 # Names mapped to a GO id.
 NAMES = "NAMES"
+
+CHILDREN = "CHILDREN"
 
 logger = utils.logger
 
@@ -71,12 +76,14 @@ def get_data(preload=False):
         terms = store[TERM]
         nodes = store[GRAPH]
         names = store[NAMES]
+        back = store[CHILDREN]
     else:
         terms = open_db(TERM)
         nodes = open_db(GRAPH)
         names = open_db(NAMES)
+        back = open_db(CHILDREN)
 
-    return terms, nodes, names
+    return terms, nodes, names, back
 
 
 def open_db(table, fname=SQLITE_DB, flag='c'):
@@ -102,7 +109,7 @@ def save_table(name, obj):
     table.close()
 
 
-def get_id(item):
+def match_id(item):
 
     match = re.search(ID_PATT, item)
 
@@ -127,36 +134,38 @@ def parse_term(fname):
     terms = {}
     names = {}
     nodes = {}
-    uid, parent, name, define = None, None, None, None
+    back_prop = {}
+    uid, parent, name, definition = None, None, None, None
 
     print(f"*** parsing: {fname}")
     for elems in stream:
 
         if stop_term(elems):
-            # Reset items for next term.
-            uid, parent, name, define = None, None, None, None
+            # Reset objs for next term.
+            uid, parent, name, definition = None, None, None, None
             continue
 
         val = elems.split(":")
 
         if elems.startswith("id:"):
-            uid = get_id(elems)
+            uid = match_id(elems)
 
         if elems.startswith("is_a:"):
-            parent = get_id(elems)
+            parent = match_id(elems)
 
-        if elems.startswith("name:"):
+        if "name:" in elems:
             name = val[1].strip()
 
         if elems.startswith("def:"):
-            define = val[1].strip()
+            definition = ":".join(val[1:]).strip()
 
         if uid:
-            terms[uid] = [name, parent, define]
-            nodes[uid] = parent
+            terms[uid] = [name, definition]
             names[name] = uid
+            nodes.setdefault(parent, []).append(uid)
+            back_prop[uid] = parent
 
-    return terms, nodes, names
+    return terms, nodes, names, back_prop
 
 
 def build_database():
@@ -171,7 +180,7 @@ def build_database():
         download_terms()
 
     # Parse the terms from file
-    terms, nodes, names = parse_term(fname=ONOTO_NAME)
+    terms, nodes, names, back_prop = parse_term(fname=ONOTO_NAME)
 
     # Save terms into the database
     save_table(TERM, terms)
@@ -182,10 +191,13 @@ def build_database():
     # Save names into the database
     save_table(NAMES, names)
 
+    # Save child-parent into the database
+    save_table(CHILDREN, back_prop)
+
     print("*** saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
 
-    store = dict(TERMS=terms, GRAPH=nodes, NAMES=names)
+    store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop)
     fp = open(json_path, 'wt')
     json.dump(store, fp, indent=4)
     fp.close()
@@ -201,49 +213,93 @@ def walk_tree(nodes, start, collect=None):
         walk_tree(nodes=nodes, start=parent, collect=collect)
 
 
-def printer(terms, tree=None):
+def print_tree(terms, tree=None):
 
     tree = [] if tree is None else tree
     tree = reversed(tree)
 
+    # Print the definition and all children here.
     for idx, oid in enumerate(tree):
         vals = terms.get(oid)
         if vals:
-            name, parent, define = vals
+            name, definition = vals
             pad = '\t' * idx
             print(f"{pad}{oid} {name}")
 
 
-def perform_query(query, preload=False):
-    """
-    Search database based on a name or the ontological id.
-    """
+def printer(uids, terms):
 
-    # Get the graph and term dictionaries.
-    terms, nodes, names = get_data(preload=preload)
-    oid = get_id(query)
-    start = None
+    for uid in uids:
+        name, definition = terms[uid]
+        print(f"{uid}\t{name}")
 
-    # Search for term using ID
-    if nodes.get(oid):
-        start = oid
-    # Search for the name
-    elif names.get(query):
-        start = names[query]
+
+def show_linage(start, terms, nodes):
 
     collect = []
     walk_tree(nodes=nodes, start=start, collect=collect)
 
     # Print the tree.
-    printer(tree=collect, terms=terms)
+    print_tree(tree=collect, terms=terms)
+
+    return
+
+
+def search(query, terms, prefix=""):
+
+    # Search for names containing query.
+
+    for uid, vals in terms.items():
+        name, definition = vals
+
+        if prefix and not uid.startswith(prefix):
+            continue
+
+        # Print all terms containing this name.
+        if (query in name) or (query in uid):
+            name, definition = terms[uid]
+            print(f"{uid} {name}")
+
+
+def perform_query(query, terms, nodes, names, back_prop, prefix="", linage=False):
+    """
+    Search database based on a name or the ontological id.
+    """
+
+    # The query is an exact match, print info.
+    if names.get(query) or terms.get(query):
+        # Get the GO or SO id
+        uid = names.get(query) or query
+        if prefix and not uid.startswith(prefix):
+            return
+
+        # Fetch the name and definition
+        name, definition = terms[uid]
+        print(f"{uid}\t{name}\t{definition}")
+        if linage:
+            show_linage(start=uid, terms=terms, nodes=back_prop)
+            return
+
+        # Print children
+        children = set(nodes.get(uid, []))
+        printer(uids=children, terms=terms)
+
+        return
+
+    # Search for names containing query.
+    search(query=query, terms=terms, prefix=prefix)
 
 
 @plac.pos('query', "Search database by ontological name or GO/SO ids.")
 @plac.flg('build', "build a database of all gene and sequence ontology terms. ")
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('verbose', "verbose mode, prints more messages")
+@plac.flg('linage', "show the ontological linage")
 @plac.flg('download', "download newest ontological data")
-def run(query=None, build=False, download=False, preload=False, verbose=False):
+@plac.flg('so', "Filter query for sequence ontology terms.")
+@plac.flg('go', "Filter query for gene ontology terms.")
+def run(query="", build=False, download=False, preload=False, so=False, go=False,
+        linage=False, verbose=False):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
@@ -254,7 +310,18 @@ def run(query=None, build=False, download=False, preload=False, verbose=False):
     if build:
         build_database()
 
+    terms, nodes, names, back_prop = get_data(preload=preload)
+    query = query.strip()
+
+    prefix = SEQ_ID if so else ''
+    prefix = GENE_ID if go else prefix
+
     if query:
-        #query = '_'.join(query.split())
-        query = query.strip()
-        perform_query(query=query, preload=preload)
+        perform_query(query=query,
+                      linage=linage,
+                      terms=terms,
+                      prefix=prefix,
+                      nodes=nodes,
+                      back_prop=back_prop,
+                      names=names)
+
