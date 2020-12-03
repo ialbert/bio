@@ -290,6 +290,16 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", linage=False
     search(query=query, terms=terms, prefix=prefix)
 
 
+def print_stats(terms):
+
+    gos = [k for k in terms.keys() if k.startswith('GO')]
+    sos = [k for k in terms.keys() if k.startswith('SO')]
+    ngos, nsos = len(gos), len(sos)
+    print(f"OntologyDB: gene={ngos:,d} sequence={nsos:,d}")
+
+    return
+
+
 @plac.pos('query', "Search database by ontological name or GO/SO ids.")
 @plac.flg('build', "build a database of all gene and sequence ontology terms. ")
 @plac.flg('preload', "loads entire database in memory")
@@ -324,4 +334,7 @@ def run(query="", build=False, download=False, preload=False, so=False, go=False
                       nodes=nodes,
                       back_prop=back_prop,
                       names=names)
+
+    else:
+        print_stats(terms=terms)
 
