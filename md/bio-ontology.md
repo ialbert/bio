@@ -7,10 +7,9 @@ Before using the ontology related functionality the representation needs to be b
 
     bio --define --build
 
-The command above has to be run once (perhaps on a monthly basis) to download the latest data. The efficiency of the process depends on the speed of the hard drive and takes around one minute.
+The command above has to be run once (perhaps on a monthly basis) to download the latest data. The efficiency of the process depends on the speed of the hard drive and takes around 30 seconds.
 
 ## Check database
-
 
     bio --define
     
@@ -32,17 +31,18 @@ prints:
     SO:0005845	exon_of_single_exon_gene
     SO:0000195	coding_exon
     
+    
+    
     # Define by the SO or GO ID's
     bio --define SO:0000147
     
-
     SO:0000147	exon	"A region of the transcript sequence within a gene which is not removed from the primary RNA transcript by RNA splicing." [SO:ke]
     SO:0000198	noncoding_exon
     SO:0000201	interior_exon
     SO:0005845	exon_of_single_exon_gene
     SO:0000195	coding_exon
 
-The first line is the ontological term that matches, with each subsequent line being a child of the first line.
+The first line is the ontological term that matches, with each subsequent line being a child of the first one.
 
 ## Showing the term lineage
 
@@ -74,12 +74,12 @@ prints:
 Any query that is not matched will be searched for, 
 The `-go` flag filters for gene ontology while  `-so` filters for sequence ontology.
 
-Without the `-so` or `-go` flags, it will print out both matches.
+Without the `-so` or `-go` flags, it will print out both.
 
 To search for both sequence and gene ontology:
     
     # Search genes
-    bio --define histone 
+    bio histone --define  
     
     
 prints:
@@ -95,7 +95,7 @@ prints:
 To search for gene ontology:
     
     # Search genes
-    bio --define histone -go 
+    bio histone --define -go 
     
     
 prints:
@@ -110,7 +110,7 @@ prints:
 To search for sequence ontology:
 
     # Search sequences
-    bio --define histone -so 
+    bio histone --define -so 
 
 prints :
 
@@ -127,17 +127,19 @@ For many use cases,  the default behavior is plenty fast and can produce family,
 
 Internally, during operation, the software will query the database for each child node. When selecting a rank where the number of descendant nodes is large (over 10,000 nodes) the run time of the independent queries adds up to a substantial overhead.
 
-For example the command below attempts to render the complete gene and sequence ontology counts with over 46,000 descendant nodes. When run like so it will take a very long time to produce the output (around 6 seconds):
 
-    bio 1 --define
+When run like so it will around 6 seconds:
 
-The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 1.5 second pre-loading penalty.
+    bio regulation --define
 
-    bio 1 --define histone --preload
+The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 1 second pre-loading penalty.
+
+    bio regulation --define --preload
     
-When run with the `--preload` flag the command takes less than a 2 seconds to generate the same result. We don't apply this mode by default because all queries would then take at least 1 second, even those that currently finish very quickly.
+When run with the `--preload` flag the command takes less than a 2 seconds to generate the same result. 
+We don't apply this mode by default because all queries would then take at least 1 second, even those that currently finish very quickly.
 
-For queries that take more than 1 second to complete (have more than 5,000 descendant nodes) we recommend applying the `--preload` flag.
+For queries that take more than 1 second to complete we recommend applying the `--preload` flag.
 
 
 
