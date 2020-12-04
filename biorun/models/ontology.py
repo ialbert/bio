@@ -29,8 +29,10 @@ ONOTO_NAME = join(utils.DATADIR, ONOTO_NAME)
 SQLITE_DB = join(utils.DATADIR, SQLITE_DB)
 JSON_DB = join(utils.DATADIR, JSON_DB)
 
-# Table names
 
+INDENT = '  '
+
+# Table names
 # Node descriptions
 TERM = "TERMS"
 
@@ -213,31 +215,31 @@ def walk_tree(nodes, start, collect=None):
         walk_tree(nodes=nodes, start=parent, collect=collect)
 
 
+def printer(uids, terms, pad=''):
+
+    for uid in uids:
+        name, definition = terms[uid]
+        print(f"{pad}{uid}{INDENT}{name}")
+
+
 def print_tree(terms, tree=None):
 
     tree = [] if tree is None else tree
     tree = reversed(tree)
 
     # Print the definition and all children here.
-    for idx, oid in enumerate(tree):
-        vals = terms.get(oid)
+    for idx, uid in enumerate(tree):
+        vals = terms.get(uid)
         if vals:
             name, definition = vals
-            pad = '\t' * idx
-            print(f"{pad}{oid} {name}")
+            pad = INDENT * idx
+            print(f"{pad}{uid}{INDENT}{name}")
 
 
-def printer(uids, terms):
-
-    for uid in uids:
-        name, definition = terms[uid]
-        print(f"{uid}\t{name}")
-
-
-def show_lineage(start, terms, nodes):
+def show_lineage(start, terms, back_prop):
 
     collect = []
-    walk_tree(nodes=nodes, start=start, collect=collect)
+    walk_tree(nodes=back_prop, start=start, collect=collect)
 
     # Print the tree.
     print_tree(tree=collect, terms=terms)
@@ -257,8 +259,7 @@ def search(query, terms, prefix=""):
 
         # Print all terms containing this name.
         if (query.lower() in name) or (query in uid):
-            name, definition = terms[uid]
-            print(f"{uid} {name}")
+            print(f"{uid}{INDENT}{name}")
 
 
 def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=False):
@@ -271,7 +272,7 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=Fals
         # Get the GO or SO id
         uid = names.get(query) or query
         if lineage:
-            show_lineage(start=uid, terms=terms, nodes=back_prop)
+            show_lineage(start=uid, terms=terms, back_prop=back_prop)
             return
         if prefix and not uid.startswith(prefix):
             return
@@ -296,7 +297,7 @@ def print_stats(terms):
     sos = [k for k in terms.keys() if k.startswith('SO')]
     ngos, nsos = len(gos), len(sos)
     total = ngos + nsos
-    print(f"OntologyDB: total={total:,d}, gene={ngos:,d} sequence={nsos:,d}")
+    print(f"OntologyDB: total={total:,d} gene={ngos:,d} sequence={nsos:,d}")
 
     return
 
