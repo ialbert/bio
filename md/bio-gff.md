@@ -38,6 +38,13 @@ Other considerations:
 
 [SO]: http://www.sequenceontology.org/
 
+### Get a dataset
+
+Get SARS-COV-2 data and rename it to `ncov`:
+
+```{bash, comment=NA}
+    bio NC_045512 --fetch --rename ncov
+```
 
 ## Convert all features to GFF:
 

@@ -263,13 +263,36 @@ QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN</code></pre>
 </div>
 <div id="see-the-bioproject" class="section level2">
 <h2>See the bioproject</h2>
-<p><code>bio</code> knows about bioprojects and sequencing data, what is stored in the SRA about our data?</p>
-<pre class="bash"><code>bio ncov --sra</code></pre>
-<pre><code>ncov    BioProject  PRJNA485481
-ncov    BioSample   </code></pre>
-<p>Alas this particular data is not properly cross-referenced even at NCBI, thus we can’t quite get the SRR run numbers automatically. But for other data, that is deposited correctlywe could just do a:</p>
-<pre><code>bio ncov --sra --sample</code></pre>
-<p>to see the sample information as stored in the BioProject.</p>
+<p><code>bio</code> knows about bioprojects and sequencing data, what is stored in the SRA about our data?
+As it turns out the data for <code>ncov</code> data is not properly cross-referenced at NCBI … thus we can’t quite get the SRR run numbers automatically.</p>
+<p>Let’s pick another data that has better cross references, perhaps a virus from the 2014 Ebola outbreak:</p>
+<pre><code>bio  KM233118 --fetch --rename ebola14</code></pre>
+<p>and now print:</p>
+<pre class="bash"><code>bio ebola14 --sra </code></pre>
+<pre><code>ebola14 BioProject  PRJNA257197
+ebola14 BioSample   SAMN02952049</code></pre>
+<p>if we wanted the SRR run numbers we could run:</p>
+<pre><code>bio ebola14 --sra --sample</code></pre>
+<p>to get:</p>
+<pre><code>[
+    {
+        &quot;Run&quot;: &quot;SRR1553609&quot;,
+        &quot;ReleaseDate&quot;: &quot;2014-08-19 11:41:53&quot;,
+        &quot;LoadDate&quot;: &quot;2014-08-19 11:18:49&quot;,
+        &quot;spots&quot;: &quot;464802&quot;,
+        &quot;bases&quot;: &quot;93890004&quot;,
+        &quot;spots_with_mates&quot;: &quot;464802&quot;,
+        &quot;avgLength&quot;: &quot;202&quot;,
+        &quot;size_MB&quot;: &quot;51&quot;,
+        &quot;download_path&quot;: &quot;https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/SRR1553609/SRR1553609.1&quot;,
+        &quot;Experiment&quot;: &quot;SRX674271&quot;,
+        &quot;LibraryName&quot;: &quot;NM042.3.FCH9&quot;,
+        &quot;LibraryStrategy&quot;: &quot;RNA-Seq&quot;,
+        &quot;LibrarySelection&quot;: &quot;cDNA&quot;,
+        &quot;LibrarySource&quot;: &quot;TRANSCRIPTOMIC&quot;,
+        &quot;LibraryLayout&quot;: &quot;PAIRED&quot;,
+...
+            </code></pre>
 </div>
 <div id="bio-is-a-data-model" class="section level2">
 <h2><code>bio</code> is a data model</h2>
