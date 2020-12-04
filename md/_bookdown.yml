@@ -11,6 +11,7 @@ rmd_files: [
   "bio-examples.md",
   "bio-tips.md",
   "bio-related.md",
+  "bio-ontology.md",
 ]
 
 book_filename: bio

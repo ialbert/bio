@@ -1,6 +1,6 @@
 # Ontology operations {#bio-ontology}
 
-The `bio` package provides utility to visualize gene and sequence ontology's.
+The `bio` package provides utility to search gene and sequence ontology.
 
 ## Building the database
 Before using the ontology related functionality the representation needs to be built:
@@ -120,6 +120,26 @@ prints :
     SO:0002143 histone_2b_acetylation_site
     SO:0002144 histone_2az_acetylation_site
     
-This searches the gene, if given `-go`, or sequence, if given `-so`, ontology for `histone` then prints matching results.
-Without `-so` or `-go`, it will print out both matches.
+
+## Preloading data
+
+For many use cases,  the default behavior is plenty fast and can produce family, genus and species level information in a fraction of a second.
+
+Internally, during operation, the software will query the database for each child node. When selecting a rank where the number of descendant nodes is large (over 10,000 nodes) the run time of the independent queries adds up to a substantial overhead.
+
+For example the command below attempts to render the complete gene and sequence ontology counts with over 46,000 descendant nodes. When run like so it will take a very long time to produce the output (around 6 seconds):
+
+    bio 1 --define
+
+The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 1.5 second pre-loading penalty.
+
+    bio 1 --define histone --preload
+    
+When run with the `--preload` flag the command takes less than a 2 seconds to generate the same result. We don't apply this mode by default because all queries would then take at least 1 second, even those that currently finish very quickly.
+
+For queries that take more than 1 second to complete (have more than 5,000 descendant nodes) we recommend applying the `--preload` flag.
+
+
+
+
 
