@@ -11,6 +11,13 @@ Use a specially designed software, that relies on heuristics, to perform large s
 bio ncov:S ratg13:S --end 90 --align
 ```
 
+## DNA alignment, tabular output
+
+```{bash, comment=NA}
+# Align the extracted protein.
+bio ncov:S ratg13:S --end 90 --align --table
+```
+
 ## Align the translated regions
 
 ```{bash, comment=NA}
@@ -23,6 +30,12 @@ A global alignment where end gaps are have no penality.
 
 ```{bash, comment=NA}
 bio THISLINE ISALIGNED  -i --align
+```
+
+Tabular output
+
+```{bash, comment=NA}
+bio THISLINE ISALIGNED  -i --align --table
 ```
 
 ## Local alignment
@@ -41,4 +54,12 @@ bio THISLINE ISALIGNED -i --align --global
 
 ```{bash, comment=NA}
 bio  THISLINE ISALIGNED -i --align --semiglobal
+```
+
+## Global alignment with end penalties
+
+A strict mode applies end gap penalties
+
+```{bash, comment=NA}
+bio THISLINE ISALIGNED -i --align --global --strict
 ```

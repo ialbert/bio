@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Welcome to bio | bio.utf8</title>
   <meta name="description" content="" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Welcome to bio | bio.utf8" />
   <meta property="og:type" content="book" />
@@ -150,31 +150,20 @@
 <h2>Diving right in</h2>
 <p>Here is how to align the first 1000 basepairs of SARS-COV-2 versus to the same region of a bat coronavirus:</p>
 <pre><code># Get the data.
-bio NC_045512 MN996532 --fetch 
+bio NC_045512 MN996532 --fetch </code></pre>
+<p>Align the sequences.</p>
+<pre class="bash"><code>bio NC_045512 MN996532 --align --end 1000 | head </code></pre>
+<pre><code>
+# Ident=969(96.9%)  Mis=31(3.1%)  Gaps=0(0.0%)  Target=(1, 1001)  Query=(1, 1001)  Length=1,000  Score=4721.0  NUC.4.4(11,1)
 
-# Align the sequences.
-bio NC_045512 MN996532 --align --end 1000</code></pre>
-<p>that’s it. <code>bio</code> will take care of everything for you and prints:</p>
-<pre><code>### 1: NC_045512.2 vs MN996532.2 ###
+MN996532.2   ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTG
+             ||||||||||||||||||.|||||||||||||||||.||||.|||||||||||||||||||||||||||||||||||||||||||||||| 90
+NC_045512.2  ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTG
 
-Length: 1000 (semiglobal)
-Query:  1000 [1, 1000]
-Target: 1000 [1, 1000]
-Score:  4721
-Ident:  969/1000 (96.9%)
-Simil:  969/1000 (96.9%)
-Gaps:   0/1000 (0.0%)
-Matrix: nuc44(-11, -1)
-
-NC_045512.2  ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
-           1 ||||||||||||||||||.|||||||||||||||||.||||.||||||||||||||||||||||||||||||||||||||||||||||||.||||||||| 100
-MN996532.2   ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGACTGTCACTC
-
-NC_045512.2  GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGT
-         101 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||.|||||||||||||||.|||||||||| 200
-MN996532.2   GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCATCTATCTTCTGCAGGTTGCTTACGGT
-
-...    </code></pre>
+MN996532.2   GCTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+             .||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||.|||||| 180
+NC_045512.2  ACTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCATCTATC</code></pre>
+<p>that’s it.</p>
 </div>
 <div id="a-more-realistic-example" class="section level2">
 <h2>A more realistic example</h2>
@@ -200,47 +189,29 @@ GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC</code></pre>
 <p>You could also convert the data stored under <code>ncov</code> name to other formats. Let’s convert features with type <code>CDS</code> to <code>GFF</code>:</p>
 <pre class="bash"><code>bio ncov --gff --type CDS  | head -5</code></pre>
 <pre><code>##gff-version 3
-NC_045512.2 .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
-NC_045512.2 .   CDS 13468   21555   .   +   .   ID=CDS-2;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
-NC_045512.2 .   CDS 266 13483   .   +   .   ID=CDS-3;Parent=YP_009725295.1;Name=YP_009725295.1;gene=ORF1ab;locus_tag=GU280_gp01;note=pp1a;codon_start=1;product=ORF1a polyprotein;protein_id=YP_009725295.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
-NC_045512.2 .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02</code></pre>
+ncov    .   CDS 266 13468   .   +   .   ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
+ncov    .   CDS 13468   21555   .   +   .   ID=CDS-2;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
+ncov    .   CDS 266 13483   .   +   .   ID=CDS-3;Parent=YP_009725295.1;Name=YP_009725295.1;gene=ORF1ab;locus_tag=GU280_gp01;note=pp1a;codon_start=1;product=ORF1a polyprotein;protein_id=YP_009725295.1;db_xref=GeneID:43740578;gene_id=GU280_gp01
+ncov    .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568;gene_id=GU280_gp02</code></pre>
 </div>
 <div id="align-nucleotides-or-peptides" class="section level2">
 <h2>Align nucleotides or peptides</h2>
 <p>Now, back to our problem of aligning proteins. Let’s align the first 90 basepairs of DNA sequences for the <code>S</code> protein for each organism, <code>bio</code> even gives you a shortcut, instead of typing <code>--gene S --type CDS</code> you can write it as <code>ncov:S</code> :</p>
 <pre class="bash"><code>bio ncov:S ratg13:S --end 90 --align</code></pre>
 <pre><code>
-### 1: YP_009724390 vs QHR63300.2 ###
+# Ident=83(92.2%)  Mis=7(7.8%)  Gaps=0(0.0%)  Target=(1, 91)  Query=(1, 91)  Length=90  Score=387.0  NUC.4.4(11,1)
 
-Length: 90 (semiglobal) 
-Query:  90 [1, 90]
-Target: 90 [1, 90]
-Score:  387
-Ident:  83/90 (92.2%)
-Simil:  83/90 (92.2%)
-Gaps:   0/90 (0.0%)
-Matrix: nuc44(-11, -1) 
-
-YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
-           1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
-QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
+             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
 <p>If instead we wanted to align the 90bp DNA sequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
 <pre class="bash"><code>bio ncov:S ratg13:S --translate --end 90 --align</code></pre>
 <pre><code>
-### 1: YP_009724390 vs QHR63300.2 ###
+# Ident=30(100.0%)  Mis=0(0.0%)  Gaps=0(0.0%)  Target=(1, 31)  Query=(1, 31)  Length=30  Score=153.0  BLOSUM62(11,1)
 
-Length: 30 (semiglobal) 
-Query:  30 [1, 30]
-Target: 30 [1, 30]
-Score:  153
-Ident:  30/30 (100.0%)
-Simil:  30/30 (100.0%)
-Gaps:   0/30 (0.0%)
-Matrix: blosum62(-11, -1) 
-
-YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
-           1 |||||||||||||||||||||||||||||| 30
-QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN</code></pre>
+QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
+             |||||||||||||||||||||||||||||| 30
+YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN</code></pre>
 <p>We can note right away that all differences in the first 90bp of DNA are synonymous substitutions, the protein translations are the same.</p>
 </div>
 <div id="look-up-the-taxonomy" class="section level2">
@@ -301,7 +272,7 @@ ebola14 BioSample   SAMN02952049</code></pre>
 <pre class="bash"><code>bio ncov | head -20</code></pre>
 <pre><code>[
     {
-        &quot;id&quot;: &quot;NC_045512.2&quot;,
+        &quot;id&quot;: &quot;ncov&quot;,
         &quot;definition&quot;: &quot;Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome&quot;,
         &quot;dblink&quot;: [
             &quot;BioProject:PRJNA485481&quot;
@@ -329,13 +300,13 @@ sys     0m2.172s</code></pre>
 <p>For shorter genomes, bacterial or viral the conversion times are under a fraction of a second.</p>
 <p>Thanks to the representation it is trivially easy to extend <code>bio</code>. The data is already structured in an efficient layout that needs no additional parsing to load.</p>
 </div>
-<div id="what-did-bio-do-for-us" class="section level2">
-<h2>What did <code>bio</code> do for us?</h2>
+<div id="what-does-bio-do" class="section level2">
+<h2>What does <code>bio</code> do?</h2>
 <ol style="list-style-type: decimal">
-<li>fetched the data from NCBI</li>
-<li>created a more efficient local representation the data</li>
-<li>stored this representation so that next time you need it is available much faster</li>
-<li>generated alignments</li>
+<li>fetches the data from NCBI</li>
+<li>creates a more efficient local representation the data</li>
+<li>stores this representation so that next time you need it is available much faster</li>
+<li>generates alignments</li>
 </ol>
 </div>
 <div id="but-wait-there-is-more" class="section level2">

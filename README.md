@@ -28,20 +28,11 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
 to align the first 90 basepairs of the DNA sequence of the  `S` protein from the SARS-COV-2 novel coronavirus to its closest (known) relative, the bat coronavirus RaTG13. The command above will print:
 
 ```
-### 1: YP_009724390 vs QHR63300.2 ###
+# Ident=83(92.2%)  Mis=7(7.8%)  Gaps=0(0.0%)  Target=(1, 91)  Query=(1, 91)  Length=90  Score=387.0  NUC.4.4(11,1)
 
-Length: 90 (semiglobal)
-Query:  90 [1, 90]
-Target: 90 [1, 90]
-Score:  387
-Ident:  83/90 (92.2%)
-Simil:  83/90 (92.2%)
-Gaps:   0/90 (0.0%)
-Matrix: nuc44(-11, -1)
-
-YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
-           1 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
-QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
+             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC
 ```
 
 If you wanted to align the same sequences as translated proteins `bio` lets you write:
@@ -51,20 +42,11 @@ If you wanted to align the same sequences as translated proteins `bio` lets you 
 to generate:
 
 ```
-### 1: YP_009724390 vs QHR63300.2 ###
+# Ident=30(100.0%)  Mis=0(0.0%)  Gaps=0(0.0%)  Target=(1, 31)  Query=(1, 31)  Length=30  Score=153.0  BLOSUM62(11,1)
 
-Length: 30 (semiglobal)
-Query:  30 [1, 30]
-Target: 30 [1, 30]
-Score:  153
-Ident:  30/30 (100.0%)
-Simil:  30/30 (100.0%)
-Gaps:   0/30 (0.0%)
-Matrix: blosum62(-11, -1)
-
-YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
-           1 |||||||||||||||||||||||||||||| 30
 QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
+             |||||||||||||||||||||||||||||| 30
+YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
 ```
 
 Beyond alignments there is a lot more to `bio` and we recommend looking at the [documentation][docs]

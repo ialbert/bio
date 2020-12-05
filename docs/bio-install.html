@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Software installation | bio.utf8</title>
   <meta name="description" content="" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Software installation | bio.utf8" />
   <meta property="og:type" content="book" />
@@ -206,14 +206,14 @@ optional arguments:
 <h3>2. Help page for alignments</h3>
 <pre class="bash"><code>bio --align -h</code></pre>
 <pre><code>usage: bio [-h] [-s 1] [-e &#39;&#39;] [-o 11] [-x 1] [-L] [-G] [-S] [-p] [-t] [-i]
-           [-v]
-           [query] [target]
+           [-T] [-R] [-v]
+           [target] [query]
 
 Performs an alignment between the query and target.
 
 positional arguments:
-  query                 query sequence to align
   target                target sequence to align
+  query                 query sequence to align
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -225,8 +225,10 @@ optional arguments:
   -G, --global          perform global alignment (zero end gap penalty)
   -S, --semiglobal      perform a semiglobal alignment
   -p, --protein         use the translated protein sequences from the data
-  -t, --translate       use the translated protein sequences from the data
+  -t, --translate       translate the DNA into proteins
   -i, --inter           interactive mode, data from command line
+  -T, --table           generate an alignment table
+  -R, --strict          strict global alignment, apply end gap penalties
   -v, --verbose         verbose mode, progress messages printed</code></pre>
 </div>
 <div id="help-page-for-taxonomy" class="section level3">
