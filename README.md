@@ -145,3 +145,22 @@ followed by:
 The latter command will automatically generate a Python test for each line in the master script.
 
 The automatically generated test will verify that the command is operational and that the output matches the expectations.
+
+
+## Docs
+
+Install 
+
+    conda install r-bookdown r-servr
+    
+    # To run docs live
+    make 
+    
+    # To generate the docs
+    make docs
+    
+    # To update live websites
+    make docs push
+    
+    
+    
