@@ -72,22 +72,12 @@ The documentation is maintained at
 
 * https://ialbert.github.io/bio/
 
-
 ## Quick install
     
-`bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. While the following command should work:
+`bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
 
     pip install bio --upgrade
-        
-we usually recommend installing prerequisites with conda like so:
-
-    conda install -c bioconda biopython parasail-python
-    
-then proceed with:
-
-    pip install bio --upgrade
-
-    
+            
 See more details in the [documentation][docs].
 
 ## Development
