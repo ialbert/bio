@@ -144,15 +144,15 @@ QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
 </div>
 <div id="dna-alignment-with-3-letter-amino-acid-codes" class="section level2">
 <h2>DNA alignment with 3 letter amino acid codes</h2>
-<pre class="bash"><code>bio ratg13:S ncov:S  --end 60 --align -1</code></pre>
+<pre class="bash"><code>bio ratg13:S ncov:S  --end 60 --align -3</code></pre>
 <pre><code>
 # Ident=57(95.0%)  Mis=3(5.0%)  Gaps=0(0.0%)  Target=(1, 61)  Query=(1, 61)  Length=60  Score=273.0  NUC.4.4(11,1)
 
-              M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T 
+             MetPheValPheLeuValLeuLeuProLeuValSerSerGlnCysValAsnLeuThrThr
 YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACT
              ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||. 60
 QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
-              M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T </code></pre>
+             MetPheValPheLeuValLeuLeuProLeuValSerSerGlnCysValAsnLeuThrThr</code></pre>
 <p>Reading frame will follow the slice!</p>
 </div>
 <div id="dna-alignment-tabular-output" class="section level2">
@@ -183,9 +183,9 @@ QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
 YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN</code></pre>
 <p>The slice now applies to the protein sequence.</p>
 </div>
-<div id="default-alignment-is-semiglobal" class="section level2">
-<h2>Default alignment is semiglobal</h2>
-<p>A global alignment where end gaps are have no penality.</p>
+<div id="default-alignment-is-global" class="section level2">
+<h2>Default alignment is global</h2>
+<p>With the default global alignment end gaps are have no penalty.</p>
 <pre class="bash"><code>bio THISLINE ISALIGNED  -i --align</code></pre>
 <pre><code>
 # Ident=4(36.4%)  Mis=2(18.2%)  Gaps=5(45.5%)  Target=(3, 9)  Query=(1, 9)  Length=11  Score=8.0  BLOSUM62(11,1)
@@ -193,13 +193,18 @@ YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN</code></pre>
 S1           THISLI--NE-
              --||..--||- 11
 S2           --ISALIGNED</code></pre>
-<p>Tabular output</p>
+<p>There is a strict mode that applies end gap penalties.</p>
+</div>
+<div id="tabular-output" class="section level2">
+<h2>Tabular output</h2>
+<p>All alignment may be formatted with tabular output</p>
 <pre class="bash"><code>bio THISLINE ISALIGNED  -i --align --table</code></pre>
 <pre><code>query   target  pident  ident   mism    gaps    score   alen    tlen    tstart  tend    qlen    qstart  qend
 S1  S2  36.4    4   2   5   8.0 11  8   3   9   9   1   9</code></pre>
 </div>
 <div id="local-alignment" class="section level2">
 <h2>Local alignment</h2>
+<p>Will produce all local alignments.</p>
 <pre class="bash"><code>bio THISLINE ISALIGNED -i --align --local</code></pre>
 <pre><code>
 # Ident=2(100.0%)  Mis=0(0.0%)  Gaps=0(0.0%)  Target=(7, 9)  Query=(7, 9)  Length=2  Score=11.0  BLOSUM62(11,1)
@@ -220,6 +225,7 @@ S2           --ISALIGNED</code></pre>
 </div>
 <div id="semiglobal-alignment" class="section level2">
 <h2>Semiglobal alignment</h2>
+<p>Same as zero endgap global but reports only the aligned region:</p>
 <pre class="bash"><code>bio  THISLINE ISALIGNED -i --align --semiglobal</code></pre>
 <pre><code>
 # Ident=4(50.0%)  Mis=2(25.0%)  Gaps=2(25.0%)  Target=(3, 9)  Query=(1, 9)  Length=8  Score=8.0  BLOSUM62(11,1)
@@ -228,9 +234,9 @@ S1           ISLI--NE
              ||..--|| 8
 S2           ISALIGNE</code></pre>
 </div>
-<div id="global-alignment-with-end-penalties" class="section level2">
-<h2>Global alignment with end penalties</h2>
-<p>A strict mode applies end gap penalties</p>
+<div id="strict-global-alignment" class="section level2">
+<h2>Strict global alignment</h2>
+<p>Applies end gap penalities.</p>
 <pre class="bash"><code>bio THISLINE ISALIGNED -i --align --global --strict</code></pre>
 <pre><code>
 # Ident=2(22.2%)  Mis=6(66.7%)  Gaps=1(11.1%)  Target=(1, 9)  Query=(1, 9)  Length=9  Score=-7.0  BLOSUM62(11,1)

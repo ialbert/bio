@@ -23,7 +23,7 @@ Reading frame will follow the slice!
 ## DNA alignment with 3 letter amino acid codes
 
 ```{bash, comment=NA}
-bio ratg13:S ncov:S  --end 60 --align -1
+bio ratg13:S ncov:S  --end 60 --align -3
 ```
 
 Reading frame will follow the slice!
@@ -50,21 +50,27 @@ bio ncov:S ratg13:S --end 30 --protein --align
 
 The slice now applies to the protein sequence.
 
-## Default alignment is semiglobal
+## Default alignment is global
 
-A global alignment where end gaps are have no penality.
+With the default global alignment end gaps are have no penalty.
 
 ```{bash, comment=NA}
 bio THISLINE ISALIGNED  -i --align
 ```
 
-Tabular output
+There is a strict mode that applies end gap penalties.
+
+## Tabular output
+
+All alignment may be formatted with tabular output
 
 ```{bash, comment=NA}
 bio THISLINE ISALIGNED  -i --align --table
 ```
 
 ## Local alignment
+
+Will produce all local alignments.
 
 ```{bash, comment=NA}
 bio THISLINE ISALIGNED -i --align --local
@@ -78,14 +84,17 @@ bio THISLINE ISALIGNED -i --align --global
 
 ## Semiglobal alignment
 
+Same as zero endgap global but reports only the aligned region:
+
 ```{bash, comment=NA}
 bio  THISLINE ISALIGNED -i --align --semiglobal
 ```
 
-## Global alignment with end penalties
+## Strict global alignment
 
-A strict mode applies end gap penalties
+Applies  end gap penalities.
 
 ```{bash, comment=NA}
 bio THISLINE ISALIGNED -i --align --global --strict
 ```
+
