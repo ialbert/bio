@@ -108,6 +108,12 @@ bio ncov:S ratg13:S --end 210 --translate --align > align-translated-s.txt
 # Slice applied to the protein sequence.
 bio ncov:S ratg13:S --protein --end 70 --align > align-protein-s.txt
 
+# Generate one letter peptide trace above the DNA
+bio ratg13:S ncov:S  --start 91 --end 120 --align -1 > align-short-pept.txt
+
+# Generate three letter peptide trace above the DNA
+bio ratg13:S ncov:S  --start 91 --end 120 --align -3 > align-long-pept.txt
+
 # Local alignment in interactive mode.
 bio THISLINE ISALIGNED  -i --align --local > align-local.txt
 

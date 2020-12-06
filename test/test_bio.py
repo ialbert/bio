@@ -136,42 +136,50 @@ def test_32(capsys):
     run(cmd, capsys=capsys, fname="align-protein-s.txt")
 
 def test_33(capsys):
+    cmd = "bio ratg13:S ncov:S  --start 91 --end 120 --align -1"
+    run(cmd, capsys=capsys, fname="align-short-pept.txt")
+
+def test_34(capsys):
+    cmd = "bio ratg13:S ncov:S  --start 91 --end 120 --align -3"
+    run(cmd, capsys=capsys, fname="align-long-pept.txt")
+
+def test_35(capsys):
     cmd = "bio THISLINE ISALIGNED  -i --align --local"
     run(cmd, capsys=capsys, fname="align-local.txt")
 
-def test_34(capsys):
+def test_36(capsys):
     cmd = "bio THISLINE ISALIGNED -i --align --global"
     run(cmd, capsys=capsys, fname="align-global.txt")
 
-def test_35(capsys):
+def test_37(capsys):
     cmd = "bio THISLINE ISALIGNED -i --align --semiglobal"
     run(cmd, capsys=capsys, fname="align-semiglobal.txt")
 
-def test_36(capsys):
+def test_38(capsys):
     cmd = "bio 9606 --taxon"
     run(cmd, capsys=capsys, fname="taxon_9606.txt")
 
-def test_37(capsys):
+def test_39(capsys):
     cmd = "bio 9606 --lineage --taxon"
     run(cmd, capsys=capsys, fname="taxon_9606_lineage.txt")
 
-def test_38(capsys):
+def test_40(capsys):
     cmd = "bio 9606 --lineage --flat --taxon"
     run(cmd, capsys=capsys, fname="taxon_9606_flat_lineage.txt")
 
-def test_39(capsys):
+def test_41(capsys):
     cmd = "bio ncov ratg13 --taxon"
     run(cmd, capsys=capsys, fname="taxon_ncov_ratg13.txt")
 
-def test_40(capsys):
+def test_42(capsys):
     cmd = "bio ebola --delete"
     run(cmd, capsys=capsys, fname=None)
 
-def test_41(capsys):
+def test_43(capsys):
     cmd = "bio KM233118 --fetch --rename ebola"
     run(cmd, capsys=capsys, fname=None)
 
-def test_42(capsys):
+def test_44(capsys):
     cmd = "bio ebola --sra"
     run(cmd, capsys=capsys, fname="sra-test.txt")
 

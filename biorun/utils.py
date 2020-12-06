@@ -53,6 +53,14 @@ def is_int(text):
     except ValueError as exc:
         return False
 
+def trim(text, size=3):
+    """
+    Trims a sequence to a length that is the largest multiple of size.
+    """
+    div, mod = divmod(len(text), size)
+    subs = text[:div*size]
+    return subs
+
 def maybe_ncbi(text):
     """
     Guesses that a text is a valid NCBI accession

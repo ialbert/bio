@@ -197,22 +197,32 @@ ncov    .   CDS 21563   25384   .   +   .   ID=CDS-4;Parent=YP_009724390.1;Name=
 <div id="align-nucleotides-or-peptides" class="section level2">
 <h2>Align nucleotides or peptides</h2>
 <p>Now, back to our problem of aligning proteins. Let’s align the first 90 basepairs of DNA sequences for the <code>S</code> protein for each organism, <code>bio</code> even gives you a shortcut, instead of typing <code>--gene S --type CDS</code> you can write it as <code>ncov:S</code> :</p>
-<pre class="bash"><code>bio ncov:S ratg13:S --end 90 --align</code></pre>
+<pre class="bash"><code>bio ncov:S ratg13:S --end 60 --align</code></pre>
 <pre><code>
-# Ident=83(92.2%)  Mis=7(7.8%)  Gaps=0(0.0%)  Target=(1, 91)  Query=(1, 91)  Length=90  Score=387.0  NUC.4.4(11,1)
+# Ident=57(95.0%)  Mis=3(5.0%)  Gaps=0(0.0%)  Target=(1, 61)  Query=(1, 61)  Length=60  Score=273.0  NUC.4.4(11,1)
 
-QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
-             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
-YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC</code></pre>
-<p>If instead we wanted to align the 90bp DNA sequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
-<pre class="bash"><code>bio ncov:S ratg13:S --translate --end 90 --align</code></pre>
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||. 60
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACT</code></pre>
+<p>We can visualize the translation of the DNA into aminoacids with one letter (<code>-1</code>) or three letter codes (<code>-3</code>):</p>
+<pre class="bash"><code>bio ncov:S ratg13:S --end 60 --align -1</code></pre>
 <pre><code>
-# Ident=30(100.0%)  Mis=0(0.0%)  Gaps=0(0.0%)  Target=(1, 31)  Query=(1, 31)  Length=30  Score=153.0  BLOSUM62(11,1)
+# Ident=57(95.0%)  Mis=3(5.0%)  Gaps=0(0.0%)  Target=(1, 61)  Query=(1, 61)  Length=60  Score=273.0  NUC.4.4(11,1)
 
-QHR63300.2   MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN
-             |||||||||||||||||||||||||||||| 30
-YP_009724390 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTN</code></pre>
-<p>We can note right away that all differences in the first 90bp of DNA are synonymous substitutions, the protein translations are the same.</p>
+              M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T 
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
+             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||. 60
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACT
+              M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T </code></pre>
+<p>If instead we wanted to align the 60bp DNA subsesequences for <code>S</code> protein after their translation into proteins we could do it like so:</p>
+<pre class="bash"><code>bio ncov:S ratg13:S --translate --end 60 --align</code></pre>
+<pre><code>
+# Ident=20(100.0%)  Mis=0(0.0%)  Gaps=0(0.0%)  Target=(1, 21)  Query=(1, 21)  Length=20  Score=98.0  BLOSUM62(11,1)
+
+QHR63300.2   MFVFLVLLPLVSSQCVNLTT
+             |||||||||||||||||||| 20
+YP_009724390 MFVFLVLLPLVSSQCVNLTT</code></pre>
+<p>We can note right away that all differences in the first 60bp of DNA are synonymous substitutions, the protein translations are the same.</p>
 </div>
 <div id="look-up-the-taxonomy" class="section level2">
 <h2>Look up the taxonomy</h2>

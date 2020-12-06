@@ -8,7 +8,9 @@ from biorun import utils, storage, objects
 from biorun.models import jsonrec, fastarec
 
 try:
+    from Bio.Seq import Seq
     from Bio import Align
+    from Bio.Data import IUPACData
     from Bio.Align import substitution_matrices
 except ImportError as exc:
     print(f"*** Please install biopython: conda install -y biopython", file=sys.stderr)
@@ -36,8 +38,12 @@ class Alignment:
         self.icount = self.iperc = self.scount = self.sperc = 0
         self.mcount = self.mperc = self.gcount = self.gperc = 0
 
-    def format_trace(self, ichr='|', mchr='.', gchr='-', schr=':'):
+    def reformat_trace(self, ichr='|', mchr='.', gchr='-', schr=':'):
+        """
+        Reformats the trace, computes percent identities.
 
+        The operation adds on overhead hence is perfomed separately.
+        """
         # Format for the trace
         text = format(self.aln)
 
@@ -63,6 +69,7 @@ class Alignment:
                 else:
                     self.query = self.query[:-rcount]
 
+            # Strip off leading/trailing gaps or padding.
             self.target = self.target.strip(char)
             self.trace = self.trace.strip(char)
             self.query = self.query.strip(char)
@@ -70,28 +77,30 @@ class Alignment:
         # Alignment length
         self.len = len(self.trace)
 
-        # Identity
+        # Identity.
         self.icount = self.trace.count(ichr)
         self.iperc = 100 * self.icount / self.len if self.len else 0
 
-        # Similarity
+        # Similarities.
         self.scount = self.icount + self.trace.count(schr)
         self.sperc = 100 * self.scount / self.len if self.len else 0
 
-        # Mismatches
+        # Mismatches.
         self.mcount = self.trace.count(mchr)
         self.mperc = 100 * self.mcount / self.len if self.len else 0
 
-        # Gaps
+        # Gaps.
         self.gcount = self.trace.count(gchr)
         self.gperc = 100 * self.gcount / self.len if self.len else 0
 
-        # Unpack the paths
+        # Unpack the paths.
         t_path, q_path = self.aln.aligned
 
+        # Target start/end.
         self.t_start = t_path[0][0] + 1
         self.t_end = t_path[-1][-1] + 1
 
+        # Query start end.
         self.q_start = q_path[0][0] + 1
         self.q_end = q_path[-1][-1] + 1
 
@@ -104,15 +113,18 @@ def biopython_align(qseq, tseq, param, table=False, strict=False):
 
     aligner = Align.PairwiseAligner()
 
+    # Select local mode. Global, semiglobal are about scoring.
     if param.mode == const.LOCAL_ALIGN:
         aligner.mode = 'local'
 
-    # Select the default substituion matrix.
-    if not param.matrix:
-        # Detect peptide sequences
-        haspep = any(x for x in q[:100] if x not in "ATGC")
-        param.matrix = 'BLOSUM62' if haspep else 'NUC.4.4'
+    # Attempts to detect DNA vs peptide sequences.
+    param.is_dna = all(x in "ATGC" for x in q[:100])
 
+    # Default substituion matrix.
+    if not param.matrix:
+        param.matrix = 'NUC.4.4' if param.is_dna else 'BLOSUM62'
+
+    # Apply substitution matrix.
     aligner.substitution_matrix = substitution_matrices.load(param.matrix)
 
     # Gap scoring.
@@ -135,19 +147,25 @@ def biopython_align(qseq, tseq, param, table=False, strict=False):
         aligner.target_end_gap_score = 0.0
         aligner.query_end_gap_score = 0.0
 
+    # Biopython alignment target to query.
     alns = aligner.align(t, q)
 
+    # Reformat alignments as a more detailed class.
     def builder(aln):
         rec = Alignment(qseq=qseq, tseq=tseq, aln=aln, param=param)
         return rec
 
     alns = map(builder, alns)
 
+    # Format the aligners
+    if table:
+        print_func = print_tabular
+    else:
+        print_func = print_pairwise
+
     for index, aln in enumerate(alns):
-        if table:
-            print_tabular(aln, index=index)
-        else:
-            print_pairwise(aln)
+        print_func(aln, param=param, index=index)
+
 
 
 # Enforce a fixed width on each name.
@@ -155,22 +173,34 @@ def padded(value, right=False):
     value = str(value)
     return f'{value:>12.12s}' if right else f'{value:12.12s}'
 
-def print_tabular(aln, index=0):
-    # Format the trace.
-    aln.format_trace()
+
+def print_mutations(aln, index=0):
+    """
+    Print alignments as mutations with standard nomenclature
+    """
+
+    # Reformat the trace.
+    aln.reformat_trace()
+
+
+def print_tabular(aln, param, index=0):
+    """
+    Print alignments as tab delimited table.
+    """
+
+    # Reformat the trace.
+    aln.reformat_trace()
 
     # Formatting the identity
-    ident = f"{aln.icount}"
     iperc = f"{aln.iperc:.1f}"
-    gperc = f"{aln.gperc:.1f}"
-    mperc = f"{aln.mperc:.1f}"
+    # gperc = f"{aln.gperc:.1f}"
+    # mperc = f"{aln.mperc:.1f}"
 
     if index == 0:
         head = [
             "query", "target", "pident", "ident", "mism", "gaps", "score", "alen", "tlen", "tstart", "tend", "qlen", "qstart", "qend"
         ]
         print("\t".join(head))
-
 
     data = [
         aln.qseq.id, aln.tseq.id, iperc, aln.icount, aln.mcount, aln.gcount, aln.score,
@@ -180,12 +210,49 @@ def print_tabular(aln, index=0):
     print("\t".join(data))
 
 
-def print_pairwise(aln, width=90):
+def get_code(name, pep3=True):
+    if pep3:
+        return IUPACData.protein_letters_1to3_extended.get(name, 'xyz')
+    else:
+        return name
+
+def get_pept(seq, pep3=True):
+    """
+    Generates a peptide translation taking into account a gapped alignment.
+    Can generate both short and long pepr
+    """
+    chars = " -"
+    tmp = str(seq.strip(chars))
+    tmp = utils.trim(tmp)
+    pep = Seq(tmp).ungap().translate()
+
+    collect = list(' ' * len(seq))
+
+    stream = iter(pep)
+
+    if pep3:
+        index, width = 0, 3
+    else:
+        index, width = 1, 1
+
+    codon = []
+    # Finds the index of the second base in  codon
+    for i, c in enumerate(seq):
+        if c != '-':
+            codon.append(i)
+        if len(codon) == 3:
+            start = codon[index]
+            end = start + width
+            collect[start:end] = get_code(next(stream), pep3=pep3)
+            codon = []
+    return "".join(collect)
+
+def print_pairwise(aln, param, index=0, width=90):
     """
     A detailed visual pairwise alignment.
     """
     # Format the trace.
-    aln.format_trace()
+    aln.reformat_trace()
 
     # Formatting the identity
     ident = f"{aln.icount}({aln.iperc:.1f}%)"
@@ -199,16 +266,33 @@ def print_pairwise(aln, width=90):
 
     header = textwrap.dedent(header)
 
-    query_id = padded(aln.qseq.id)
-    target_id = padded(aln.tseq.id)
+    qry_id = padded(aln.qseq.id)
+    tgt_id = padded(aln.tseq.id)
+    non_id = padded("")
+
+    showpep = (param.pep1 or param.pep3) and param.is_dna
 
     print(header)
     for start in range(0, len(aln.trace), width):
         end = min(start + width, aln.len)
-        trace_id = padded("")
-        print(query_id, aln.query[start:end])
-        print(f"{trace_id} {aln.trace[start:end]} {end}")
-        print(target_id, aln.target[start:end])
+
+        # Slice the local subsequences
+        qry_seq = aln.query[start:end]
+        trc_seq = aln.trace[start:end]
+        tgt_seq = aln.target[start:end]
+
+        if showpep:
+            qry_pep = get_pept(qry_seq, pep3=param.pep3)
+            print(f"{non_id} {qry_pep}")
+
+        print(f"{qry_id} {qry_seq}")
+        print(f"{non_id} {trc_seq} {end}")
+        print(f"{tgt_id} {tgt_seq}")
+
+        if showpep:
+            tgt_pep = get_pept(tgt_seq, pep3=param.pep3)
+            print(f"{non_id} {tgt_pep}")
+
         print("")
 
 
@@ -227,9 +311,11 @@ def print_pairwise(aln, width=90):
 @plac.flg('translate', "translate the DNA into proteins")
 @plac.flg('table', "generate an alignment table", abbrev='T')
 @plac.flg('strict', "strict global alignment, apply end gap penalties", abbrev='R')
+@plac.flg('pep1', "shows a translated peptide with one letter code", abbrev='1')
+@plac.flg('pep3', "shows a translated peptide with three letter code", abbrev='3')
 @plac.flg('verbose', "verbose mode, progress messages printed")
 def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
-        protein=False, translate=False, inter=False, table=False, strict=False, verbose=False, target=None, query=None):
+        protein=False, translate=False, inter=False, table=False, strict=False, pep1=False, pep3=False, verbose=False, target=None, query=None):
     """
     Performs an alignment between the query and target.
     """
@@ -257,7 +343,7 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
         mode = const.GLOBAL_ALIGN
 
     # A parameter for each record.
-    param1 = objects.Param(acc=query, protein=protein, translate=translate,
+    param1 = objects.Param(acc=query, protein=protein, translate=translate, pep1=pep1, pep3=pep3,
                            start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
 
     param2 = objects.Param(acc=target, protein=protein, translate=translate,

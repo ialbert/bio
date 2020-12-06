@@ -6,15 +6,31 @@ Use a specially designed software, that relies on heuristics, to perform large s
  
 ## DNA alignment
 
+Align the DNA corresponding to protein `S`
+
 ```{bash, comment=NA}
-# Align the extracted protein.
-bio ncov:S ratg13:S --end 90 --align
+bio ncov:S ratg13:S --end 60 --align
 ```
+
+## DNA alignment with 1 letter amino acid codes
+
+```{bash, comment=NA}
+bio ratg13:S ncov:S  --end 60 --align -1
+```
+
+Reading frame will follow the slice!
+
+## DNA alignment with 3 letter amino acid codes
+
+```{bash, comment=NA}
+bio ratg13:S ncov:S  --end 60 --align -1
+```
+
+Reading frame will follow the slice!
 
 ## DNA alignment, tabular output
 
 ```{bash, comment=NA}
-# Align the extracted protein.
 bio ncov:S ratg13:S --end 90 --align --table
 ```
 
@@ -23,6 +39,16 @@ bio ncov:S ratg13:S --end 90 --align --table
 ```{bash, comment=NA}
 bio ncov:S ratg13:S --end 90 --translate --align 
 ```
+
+## Align the protein corresponding to gene S
+
+The protein sequence is fetched from the data (if exists) and is not a translated DNA. 
+
+```{bash, comment=NA}
+bio ncov:S ratg13:S --end 30 --protein --align 
+```
+
+The slice now applies to the protein sequence.
 
 ## Default alignment is semiglobal
 
