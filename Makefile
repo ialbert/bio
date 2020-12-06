@@ -15,7 +15,6 @@ build_test:
 	pytest
 
 docs:
-	rm -rf docs/*
 	(cd md && Rscript -e "bookdown::render_book(input='index.txt', output_dir='../docs', output_format='bookdown::gitbook')")
 
 serve:

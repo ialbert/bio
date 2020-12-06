@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Convert to FASTA | bio.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Convert to FASTA | bio.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Convert to FASTA | bio.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="bio-data.html"/>
+<link rel="next" href="bio-gff.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<script src="assets/prism.js"></script>
+
+<link rel="stylesheet" type="text/css" href="assets/bio.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/asciinema-player.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/prism.css" />
+
+<script>
+
+    $(document).ready(function () {
+        $('pre').addClass('language-bash');
+        Prism.highlightAll();
+    });
+
+</script>
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="index.html">bio: making bioinformatics fun again</a></li>
+<li class="divider"></li>
+<li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="comm-py.html"><a href="comm-py.html"><i class="fa fa-check"></i>comm.py</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="bio-fasta" class="section level1">
+<h1>Convert to FASTA</h1>
+<div id="get-a-dataset" class="section level3">
+<h3>Get a dataset</h3>
+<p>Get SARS-COV-2 data and rename it to <code>ncov</code>:</p>
+<pre class="bash"><code>    bio NC_045512 --fetch --rename ncov</code></pre>
+</div>
+<div id="convert-the-data-to-fasta-the-origin-of-the-genbank" class="section level2">
+<h2>Convert the data to FASTA (the origin of the GenBank)</h2>
+<pre class="bash"><code>bio ncov --fasta | head -5</code></pre>
+<pre><code>&gt;NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT</code></pre>
+</div>
+<div id="extract-a-partial-sequence-and-change-the-sequence-id" class="section level2">
+<h2>Extract a partial sequence and change the sequence id</h2>
+<pre class="bash"><code>bio ncov --fasta --start 100 --end 200 --seqid foo | head -5</code></pre>
+<pre><code>&gt;foo Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+CGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAG
+GACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGT</code></pre>
+</div>
+<div id="extract-the-last-ten-dna-bases" class="section level2">
+<h2>Extract the last ten DNA bases</h2>
+<pre class="bash"><code>bio ncov --fasta --start -10 --seqid last | head -5</code></pre>
+<pre><code>&gt;last Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+AAAAAAAAAA</code></pre>
+</div>
+<div id="extract-the-sequences-for-features-of-a-certain-type" class="section level2">
+<h2>Extract the sequences for features of a certain type</h2>
+<pre class="bash"><code>bio ncov --fasta --type CDS | head -5</code></pre>
+<pre><code>&gt;YP_009724389.1 ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578
+ATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTT
+TTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCA
+GAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTT
+TTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAACTGCACCT</code></pre>
+</div>
+<div id="extract-sequence-by-gene-name" class="section level2">
+<h2>Extract sequence by gene name</h2>
+<pre class="bash"><code>bio ncov:S --fasta --start 100 --end 200 | head -5</code></pre>
+<pre><code>&gt;YP_009724390.1 [100:200]
+CGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGAC
+TTGTTCTTACCTTTCTTTTCCAATGTTACTTGGTTCCATGC</code></pre>
+</div>
+<div id="extract-sequence-by-feature-accession-number" class="section level2">
+<h2>Extract sequence by feature accession number</h2>
+<pre class="bash"><code>bio ncov:YP_009724390.1 --fasta --start 100 --end 200 | head -5</code></pre>
+<pre><code>&gt;YP_009724390.1 [100:200]
+CGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGAC
+TTGTTCTTACCTTTCTTTTCCAATGTTACTTGGTTCCATGC</code></pre>
+</div>
+<div id="translate-the-sequence" class="section level2">
+<h2>Translate the sequence</h2>
+<p>This command translates the DNA sequence to peptides:</p>
+<pre class="bash"><code>bio ncov:S --fasta --start 100 --end 200 --translate | head -5</code></pre>
+<pre><code>&gt;YP_009724390.1 [100:200], translated
+RGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFH</code></pre>
+<p>The slice 100 to 200 is applied on the DNA sequence before the translation.</p>
+</div>
+<div id="extract-the-protein-sequence" class="section level2">
+<h2>Extract the protein sequence</h2>
+<p>This flag extracts the protein sequence embedded in the original GenBank file:</p>
+<pre class="bash"><code>bio ncov:S --fasta --start 100 --end 200 --protein | head -5</code></pre>
+<pre><code>&gt;YP_009724390.1 ID=YP_009724390.1;Name=YP_009724390.1;gene=S;locus_tag=GU280_gp02;gene_synonym=spike glycoprotein;note=structural protein; spike protein;codon_start=1;product=surface glycoprotein;protein_id=YP_009724390.1;db_xref=GeneID:43740568
+IIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRV
+YSSANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGY</code></pre>
+<p>Note how in this case the slice 100 to 200 is applied on the protein sequence.</p>
+
+</div>
+</div>
+
+<script src="assets/asciinema-player.js"></script>
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="bio-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-gff.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
