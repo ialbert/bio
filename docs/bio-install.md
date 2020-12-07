@@ -32,46 +32,17 @@ try out a conversion:
 
 Type `bio` followed by one or more accession numbers or data names followed by one or more flags or options.
 
-## Subcommands
-
-Certain flags trigger different behaviors:
-
-    bio --align
-    bio --taxon
-    bio --sra 
-    
 ## Getting help
 
     bio -h
+    
+## Subcommands
 
-Subcommands will have separate help pages. For example:
+Certain flags trigger different functionality. We call these flags subcommands:
+
+Subcommands will have separate help pages:
 
     bio --align -h
-
-## Actual help pages
-
-Below we include the help page for each active command
-
-### 1\. Help page for default actions
-
-```{bash, comment=NA}
-bio -h
-```
-
-### 2\. Help page for alignments 
-
-```{bash, comment=NA}
-bio --align -h
-```
-
-### 3\. Help page for taxonomy 
-
-```{bash, comment=NA}
-bio --taxon -h
-```
-
-### 4\. Help page for SRA search 
-
-```{bash, comment=NA}
-bio --sra -h
-```
+    bio --taxon -h
+    bio --sra -h
+    

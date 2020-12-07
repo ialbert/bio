@@ -10,9 +10,9 @@ rmd_files: [
   # "bio-ontology.md",
   "bio-sra.md",
   "bio-examples.md",
+  "bio-comm.md",
   "bio-tips.md",
   "bio-related.md",
-  "bio-comm.md",
 ]
 
 book_filename: bio
