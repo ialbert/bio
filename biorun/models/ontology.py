@@ -243,17 +243,16 @@ def build_database():
     fp.close()
 
 
-def walk_tree(nodes, start, etype=None, seen=None, collect=None):
+def walk_tree(nodes, start, etype=None, collect=None):
 
     collect = [] if collect is None else collect
     collect.append((start, len(collect), etype))
     parents = nodes.get(start, [])
-    seen = set() #if seen is None else seen
+    seen = set()
 
     for par, etype in parents:
-        #print(seen, par, etype)
         if etype == "is_a" and par not in seen:
-            walk_tree(nodes=nodes, start=par, etype=etype, collect=collect, seen=seen)
+            walk_tree(nodes=nodes, start=par, etype=etype, collect=collect)
 
         seen.update([par])
 
