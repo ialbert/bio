@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Convert to JSON | bio.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Convert to JSON | bio.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Convert to JSON | bio.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="bio-gff.html"/>
+<link rel="next" href="bio-align.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<script src="assets/prism.js"></script>
+
+<link rel="stylesheet" type="text/css" href="assets/bio.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/asciinema-player.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/prism.css" />
+
+<script>
+
+    $(document).ready(function () {
+        $('pre').addClass('language-bash');
+        Prism.highlightAll();
+    });
+
+</script>
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="index.html">bio: making bioinformatics fun again</a></li>
+<li class="divider"></li>
+<li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="comm-py.html"><a href="comm-py.html"><i class="fa fa-check"></i>comm.py</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="bio-json" class="section level1">
+<h1>Convert to JSON</h1>
+<p><code>bio</code> obtains data from NCBI and transforms it into an internal, simpler format. One would only need to process this format to provide functionality that is not yet offered in <code>bio</code></p>
+<div id="get-a-dataset-2" class="section level3">
+<h3>Get a dataset</h3>
+<p>Get SARS-COV-2 data and rename it to <code>ncov</code>:</p>
+<pre class="bash"><code>    bio NC_045512 --fetch --rename ncov</code></pre>
+</div>
+<div id="the-genbank-data" class="section level3">
+<h3>The GenBank data</h3>
+<p>Explore the contents of the file downloaded from NCBI</p>
+<pre class="bash"><code>bio ncov --genbank | head </code></pre>
+<pre><code>LOCUS       NC_045512              29903 bp ss-RNA     linear   VRL 18-JUL-2020
+DEFINITION  Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1,
+            complete genome.
+ACCESSION   NC_045512
+VERSION     NC_045512.2
+DBLINK      BioProject: PRJNA485481
+KEYWORDS    RefSeq.
+SOURCE      Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2)
+  ORGANISM  Severe acute respiratory syndrome coronavirus 2
+            Viruses; Riboviria; Orthornavirae; Pisuviricota; Pisoniviricetes;</code></pre>
+</div>
+<div id="json-data-representation" class="section level3">
+<h3>JSON data representation</h3>
+<p>See the transformed GenBank file as the JSON representation:</p>
+<pre class="bash"><code>bio ncov | head</code></pre>
+<pre><code>[
+    {
+        &quot;id&quot;: &quot;NC_045512.2&quot;,
+        &quot;definition&quot;: &quot;Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome&quot;,
+        &quot;dblink&quot;: [
+            &quot;BioProject:PRJNA485481&quot;
+        ],
+        &quot;locus&quot;: &quot;NC_045512&quot;,
+        &quot;feature_count&quot;: 57,
+        &quot;origin_len&quot;: 29903,</code></pre>
+</div>
+<div id="the-json-for-a-feature" class="section level3">
+<h3>The JSON for a feature</h3>
+<p>Filter the internal representation for a type and a gene name:</p>
+<pre class="bash"><code>bio ncov --type CDS --gene S | head </code></pre>
+<pre><code>[
+    {
+        &quot;id&quot;: &quot;YP_009724390.1&quot;,
+        &quot;name&quot;: &quot;YP_009724390.1&quot;,
+        &quot;start&quot;: 21563,
+        &quot;end&quot;: 25384,
+        &quot;type&quot;: &quot;CDS&quot;,
+        &quot;strand&quot;: 1,
+        &quot;location&quot;: [
+            [</code></pre>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>The following references may be consulted to understand how data should be represented in GenBank and GFF formats:</p>
+<p>INSDC feature descriptions:</p>
+<ul>
+<li><a href="http://www.insdc.org/files/feature_table.html#2" class="uri">http://www.insdc.org/files/feature_table.html#2</a></li>
+</ul>
+<p>NCBI GenBank format:</p>
+<ul>
+<li><a href="https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html" class="uri">https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html</a></li>
+</ul>
+<p>NCBI GFF format:</p>
+<ul>
+<li><a href="https://www.ncbi.nlm.nih.gov/genbank/genomes_gff/" class="uri">https://www.ncbi.nlm.nih.gov/genbank/genomes_gff/</a></li>
+</ul>
+
+</div>
+</div>
+
+<script src="assets/asciinema-player.js"></script>
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="bio-gff.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-align.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

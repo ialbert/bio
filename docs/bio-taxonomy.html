@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Taxonomy operations | bio.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Taxonomy operations | bio.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Taxonomy operations | bio.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="bio-align.html"/>
+<link rel="next" href="bio-sra.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<script src="assets/prism.js"></script>
+
+<link rel="stylesheet" type="text/css" href="assets/bio.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/asciinema-player.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/prism.css" />
+
+<script>
+
+    $(document).ready(function () {
+        $('pre').addClass('language-bash');
+        Prism.highlightAll();
+    });
+
+</script>
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="index.html">bio: making bioinformatics fun again</a></li>
+<li class="divider"></li>
+<li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="comm-py.html"><a href="comm-py.html"><i class="fa fa-check"></i>comm.py</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="bio-taxonomy" class="section level1">
+<h1>Taxonomy operations</h1>
+<p>The <code>bio</code> package provides utility to visualize NCBI taxonomies.</p>
+<div id="building-the-taxonomy" class="section level2">
+<h2>Building the taxonomy</h2>
+<p>Before using the taxonomy related functionality the representation needs to be built:</p>
+<pre><code>bio taxon --download --build</code></pre>
+<p>The command above has to be run once (perhaps on a monthly basis) to download and process the latest NCBI taxonomy. The efficiency of the process depends on the speed of the hard drive and takes around 30 minutes.</p>
+</div>
+<div id="check-database" class="section level2">
+<h2>Check database</h2>
+<pre><code>bio --taxon</code></pre>
+<p>prints:</p>
+<pre><code>TaxDB: nodes=2,288,072 parents=198,666</code></pre>
+<p>There are a total of <code>2,288,072</code> nodes (taxonomical entries) out of which <code>198,666</code> are nodes that are non-terminal (non-leaf) nodes. For these numbers we see that the vast majority of the taxonomy annotations are for terminal, leaf nodes.</p>
+</div>
+<div id="searching-for-taxids" class="section level2">
+<h2>Searching for taxids</h2>
+<p>Searches the taxonomy for a word</p>
+<pre><code>bio taxon jawed </code></pre>
+<p>prints:</p>
+<pre><code># searching taxonomy for: jawed
+clade, Gnathostomata (jawed vertebrates), 7776
+species, Gillichthys mirabilis (long-jawed mudsucker), 8222
+species, Pseudamia amblyuroptera (white-jawed cardinalfish), 1431476
+species, Myctophum brachygnathum (short-jawed lanternfish), 1519985
+species, Oryzias orthognathus (sharp-jawed buntingi), 1645897
+species, Longjawed orbweaver circular virus 1, 2293294
+species, Longjawed orbweaver circular virus 2, 2293295</code></pre>
+<p>The search words may use regular expression control characters:</p>
+<pre><code>bio taxon &#39;^jawed&#39;</code></pre>
+<p>produces:</p>
+<pre><code># searching taxonomy for: ^jawed
+clade, Gnathostomata (jawed vertebrates), 7776</code></pre>
+</div>
+<div id="view-taxonomy-for-data" class="section level2">
+<h2>View taxonomy for data</h2>
+<p>Once you fetch the data</p>
+<pre><code>bio NC_045512 --fetch --rename ncov
+    </code></pre>
+<p>you can view the descendants:</p>
+<pre class="bash"><code>bio ncov --taxon</code></pre>
+<pre><code>no rank, Severe acute respiratory syndrome coronavirus 2, 2697049</code></pre>
+<p>or view the lineage:</p>
+<pre class="bash"><code>bio ncov --taxon --lineage</code></pre>
+<pre><code>superkingdom, Viruses, 10239
+   clade, Riboviria, 2559587
+      kingdom, Orthornavirae, 2732396
+         phylum, Pisuviricota, 2732408
+            class, Pisoniviricetes, 2732506
+               order, Nidovirales, 76804
+                  suborder, Cornidovirineae, 2499399
+                     family, Coronaviridae, 11118
+                        subfamily, Orthocoronavirinae, 2501931
+                           genus, Betacoronavirus, 694002
+                              subgenus, Sarbecovirus, 2509511
+                                 species, Severe acute respiratory syndrome-related coronavirus, 694009
+                                    no rank, Severe acute respiratory syndrome coronavirus 2, 2697049</code></pre>
+</div>
+<div id="view-taxonomy-by-tax-id" class="section level2">
+<h2>View taxonomy by tax id</h2>
+<p>Pass a NCBI taxonomical id to see all the descendants of it:</p>
+<pre class="bash"><code>bio 117565 --taxon | head</code></pre>
+<pre><code>class, Myxini, 117565
+   order, Myxiniformes, 7761
+      family, Myxinidae (hagfishes), 7762
+         subfamily, Eptatretinae, 30309
+            genus, Eptatretus, 7763
+               species, Eptatretus burgeri (inshore hagfish), 7764
+               species, Eptatretus stoutii (Pacific hagfish), 7765
+               species, Eptatretus okinoseanus, 7767
+               species, Eptatretus atami, 50612
+               species, Eptatretus cirrhatus (broadgilled hagfish), 78394</code></pre>
+</div>
+<div id="view-a-tax-id" class="section level2">
+<h2>View a tax id</h2>
+<p>Pass a NCBI taxonomical id to see all the descendants of it:</p>
+<pre class="bash"><code>bio 117565 --taxon | head</code></pre>
+<pre><code>class, Myxini, 117565
+   order, Myxiniformes, 7761
+      family, Myxinidae (hagfishes), 7762
+         subfamily, Eptatretinae, 30309
+            genus, Eptatretus, 7763
+               species, Eptatretus burgeri (inshore hagfish), 7764
+               species, Eptatretus stoutii (Pacific hagfish), 7765
+               species, Eptatretus okinoseanus, 7767
+               species, Eptatretus atami, 50612
+               species, Eptatretus cirrhatus (broadgilled hagfish), 78394</code></pre>
+<p>To print the lineage of a term use:</p>
+<pre class="bash"><code>    bio 564286 --taxon --lineage</code></pre>
+<pre><code>no rank, cellular organisms, 131567
+   superkingdom, Bacteria (eubacteria), 2
+      clade, Terrabacteria group, 1783272
+         phylum, Firmicutes, 1239
+            class, Bacilli, 91061
+               order, Bacillales, 1385
+                  family, Bacillaceae, 186817
+                     genus, Bacillus, 1386
+                        species group, Bacillus subtilis group, 653685
+                           species, Bacillus subtilis, 1423
+                              strain, Bacillus subtilis str. 10, 564286</code></pre>
+<p>the lineage may be flattened:</p>
+<pre class="bash"><code>    bio 564286 --taxon --lineage --flat</code></pre>
+<pre><code>564286  cellular organisms;Bacteria;Terrabacteria group;Firmicutes;Bacilli;Bacillales;Bacillaceae;Bacillus;Bacillus subtilis group;Bacillus subtilis;Bacillus subtilis str. 10</code></pre>
+</div>
+<div id="filter-blast-results" class="section level2">
+<h2>Filter blast results</h2>
+<p>(TODO) - filters BLAST alignment for species that fall within a taxonomical clade</p>
+</div>
+<div id="list-the-content-of-the-database" class="section level2">
+<h2>List the content of the database:</h2>
+<pre><code>bio --taxon --list | head</code></pre>
+<p>prints:</p>
+<pre><code>no rank, root, 1
+superkingdom, Bacteria (eubacteria), 2
+genus, Azorhizobium, 6
+species, Azorhizobium caulinodans, 7
+species, Buchnera aphidicola, 9
+genus, Cellvibrio, 10
+species, Cellulomonas gilvus, 11
+genus, Dictyoglomus, 13
+species, Dictyoglomus thermophilum, 14
+genus, Methylophilus, 16</code></pre>
+<p>Note: this command benefits greatly from using <code>--preload</code>.</p>
+</div>
+<div id="preloading-data" class="section level2">
+<h2>Preloading data</h2>
+<p>For many use cases, the default behavior is plenty fast and can produce family, genus and species level information in a fraction of a second.</p>
+<p>Internally, during operation, the software will query the database for each child node. When selecting a rank where the number of descendant nodes is large (over 10,000 nodes) the run time of the independent queries adds up to a substantial overhead.</p>
+<p>For example the command below attempts to render the complete NCBI taxonomic tree with over 2.2 million descendant nodes. When run like so it will take a very long time to produce the output (more than two hours):</p>
+<pre><code>bio 1 --taxon </code></pre>
+<p>The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 6 second pre-loading penalty.</p>
+<pre><code>bio 1 --taxon --preload</code></pre>
+<p>When run with the <code>--preload</code> flag the command takes a total of just 11 seconds to generate the same large tree of the entire NCBI taxonomical tree. We don’t apply this mode by default because all queries would then take at least 6 seconds, even those that currently finish very quickly.</p>
+<p>For queries that take more than 10 seconds to complete (have more than 10,000 descendant nodes) we recommend applying the <code>--preload</code> flag.</p>
+
+</div>
+</div>
+
+<script src="assets/asciinema-player.js"></script>
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="bio-align.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-sra.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

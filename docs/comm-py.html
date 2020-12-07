@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>comm.py | bio.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="comm.py | bio.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="comm.py | bio.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="bio-sra.html"/>
+<link rel="next" href="bio-examples.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<script src="assets/prism.js"></script>
+
+<link rel="stylesheet" type="text/css" href="assets/bio.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/asciinema-player.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/prism.css" />
+
+<script>
+
+    $(document).ready(function () {
+        $('pre').addClass('language-bash');
+        Prism.highlightAll();
+    });
+
+</script>
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="index.html">bio: making bioinformatics fun again</a></li>
+<li class="divider"></li>
+<li><a href="index.html#welcome-to-bio">Welcome to <code>bio</code></a></li>
+<li class="chapter" data-level="" data-path="bio-install.html"><a href="bio-install.html"><i class="fa fa-check"></i>Software installation</a></li>
+<li class="chapter" data-level="" data-path="bio-data.html"><a href="bio-data.html"><i class="fa fa-check"></i>Fetching data</a></li>
+<li class="chapter" data-level="" data-path="bio-fasta.html"><a href="bio-fasta.html"><i class="fa fa-check"></i>Convert to FASTA</a></li>
+<li class="chapter" data-level="" data-path="bio-gff.html"><a href="bio-gff.html"><i class="fa fa-check"></i>Convert to GFF</a></li>
+<li class="chapter" data-level="" data-path="bio-json.html"><a href="bio-json.html"><i class="fa fa-check"></i>Convert to JSON</a></li>
+<li class="chapter" data-level="" data-path="bio-align.html"><a href="bio-align.html"><i class="fa fa-check"></i>Sequence alignments</a></li>
+<li class="chapter" data-level="" data-path="bio-taxonomy.html"><a href="bio-taxonomy.html"><i class="fa fa-check"></i>Taxonomy operations</a></li>
+<li class="chapter" data-level="" data-path="bio-sra.html"><a href="bio-sra.html"><i class="fa fa-check"></i>Searching SRA</a></li>
+<li class="chapter" data-level="" data-path="comm-py.html"><a href="comm-py.html"><i class="fa fa-check"></i>comm.py</a></li>
+<li class="chapter" data-level="" data-path="bio-examples.html"><a href="bio-examples.html"><i class="fa fa-check"></i>Usage examples</a></li>
+<li class="chapter" data-level="" data-path="bio-tips.html"><a href="bio-tips.html"><i class="fa fa-check"></i>General tips</a></li>
+<li class="chapter" data-level="" data-path="bio-related.html"><a href="bio-related.html"><i class="fa fa-check"></i>Related software</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="comm.py" class="section level1">
+<h1>comm.py</h1>
+<p>When you install the <code>bio</code> package you get another script called <code>comm.py</code> installed.
+It is a tool that prints the common elements from two files. If file 1 contains:</p>
+<pre><code>A
+B
+C</code></pre>
+<p>and file 2 contains</p>
+<pre><code>A
+C
+D</code></pre>
+<p>the <code>comm.py file1 file2</code> will print:</p>
+<pre><code>A
+C</code></pre>
+<p>That’s it. These are the elements in common in the first column of both files.</p>
+<div id="other-features" class="section level2">
+<h2>Other features</h2>
+<p><code>comm.py</code> has many more convenience features, it can:</p>
+<ol style="list-style-type: decimal">
+<li>print elements unique to file 1: <code>B</code></li>
+<li>print elements unique to file 2: <code>D</code></li>
+<li>print the union of elements" <code>A</code>, <code>C</code>, <code>B</code>, <code>D</code></li>
+<li>read different columns of the files</li>
+<li>read CSV and tab-delimited files</li>
+</ol>
+</div>
+<div id="rationale" class="section level2">
+<h2>Rationale</h2>
+<p>The need to find identical elements within columns of different files is surprisingly common (pun intended).</p>
+<p>We could use the UNIX tool called <code>comm</code> to find common or distinct elements. When used properly <code>comm</code> allows you to answer a wide variety of interesting questions. Unfortunately using <code>comm</code> properly is no easy task. First the values must be on a single column and must be sorted. Then the <code>comm</code> command may feel exceedingly counter-intuitive. Instead of telling it what we want, we have to tell it what we don’t want (what columns to suppress). It is completely backwards of how I like to think. While I don’t usually advocate rewriting UNIX tools in this case writing a better <code>comm</code> makes a lot of sense.</p>
+</div>
+<div id="limitations" class="section level2">
+<h2>Limitations</h2>
+<p>With <code>comm.py</code> most operations will be quicker to do, simpler to perform and easier to understand. The principal limitation of <code>comm.py</code> vs <code>comm</code> is that <code>comm.py</code> loads all elements into memory. Once the number of elements passes about 1 million <code>comm.py</code> will be noticeably and increasingly slower than <code>comm</code>. Under 1 million items using <code>comm.py</code> will work fine.</p>
+</div>
+<div id="usage-1" class="section level2">
+<h2>Usage</h2>
+<pre class="bash"><code>comm.py -h</code></pre>
+<pre><code>usage: comm.py [-h] [-1] [-2] [-3] [-t] [-x 1] [-y 1] file1 file2
+
+A better &#39;comm&#39; command. Prints elements common from columns from two files.
+
+positional arguments:
+  file1           input file 1
+  file2           input file 2
+
+optional arguments:
+  -h, --help      show this help message and exit
+  -1, --uniq1     prints elements unique to file 1
+  -2, --uniq2     prints elements unique to file 2
+  -3, --union     prints elements present in both files
+  -t, --tab       tab delimited (default is csv)
+  -x 1, --col1 1  column index for file 1 [default=1]
+  -y 1, --col2 1  column index for file 2 [default=1]</code></pre>
+
+</div>
+</div>
+
+<script src="assets/asciinema-player.js"></script>
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="bio-sra.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bio-examples.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
