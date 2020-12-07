@@ -8,9 +8,9 @@ While the following command should work:
 
     pip install bio --upgrade
 
-we usually recommend installing prerequisites with conda like so:
+We usually recommend installing prerequisites with conda like so:
 
-    conda install -c bioconda biopython parasail-python
+    conda install -c bioconda biopython
 
 then proceed with `pip install bio --upgrade`.
 

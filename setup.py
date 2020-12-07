@@ -20,14 +20,14 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'biopython',
+        'biopython >= 1.78',
         'requests',
-        'parasail',
     ],
 
     entry_points={
         'console_scripts': [
             'bio=biorun.__main__:run',
+            'comm.py=biorun.methods.comm:run',
         ],
     },
 

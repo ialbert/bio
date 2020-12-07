@@ -9,6 +9,7 @@ rmd_files: [
   "bio-taxonomy.md",
   "bio-ontology.md",
   "bio-sra.md",
+  "bio-comm.md",
   "bio-examples.md",
   "bio-tips.md",
   "bio-related.md",

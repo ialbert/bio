@@ -4,7 +4,7 @@
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
-Built on top of [BioPython][biopython], [Parasail][parasail] and other existing packages; `bio` streamlines tedious bioinformatics tasks such as:
+Built on top of [BioPython][biopython] and other existing packages; `bio` streamlines the tedious bioinformatics tasks such as:
  
 - downloading and storing data
 - converting between formats 
@@ -47,31 +47,13 @@ Here is how to align the first 1000 basepairs of SARS-COV-2 versus to the same r
     # Get the data.
     bio NC_045512 MN996532 --fetch 
     
-    # Align the sequences.
-    bio NC_045512 MN996532 --align --end 1000
+Align the sequences.
 
-that's it. `bio` will take care of everything for you and prints:
+```{bash, comment=NA}
+bio NC_045512 MN996532 --align --end 1000 | head 
+```
 
-    ### 1: NC_045512.2 vs MN996532.2 ###
-    
-    Length: 1000 (semiglobal)
-    Query:  1000 [1, 1000]
-    Target: 1000 [1, 1000]
-    Score:  4721
-    Ident:  969/1000 (96.9%)
-    Simil:  969/1000 (96.9%)
-    Gaps:   0/1000 (0.0%)
-    Matrix: nuc44(-11, -1)
-    
-    NC_045512.2  ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
-               1 ||||||||||||||||||.|||||||||||||||||.||||.||||||||||||||||||||||||||||||||||||||||||||||||.||||||||| 100
-    MN996532.2   ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGACTGTCACTC
-    
-    NC_045512.2  GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGT
-             101 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||.|||||||||||||||.|||||||||| 200
-    MN996532.2   GGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCATCTATCTTCTGCAGGTTGCTTACGGT
-    
-    ...    
+that's it.
 
 ## A more realistic example
 
@@ -113,16 +95,23 @@ bio ncov --gff --type CDS  | head -5
 Now, back to our problem of aligning proteins. Let's align the first 90 basepairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut, instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 90 --align
+bio ncov:S ratg13:S --end 60 --align
 ```
     
-If instead we wanted to align the 90bp DNA sequences for `S` protein after their translation into proteins we could do it like so:
+We can visualize the translation of the DNA into aminoacids with one letter (`-1`) or three letter codes (`-3`):  
+   
+```{bash, comment=NA}
+bio ncov:S ratg13:S --end 60 --align -1
+```
+    
+If instead we wanted to align the 60bp DNA subsesequences for `S` protein after their translation into proteins we could do it like so:
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --translate --end 90 --align
+bio ncov:S ratg13:S --translate --end 60 --align
 ```
     
-We can note right away that all differences in the first 90bp of DNA are synonymous substitutions, the protein translations are the same.
+We can note right away that all differences in the first 60bp of DNA are synonymous substitutions, the protein translations are the same.
+
 
 ## Look up the taxonomy
 
@@ -197,12 +186,12 @@ For shorter genomes, bacterial or viral the conversion times are under a fractio
 
 Thanks to the representation it is trivially easy to extend `bio`. The data is already structured in an efficient layout that needs no additional parsing to load. 
 
-## What did `bio` do for us?
+## What does `bio` do?
  
-1. fetched the data from NCBI
-1. created a more efficient local representation the data
-1. stored this representation so that next time you need it is available much faster
-1. generated alignments 
+1. fetches the data from NCBI
+1. creates a more efficient local representation the data
+1. stores this representation so that next time you need it is available much faster
+1. generates alignments 
 
 ## But wait there is more 
 

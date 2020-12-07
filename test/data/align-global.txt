@@ -1,16 +1,7 @@
 
-### 1: S1 vs S2 ###
+# Ident=4(36.4%)  Mis=2(18.2%)  Gaps=5(45.5%)  Target=(3, 9)  Query=(1, 9)  Length=11  Score=8.0  BLOSUM62(11,1)
 
-Length:	9 (global) 
-Query:	8 [1, 8]
-Target:	9 [1, 9]
-Score:	-7
-Ident:	2/9 (22.2%)
-Simil:	3/9 (33.3%)
-Gaps:	1/9 (11.1%)
-Matrix:	blosum62(-11, -1) 
-
-S1           THISLINE-
-           1 ....:.||  9
-S2           ISALIGNED
+S1           THISLI--NE-
+             --||..--||- 11
+S2           --ISALIGNED
 

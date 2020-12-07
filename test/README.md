@@ -29,6 +29,11 @@ A weird join operator:
 
     NC_003977
 
+
+Multiple equally scoring alignments:
+
+    bio AGGATAGGAG AGGATTAG -i --align -v
+
 # Taxonomy test
 
     # Flowering plant
