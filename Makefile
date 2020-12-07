@@ -1,5 +1,7 @@
 .PHONY: dist build test docs
 
+DOCBRANCH=../bio-docs
+
 all: serve
 
 publish: build sync
@@ -15,11 +17,17 @@ build_test:
 	pytest
 
 docs:
-	(cd md && Rscript -e "bookdown::render_book(input='index.txt', output_dir='../docs', output_format='bookdown::gitbook')")
+	(cd docs && Rscript -e "bookdown::render_book(input='index.txt', output_dir='.html', output_format='bookdown::gitbook')")
+	# Get the curent docs.
+	(cd ${DOCBRANCH} && git pull)
+	# Synchronize to documentation branch.
+	rsync -avz docs/.html/* ${DOCBRANCH}
+	# Commit and push out changes.
+	(cd ${DOCBRANCH} && git commit -am 'updated the documentation' && git push)
+
 
 serve:
-	rm -rf md/_book
-	Rscript -e "bookdown::serve_book(dir='md', preview=TRUE, output_dir='_book', port=8000)"
+	Rscript -e "bookdown::serve_book(dir='docs', preview=TRUE, output_dir='.html', port=8000)"
 
 clean:
 	rm -rf dist build bio.egg-info

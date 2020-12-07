@@ -1,4 +1,4 @@
-# Software installation {#bio-install}
+# Installation {#bio-install}
 
 `bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
 
