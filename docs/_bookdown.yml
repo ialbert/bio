@@ -7,6 +7,7 @@ rmd_files: [
   "bio-json.md",
   "bio-align.md",
   "bio-taxonomy.md",
+  # "bio-ontology.md",
   "bio-sra.md",
   "bio-examples.md",
   "bio-tips.md",

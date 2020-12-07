@@ -321,7 +321,6 @@ def query(taxid, names, graph):
         collect = []
         dfs(graph, taxid, names=names, collect=collect)
 
-
     else:
         search_taxa(taxid)
 
