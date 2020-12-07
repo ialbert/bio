@@ -19,11 +19,11 @@ build_test:
 docs:
 	(cd docs && Rscript -e "bookdown::render_book(input='index.txt', output_dir='.html', output_format='bookdown::gitbook')")
 	# Get the curent docs.
-	(cd ${DOCBRANCH} && git pull)
+	(cd ${DOCBRANCH} && git pull origin gh-pages)
 	# Synchronize to documentation branch.
 	rsync -avz docs/.html/* ${DOCBRANCH}
 	# Commit and push out changes.
-	(cd ${DOCBRANCH} && git commit -am 'updated the documentation' && git push)
+	(cd ${DOCBRANCH} && git commit -am 'updated the documentation' && git push origin gh-pages)
 
 
 serve:
