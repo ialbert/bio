@@ -80,6 +80,12 @@ def router():
         sys.argv.remove(const.DBLINK_COMMAND)
         plac.call(dblink.run)
 
+    elif const.ONTOLOGY_COMMAND in sys.argv:
+        # Run SRA specific functionality.
+        from biorun.models import ontology
+        sys.argv.remove(const.ONTOLOGY_COMMAND)
+        plac.call(ontology.run)
+
     else:
         # Default action is to convert a file.
         from biorun import convert
