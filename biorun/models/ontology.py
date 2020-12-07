@@ -19,6 +19,10 @@ DELIM = '[Term]'
 # GO or SO id patterns.
 ID_PATT = r"[G|S]O:\d+"
 
+
+# Edge type pattern
+EDGE_TYPE_PATT = r"relationship:\s+(.+)(\s+[S|G])"
+
 GENE_ID = 'GO'
 SEQ_ID = 'SO'
 
@@ -125,6 +129,34 @@ def stop_term(elem):
     return stop
 
 
+def edge_type(item):
+    """
+    Extract edge type from the element
+    """
+
+    match = re.search(EDGE_TYPE_PATT, item)
+
+    etype = match.group(1) if match else None
+
+    return etype
+
+
+def update_nodes(nodes, back_prop, edges):
+
+    if not edges:
+        return
+
+    def update(par, child, et):
+        nodes.setdefault(par, []).append((child, et))
+        back_prop.setdefault(child, []).append((par, et))
+        return
+
+    for parent, current, etype in edges:
+        update(parent, current, etype)
+
+    return
+
+
 def parse_term(fname):
     """
     Parses the ontology file into a terms dictionary.
@@ -137,14 +169,14 @@ def parse_term(fname):
     names = {}
     nodes = {}
     back_prop = {}
-    uid, parent, name, definition = None, None, None, None
+    uid, parent, name, definition, edges = None, None, None, None, []
 
     print(f"*** parsing: {fname}")
     for elems in stream:
 
         if stop_term(elems):
             # Reset objs for next term.
-            uid, parent, name, definition = None, None, None, None
+            uid, parent, name, definition, edges = None, None, None, None, []
             continue
 
         val = elems.split(":")
@@ -154,6 +186,13 @@ def parse_term(fname):
 
         if elems.startswith("is_a:"):
             parent = match_id(elems)
+            edges.append((parent, uid, 'is_a'))
+
+        if edge_type(elems):
+            # Get parents stored in edge type
+            eparent = match_id(elems)
+            eitem = edge_type(elems)
+            edges.append((eparent, uid, eitem))
 
         if "name:" in elems:
             name = val[1].strip().lower()
@@ -164,8 +203,7 @@ def parse_term(fname):
         if uid:
             terms[uid] = [name, definition]
             names[name] = uid
-            nodes.setdefault(parent, []).append(uid)
-            back_prop[uid] = parent
+            update_nodes(nodes=nodes, back_prop=back_prop, edges=edges)
 
     return terms, nodes, names, back_prop
 
@@ -205,31 +243,42 @@ def build_database():
     fp.close()
 
 
-def walk_tree(nodes, start, collect=None):
+def walk_tree(nodes, start, etype=None, seen=None, collect=None):
 
     collect = [] if collect is None else collect
-    collect.append(start)
-    parent = nodes.get(start)
+    collect.append((start, len(collect), etype))
+    parents = nodes.get(start, [])
+    seen = set() #if seen is None else seen
 
-    if parent:
-        walk_tree(nodes=nodes, start=parent, collect=collect)
+    for par, etype in parents:
+        #print(seen, par, etype)
+        if etype == "is_a" and par not in seen:
+            walk_tree(nodes=nodes, start=par, etype=etype, collect=collect, seen=seen)
+
+        seen.update([par])
 
 
-def printer(uids, terms, pad=''):
+def printer(uids, terms):
 
-    for uid in uids:
-        name, definition = terms[uid]
-        print(f"{pad}{uid}{INDENT}{name}")
+    seen = set()
+    for uid, etype in uids:
+
+        if uid not in seen:
+            name, definition = terms[uid]
+            suffix = '' if etype == 'is_a' else f'({etype})'
+            print(f"- {name} {suffix}")
+        seen.update([uid])
 
 
 def print_tree(terms, tree=None):
 
     tree = [] if tree is None else tree
     tree = reversed(tree)
-
     # Print the definition and all children here.
-    for idx, uid in enumerate(tree):
+    for idx, objs in enumerate(tree):
+        uid, depth, etype = objs
         vals = terms.get(uid)
+
         if vals:
             name, definition = vals
             pad = INDENT * idx
@@ -278,12 +327,18 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=Fals
             return
 
         # Fetch the name and definition
-        name, definition = terms[uid]
-        print(f"{uid}\t{name}\t{definition}")
+        parents = back_prop[uid]
 
-        # Print children
-        children = set(nodes.get(uid, []))
-        printer(uids=children, terms=terms)
+        name, definition = terms[uid]
+        print(f"{name} ({uid})\n{definition}\n")
+        print(f'Parents:')
+        printer(uids=parents, terms=terms)
+        children = nodes.get(uid, [])
+        if children:
+            print("\nChildren:")
+            # Print children
+            children = nodes.get(uid, [])
+            printer(uids=children, terms=terms)
 
         return
 
