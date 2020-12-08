@@ -1,6 +1,7 @@
 import json, shutil, os, tarfile, re
-from urllib import request
+import requests
 from itertools import islice
+from textwrap import wrap
 
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
@@ -9,9 +10,9 @@ from biorun import utils
 
 JSON_DB = "ontology.json"
 SQLITE_DB = "ontology.sqlite"
-GENE_URL = "http://purl.obolibrary.org/obo/go.obo"
-SEQ_URL = "https://raw.githubusercontent.com/The-Sequence-Ontology/SO-Ontologies/master/Ontology_Files/so-simple.obo"
-ONOTO_NAME = "ontology.obo"
+GO_URL = "http://purl.obolibrary.org/obo/go.obo"
+SO_URL = "https://raw.githubusercontent.com/The-Sequence-Ontology/SO-Ontologies/master/Ontology_Files/so-simple.obo"
+ONTOLOGY_FILE = "ontology.obo"
 
 # Delimiter in ontology files, separating one term from another.
 DELIM = '[Term]'
@@ -19,17 +20,16 @@ DELIM = '[Term]'
 # GO or SO id patterns.
 ID_PATT = r"[G|S]O:\d+"
 
-
 # Edge type pattern
 EDGE_TYPE_PATT = r"relationship:\s+(.+)(\s+[S|G])"
 
-GENE_ID = 'GO'
-SEQ_ID = 'SO'
+GO_ID = 'GO'
+SO_ID = 'SO'
 
 join = os.path.join
 
 # Create the full paths
-ONOTO_NAME = join(utils.DATADIR, ONOTO_NAME)
+ONTOLOGY_FILE = join(utils.DATADIR, ONTOLOGY_FILE)
 SQLITE_DB = join(utils.DATADIR, SQLITE_DB)
 JSON_DB = join(utils.DATADIR, JSON_DB)
 
@@ -54,23 +54,25 @@ logger = utils.logger
 CHUNK = 25000
 
 
-def download_ontology(url, fname=ONOTO_NAME, mode="wb"):
+def download_ontology(url, fname=ONTOLOGY_FILE, mode="wt"):
     """
     Downloads ontology file.
     """
-    print(f"*** downloading ontology: {url}")
+    print(f"*** downloading: {url}")
 
-    # Download the data.
-    src = request.urlopen(url)
-    dest = open(fname, mode=mode)
-    shutil.copyfileobj(src, dest)
-
+    # Stream data into a file.
+    r = requests.get(url, stream=True)
+    fp = open(fname, mode)
+    for chunk in r.iter_content(chunk_size=2**12):
+        fp.write(chunk.decode("ascii", "backslashreplace"))
 
 def download_terms():
-    download_ontology(url=GENE_URL)
 
-    # Append Sequence ontology to existing file.
-    download_ontology(url=SEQ_URL, mode="ab")
+    # Download Gene Ontology (GO).
+    download_ontology(url=GO_URL)
+
+    # Append Sequence Ontology (SO).
+    download_ontology(url=SO_URL, mode="at")
     return
 
 
@@ -124,8 +126,8 @@ def match_id(item):
     return oid
 
 
-def stop_term(elem):
-    stop = (DELIM in elem) or ("[Typedef]" in elem)
+def stop_term(text):
+    stop = (DELIM in text) or ("[Typedef]" in text)
     return stop
 
 
@@ -164,7 +166,6 @@ def parse_term(fname):
 
     # The ontology file, with both sequence and gene info.
     stream = open(fname, mode="r")
-
     terms = {}
     names = {}
     nodes = {}
@@ -212,15 +213,15 @@ def build_database():
     """
     Build the ontology database.
     """
-    print(f"*** building database from: {ONOTO_NAME}")
+    print(f"*** building database from: {ONTOLOGY_FILE}")
 
     # Check the file.
-    if not os.path.isfile(ONOTO_NAME):
+    if not os.path.isfile(ONTOLOGY_FILE):
         logger.info(f"No ontology file found, downloading...")
         download_terms()
 
     # Parse the terms from file
-    terms, nodes, names, back_prop = parse_term(fname=ONOTO_NAME)
+    terms, nodes, names, back_prop = parse_term(fname=ONTOLOGY_FILE)
 
     # Save terms into the database
     save_table(TERM, terms)
@@ -317,19 +318,33 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=Fals
 
     # The query is an exact match, print info.
     if names.get(query) or terms.get(query):
+
         # Get the GO or SO id
         uid = names.get(query) or query
+
         if lineage:
             show_lineage(start=uid, terms=terms, back_prop=back_prop)
             return
+
+        # ?
         if prefix and not uid.startswith(prefix):
             return
 
-        # Fetch the name and definition
+        # Get the parents.
         parents = back_prop[uid]
 
+        # Fetch the name and definition
         name, definition = terms[uid]
-        print(f"{name} ({uid})\n{definition}\n")
+
+        # Keep only text within quotes (if these exist).
+        patt = r'"([^"]*)"'
+        m = re.match(patt, definition)
+        definition = m.groups()[0] if m else definition
+
+        definition = "\n".join(wrap(definition, 80))
+
+        print(f"\n## {name} ({uid})\n\n{definition}\n")
+
         print(f'Parents:')
         printer(uids=parents, terms=terms)
         children = nodes.get(uid, [])
@@ -338,6 +353,7 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=Fals
             # Print children
             children = nodes.get(uid, [])
             printer(uids=children, terms=terms)
+        print ("")
 
         return
 
@@ -377,10 +393,11 @@ def run(query="", build=False, download=False, preload=False, so=False, go=False
         build_database()
 
     terms, nodes, names, back_prop = get_data(preload=preload)
+
     query = query.strip()
 
-    prefix = SEQ_ID if so else ''
-    prefix = GENE_ID if go else prefix
+    prefix = SO_ID if so else ''
+    prefix = GO_ID if go else prefix
 
     if query:
         perform_query(query=query,
