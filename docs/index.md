@@ -13,17 +13,13 @@ Built on top of [BioPython][biopython] and other existing packages; `bio` stream
 - exploring taxonomies
 - ... and more ...
 
-Compare the gene GFF models made with `bio` (left) to those you download from official sources like NCBI (right):
 
-```{r fig.align='center', echo=FALSE}
-knitr::include_graphics('images/bio-gff-compare.png', dpi = NA)
-```
+Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
-Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. The software was written to teach bioinformatics and is the companion software to the [Biostar Handbook][handbook]
+The software was written to teach bioinformatics and is the companion software to the [Biostar Handbook][handbook]
  
 [biopython]: https://biopython.org/
 [emboss]: http://emboss.sourceforge.net/
-[parasail]: https://github.com/jeffdaily/parasail
 [simplesam]: https://github.com/mdshw5/simplesam 
 [handbook]: https://www.biostarhandbook.com/
 

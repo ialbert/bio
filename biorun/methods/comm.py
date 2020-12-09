@@ -8,15 +8,15 @@ Differences:
 - produces common elements by default
 
 """
-import argparse
-import csv, sys
+import csv, sys, os
 import biorun.libs.placlib as plac
+from pathlib import Path
 
 FILL_VALUE = ''
 
 UNIQ1, UNIQ2, ISECT, UNION = range(4)
 
-def process(file1, file2, delimiter, idx1, idx2, show):
+def process(stream1, stream2, delimiter, idx1, idx2, show):
     """
     Processes the files and prints the output
     """
@@ -25,6 +25,7 @@ def process(file1, file2, delimiter, idx1, idx2, show):
         """
         Returns the value of a column at the column index.
         """
+
         # Skip comment lines
         stream = filter(lambda x: not x.startswith('#'), stream)
 
@@ -42,8 +43,8 @@ def process(file1, file2, delimiter, idx1, idx2, show):
                 yield ('', None)
 
     # Make dictionaries, will maintain original item order.
-    store1 = dict(parse(file1, idx=idx1))
-    store2 = dict(parse(file2, idx=idx2))
+    store1 = dict(parse(stream1, idx=idx1))
+    store2 = dict(parse(stream2, idx=idx2))
 
     # Generate the various groupings.
     isect = [key for key in store1.keys() if key in store2]
@@ -61,14 +62,22 @@ def process(file1, file2, delimiter, idx1, idx2, show):
     else:
         stream = isect
 
-    result = map(lambda x: "\t".join(x), stream)
-
     # Print the output
-    for line in result:
+    for line in stream:
         print(line)
 
-@plac.pos('file1', "input file 1", type=argparse.FileType('rt'))
-@plac.pos("file2", "input file 2", type=argparse.FileType('rt'))
+def get_stream(fname):
+    if fname == '-':
+        return sys.stdin
+
+    if not os.path.isfile(fname):
+        print(f"file not found: {fname}")
+        sys.exit(1)
+
+    return open(fname)
+
+@plac.pos('file1', "input file 1", type=Path)
+@plac.pos("file2", "input file 2", type=Path)
 @plac.flg('uniq1', "prints elements unique to file 1", abbrev="1")
 @plac.flg('uniq2', "prints elements unique to file 2", abbrev="2")
 @plac.flg('union', "prints elements present in both files", abbrev="3")
@@ -90,8 +99,16 @@ def main(file1, file2, uniq1=False, uniq2=False, union=False, tab=False, col1=1,
     show = UNIQ2 if uniq2 else show
     show = UNION if union else show
 
+    if not os.path.isfile(file1):
+        print(f"file not found: {file1}")
+        sys.exit(1)
+
+    # Get a stream for each file
+    stream1 = get_stream(file1)
+    stream2 = get_stream(file2)
+
     # Process the file.
-    process(file1=file1, file2=file2, delimiter=delimiter, idx1=idx1, idx2=idx2, show=show)
+    process(stream1=stream1, stream2=stream2, delimiter=delimiter, idx1=idx1, idx2=idx2, show=show)
 
 
 def run():
