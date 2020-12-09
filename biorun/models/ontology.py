@@ -9,7 +9,7 @@ from biorun import utils
 
 JSON_DB = "ontology.json"
 SQLITE_DB = "ontology.sqlite"
-GENE_URL = "http://purl.obolibrary.org/obo/go.obo"
+GENE_URL = "http://geneontology.org/ontology/go-basic.obo"
 SEQ_URL = "https://raw.githubusercontent.com/The-Sequence-Ontology/SO-Ontologies/master/Ontology_Files/so-simple.obo"
 ONOTO_NAME = "ontology.obo"
 
@@ -243,18 +243,23 @@ def build_database():
     fp.close()
 
 
-def walk_tree(nodes, start, etype=None, collect=None):
+def walk_tree(nodes, start, etype=None, depth=0, seen=None, collect=None):
 
     collect = [] if collect is None else collect
-    collect.append((start, len(collect), etype))
+    collect.append((start, depth, etype))
+
     parents = nodes.get(start, [])
+
     seen = set()
 
     for par, etype in parents:
+
         if etype == "is_a" and par not in seen:
-            walk_tree(nodes=nodes, start=par, etype=etype, collect=collect)
+            walk_tree(nodes=nodes, start=par, etype=etype, seen=seen, depth=depth +1, collect=collect)
 
         seen.update([par])
+        depth = 0
+    #print(pars)
 
 
 def printer(uids, terms):
@@ -269,10 +274,12 @@ def printer(uids, terms):
         seen.update([uid])
 
 
-def print_tree(terms, tree=None):
+def print_tree(terms, tree=None, start=None):
 
     tree = [] if tree is None else tree
     tree = reversed(tree)
+    highlighter = '**'
+
     # Print the definition and all children here.
     for idx, objs in enumerate(tree):
         uid, depth, etype = objs
@@ -280,8 +287,9 @@ def print_tree(terms, tree=None):
 
         if vals:
             name, definition = vals
-            pad = INDENT * idx
-            print(f"{pad}{uid}{INDENT}{name}")
+            pad = INDENT * depth
+            highlight = highlighter if uid.strip() == start.strip() else ''
+            print(f"{pad}{uid}{INDENT}{highlight} {name} {highlight}")
 
 
 def show_lineage(start, terms, back_prop):
@@ -289,8 +297,7 @@ def show_lineage(start, terms, back_prop):
     collect = []
     walk_tree(nodes=back_prop, start=start, collect=collect)
 
-    # Print the tree.
-    print_tree(tree=collect, terms=terms)
+    print_tree(tree=collect, terms=terms, start=start)
 
     return
 
