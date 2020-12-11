@@ -7,19 +7,19 @@ from urllib import request
 from biorun.libs import placlib as plac
 from itertools import count
 from biorun.models import jsonrec
-from biorun import storage
+from biorun import storage, const
 
-JSON_DB = "taxdb.json"
-SQLITE_DB = "taxdb.sqlite"
-TAXDB_URL = "ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz"
+JSON_DB_NAME = "taxdb.json"
+SQLITE_DB_NAME = "taxdb.sqlite"
+TAXDB_URL = "http://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz"
 TAXDB_NAME = "taxdump.tar.gz"
 
 join = os.path.join
 
 # Create the full paths
 TAXDB_NAME = join(utils.DATADIR, TAXDB_NAME)
-SQLITE_DB = join(utils.DATADIR, SQLITE_DB)
-JSON_DB = join(utils.DATADIR, JSON_DB)
+SQLITE_DB = join(utils.DATADIR, SQLITE_DB_NAME)
+JSON_DB = join(utils.DATADIR, JSON_DB_NAME)
 
 # Create the thing here.
 
@@ -37,16 +37,19 @@ CHUNK = 25000
 logger = utils.logger
 
 
-def download_taxdump(url=TAXDB_URL, fname=TAXDB_NAME):
+def download_prebuilt():
+    """
+    Download prebuild databases.
+    """
+    utils.download_from_bucket(bucket_name=const.BUCKET_NAME, file_name=SQLITE_DB_NAME, cache=True)
+    utils.download_from_bucket(bucket_name=const.BUCKET_NAME, file_name=JSON_DB_NAME, cache=True)
+
+
+def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_NAME):
     """
     Downloads taxdump file.
     """
-    print(f"*** downloading taxdump: {url}")
-
-    # Download the data.
-    src = request.urlopen(url)
-    dest = open(fname, 'wb')
-    shutil.copyfileobj(src, dest)
+    utils.download(url=url, dest_name=dest_name)
 
 
 def get_stream(tar, name, limit=None):
@@ -327,7 +330,7 @@ def query(taxid, names, graph):
 
 @plac.pos("words", "taxids or search queries")
 @plac.flg('build', "build a database from a taxdump")
-@plac.flg('download', "download newest taxdump from NCBI")
+@plac.flg('update', "obtain the latest taxdump from NCBI")
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('list_', "lists database content")
 @plac.flg('flat', "flattened output")
@@ -335,10 +338,10 @@ def query(taxid, names, graph):
 @plac.opt('indent', "the indentation string")
 @plac.opt('sep', "separator string", abbrev="S")
 @plac.opt('limit', "limit the number of entries", type=int, abbrev='T')
+@plac.flg('download', "downloads the database from the remote site", abbrev='G')
 @plac.flg('verbose', "verbose mode, prints more messages")
-
-def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, download=False,
-        preload=False,
+def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, update=False,
+        preload=False, download=False,
         verbose=False, *words):
     global SEP, INDENT
 
@@ -354,12 +357,15 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     # Access the database.
     names, graph = get_data(preload=preload)
 
+    if download:
+        download_prebuilt()
+
     if list_:
         print_database(names=names, graph=graph)
         sys.exit()
 
-    if download:
-        download_taxdump()
+    if update:
+        update_taxdump()
 
     if build:
         build_database(limit=limit)

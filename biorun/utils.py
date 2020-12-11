@@ -2,13 +2,14 @@
 Utilites funcions.
 """
 import sys, os, re, tempfile, gzip, glob, shutil
-
+import requests
 from itertools import count, islice
 from functools import wraps
 import time
 import logging
 from os.path import expanduser
 from biorun import const
+from pprint import pprint
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -53,13 +54,103 @@ def is_int(text):
     except ValueError as exc:
         return False
 
+
 def trim(text, size=3):
     """
     Trims a sequence to a length that is the largest multiple of size.
     """
     div, mod = divmod(len(text), size)
-    subs = text[:div*size]
+    subs = text[:div * size]
     return subs
+
+
+def download_from_bucket(bucket_name, file_name, dest_name=None, cache=False):
+    """
+    Download a file from a GS bucket
+    """
+    url = f"https://storage.googleapis.com/storage/v1/b/{bucket_name}/o/{file_name}"
+    dest_name = dest_name or file_name
+    download(url=url, dest_name=dest_name, cache=cache, params=dict(alt="media"))
+
+
+def lower_case_keys(adict):
+    return dict((k.lower(), v) for (k, v) in adict.items())
+
+
+def safe_int_zero(text):
+    try:
+        return int(text)
+    except ValueError as exc:
+        return 0
+
+
+def progress_bar(frac, barlen=30, null=' ', marker='=', head=">"):
+    pos = int(frac * barlen)
+    bar = marker * pos + head + null * int(barlen - pos)
+    return bar
+
+
+def download(url, dest_name, cache=False, params={}):
+    """
+    Downloads a URL into a destination
+    """
+    logger.info(f"downloading: {url}")
+
+    # The file destination.
+    if cache:
+        path = os.path.join(DATADIR, dest_name)
+    else:
+        path = dest_name
+
+    # Open request to file
+    r = requests.get(url, stream=True, params=params)
+
+    try:
+        # Check valid response status.
+        r.raise_for_status()
+    except Exception as exc:
+        error(f"{exc}")
+
+    # Attempt to determine the download size.
+    headers = lower_case_keys(r.headers)
+    size = headers.get("content-length", 0)
+    size = safe_int_zero(size)
+
+    # How much data to process at a time.
+    chunk_size = 1 * 1024 * 1024
+
+    # The name of the file that will be stored
+    file_name = os.path.split(dest_name)[-1]
+
+    # Create file only if dowload completes successfully.
+    with tempfile.NamedTemporaryFile() as fp:
+
+        # Keep track of total size.
+        total = 0
+
+        # Iterate over the content.
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            total += len(chunk)
+            if size:
+                frac = total / size
+                perc = frac * 100
+                bar = progress_bar(frac)
+                print(f"*** downloading [{bar}] {file_name} {human_size(size)} ({perc:.1f}%)", end="\r")
+            else:
+                print(f"*** downloading {file_name} {human_size(total)} ", end="\r")
+            fp.write(chunk)
+
+        print("")
+
+        # File creation completed.
+        fp.seek(0)
+
+        # Copy file to destination.
+        shutil.copyfile(fp.name, path)
+
+        # Progress notification.
+        logger.info(f"saved to: {dest_name}")
+
 
 def maybe_ncbi(text):
     """
@@ -99,12 +190,12 @@ def zero_based(start, end):
     return start, end
 
 
-def sizeof_fmt(num, suffix=''):
-    for unit in ['', 'K', 'M', 'G']:
+def human_size(num):
+    for unit in ['B', 'KB', 'MB', 'GB']:
         if abs(num) < 1024.0:
-            return "%.0f%s%s" % (num, unit, suffix)
+            return "%.0f %s" % (num, unit)
         num /= 1024.0
-    return "%.1f%s%s" % (num, '??', suffix)
+    return "%.1f%s" % (num, '??')
 
 
 def safe_int(text):

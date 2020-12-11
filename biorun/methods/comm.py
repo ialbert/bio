@@ -67,6 +67,9 @@ def process(stream1, stream2, delimiter, idx1, idx2, show):
         print(line)
 
 def get_stream(fname):
+    """
+    Turns filename into a stream.
+    """
     if fname == '-':
         return sys.stdin
 

@@ -9,13 +9,32 @@ from biorun import utils
 from biorun.libs import xmltodict
 import json
 
+# Entrez URL settings.
 ESEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 
 logger = utils.logger
 
 # The keys that are valid environment keys.
-ENV_KEYS = [ "webenv", "use_history", "query_key" ]
+ENV_KEYS = ["webenv", "use_history", "query_key"]
+
+def fetch_genbank(acc, dest_name):
+    """
+    Returns a genbank file.
+    """
+    try:
+        db = 'nuccore'
+
+        rettype, retmode = "gbwithparts", "text"
+
+        params = dict(db=db, rettype=rettype, id=acc, retmode=retmode)
+
+        utils.download(EFETCH_URL, params=params, dest_name=dest_name)
+
+    except Exception as exc:
+        utils.error(exc)
+
+
 
 def efetch(db, env={}, **kwds):
     """
@@ -45,7 +64,6 @@ def efetch(db, env={}, **kwds):
 
     except Exception as exc:
         logger.error(exc)
-
 
 
 def esearch(db, **kwds):

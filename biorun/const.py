@@ -29,6 +29,7 @@ NCBI_PROTEIN_CODES = {"AP", "NP", "YP", "XP", "WP", "AK"}
 
 NCBI_NUCLEOTIDE_CODES = {"NM", "NX", "YP", "XP", "WP", "AK"}
 
+BUCKET_NAME = "biostore-bucket-001"
 
 SEQUENCE_ONTOLOGY = {
     "source": "region",
