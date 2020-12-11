@@ -1,14 +1,14 @@
 # Taxonomy operations {#bio-taxonomy}
 
-The `bio` package provides utility to visualize NCBI taxonomies.
+The `bio` package provides utilities to visualize NCBI taxonomies.
 
-## Building the taxonomy
+## First steps
 
-Before using the taxonomy related functionality the representation needs to be built:
+Before using the taxonomy related database needs to downloaded with:
 
-    bio taxon --download --build
+    bio --taxon --download 
 
-The command above has to be run once (perhaps on a monthly basis) to download and process the latest NCBI taxonomy. The efficiency of the process depends on the speed of the hard drive and takes around 30 minutes.
+The above command takes about 6 minutes to obtain the remote databases and store them locally.
 
 ## Check database
 
@@ -115,6 +115,14 @@ prints:
     genus, Methylophilus, 16
 
 Note: this command benefits greatly from using `--preload`.
+
+## Update the taxonomy
+
+You may build the newest version locally:
+
+    bio --taxon --update --build
+    
+The command will download and build a new taxonomy using the latest NCBI taxonomy data. The efficiency of the process depends on the speed of the hard drive and takes around 30 minutes.
 
 ## Preloading data
 

@@ -2,7 +2,7 @@
 Utilites funcions.
 """
 import sys, os, re, tempfile, gzip, glob, shutil
-
+import requests
 from itertools import count, islice
 from functools import wraps
 import time
@@ -53,13 +53,101 @@ def is_int(text):
     except ValueError as exc:
         return False
 
+
 def trim(text, size=3):
     """
     Trims a sequence to a length that is the largest multiple of size.
     """
     div, mod = divmod(len(text), size)
-    subs = text[:div*size]
+    subs = text[:div * size]
     return subs
+
+
+def download_from_bucket(bucket_name, file_name, dest_name=None, cache=False):
+    """
+    Download a file from a GS bucket
+    """
+    url = f"https://storage.googleapis.com/storage/v1/b/{bucket_name}/o/{file_name}"
+    dest_name = dest_name or file_name
+    download(url=url, dest_name=dest_name, cache=cache, params=dict(alt="media"))
+
+
+def lower_case_keys(adict):
+    return dict((k.lower(), v) for (k, v) in adict.items())
+
+
+def safe_int_zero(text):
+    try:
+        return int(text)
+    except ValueError as exc:
+        return 0
+
+def progress_bar(frac, barlen=30, null=' ', marker='=', head=">"):
+    pos = int(frac * barlen)
+    bar = marker * pos + head + null * int(barlen - pos)
+    return bar
+
+def download(url, dest_name, cache=False, params={}):
+    """
+    Downloads a URL into a destination
+    """
+    logger.info(f"downloading: {url}")
+
+    # The file destination.
+    if cache:
+        path = os.path.join(DATADIR, dest_name)
+    else:
+        path = dest_name
+
+    # Open request to file
+    r = requests.get(url, stream=True, params=params)
+
+    try:
+        # Check valid response status.
+        r.raise_for_status()
+    except Exception as exc:
+        error(f"{exc}")
+
+    # Attempt to determine the download size.
+    headers = lower_case_keys(r.headers)
+    size = headers.get("content-length", 0)
+    size = safe_int_zero(size)
+
+    # How much data to process at a time.
+    chunk_size = 1 * 1024 * 1024
+
+    # The name of the file that will be stored
+    file_name = os.path.split(dest_name)[-1]
+
+    # Create file only if dowload completes successfully.
+    with tempfile.NamedTemporaryFile() as fp:
+
+        # Step counter.
+        counter = count(1)
+
+        # Iterate over the content.
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            step = next(counter)
+            total = step * chunk_size
+            if size:
+                frac = total/size
+                perc = frac * 100
+                bar = progress_bar(frac)
+                print(f"*** downloading [{bar}] {file_name} { total / 1024 / 1024:.0f} MB ({perc:.1f}%)", end="\r")
+            else:
+                print(f"*** downloading {file_name} { total/ 1024 / 1024:.0f} MB", end="\r")
+            fp.write(chunk)
+        print("")
+
+        # File creation completed.
+        fp.seek(0)
+
+        # Copy file to destination.
+        shutil.copyfile(fp.name, path)
+
+        # Progress notification.
+        logger.info(f"saved to: {dest_name}")
+
 
 def maybe_ncbi(text):
     """
@@ -112,6 +200,7 @@ def safe_int(text):
         return int(text)
     except ValueError as exc:
         error(f"not an integer value: {text}")
+
 
 
 def parse_number(text):
@@ -237,7 +326,6 @@ def symlink(src, dst):
         logger.error(f"invalid link destination {dst}")
 
     os.symlink(src, dst)
-
 
 # Initialize the logger.
 logger = get_logger("main")

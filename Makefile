@@ -46,5 +46,11 @@ upload: build
 	python -m twine upload --repository pypi dist/*
 
 
+# Uploads prebuilt data to Google Cloud
+upload_prebuilt:
+	bash docs/upload_prebuilt_data.sh
+
+
+
 
 

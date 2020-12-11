@@ -9,8 +9,8 @@ FNAME2="test/data/file2.txt"
 
 def test_comm_1(capsys):
     params = dict(
-        file1=open(FNAME1),
-        file2=open(FNAME2),
+        file1=FNAME1,
+        file2=FNAME2,
     )
     comm.main(**params)
     stream = capsys.readouterr().out
@@ -18,8 +18,8 @@ def test_comm_1(capsys):
 
 def test_comm_2(capsys):
     params = dict(
-        file1=open(FNAME1),
-        file2=open(FNAME2),
+        file1=FNAME1,
+        file2=FNAME2,
         uniq1=True,
     )
     comm.main(**params)
@@ -28,18 +28,18 @@ def test_comm_2(capsys):
 
 def test_comm_3(capsys):
     params = dict(
-        file1=open(FNAME1),
-        file2=open(FNAME2),
+        file1=FNAME1,
+        file2=FNAME2,
         uniq2=True
     )
     comm.main(**params)
     stream = capsys.readouterr().out
     assert stream == 'D\n'
 
-def test_comm_3(capsys):
+def test_comm_4(capsys):
     params = dict(
-        file1=open(FNAME1),
-        file2=open(FNAME2),
+        file1=FNAME1,
+        file2=FNAME2,
         union=True
     )
     comm.main(**params)
