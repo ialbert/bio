@@ -228,7 +228,7 @@ def print_data_list():
     collect = []
 
     for path in matched:
-        fsize = utils.sizeof_fmt(os.path.getsize(path))
+        fsize = utils.human_size(os.path.getsize(path))
         base, fname = os.path.split(path)
         fname = fname.rsplit(".", maxsplit=2)[0]
 

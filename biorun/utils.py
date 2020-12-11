@@ -9,6 +9,7 @@ import time
 import logging
 from os.path import expanduser
 from biorun import const
+from pprint import pprint
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -82,10 +83,12 @@ def safe_int_zero(text):
     except ValueError as exc:
         return 0
 
+
 def progress_bar(frac, barlen=30, null=' ', marker='=', head=">"):
     pos = int(frac * barlen)
     bar = marker * pos + head + null * int(barlen - pos)
     return bar
+
 
 def download(url, dest_name, cache=False, params={}):
     """
@@ -122,21 +125,21 @@ def download(url, dest_name, cache=False, params={}):
     # Create file only if dowload completes successfully.
     with tempfile.NamedTemporaryFile() as fp:
 
-        # Step counter.
-        counter = count(1)
+        # Keep track of total size.
+        total = 0
 
         # Iterate over the content.
         for chunk in r.iter_content(chunk_size=chunk_size):
-            step = next(counter)
-            total = step * chunk_size
+            total += len(chunk)
             if size:
-                frac = total/size
+                frac = total / size
                 perc = frac * 100
                 bar = progress_bar(frac)
-                print(f"*** downloading [{bar}] {file_name} { total / 1024 / 1024:.0f} MB ({perc:.1f}%)", end="\r")
+                print(f"*** downloading [{bar}] {file_name} {human_size(size)} ({perc:.1f}%)", end="\r")
             else:
-                print(f"*** downloading {file_name} { total/ 1024 / 1024:.0f} MB", end="\r")
+                print(f"*** downloading {file_name} {human_size(total)} ", end="\r")
             fp.write(chunk)
+
         print("")
 
         # File creation completed.
@@ -187,12 +190,12 @@ def zero_based(start, end):
     return start, end
 
 
-def sizeof_fmt(num, suffix=''):
-    for unit in ['', 'K', 'M', 'G']:
+def human_size(num):
+    for unit in ['B', 'KB', 'MB', 'GB']:
         if abs(num) < 1024.0:
-            return "%.0f%s%s" % (num, unit, suffix)
+            return "%.0f %s" % (num, unit)
         num /= 1024.0
-    return "%.1f%s%s" % (num, '??', suffix)
+    return "%.1f%s" % (num, '??')
 
 
 def safe_int(text):
@@ -200,7 +203,6 @@ def safe_int(text):
         return int(text)
     except ValueError as exc:
         error(f"not an integer value: {text}")
-
 
 
 def parse_number(text):
@@ -326,6 +328,7 @@ def symlink(src, dst):
         logger.error(f"invalid link destination {dst}")
 
     os.symlink(src, dst)
+
 
 # Initialize the logger.
 logger = get_logger("main")
