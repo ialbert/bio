@@ -297,7 +297,7 @@ def print_tree(terms, tree=None, start=None):
         vals = terms.get(uid, [None, None])
 
         if prev_depth and prev_depth == 1 and depth != 0:
-            pad = INDENT * (count + 1)
+            pad = INDENT * count
             count = 0
             print_node(start, terms=terms, pad=pad, add_highlight=True)
         if vals:

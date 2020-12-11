@@ -13,7 +13,7 @@ ORIGIN_SIZE = "origin_len"
 # Alignment modes.
 GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
-ALIGN_COMMAND, TAXON_COMMAND, DBLINK_COMMAND, ONTOLOGY_COMMAND = "--align", "--taxon", "--sra", "--define"
+ALIGN_COMMAND, TAXON_COMMAND, DBLINK_COMMAND, ONTOLOGY_COMMAND, ENRICH_COMMAND = "--align", "--taxon", "--sra", "--define", "--enrich"
 
 SKIP_GFF_ATTR = { "id", "parent_id", "name",  "type", "start", "end", "location", "translation", "strand", "operator"}
 
