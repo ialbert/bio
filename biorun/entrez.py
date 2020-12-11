@@ -18,7 +18,7 @@ logger = utils.logger
 # The keys that are valid environment keys.
 ENV_KEYS = ["webenv", "use_history", "query_key"]
 
-def fetch_genbank(acc):
+def fetch_genbank(acc, dest_name):
     """
     Returns a genbank file.
     """
@@ -29,7 +29,7 @@ def fetch_genbank(acc):
 
         params = dict(db=db, rettype=rettype, id=acc, retmode=retmode)
 
-        utils.download(EFETCH_URL, params=params, dest_name="foo.gb")
+        utils.download(EFETCH_URL, params=params, dest_name=dest_name)
 
     except Exception as exc:
         utils.error(exc)
