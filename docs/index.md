@@ -10,10 +10,10 @@ Built on top of [BioPython][biopython] and other existing packages; `bio` stream
 - converting between formats: GenBank, GFF, FASTA 
 - extracting a subset of information: get coding sequence for a specific gene  
 - visualizing alignments as DNA and peptide space
-- visualizing mutations with standardized nomenclature 
-- exploring biological taxonomies
-- finding the definition for terms: i.e. what is a `CDS`?
-- inspecting functional annotations: what is 
+- visualizing mutations with standardized nomenclature
+- exploring biological taxonomies: what is the *lineage of SARS-COV-2*?
+- finding the definition for terms:  *minisatellite* vs *microsatellite*?
+- inspecting functional annotations: what is a *tolerance induction to tumor cell*? 
 
 `bio` combines and represents data from different sources, GenBank, SRA, Gene Ontology, Sequence Ontology, NCBI Taxonomy trough a unified interface.
 
