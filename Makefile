@@ -1,7 +1,7 @@
 .PHONY: dist build test docs
 
 # Location of the documentation branch.
-DOCBRANCH=../bio-docs
+REMOTE=www@bioinfo.help:~/sites/bioinfo.help/
 
 all: serve
 
@@ -20,16 +20,11 @@ build_test:
 
 # Generate the docs.
 docs:
-	(cd docs && Rscript -e "bookdown::render_book(input='index.txt', output_dir='.html', output_format='bookdown::gitbook')")
+	(cd docs && Rscript -e "bookdown::render_book(input='index.txt', output_dir='.book', output_format='bookdown::gitbook')")
 
-# Synchronize the docs.
+# Push out the docs to remote docs.
 sync:
-	# Get the curent docs.
-	(cd ${DOCBRANCH} && git pull origin gh-pages)
-	# Synchronize to documentation branch.
-	rsync -avz docs/.html/* ${DOCBRANCH}
-	# Commit and push out changes.
-	(cd ${DOCBRANCH} && git commit -am 'updated the documentation' && git push origin gh-pages)
+	rsync -avz docs/.book/* ${REMOTE}
 
 # Serve the documentation as a webpage.
 serve:

@@ -6,7 +6,7 @@
 
 ## Quick links
 
-* Documentation: https://ialbert.github.io/bio/
+* Documentation: https://www.bioinfo.help/
 * Usage examples: [bio_examples.sh][examples]
 
 [docs]: https://ialbert.github.io/bio/
@@ -70,7 +70,7 @@ You see, in bioinformatics, many tasks that should be straightforward are, inste
 
 The documentation is maintained at
 
-* https://ialbert.github.io/bio/
+* https://www.bioinfo.help/
 
 ## Quick install
     
@@ -119,20 +119,25 @@ The latter command will automatically generate a Python test for each line in th
 The automatically generated test will verify that the command is operational and that the output matches the expectations.
 
 
-## Docs
+## Generating documentation
 
-Install 
+To generate the docs you will need `bookdown`
 
     conda install r-bookdown r-servr
     
-    # To run docs live
+To run the docs in a browse:
+    
     make 
     
-    # To generate the docs
+then visit http://localhost:8000
+
+To render the docs write:
+
     make docs
+
+To push out the latest docs:    
     
-    # To update live websites
-    make docs push
+    make sync
     
     
     

@@ -41,22 +41,22 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
 
 ## Diving right in
 
-Here is how to align the first 1000 basepairs of SARS-COV-2 versus to the same region of a bat coronavirus:
+Here is how to align the first 1000 basepairs of SARS-COV-2 (`NC_045512`) versus to the same region of a bat coronavirus (`MN996532`):
 
-    # Get the data.
+    # Obtain the data.
     bio NC_045512 MN996532 --fetch 
     
 Align the sequences.
 
 ```{bash, comment=NA}
-bio NC_045512 MN996532 --align --end 1000 | head 
+bio NC_045512 MN996532 --align --end 100 | head 
 ```
 
 that's it.
 
 ## A more realistic example
 
-Suppose you wanted to identify the differences between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. 
+Suppose you wanted to identify the mutations between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. 
 
 If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, then think about the effort it would take you to teach someone else how to do the same. 
 
@@ -109,7 +109,7 @@ If instead we wanted to align the 60bp DNA subsesequences for `S` protein after 
 bio ncov:S ratg13:S --translate --end 60 --align
 ```
     
-We can note right away that all differences in the first 60bp of DNA are synonymous substitutions, the protein translations are the same.
+We can note right away that all differences in the first 60bp of DNA are synonymous substitution, the protein translations are the same.
 
 
 ## Look up the taxonomy
