@@ -12,6 +12,7 @@ from itertools import count
 from collections import defaultdict
 
 from pprint import pprint
+import itertools
 
 try:
     from Bio import SeqIO
@@ -27,12 +28,19 @@ except ImportError as exc:
 logger = utils.logger
 
 COUNTER = count(1)
+SEQNAME = count(1)
 
 
 # Allow for resetting the global counter. Needed for keeping test labeled consistenly.
 def reset_counter():
     global COUNTER
     COUNTER = count(1)
+
+
+def reset_sequence_names():
+    global COUNTER, SEQNAME
+    COUNTER = count(1)
+    SEQNAME = itertools.chain(["TARGET", "QUERY"], count(1))
 
 
 def has_feature(item, name="gene"):
@@ -63,7 +71,6 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
     # Filter by name.
     if name:
         items = filter(lambda f: name in f.get("name", []), items)
-
 
     # Filter by coordinates.
     if start or end:
@@ -215,11 +222,17 @@ def get_json_features(data):
         # Used for hierachical data.
         parent_id = None
 
+        gene_id = transcript_id = None
+
         # Hierarchical data produce a parent feature.
         if ftype == 'mRNA' or ftype == 'CDS':
 
             # Child nodes will track parent.
             parent_id = feature_id
+
+            # The GenBank nomenclature does not follow the Sequence Ontology,
+            # CDS and exons are both considered to be part of mRNA.
+            # In our model we reparent exons to transcripts and CDS to mRNA regions.
 
             # Set the parent/child types.
             if ftype == 'mRNA':
@@ -228,6 +241,10 @@ def get_json_features(data):
             else:
                 # Make a new parent for CDS regions.
                 parent_type, location_type = 'mRNA', 'CDS'
+
+            # Figure out the gene and transcripts ids.
+            gene_id = feat.get("locus_tag") or feat.get("gene") or parent_id
+            transcript_id = feat.get("protein_id") or parent_id
 
             # Copy the attributes
             parent_feat = dict(feat)
@@ -245,8 +262,11 @@ def get_json_features(data):
                 # Assign the parent.
                 loc_feat['parent_id'] = parent_id
 
-                # Add a gene id attribute.
-                loc_feat['gene_id'] = feat.get("locus_tag", ["missing"])
+                # Add a gene and transcript id attributes.
+                if gene_id:
+                    loc_feat['gene_id'] = gene_id
+                if transcript_id:
+                    loc_feat['transcript_id'] = transcript_id
 
             loc_feat['type'] = location_type
             loc_feat['start'], loc_feat['end'], loc_feat['strand'] = start, end, strand
@@ -262,7 +282,8 @@ def get_feature_records(data, param):
     feats = data[const.FEATURES]
 
     # Filter the features.
-    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, name=param.name, droporigin=True)
+    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, name=param.name,
+                            droporigin=True)
 
     # We can extract DNA sequences from this if needed.
     origin = data[const.ORIGIN]
@@ -383,7 +404,14 @@ def json_ready(value):
     return value
 
 
-UNIQUE = dict()
+UNIQUE = defaultdict(int)
+
+
+def get_next_count(f, ftype, label='gene'):
+    global UNIQUE
+    key = f"{first(f, label)}-{ftype}"
+    UNIQUE[key] += 1
+    return UNIQUE[key]
 
 
 def fill_name(f):
@@ -394,29 +422,27 @@ def fill_name(f):
 
     ftype = f['type']
 
-    uid = name = ''
+    uid = ''
 
     # Dealing with mRNA
     if ftype == 'gene':
         name = first(f, "gene")
-        uid = first(f, "locus_tag")
+        uid = first(f, "locus_tag") or first(f, "gene")
     elif ftype == 'CDS':
-        name = first(f, "protein_id")
-        uid = name
+        count = get_next_count(f, ftype=ftype)
+        name = uid = first(f, "protein_id") or f"{first(f, 'gene', '')}-CDS-{count}"
     elif ftype == 'mRNA':
-        name = first(f, "transcript_id")
-        uid = name
+        count = get_next_count(f, ftype=ftype)
+        name = uid = first(f, "transcript_id") or f"{first(f, 'gene', '')}-mRNA-{count}"
     elif ftype == "exon":
         name = first(f, "gene")
     else:
-        name = first(f, "organism") or first(f, "protein_id") or first(f, "transcript_id") or ftype
+        name = first(f, "organism") or None
 
-    # Unique id.
-    uid = uid or next(COUNTER)
-
+    # Set the unique identifier.
     f['id'] = uid or f"{ftype}-{next(COUNTER)}"
 
-    # Feature name
+    # Set the feature name.
     f['name'] = name or ftype
 
     return f
@@ -428,12 +454,16 @@ def convert_genbank(recs, seqid=None):
     """
     global COUNTER
 
+    # Start the counter from the beginning.
+    reset_counter()
+
     # The outer dictionary containing multiple records.
     data = []
 
+    count = 0
     # Add each record separately.
     for rec in recs:
-
+        count += 1
         # Each individual SeqRecords is a dictionary.
         item = dict()
 
@@ -473,14 +503,14 @@ def convert_genbank(recs, seqid=None):
             location = [(loc.start + 1, loc.end, loc.strand) for loc in feat.location.parts]
 
             # Feature attributes
-            attrs = dict(id='', name='', start=start, end=end, type=ftype, strand=strand, location=location,
+            attrs = dict(type=ftype, name='', id='', start=start, end=end, strand=strand, location=location,
                          operator=oper)
 
             # Fills in the additional qualifiers.
             for (k, v) in feat.qualifiers.items():
                 attrs[k] = json_ready(v)
 
-            # Correct uid, parent and name
+            # Adjust uid, parent and name using the attributes.
             attrs = fill_name(attrs)
 
             # Append the attributes as a record.
@@ -519,11 +549,11 @@ def make_jsonrec(seq, seqid=None):
     """
     Makes a simple JSON representation for a text
     """
-    count = next(COUNTER)
-    name = f"S{count}"
+    name = f"{next(SEQNAME)}"
+    uid = seqid or f"{name}"
     data = []
     item = dict()
-    item[const.SEQID] = seqid or f"S{count}"
+    item[const.SEQID] = uid
     item[const.LOCUS] = ''
     item[const.DEFINITION] = ''
     item[const.ORIGIN] = str(seq)
@@ -532,11 +562,12 @@ def make_jsonrec(seq, seqid=None):
     location = [[start, end, strand]]
     ftype = "sequence"
     attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper,
-                 name=name, id=name)
+                 name=uid, id=uid)
     item[const.FEATURES] = [
         attrs
     ]
     data.append(item)
+
     return data
 
 

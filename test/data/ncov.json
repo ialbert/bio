@@ -81,11 +81,11 @@
         },
         "FEATURES": [
             {
-                "id": 1,
+                "type": "region",
                 "name": "Severe acute respiratory syndrome coronavirus 2",
+                "id": "region-1",
                 "start": 1,
                 "end": 29903,
-                "type": "region",
                 "strand": 1,
                 "location": [
                     [
@@ -118,11 +118,11 @@
                 ]
             },
             {
-                "id": 2,
+                "type": "five_prime_UTR",
                 "name": "five_prime_UTR",
+                "id": "five_prime_UTR-2",
                 "start": 1,
                 "end": 265,
-                "type": "five_prime_UTR",
                 "strand": 1,
                 "location": [
                     [
@@ -134,11 +134,11 @@
                 "operator": null
             },
             {
-                "id": "GU280_gp01",
+                "type": "gene",
                 "name": "ORF1ab",
+                "id": "GU280_gp01",
                 "start": 266,
                 "end": 21555,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -159,11 +159,11 @@
                 ]
             },
             {
-                "id": "YP_009724389.1",
+                "type": "CDS",
                 "name": "YP_009724389.1",
+                "id": "YP_009724389.1",
                 "start": 266,
                 "end": 21555,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -207,11 +207,11 @@
                 ]
             },
             {
-                "id": 3,
-                "name": "YP_009725297.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-3",
                 "start": 266,
                 "end": 805,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -238,11 +238,11 @@
                 ]
             },
             {
-                "id": 4,
-                "name": "YP_009725298.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-4",
                 "start": 806,
                 "end": 2719,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -269,11 +269,11 @@
                 ]
             },
             {
-                "id": 5,
-                "name": "YP_009725299.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-5",
                 "start": 2720,
                 "end": 8554,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -300,11 +300,11 @@
                 ]
             },
             {
-                "id": 6,
-                "name": "YP_009725300.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-6",
                 "start": 8555,
                 "end": 10054,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -331,11 +331,11 @@
                 ]
             },
             {
-                "id": 7,
-                "name": "YP_009725301.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-7",
                 "start": 10055,
                 "end": 10972,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -362,11 +362,11 @@
                 ]
             },
             {
-                "id": 8,
-                "name": "YP_009725302.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-8",
                 "start": 10973,
                 "end": 11842,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -393,11 +393,11 @@
                 ]
             },
             {
-                "id": 9,
-                "name": "YP_009725303.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-9",
                 "start": 11843,
                 "end": 12091,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -424,11 +424,11 @@
                 ]
             },
             {
-                "id": 10,
-                "name": "YP_009725304.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-10",
                 "start": 12092,
                 "end": 12685,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -455,11 +455,11 @@
                 ]
             },
             {
-                "id": 11,
-                "name": "YP_009725305.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-11",
                 "start": 12686,
                 "end": 13024,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -486,11 +486,11 @@
                 ]
             },
             {
-                "id": 12,
-                "name": "YP_009725306.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-12",
                 "start": 13025,
                 "end": 13441,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -517,11 +517,11 @@
                 ]
             },
             {
-                "id": 13,
-                "name": "YP_009725307.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-13",
                 "start": 13442,
                 "end": 16236,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -553,11 +553,11 @@
                 ]
             },
             {
-                "id": 14,
-                "name": "YP_009725308.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-14",
                 "start": 16237,
                 "end": 18039,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -584,11 +584,11 @@
                 ]
             },
             {
-                "id": 15,
-                "name": "YP_009725309.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-15",
                 "start": 18040,
                 "end": 19620,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -615,11 +615,11 @@
                 ]
             },
             {
-                "id": 16,
-                "name": "YP_009725310.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-16",
                 "start": 19621,
                 "end": 20658,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -646,11 +646,11 @@
                 ]
             },
             {
-                "id": 17,
-                "name": "YP_009725311.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-17",
                 "start": 20659,
                 "end": 21552,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -677,11 +677,11 @@
                 ]
             },
             {
-                "id": "YP_009725295.1",
+                "type": "CDS",
                 "name": "YP_009725295.1",
+                "id": "YP_009725295.1",
                 "start": 266,
                 "end": 13483,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -717,11 +717,11 @@
                 ]
             },
             {
-                "id": 18,
-                "name": "YP_009742608.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-18",
                 "start": 266,
                 "end": 805,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -748,11 +748,11 @@
                 ]
             },
             {
-                "id": 19,
-                "name": "YP_009742609.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-19",
                 "start": 806,
                 "end": 2719,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -779,11 +779,11 @@
                 ]
             },
             {
-                "id": 20,
-                "name": "YP_009742610.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-20",
                 "start": 2720,
                 "end": 8554,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -810,11 +810,11 @@
                 ]
             },
             {
-                "id": 21,
-                "name": "YP_009742611.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-21",
                 "start": 8555,
                 "end": 10054,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -841,11 +841,11 @@
                 ]
             },
             {
-                "id": 22,
-                "name": "YP_009742612.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-22",
                 "start": 10055,
                 "end": 10972,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -872,11 +872,11 @@
                 ]
             },
             {
-                "id": 23,
-                "name": "YP_009742613.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-23",
                 "start": 10973,
                 "end": 11842,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -903,11 +903,11 @@
                 ]
             },
             {
-                "id": 24,
-                "name": "YP_009742614.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-24",
                 "start": 11843,
                 "end": 12091,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -934,11 +934,11 @@
                 ]
             },
             {
-                "id": 25,
-                "name": "YP_009742615.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-25",
                 "start": 12092,
                 "end": 12685,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -965,11 +965,11 @@
                 ]
             },
             {
-                "id": 26,
-                "name": "YP_009742616.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-26",
                 "start": 12686,
                 "end": 13024,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -996,11 +996,11 @@
                 ]
             },
             {
-                "id": 27,
-                "name": "YP_009742617.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-27",
                 "start": 13025,
                 "end": 13441,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -1027,11 +1027,11 @@
                 ]
             },
             {
-                "id": 28,
-                "name": "YP_009725312.1",
+                "type": "mature_protein_region",
+                "name": "mature_protein_region",
+                "id": "mature_protein_region-28",
                 "start": 13442,
                 "end": 13480,
-                "type": "mature_protein_region",
                 "strand": 1,
                 "location": [
                     [
@@ -1058,11 +1058,11 @@
                 ]
             },
             {
-                "id": 29,
+                "type": "stem_loop",
                 "name": "stem_loop",
+                "id": "stem_loop-29",
                 "start": 13476,
                 "end": 13503,
-                "type": "stem_loop",
                 "strand": 1,
                 "location": [
                     [
@@ -1086,11 +1086,11 @@
                 ]
             },
             {
-                "id": 30,
+                "type": "stem_loop",
                 "name": "stem_loop",
+                "id": "stem_loop-30",
                 "start": 13488,
                 "end": 13542,
-                "type": "stem_loop",
                 "strand": 1,
                 "location": [
                     [
@@ -1114,11 +1114,11 @@
                 ]
             },
             {
-                "id": "GU280_gp02",
+                "type": "gene",
                 "name": "S",
+                "id": "GU280_gp02",
                 "start": 21563,
                 "end": 25384,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1142,11 +1142,11 @@
                 ]
             },
             {
-                "id": "YP_009724390.1",
+                "type": "CDS",
                 "name": "YP_009724390.1",
+                "id": "YP_009724390.1",
                 "start": 21563,
                 "end": 25384,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1185,11 +1185,11 @@
                 ]
             },
             {
-                "id": "GU280_gp03",
+                "type": "gene",
                 "name": "ORF3a",
+                "id": "GU280_gp03",
                 "start": 25393,
                 "end": 26220,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1210,11 +1210,11 @@
                 ]
             },
             {
-                "id": "YP_009724391.1",
+                "type": "CDS",
                 "name": "YP_009724391.1",
+                "id": "YP_009724391.1",
                 "start": 25393,
                 "end": 26220,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1247,11 +1247,11 @@
                 ]
             },
             {
-                "id": "GU280_gp04",
+                "type": "gene",
                 "name": "E",
+                "id": "GU280_gp04",
                 "start": 26245,
                 "end": 26472,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1272,11 +1272,11 @@
                 ]
             },
             {
-                "id": "YP_009724392.1",
+                "type": "CDS",
                 "name": "YP_009724392.1",
+                "id": "YP_009724392.1",
                 "start": 26245,
                 "end": 26472,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1312,11 +1312,11 @@
                 ]
             },
             {
-                "id": "GU280_gp05",
+                "type": "gene",
                 "name": "M",
+                "id": "GU280_gp05",
                 "start": 26523,
                 "end": 27191,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1337,11 +1337,11 @@
                 ]
             },
             {
-                "id": "YP_009724393.1",
+                "type": "CDS",
                 "name": "YP_009724393.1",
+                "id": "YP_009724393.1",
                 "start": 26523,
                 "end": 27191,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1377,11 +1377,11 @@
                 ]
             },
             {
-                "id": "GU280_gp06",
+                "type": "gene",
                 "name": "ORF6",
+                "id": "GU280_gp06",
                 "start": 27202,
                 "end": 27387,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1402,11 +1402,11 @@
                 ]
             },
             {
-                "id": "YP_009724394.1",
+                "type": "CDS",
                 "name": "YP_009724394.1",
+                "id": "YP_009724394.1",
                 "start": 27202,
                 "end": 27387,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1439,11 +1439,11 @@
                 ]
             },
             {
-                "id": "GU280_gp07",
+                "type": "gene",
                 "name": "ORF7a",
+                "id": "GU280_gp07",
                 "start": 27394,
                 "end": 27759,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1464,11 +1464,11 @@
                 ]
             },
             {
-                "id": "YP_009724395.1",
+                "type": "CDS",
                 "name": "YP_009724395.1",
+                "id": "YP_009724395.1",
                 "start": 27394,
                 "end": 27759,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1501,11 +1501,11 @@
                 ]
             },
             {
-                "id": "GU280_gp08",
+                "type": "gene",
                 "name": "ORF7b",
+                "id": "GU280_gp08",
                 "start": 27756,
                 "end": 27887,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1526,11 +1526,11 @@
                 ]
             },
             {
-                "id": "YP_009725318.1",
+                "type": "CDS",
                 "name": "YP_009725318.1",
+                "id": "YP_009725318.1",
                 "start": 27756,
                 "end": 27887,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1563,11 +1563,11 @@
                 ]
             },
             {
-                "id": "GU280_gp09",
+                "type": "gene",
                 "name": "ORF8",
+                "id": "GU280_gp09",
                 "start": 27894,
                 "end": 28259,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1588,11 +1588,11 @@
                 ]
             },
             {
-                "id": "YP_009724396.1",
+                "type": "CDS",
                 "name": "YP_009724396.1",
+                "id": "YP_009724396.1",
                 "start": 27894,
                 "end": 28259,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1625,11 +1625,11 @@
                 ]
             },
             {
-                "id": "GU280_gp10",
+                "type": "gene",
                 "name": "N",
+                "id": "GU280_gp10",
                 "start": 28274,
                 "end": 29533,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1650,11 +1650,11 @@
                 ]
             },
             {
-                "id": "YP_009724397.2",
+                "type": "CDS",
                 "name": "YP_009724397.2",
+                "id": "YP_009724397.2",
                 "start": 28274,
                 "end": 29533,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1690,11 +1690,11 @@
                 ]
             },
             {
-                "id": "GU280_gp11",
+                "type": "gene",
                 "name": "ORF10",
+                "id": "GU280_gp11",
                 "start": 29558,
                 "end": 29674,
-                "type": "gene",
                 "strand": 1,
                 "location": [
                     [
@@ -1715,11 +1715,11 @@
                 ]
             },
             {
-                "id": "YP_009725255.1",
+                "type": "CDS",
                 "name": "YP_009725255.1",
+                "id": "YP_009725255.1",
                 "start": 29558,
                 "end": 29674,
-                "type": "CDS",
                 "strand": 1,
                 "location": [
                     [
@@ -1752,11 +1752,11 @@
                 ]
             },
             {
-                "id": 31,
+                "type": "stem_loop",
                 "name": "stem_loop",
+                "id": "stem_loop-31",
                 "start": 29609,
                 "end": 29644,
-                "type": "stem_loop",
                 "strand": 1,
                 "location": [
                     [
@@ -1780,11 +1780,11 @@
                 ]
             },
             {
-                "id": 32,
+                "type": "stem_loop",
                 "name": "stem_loop",
+                "id": "stem_loop-32",
                 "start": 29629,
                 "end": 29657,
-                "type": "stem_loop",
                 "strand": 1,
                 "location": [
                     [
@@ -1808,11 +1808,11 @@
                 ]
             },
             {
-                "id": 33,
+                "type": "three_prime_UTR",
                 "name": "three_prime_UTR",
+                "id": "three_prime_UTR-33",
                 "start": 29675,
                 "end": 29903,
-                "type": "three_prime_UTR",
                 "strand": 1,
                 "location": [
                     [
@@ -1824,11 +1824,11 @@
                 "operator": null
             },
             {
-                "id": 34,
+                "type": "stem_loop",
                 "name": "stem_loop",
+                "id": "stem_loop-34",
                 "start": 29728,
                 "end": 29768,
-                "type": "stem_loop",
                 "strand": 1,
                 "location": [
                     [

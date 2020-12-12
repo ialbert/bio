@@ -1,7 +1,7 @@
 
-# Ident=4(36.4%)  Mis=2(18.2%)  Gaps=5(45.5%)  Target=(3, 9)  Query=(1, 9)  Length=11  Score=8.0  BLOSUM62(11,1)
+# Ident=4(36.4%)  Mis=2(18.2%)  Gaps=5(45.5%)  Target=(3, 8)  Query=(1, 8)  Length=11  Score=8.0  BLOSUM62(11,1)
 
-S1           THISLI--NE-
+TARGET       THISLI--NE-
              --||..--||- 11
-S2           --ISALIGNED
+QUERY        --ISALIGNED
 

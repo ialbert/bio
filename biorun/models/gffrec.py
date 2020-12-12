@@ -6,9 +6,6 @@ from biorun.models import jsonrec
 from itertools import count
 
 
-
-
-
 def feature2gff(feat, anchor, allow_parent=True):
     """
     Returns a SeqRecord as an 11 element  GFF3 list .

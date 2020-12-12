@@ -83,13 +83,13 @@ bio ncov:S --fasta --protein --seqid foo > s_prot_foo.fa
 bio ATGGGC -i --fasta > inter.fa
 
 # Translate in interactive mode.
-bio ATGGGC -i --translate >  inter-trans.fa
+bio ATGGGC -i --translate --seqid foo >  inter-trans.fa
 
 # Translate on the reverse complement.
-bio ATGGGC -i --revcomp --translate > inter-revcomp1.fa
+bio ATGGGC -i --revcomp --translate --seqid foo > inter-revcomp1.fa
 
 # You can separately reverse and complement
-bio ATGGGC -i --reverse --complement --translate >  inter-revcomp2.fa
+bio ATGGGC -i --reverse --complement --translate --seqid foo >  inter-revcomp2.fa
 
 # Get the RaTG13 data.
 bio MN996532 --fetch --rename ratg13 --seqid ratg13

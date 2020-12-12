@@ -104,15 +104,15 @@ def test_24(capsys):
     run(cmd, capsys=capsys, fname="inter.fa")
 
 def test_25(capsys):
-    cmd = "bio ATGGGC -i --translate"
+    cmd = "bio ATGGGC -i --translate --seqid foo"
     run(cmd, capsys=capsys, fname="inter-trans.fa")
 
 def test_26(capsys):
-    cmd = "bio ATGGGC -i --revcomp --translate"
+    cmd = "bio ATGGGC -i --revcomp --translate --seqid foo"
     run(cmd, capsys=capsys, fname="inter-revcomp1.fa")
 
 def test_27(capsys):
-    cmd = "bio ATGGGC -i --reverse --complement --translate"
+    cmd = "bio ATGGGC -i --reverse --complement --translate --seqid foo"
     run(cmd, capsys=capsys, fname="inter-revcomp2.fa")
 
 def test_28(capsys):
