@@ -6,13 +6,16 @@
 
 Built on top of [BioPython][biopython] and other existing packages; `bio` streamlines the tedious bioinformatics tasks such as:
  
-- downloading and storing data
-- converting between formats 
-- extracting a subset of information 
-- visualizing alignments 
-- exploring taxonomies
-- ... and more ...
+- downloading and storing data: NCBI, SRA
+- converting between formats: GenBank, GFF, FASTA 
+- extracting a subset of information: get coding sequence for a specific gene  
+- visualizing alignments as DNA and peptide space
+- visualizing mutations with standardized nomenclature 
+- exploring biological taxonomies
+- finding the definition for terms: i.e. what is a `CDS`?
+- inspecting functional annotations: what is 
 
+`bio` combines and represents data from different sources, GenBank, SRA, Gene Ontology, Sequence Ontology, NCBI Taxonomy trough a unified interface.
 
 Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
@@ -22,7 +25,7 @@ The software was written to teach bioinformatics and is the companion software t
 [emboss]: http://emboss.sourceforge.net/
 [simplesam]: https://github.com/mdshw5/simplesam 
 [handbook]: https://www.biostarhandbook.com/
-
+ 
 ## Quick links
 
 * Source code: https://github.com/ialbert/bio

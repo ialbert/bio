@@ -30,16 +30,21 @@ logger = utils.logger
 COUNTER = count(1)
 SEQNAME = count(1)
 
+# Using this to keep track of unique items that belong to a name.
+UNIQUE = defaultdict(int)
+
 
 # Allow for resetting the global counter. Needed for keeping test labeled consistenly.
 def reset_counter():
-    global COUNTER
+    global COUNTER, UNIQUE
     COUNTER = count(1)
-
+    UNIQUE = defaultdict(int)
 
 def reset_sequence_names():
-    global COUNTER, SEQNAME
-    COUNTER = count(1)
+    global SEQNAME
+    reset_counter()
+
+    # Adds two default sequences.
     SEQNAME = itertools.chain(["TARGET", "QUERY"], count(1))
 
 
@@ -61,8 +66,9 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
 
     # Filter by type.
     if ftype and ftype != "all":
-        valid = set(ftype.split(","))
-        items = filter(lambda f: f.get('type') in valid, items)
+        valid = set(map(lambda x: x.lower(), ftype.split(",")))
+        valid = set(valid)
+        items = filter(lambda f: f.get('type','').lower() in valid, items)
 
     # Filter by gene.
     if gene:
@@ -300,7 +306,7 @@ def get_feature_records(data, param):
         # Concatenate locations
         locations = f.get("location", [])
 
-        # The sequence for the feature.
+        # Build the sequence for the record.
         dna = Seq('')
         for x, y, strand in locations:
             chunk = Seq(origin[x - 1:y])
@@ -319,7 +325,7 @@ def get_feature_records(data, param):
         seq = dna[start:end]
 
         try:
-            # Preforme reverse complement if needed.
+            # Perform sequence transformation if needed.
             if param.revcomp:
                 seq = seq.reverse_complement()
                 desc.append("reverse complemented")
@@ -368,14 +374,17 @@ def get_origin(item, param):
     text = item[const.ORIGIN][param.start:param.end]
     seq = Seq(text)
 
+    # Translates the origin.
     if param.translate:
         seq = seq.translate() if param.translate else seq
 
+    # Fill the sequence attributes.
     desc = item[const.DEFINITION]
     seqid = item[const.SEQID]
     locus = item[const.LOCUS]
     seqid = param.seqid or seqid
 
+    # Create the sequence record.
     rec = SeqRecord(seq, id=seqid, name=locus, description=desc)
 
     yield rec
@@ -383,7 +392,7 @@ def get_origin(item, param):
 
 def json_ready(value):
     """
-    Serializes values to a type that can be turned into JSON.
+    Serializes elements in containers to a type that can be turned into JSON.
     """
 
     # The type of of the incoming value.
@@ -403,13 +412,12 @@ def json_ready(value):
 
     return value
 
-
-UNIQUE = defaultdict(int)
-
-
-def get_next_count(f, ftype, label='gene'):
+def get_next_count(label, ftype):
+    """
+    Counts
+    """
     global UNIQUE
-    key = f"{first(f, label)}-{ftype}"
+    key = f"{label}-{ftype}"
     UNIQUE[key] += 1
     return UNIQUE[key]
 
@@ -417,25 +425,33 @@ def get_next_count(f, ftype, label='gene'):
 def fill_name(f):
     """
     Attempts to generate an unique id and a parent from a BioPython SeqRecord.
+    Mutates the feature dictionary passed in as parameter.
     """
     global UNIQUE
 
+    # Get the type
     ftype = f['type']
 
+    # Get gene name
+    gene_name = first(f, "gene")
+
+    # Will attempt to fill in the uid from attributes.
     uid = ''
 
-    # Dealing with mRNA
+    # Deal with known types.
     if ftype == 'gene':
-        name = first(f, "gene")
-        uid = first(f, "locus_tag") or first(f, "gene")
+        name = gene_name
+        uid = first(f, "locus_tag") or gene_name
     elif ftype == 'CDS':
-        count = get_next_count(f, ftype=ftype)
-        name = uid = first(f, "protein_id") or f"{first(f, 'gene', '')}-CDS-{count}"
+        count = get_next_count(ftype=ftype, label=gene_name)
+        uid = first(f, "protein_id") or f"{gene_name}-CDS-{count}"
+        name = uid
     elif ftype == 'mRNA':
-        count = get_next_count(f, ftype=ftype)
-        name = uid = first(f, "transcript_id") or f"{first(f, 'gene', '')}-mRNA-{count}"
+        count = get_next_count(ftype=ftype, label=gene_name)
+        uid = first(f, "transcript_id") or f"{gene_name}-mRNA-{count}"
+        name = uid
     elif ftype == "exon":
-        name = first(f, "gene")
+        name = gene_name
     else:
         name = first(f, "organism") or None
 
@@ -454,7 +470,7 @@ def convert_genbank(recs, seqid=None):
     """
     global COUNTER
 
-    # Start the counter from the beginning.
+    # Start the counter from the one.
     reset_counter()
 
     # The outer dictionary containing multiple records.
