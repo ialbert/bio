@@ -1,2 +1,2 @@
 biopython >= 1.78
-request
+requests
