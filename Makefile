@@ -11,7 +11,7 @@ test:
 
 # Generate the test data for the tests.
 build_data:
-	(cd test/data && bash ../bio_examples.sh)
+	(cd test/data && bash ../bio-examples.sh)
 
 # Generate test from the example script.
 build_test:

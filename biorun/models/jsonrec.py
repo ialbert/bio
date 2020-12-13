@@ -321,10 +321,10 @@ def get_feature_records(data, param):
         # Initialize the description
         desc = [f['type']]
 
-        # Figure out description for slices.
+        # Once modified we don't keep the sequence attributes.
         if start or end:
             _end = len(dna) if end is None else end
-            desc.append(f'[{start + 1}:{_end}]')
+            desc.append(f'[{start + 1}:{end}]')
 
         # Slice the resulting DNA sequence.
         seq = dna[start:end]
@@ -353,6 +353,8 @@ def get_feature_records(data, param):
 
         except Exception as exc:
             utils.error(exc)
+
+        desc.append(make_attr(f))
 
         # Make a description
         desc = " ".join(desc) if desc else rec_desc(f)
@@ -583,7 +585,7 @@ def make_jsonrec(seq, seqid=None):
     oper = None,
     location = [[start, end, strand]]
     ftype = "sequence"
-    attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper,
+    attrs = dict(start=start, end=end, type=ftype, strand=strand, location=location, operator=oper,
                  name=uid, id=uid)
     item[const.FEATURES] = [
         attrs
