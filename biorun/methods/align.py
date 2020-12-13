@@ -323,10 +323,11 @@ def print_pairwise(aln, param, index=0, width=90):
 @plac.flg('pep1', "shows a translated peptide with one letter code", abbrev='1')
 @plac.flg('pep3', "shows a translated peptide with three letter code", abbrev='3')
 @plac.flg('mutations', "show the mutations")
+@plac.flg('align', "switches to alignment subcommand")
 @plac.flg('verbose', "verbose mode, progress messages printed")
 def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
         protein=False, translate=False, inter=False, table=False, mutations=False, strict=False,
-        pep1=False, pep3=False, verbose=False, target=None, query=None):
+        pep1=False, pep3=False, align=False, verbose=False, target=None, query=None):
     """
     Performs an alignment between the query and target.
     """
@@ -355,20 +356,23 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
 
     # A parameter for each record.
     common = dict(
-        protein=protein, translate=translate, mutations=mutations, fasta=True, pep1=pep1, pep3=pep3,
+        protein=protein, translate=translate, mutations=mutations, pep1=pep1, pep3=pep3,
         table=table, strict=strict, start=start, end=end, gap_open=gap_open, gap_extend=gap_extend,
-        mode=mode
+        mode=mode, genome=True,
     )
-    param_t = objects.Param(acc=target, **common)
 
+    # Create parameters to represent each data.
+    param_t = objects.Param(acc=target, **common)
     param_q = objects.Param(acc=query, **common)
 
-    # Get the JSON data.
+    # Fill JSON data for parameters.
     param_t.json = storage.get_json(param_t.acc, inter=inter, strict=True)
     param_q.json = storage.get_json(param_q.acc, inter=inter, strict=True)
 
     # Each data object may contain several records.
-    # Will attempt to iterate in pair, it makes sense when two organisms are closely related (strains)
+    #
+    # For more than one record we iterate in pairs
+    #
     for rec1, rec2 in zip(param_q.json, param_t.json):
         qrecs = fastarec.get_fasta(rec1, param=param_q)
         trecs = fastarec.get_fasta(rec2, param=param_t)

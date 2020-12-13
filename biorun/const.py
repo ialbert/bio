@@ -13,10 +13,38 @@ ORIGIN_SIZE = "origin_len"
 # Alignment modes.
 GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
+# Command map
+SUB_COMMANDS = [
+
+    # Genome handler
+    ("--genome", "biorun.models.fastarec"),
+    ("-G", "biorun.models.fastarec"),
+
+    # Fasta handler.
+    ("--fasta", "biorun.models.fastarec"),
+    ("-F", "biorun.models.fastarec"),
+
+    # Alignments.
+    ("--align", "biorun.methods.align"),
+
+    # Taxonomy browser.
+    ("--taxon", "biorun.models.taxdb"),
+
+    # Database links.
+    ("--sra", "biorun.models.dblink"),
+
+    # Ontology handlers.
+    ("--define", "biorun.models.ontology"),
+
+    # Default behaviors.
+    ("-i", "biorun.models.fastarec"),
+    ("--inter", "biorun.models.fastarec"),
+
+]
+
 ALIGN_COMMAND, TAXON_COMMAND, DBLINK_COMMAND, ONTOLOGY_COMMAND = "--align", "--taxon", "--sra", "--define"
 
-SKIP_GFF_ATTR = { "id", "parent_id", "name",  "type", "start", "end", "location", "translation", "strand", "operator"}
-
+SKIP_GFF_ATTR = {"id", "parent_id", "name", "type", "start", "end", "location", "translation", "strand", "operator"}
 
 # Guess accession numbers that are proteins based on start letters
 # https: // www.ncbi.nlm.nih.gov / Sequin / acc.html

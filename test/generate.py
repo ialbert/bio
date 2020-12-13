@@ -9,11 +9,7 @@ Each line in the shell script will be a line in the
 from itertools import count
 from textwrap import dedent
 import os, sys, difflib
-import biorun.libs.placlib as plac
-from biorun import main, const, convert
-from biorun.models import jsonrec, dblink, taxdb
-from biorun.methods import align
-
+from biorun import main
 
 # Test naming index.
 COUNTER = count(1)
@@ -39,32 +35,17 @@ def run(cmd, capsys, fname=None):
     Runs a command and returns its out.
     """
 
-    # Ensure the counter starts at zero each time.
-    jsonrec.reset_counter()
-
     # Drop the leading command (bio)
-    params = cmd.split()[1:]
+    arglist = cmd.split()
 
-    # Different functions to be called based on the command.
-    if params and const.ALIGN_COMMAND in params:
-        # Run the alignment tests.
-        params.remove(const.ALIGN_COMMAND)
-        assert plac.call(align.run, params) is None
-    elif params and const.TAXON_COMMAND in params:
-        # Run the alignment tests.
-        params.remove(const.TAXON_COMMAND)
-        assert plac.call(taxdb.run, params) is None
-    elif params and const.DBLINK_COMMAND in params:
-        # Run the alignment tests.
-        params.remove(const.DBLINK_COMMAND)
-        assert plac.call(dblink.run, params) is None
-    else:
-        # Run converter commands.
-        assert plac.call(convert.run, params) is None
+    # Override the system arguments.
+    sys.argv = arglist
 
-    # Read the standard out
-    stream = capsys.readouterr()
-    result = stream.out
+    # Dispatch the commands.
+    main.router(arglist=arglist)
+
+    # Read the standard output.
+    result = capsys.readouterr().out
 
     # Check the output if we pass expected value here.
     if fname:

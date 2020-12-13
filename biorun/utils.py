@@ -209,6 +209,7 @@ def parse_number(text):
     """
     Parses a number from alternative representations: 100000, 100,000 or 100Kb or 100k all have the same representation.
     """
+    text = str(text)
     text = text.lower()
 
     text = text.replace(",", '')

@@ -12,7 +12,6 @@ class Param(object):
     """
 
     def __init__(self, **kwds):
-        self.start = self.end = 0
         self.phase = "1"
         self.seqid = None
         self.gap_open = 11
@@ -21,32 +20,48 @@ class Param(object):
         self.json = None
         self.acc = None
         self.name = None
-        self.origin = None
+        self.inter = None
         self.reverse = self.complement = self.revcomp = self.transcribe = None
         self.gff = self.protein = self.fasta = self.translate = self.mode = None
         self.gene = self.type = self.regexp = None
-        self.match_field = self.match_value = None
+        self.genome = False
+        # Searching for attribute matches
+        self.attr_name = self.attr_value = None
 
         self.__dict__.update(kwds)
 
         # Parses out colon from data name if that exists.
-        elems = self.acc.split(":")
+        elems = self.acc.split(":", 2)
 
-        # Shortcut to types
+        # Shortcut to types acc:type
         if len(elems) == 2:
+            self.genome, self.fasta = False, True
             self.acc, self.type = elems
 
-        # Shortcut to field/value matches.
+        # Shortcut to attrfield/value matches. acc:type:value
         if len(elems) == 3:
-            # Special casing the gene.
+            self.genome, self.fasta = False, True
             self.acc, field, value = elems
+            # Special casing the gene.
             if field == "gene":
                 self.gene = value
                 self.type = "CDS"
             else:
-                self.acc, self.match_field, self.match_value = elems
+                self.acc, self.attr_name, self.attr_value = elems
 
-        self.start, self.end = utils.zero_based(start=self.start, end=self.end)
+        # An invalid parameter will be passed down as accession number.
+        if self.acc.startswith("-"):
+            msg = f"Unknown parameter: {self.acc}"
+            utils.error(msg)
+
+        # Allow commas in numbers, or sizes like 10Kb
+        start = utils.parse_number(kwds.get("start", 0))
+        end = utils.parse_number(kwds.get("end", 0))
+
+        # Set zero based numbers.
+        self.start, self.end = utils.zero_based(start=start, end=end)
+
+        # Compile the regular expression.
         self.regexp = re.compile(self.regexp) if self.regexp else None
 
     def unset(self):
