@@ -3,17 +3,21 @@ import requests
 from itertools import islice
 from textwrap import wrap
 
+from goatools.obo_parser import GODag, GraphEngines
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
-from biorun import utils
+from biorun import utils, const
 
 
 JSON_DB = "ontology.json"
 SQLITE_DB = "ontology.sqlite"
 
+
 GO_URL = "http://purl.obolibrary.org/obo/go.obo"
 SO_URL = "https://raw.githubusercontent.com/The-Sequence-Ontology/SO-Ontologies/master/Ontology_Files/so-simple.obo"
-ONTOLOGY_FILE = "ontology.obo"
+GO_FILE = "go.obo"
+SO_FILE = "so.obo"
+
 
 # Delimiter in ontology files, separating one term from another.
 DELIM = '[Term]'
@@ -30,7 +34,8 @@ SO_ID = 'SO'
 join = os.path.join
 
 # Create the full paths
-ONTOLOGY_FILE = join(utils.DATADIR, ONTOLOGY_FILE)
+GO_FILE = join(utils.DATADIR, GO_FILE)
+SO_FILE = join(utils.DATADIR, SO_FILE)
 SQLITE_DB = join(utils.DATADIR, SQLITE_DB)
 JSON_DB = join(utils.DATADIR, JSON_DB)
 
@@ -55,25 +60,16 @@ logger = utils.logger
 CHUNK = 25000
 
 
-def download_ontology(url, fname=ONTOLOGY_FILE, mode="wt"):
-    """
-    Downloads ontology file.
-    """
-    print(f"*** downloading: {url}")
+def download_prebuilt():
+    utils.download_from_bucket(bucket_name=const.BUCKET_NAME, file_name=JSON_DB, cache=True)
+    utils.download_from_bucket(bucket_name=const.BUCKET_NAME, file_name=SQLITE_DB, cache=True)
 
-    # Stream data into a file.
-    r = requests.get(url, stream=True)
-    fp = open(fname, mode)
-    for chunk in r.iter_content(chunk_size=2**12):
-        fp.write(chunk.decode("ascii", "backslashreplace"))
 
 def download_terms():
 
-    # Download Gene Ontology (GO).
-    download_ontology(url=GO_URL)
+    utils.download(url=GO_URL, dest_name=GO_FILE)
+    utils.download(url=SO_URL, dest_name=SO_FILE)
 
-    # Append Sequence Ontology (SO).
-    download_ontology(url=SO_URL, mode="at")
     return
 
 
@@ -87,35 +83,12 @@ def get_data(preload=False):
         names = store[NAMES]
         back = store[CHILDREN]
     else:
-        terms = open_db(TERM)
-        nodes = open_db(GRAPH)
-        names = open_db(NAMES)
-        back = open_db(CHILDREN)
+        terms = utils.open_db(TERM, fname=SQLITE_DB)
+        nodes = utils.open_db(GRAPH, fname=SQLITE_DB)
+        names = utils.open_db(NAMES, fname=SQLITE_DB)
+        back = utils.open_db(CHILDREN, fname=SQLITE_DB)
 
     return terms, nodes, names, back
-
-
-def open_db(table, fname=SQLITE_DB, flag='c'):
-    """
-    Opens a connection to a data table.
-    """
-    conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
-    return conn
-
-
-def save_table(name, obj):
-    size = len(obj)
-    table = open_db(table=name, flag='w')
-    for index, (key, value) in enumerate(obj.items()):
-        table[key] = value
-        if index % CHUNK == 0:
-            perc = round(index / size * 100)
-            print(f"*** saving {name} with {size:,} elements ({perc:.0f}%)", end="\r")
-            table.commit()
-    print(f"*** saved {name} with {size:,} elements (100%)", end="\r")
-    print("")
-    table.commit()
-    table.close()
 
 
 def match_id(item):
@@ -172,12 +145,16 @@ def parse_term(fname):
     nodes = {}
     back_prop = {}
     uid, parent, name, definition, edges = None, None, None, None, []
-
     print(f"*** parsing: {fname}")
     for elems in stream:
 
         if stop_term(elems):
             # Reset objs for next term.
+
+            if uid:
+                terms[uid] = [name, definition]
+                names[name] = uid
+                update_nodes(nodes=nodes, back_prop=back_prop, edges=edges)
             uid, parent, name, definition, edges = None, None, None, None, []
             continue
 
@@ -202,64 +179,83 @@ def parse_term(fname):
         if elems.startswith("def:"):
             definition = ":".join(val[1:]).strip()
 
-        if uid:
-            terms[uid] = [name, definition]
-            names[name] = uid
-            update_nodes(nodes=nodes, back_prop=back_prop, edges=edges)
-
     return terms, nodes, names, back_prop
 
 
-def build_database():
+def build_database(fname, mode='wt', flg='w'):
     """
     Build the ontology database.
     """
-    print(f"*** building database from: {ONTOLOGY_FILE}")
+    print(f"*** building database from: {fname}")
 
     # Check the file.
-    if not os.path.isfile(ONTOLOGY_FILE):
+    if not os.path.isfile(fname):
         logger.info(f"No ontology file found, downloading...")
         download_terms()
 
     # Parse the terms from file
-    terms, nodes, names, back_prop = parse_term(fname=ONTOLOGY_FILE)
+    terms, nodes, names, back_prop = parse_term(fname=fname)
+
+    save = lambda table, vals:  utils.save_table(table, vals, fname=SQLITE_DB, flg=flg)
 
     # Save terms into the database
-    save_table(TERM, terms)
+    save(TERM, terms)
 
     # Save graph into the database
-    save_table(GRAPH, nodes)
+    save(GRAPH, nodes)
 
     # Save names into the database
-    save_table(NAMES, names)
+    save(NAMES, names)
 
     # Save child-parent into the database
-    save_table(CHILDREN, back_prop)
+    save(CHILDREN, back_prop)
 
+    return terms, nodes, names, back_prop
     print("*** saving the JSON model")
-    json_path = os.path.join(utils.DATADIR, JSON_DB)
-
     store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop)
-    fp = open(json_path, 'wt')
+    fp = open(JSON_DB, mode)
     json.dump(store, fp, indent=4)
     fp.close()
 
 
-def walk_tree(nodes, start, etype=None, depth=0, seen=None, collect=None):
+def build_db():
+    """
+    Wrapper to build both GO and SO.
+    """
+    terms, nodes, names, back_prop = build_database(GO_FILE)
+    # Add to the JSON model, instead of rewrtiting it.
+    soterms, sonodes, sonames, soback_prop = build_database(SO_FILE, flg='c')
+
+    terms.update(soterms)
+    nodes.update(sonodes)
+    names.update(sonames)
+    back_prop.update(soback_prop)
+
+    print("*** saving the JSON model")
+    store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop)
+    fp = open(JSON_DB, "wt")
+    json.dump(store, fp, indent=4)
+    fp.close()
+
+    return
+
+
+def walk_tree(nodes, start, etype=None, depth=0, visited=None, collect=None):
 
     collect = [] if collect is None else collect
     collect.append((start, depth, etype))
 
     parents = nodes.get(start, [])
 
-    seen = set()
+    visited = set()
+    for node, etype in parents:
+        if node in visited:
+            continue
 
-    for par, etype in parents:
+        if etype == "is_a":
+            walk_tree(nodes=nodes, start=node, etype=etype, visited=visited, depth=depth+1, collect=collect)
 
-        if etype == "is_a" and par not in seen:
-            walk_tree(nodes=nodes, start=par, etype=etype, seen=seen, depth=depth+1, collect=collect)
-
-        seen.update([par])
+        visited.update([node])
         depth = 0
 
 
@@ -283,7 +279,7 @@ def print_node(nodeid, terms, pad, add_highlight=False):
     return
 
 
-def print_tree(terms, tree=None, start=None):
+def print_tree(terms, nodes, tree=None, start=None):
 
     tree = [] if tree is None else tree
     tree = reversed(tree)
@@ -291,15 +287,13 @@ def print_tree(terms, tree=None, start=None):
     # Print the definition and all children here.
     prev_depth = None
     count = 0
+
     for idx, objs in enumerate(tree):
         uid, depth, etype = objs
-
         vals = terms.get(uid, [None, None])
 
-        if prev_depth and prev_depth == 1 and depth != 0:
-            pad = INDENT * count
+        if prev_depth == 1 and depth != 0:
             count = 0
-            print_node(start, terms=terms, pad=pad, add_highlight=True)
         if vals:
             add_highlight = uid.strip() == start.strip()
             pad = INDENT * count
@@ -314,7 +308,7 @@ def show_lineage(start, terms, back_prop):
     collect = []
     walk_tree(nodes=back_prop, start=start, collect=collect)
 
-    print_tree(tree=collect, terms=terms, start=start)
+    print_tree(tree=collect, terms=terms, start=start, nodes=back_prop)
 
     return
 
@@ -354,7 +348,7 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=Fals
             return
 
         # Get the parents.
-        parents = back_prop[uid]
+        parents = back_prop.get(uid,[])
 
         # Fetch the name and definition
         name, definition = terms[uid]
@@ -395,25 +389,60 @@ def print_stats(terms):
     return
 
 
+def is_goterm(term):
+
+    return term and term.startswith("GO")
+
+
+def plot_go_term(query, names, terms):
+
+    # This is a valid GO term
+    if (names.get(query) or
+        terms.get(query)) and (is_goterm(query) or
+                               is_goterm(names.get(query))):
+        uid = names.get(query) or query
+    else:
+        return
+
+    g = GODag(GO_FILE)
+    name, definition = terms.get(uid, ['',''])
+
+    name = name.replace(' ', '-')
+    # run a test case
+    if uid is not None:
+        rec = g.query_term(uid, verbose=True)
+        g.draw_lineage([rec], engine="pygraphviz",
+                       gml=False, lineage_img=f"{name}.png",
+                       draw_parents=True,
+                       draw_children=True)
+    return
+
+
 @plac.pos('query', "Search database by ontological name or GO/SO ids.")
 @plac.flg('build', "build a database of all gene and sequence ontology terms. ")
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('lineage', "show the ontological lineage")
-@plac.flg('download', "download newest ontological data")
+@plac.flg('download', "download prebuilt database")
 @plac.flg('so', "Filter query for sequence ontology terms.")
 @plac.flg('go', "Filter query for gene ontology terms.")
+@plac.flg('update', "Update latest terms from remote hosts and build with those.")
+#@plac.flg('plot', "Plot the network graph of the given GO term .")
+@plac.flg('tree_plot', "Plot the network graph of the given GO term .")
 def run(query="", build=False, download=False, preload=False, so=False, go=False,
-        lineage=False, verbose=False):
+        lineage=False, tree_plot=False, update=False, verbose=False):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
 
     if download:
+        download_prebuilt()
+
+    if update:
         download_terms()
 
     if build:
-        build_database()
+        build_db()
 
     terms, nodes, names, back_prop = get_data(preload=preload)
 
@@ -433,3 +462,5 @@ def run(query="", build=False, download=False, preload=False, so=False, go=False
     else:
         print_stats(terms=terms)
 
+    if tree_plot:
+        plot_go_term(query=query, names=names, terms=terms)

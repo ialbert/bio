@@ -10,6 +10,15 @@ FEATURES = "FEATURES"
 FEATURE_COUNT = "feature_count"
 ORIGIN_SIZE = "origin_len"
 
+# Indentation character
+INDENT = '  '
+
+# Fields separator
+
+SEP = ', '
+
+CHUNK = 25000
+
 # Alignment modes.
 GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "local", "semiglobal", "strictglobal"
 

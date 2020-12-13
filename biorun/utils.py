@@ -1,13 +1,14 @@
 """
 Utilites funcions.
 """
-import sys, os, re, tempfile, gzip, glob, shutil
+import sys, os, re, tempfile, gzip, glob, shutil, json
 import requests
 from itertools import count, islice
 from functools import wraps
 import time
 import logging
 from os.path import expanduser
+from biorun.libs.sqlitedict import SqliteDict
 from biorun import const
 from pprint import pprint
 
@@ -18,6 +19,7 @@ __CURR_DIR = os.path.dirname(__file__)
 __TMPL_DIR = os.path.join(__CURR_DIR, "templates")
 
 DATADIR = os.path.join(expanduser("~"), ".bio")
+
 
 # Create the cache directory
 os.makedirs(DATADIR, exist_ok=True)
@@ -88,6 +90,30 @@ def progress_bar(frac, barlen=30, null=' ', marker='=', head=">"):
     pos = int(frac * barlen)
     bar = marker * pos + head + null * int(barlen - pos)
     return bar
+
+
+def open_db(table, fname, flag='c'):
+    """
+    Opens a connection to a data table.
+    """
+
+    conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
+    return conn
+
+
+def save_table(name, obj, fname, flg='w'):
+    size = len(obj)
+    table = open_db(table=name, fname=fname, flag=flg)
+    for index, (key, value) in enumerate(obj.items()):
+        table[key] = value
+        if index % const.CHUNK == 0:
+            perc = round(index / size * 100)
+            print(f"*** saving {name} with {size:,} elements ({perc:.0f}%)", end="\r")
+            table.commit()
+    print(f"*** saved {name} with {size:,} elements (100%)", end="\r")
+    print("")
+    table.commit()
+    table.close()
 
 
 def download(url, dest_name, cache=False, params={}):
