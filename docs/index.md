@@ -2,15 +2,15 @@
 
 > The software is currently under development. It is operational but not fully vetted.
 
-`bio` - command-line utilities to make bioinformatics explorations more enjoyable. `bio` streamlines the tedious bioinformatics tasks such as:
+`bio` - command-line utilities to make bioinformatics explorations more enjoyable. `bio` streamlines the tedious bioinformatics and lets users quickly answers questions such as:
  
-- downloading and storing data: *how do I automate access to NCBI?*
-- converting between formats: *how do I convert GenBank to GFF?*
-- extracting a subset of information: *how do I get coding sequence for gene S?* 
-- visualizing alignments: *what are the variations?*
-- exploring biological taxonomies: *what is the lineage of SARS-COV-2?*
-- finding the definition for terms:  *what are minisatellites and  microsatellites?*
-- understanding functional annotations: *what is a "tolerance induction to tumor cell"?* 
+- *How do I automate the sequence for a viral genoem?*
+- *How do I obtain the biological annotation of a data?*
+- *How do I get coding sequence for a certain gene?* 
+- *What are the differences between two sequences?*
+- *What is the lineage of SARS-COV-2?*
+- *What are minisatellites and  microsatellites?*
+- *What is a "tolerance induction to tumor cell"?* 
 
 `bio` combines and represents data from different sources: GenBank, SRA, Gene Ontology, Sequence Ontology, NCBI Taxonomy trough a unified interface. Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
@@ -36,20 +36,18 @@ Time and again I found myself not pursuing an idea because getting to the fun pa
 
 ## Diving right in
 
-Here is how to align the first 1000 basepairs of SARS-COV-2 (`NC_045512`) versus to the same region of a bat coronavirus (`MN996532`):
+Here is how to align the sequences of SARS-COV-2 (`NC_045512`) versus to the same region of a bat coronavirus (`MN996532`):
 
     # Obtain the data.
     bio NC_045512 MN996532 --fetch 
     
-Align the sequences.
+Align the sequences (showing 60bp for brevity).
 
 ```{bash, comment=NA}
-bio NC_045512 MN996532 --align --end 100 | head 
+bio NC_045512 MN996532 --align --end 60  
 ```
 
-that's it.
-
-## A more realistic example
+## A more realistic workflow
 
 Suppose you wanted to identify the mutations between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. 
 
@@ -70,13 +68,11 @@ From now on `bio` can operate on  `NC_045512` using the name `ncov` and on `MN99
 
 `bio` stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory you now can type:
 
-    bio ncov --fasta --end 100
+```{bash, comment=NA}
+    bio ncov --fasta --end 100 | head -2
+```
     
-and it will show you the first 100 bases of the genome     
-
-    >ncov Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
-    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
-    GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
+and it will show you the FASTA representation of  the genome     
 
 You could also convert the data stored under `ncov` name to other formats. Let's convert features with type `CDS` to `GFF`:
 
@@ -89,19 +85,19 @@ bio ncov --gff --type CDS  | head -5
 Now, back to our problem of aligning proteins. Let's align the first 90 basepairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut, instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 60 --align
+bio ncov:gene:S ratg13:S --end 60 --align
 ```
     
 We can visualize the translation of the DNA into aminoacids with one letter (`-1`) or three letter codes (`-3`):  
    
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 60 --align -1
+bio ncov:gene:S ratg13:gene:S --end 60 --align -1
 ```
     
 If instead we wanted to align the 60bp DNA subsesequences for `S` protein after their translation into proteins we could do it like so:
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --translate --end 60 --align
+bio ncov:gene:S ratg13:gene:S --translate --end 60 --align
 ```
     
 We can note right away that all differences in the first 60bp of DNA are synonymous substitution, the protein translations are the same.

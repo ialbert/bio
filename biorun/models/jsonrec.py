@@ -40,6 +40,7 @@ def reset_counter():
     COUNTER = count(1)
     UNIQUE = defaultdict(int)
 
+
 def reset_sequence_names():
     global SEQNAME
     reset_counter()
@@ -68,7 +69,7 @@ def filter_features(items, param, droporigin=False):
     if param.type and param.type != "all":
         valid = set(map(lambda x: x.lower(), param.type.split(",")))
         valid = set(valid)
-        items = filter(lambda f: f.get('type','').lower() in valid, items)
+        items = filter(lambda f: f.get('type', '').lower() in valid, items)
 
     # Filter by gene.
     if param.gene:
@@ -84,7 +85,6 @@ def filter_features(items, param, droporigin=False):
 
     # Filter by coordinates. Fasta files are cut by sequence.
     if (param.start or param.end) and not param.fasta:
-
         param.end = sys.maxsize if param.end is None else param.end
         items = filter(lambda f: param.start <= f.get('end') and param.end >= f.get('start'), items)
 
@@ -319,8 +319,7 @@ def get_feature_records(data, param):
             dna += chunk
 
         # Initialize the description
-        desc = [ f['type'] ]
-        desc = []
+        desc = [f['type']]
 
         # Figure out description for slices.
         if start or end:
@@ -356,7 +355,7 @@ def get_feature_records(data, param):
             utils.error(exc)
 
         # Make a description
-        desc = ", ".join(desc) if desc else rec_desc(f)
+        desc = " ".join(desc) if desc else rec_desc(f)
 
         # Build the sequence record.
         rec = SeqRecord(seq, id=name, description=desc)
@@ -417,6 +416,7 @@ def json_ready(value):
         return dict((k, json_ready(v)) for (k, v) in value.items())
 
     return value
+
 
 def get_next_count(label, ftype):
     """
