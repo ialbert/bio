@@ -139,5 +139,3 @@ To push out the latest docs:
     
     make sync
     
-    
-    
