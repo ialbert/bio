@@ -183,8 +183,8 @@ def print_mutations(aln, param, index=0):
     # Reformat the trace.
     aln.reformat_trace()
 
-    #pep_qry = get_pept(aln.query)
-    #pep_tgt = get_pept(aln.target)
+    # pep_qry = get_pept(aln.query)
+    # pep_tgt = get_pept(aln.target)
 
 
 def print_tabular(aln, param, index=0):
@@ -354,36 +354,33 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
         mode = const.GLOBAL_ALIGN
 
     # A parameter for each record.
+    common = dict(
+        protein=protein, translate=translate, mutations=mutations, fasta=True, pep1=pep1, pep3=pep3,
+        table=table, strict=strict, start=start, end=end, gap_open=gap_open, gap_extend=gap_extend,
+        mode=mode
+    )
+    param_t = objects.Param(acc=target, **common)
 
-    param_t = objects.Param(acc=target, protein=protein, translate=translate, mutations=mutations,
-                            table=table, strict=strict, start=start, end=end, gap_open=gap_open, gap_extend=gap_extend,
-                            mode=mode)
-
-    param_q = objects.Param(acc=query, protein=protein, translate=translate, pep1=pep1, pep3=pep3, mutations=mutations,
-                           table=table, strict=strict, start=start, end=end, gap_open=gap_open, gap_extend=gap_extend,
-                           mode=mode)
+    param_q = objects.Param(acc=query, **common)
 
     # Get the JSON data.
     param_t.json = storage.get_json(param_t.acc, inter=inter, strict=True)
     param_q.json = storage.get_json(param_q.acc, inter=inter, strict=True)
 
     # Each data object may contain several records.
-    for rec1 in param_q.json:
-        for rec2 in param_t.json:
+    # Will attempt to iterate in pair, it makes sense when two organisms are closely related (strains)
+    for rec1, rec2 in zip(param_q.json, param_t.json):
+        qrecs = fastarec.get_fasta(rec1, param=param_q)
+        trecs = fastarec.get_fasta(rec2, param=param_t)
+        for qseq, tseq in zip(qrecs, trecs):
 
-            qrecs = fastarec.get_fasta(rec1, param=param_q)
-            trecs = fastarec.get_fasta(rec2, param=param_t)
+            if (len(qseq) > MAX_LEN):
+                utils.error(f"query is longer than maximum: {len(qseq):,} > {MAX_LEN:,}")
 
-            for qseq in qrecs:
-                for tseq in trecs:
+            if (len(tseq) > MAX_LEN):
+                utils.error(f"target sequence is longer than maximum: {len(tseq):,} > {MAX_LEN:,}")
 
-                    if (len(qseq) > MAX_LEN):
-                        utils.error(f"query is longer than maximum: {len(qseq):,} > {MAX_LEN:,}")
-
-                    if (len(tseq) > MAX_LEN):
-                        utils.error(f"target sequence is longer than maximum: {len(tseq):,} > {MAX_LEN:,}")
-
-                    biopython_align(qseq=qseq, tseq=tseq, param=param_q)
+            biopython_align(qseq=qseq, tseq=tseq, param=param_q)
 
 
 def main():

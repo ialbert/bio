@@ -2,22 +2,17 @@
 
 > The software is currently under development. It is operational but not fully vetted.
 
-`bio` - command-line utilities to make bioinformatics explorations more enjoyable.
-
-Built on top of [BioPython][biopython] and other existing packages; `bio` streamlines the tedious bioinformatics tasks such as:
+`bio` - command-line utilities to make bioinformatics explorations more enjoyable. `bio` streamlines the tedious bioinformatics tasks such as:
  
-- downloading and storing data: NCBI, SRA
-- converting between formats: GenBank, GFF, FASTA 
-- extracting a subset of information: get coding sequence for a specific gene  
-- visualizing alignments as DNA and peptide space
-- visualizing mutations with standardized nomenclature
-- exploring biological taxonomies: what is the *lineage of SARS-COV-2*?
-- finding the definition for terms:  *minisatellite* vs *microsatellite*?
-- inspecting functional annotations: what is a *tolerance induction to tumor cell*? 
+- downloading and storing data: *how do I automate access to NCBI?*
+- converting between formats: *how do I convert GenBank to GFF?*
+- extracting a subset of information: *how do I get coding sequence for gene S?* 
+- visualizing alignments: *what are the variations?*
+- exploring biological taxonomies: *what is the lineage of SARS-COV-2?*
+- finding the definition for terms:  *what are minisatellites and  microsatellites?*
+- understanding functional annotations: *what is a "tolerance induction to tumor cell"?* 
 
-`bio` combines and represents data from different sources, GenBank, SRA, Gene Ontology, Sequence Ontology, NCBI Taxonomy trough a unified interface.
-
-Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
+`bio` combines and represents data from different sources: GenBank, SRA, Gene Ontology, Sequence Ontology, NCBI Taxonomy trough a unified interface. Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
 The software was written to teach bioinformatics and is the companion software to the [Biostar Handbook][handbook]
  
@@ -29,11 +24,11 @@ The software was written to teach bioinformatics and is the companion software t
 ## Quick links
 
 * Source code: https://github.com/ialbert/bio
-* Use cases: [bio_examples.sh][usage]
+* Documentation: https://www.bioinfo.help
 
 [usage]: https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
 
-## Why do we need this software?
+## Why does this software exist?
 
 If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress. 
 
@@ -184,39 +179,4 @@ The data layout allows `bio` to read in the entire human chromosome 1, with its 
 For shorter genomes, bacterial or viral the conversion times are under a fraction of a second.  
 
 Thanks to the representation it is trivially easy to extend `bio`. The data is already structured in an efficient layout that needs no additional parsing to load. 
-
-## What does `bio` do?
- 
-1. fetches the data from NCBI
-1. creates a more efficient local representation the data
-1. stores this representation so that next time you need it is available much faster
-1. generates alignments 
-
-## But wait there is more 
-
-How about translating the reverse of the last 10 nucleotides of every feature labeled as `CDS`. `bio` can do that, just keep adding parameters :-) :
-
-    bio ncov --fasta --type CDS --start -10 --reverse --translate
-    
-ah yes, if that is what you needed, here it is:    
-   
-    >YP_009724389.1 [-9:21291], reverse, translated DNA
-    NQQ
-    
-    >YP_009725295.1 [-9:13218], reverse, translated DNA
-    NVA
-    
-    >YP_009724390.1 [-9:3822], reverse, translated DNA
-    NTH
-    ...
-    
-And so on. `bio` has a wealth of utility that makes bioinformatics more accessible.
-    
-## Comparisons to EMBOSS
-
-The software with the most similar goals to `bio` is the [emboss suite][emboss], a revolutionary software package developed decades ahead of its time. Unfortunately, perhaps because of being developed so early on, the amazing feats of software engineering within `emboss` are deployed with a nearly incomprehensible documentation that attempts, in vain, to describe an incredibly obtuse command interface. 
-
-We love the concept of `emboss` but even after many years we don't understand how to use it. We constantly have to consult the manual for details. Moreover commands that use `emboss` suites tend to end up as a series of hard to read arcane commands that are surprisingly difficult to comprehend even for experienced scientists. 
-
-Criticism aside, imitation is the greatest form of flattery, `bio` is an homage to `emboss` with the hope that one day, we can replace some functionality from `emboss` with code that brings joy rather than frustrations. 
 

@@ -55,7 +55,7 @@ def has_feature(item, name="gene"):
     return item.get(name, [''])[0]
 
 
-def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None, name=None, droporigin=False):
+def filter_features(items, param, droporigin=False):
     """
     Filters features based on various parameters.
     """
@@ -65,27 +65,32 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
         items = filter(lambda f: f.get('type') != 'region', items)
 
     # Filter by type.
-    if ftype and ftype != "all":
-        valid = set(map(lambda x: x.lower(), ftype.split(",")))
+    if param.type and param.type != "all":
+        valid = set(map(lambda x: x.lower(), param.type.split(",")))
         valid = set(valid)
         items = filter(lambda f: f.get('type','').lower() in valid, items)
 
     # Filter by gene.
-    if gene:
-        items = filter(lambda f: gene in f.get("gene", []), items)
+    if param.gene:
+        items = filter(lambda f: param.gene in f.get("gene", []), items)
 
     # Filter by name.
-    if name:
-        items = filter(lambda f: name in f.get("name", []), items)
+    if param.name:
+        items = filter(lambda f: param.name in f.get("name", []), items)
 
-    # Filter by coordinates.
-    if start or end:
-        end = sys.maxsize if end is None else end
-        items = filter(lambda f: start <= f.get('end') and end >= f.get('start'), items)
+    # Filter by external attributes.
+    if param.match_field:
+        items = filter(lambda f: param.match_value in f.get(param.match_field, []), items)
+
+    # Filter by coordinates. Fasta files are cut by sequence.
+    if (param.start or param.end) and not param.fasta:
+
+        param.end = sys.maxsize if param.end is None else param.end
+        items = filter(lambda f: param.start <= f.get('end') and param.end >= f.get('start'), items)
 
     # Filters by matching a regular expression
-    if regexp:
-        items = filter(lambda f: regexp.search(str(f)), items)
+    if param.regexp:
+        items = filter(lambda f: param.regexp.search(str(f)), items)
 
     return items
 
@@ -179,7 +184,7 @@ def get_translation_records(item, param):
     feats = filter(has_translation, feats)
 
     # Additional filters that may have been passed.
-    feats = filter_features(feats, gene=param.gene, ftype=param.type, name=param.name, regexp=param.regexp)
+    feats = filter_features(feats, param=param)
 
     # Hoist the variables out.
     start, end = param.start, param.end
@@ -288,8 +293,7 @@ def get_feature_records(data, param):
     feats = data[const.FEATURES]
 
     # Filter the features.
-    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, name=param.name,
-                            droporigin=True)
+    feats = filter_features(feats, param=param, droporigin=True)
 
     # We can extract DNA sequences from this if needed.
     origin = data[const.ORIGIN]
@@ -314,12 +318,14 @@ def get_feature_records(data, param):
                 chunk = chunk.reverse_complement()
             dna += chunk
 
+        # Initialize the description
+        desc = [ f['type'] ]
+        desc = []
+
         # Figure out description for slices.
         if start or end:
             _end = len(dna) if end is None else end
-            desc = [f'[{start + 1}:{_end}]']
-        else:
-            desc = []
+            desc.append(f'[{start + 1}:{_end}]')
 
         # Slice the resulting DNA sequence.
         seq = dna[start:end]
@@ -605,8 +611,7 @@ def json_view(params):
             # Selects individual features.
             for item in param.json:
                 feats = item[const.FEATURES]
-                feats = filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene,
-                                        regexp=param.regexp)
+                feats = filter_features(feats, param=param)
                 text = json.dumps(list(feats), indent=4)
                 print(text)
 

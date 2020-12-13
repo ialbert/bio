@@ -88,15 +88,15 @@ def test_20(capsys):
     run(cmd, capsys=capsys, fname="cds-gene-s.fa")
 
 def test_21(capsys):
-    cmd = "bio ncov:S --fasta --end 10"
+    cmd = "bio ncov:gene:S --fasta --end 10"
     run(cmd, capsys=capsys, fname="cds-gene-s.fa")
 
 def test_22(capsys):
-    cmd = "bio ncov:YP_009724390.1 --fasta --end 10"
+    cmd = "bio ncov:id:YP_009724390.1 --fasta --end 10"
     run(cmd, capsys=capsys, fname="cds-gene-s.fa")
 
 def test_23(capsys):
-    cmd = "bio ncov:S --fasta --protein --seqid foo"
+    cmd = "bio ncov:gene:S --fasta --protein --seqid foo"
     run(cmd, capsys=capsys, fname="s_prot_foo.fa")
 
 def test_24(capsys):
@@ -124,23 +124,23 @@ def test_29(capsys):
     run(cmd, capsys=capsys, fname="align-dna.txt")
 
 def test_30(capsys):
-    cmd = "bio ncov:S ratg13:S --end 210 --align"
+    cmd = "bio ncov:gene:S ratg13:gene:S --end 210 --align"
     run(cmd, capsys=capsys, fname="align-dna-s.txt")
 
 def test_31(capsys):
-    cmd = "bio ncov:S ratg13:S --end 210 --translate --align"
+    cmd = "bio ncov:gene:S ratg13:gene:S --end 210 --translate --align"
     run(cmd, capsys=capsys, fname="align-translated-s.txt")
 
 def test_32(capsys):
-    cmd = "bio ncov:S ratg13:S --protein --end 70 --align"
+    cmd = "bio ncov:gene:S ratg13:gene:S --protein --end 70 --align"
     run(cmd, capsys=capsys, fname="align-protein-s.txt")
 
 def test_33(capsys):
-    cmd = "bio ratg13:S ncov:S  --start 91 --end 120 --align -1"
+    cmd = "bio ratg13:gene:S ncov:gene:S  --start 91 --end 120 --align -1"
     run(cmd, capsys=capsys, fname="align-short-pept.txt")
 
 def test_34(capsys):
-    cmd = "bio ratg13:S ncov:S  --start 91 --end 120 --align -3"
+    cmd = "bio ratg13:gene:S ncov:gene:S  --start 91 --end 120 --align -3"
     run(cmd, capsys=capsys, fname="align-long-pept.txt")
 
 def test_35(capsys):

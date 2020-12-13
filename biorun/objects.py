@@ -25,18 +25,26 @@ class Param(object):
         self.reverse = self.complement = self.revcomp = self.transcribe = None
         self.gff = self.protein = self.fasta = self.translate = self.mode = None
         self.gene = self.type = self.regexp = None
+        self.match_field = self.match_value = None
 
         self.__dict__.update(kwds)
 
         # Parses out colon from data name if that exists.
-        if self.acc and ":" in self.acc:
-            self.acc, word = self.acc.split(":")
+        elems = self.acc.split(":")
 
-            # Word starts decide if it is a gene or an accession number
-            if utils.maybe_ncbi(word):
-                self.name, self.type = word, 'CDS'
+        # Shortcut to types
+        if len(elems) == 2:
+            self.acc, self.type = elems
+
+        # Shortcut to field/value matches.
+        if len(elems) == 3:
+            # Special casing the gene.
+            self.acc, field, value = elems
+            if field == "gene":
+                self.gene = value
+                self.type = "CDS"
             else:
-                self.gene, self.type = word, 'CDS'
+                self.acc, self.match_field, self.match_value = elems
 
         self.start, self.end = utils.zero_based(start=self.start, end=self.end)
         self.regexp = re.compile(self.regexp) if self.regexp else None

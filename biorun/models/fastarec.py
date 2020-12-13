@@ -19,7 +19,8 @@ def get_fasta(item, param):
         warnings.simplefilter('ignore', BiopythonWarning)
 
     # If there is no other filtering, produce the origin.
-    origin = param.origin or not (param.gene or param.type or param.protein or param.translate)
+    origin = param.origin or not (param.gene or param.type or param.protein or param.translate or param.match_field)
+
 
     if origin:
         recs = jsonrec.get_origin(item, param=param)
