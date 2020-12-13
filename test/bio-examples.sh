@@ -16,7 +16,7 @@ bio ncov --delete
 bio NC_045512 --fetch --rename ncov --seqid ncov
 
 # You can also fetch and convert at the same time.
-bio NC_045512 --fetch --fasta --end 100 > fetch-convert.fa
+bio NC_045512 --fasta --end 100 > fetch-convert.fa
 
 # Shows the internal JSON format of the data.
 bio ncov > ncov.json
@@ -25,13 +25,16 @@ bio ncov > ncov.json
 bio ncov --genbank > ncov.gb
 
 # Convert to FASTA.
-bio ncov --fasta > ncov.fa
+bio ncov --genome > ncov-genome.fa
+
+# Convert to FASTA.
+bio ncov --fasta > ncov-features.fa
 
 # Convert to GFF.
 bio ncov --gff > ncov.gff
 
 # Filter the internal JSON by regular expression match and type.
-bio ncov --match ORF1ab --type gene > match.json
+bio ncov --gff --match ORF1ab  > match.gff
 
 # Convert to GFF features associated with a gene.
 bio ncov --gff --gene S > gene1.gff
@@ -61,23 +64,23 @@ bio ncov --fasta --type CDS > CDS.fa
 bio ncov --fasta --type gene --end 10 > gene-start.fa
 
 # Translate the DNA for features that have the type CDS.
-bio ncov --translate --type CDS > translate.fa
+bio ncov --fasta --translate --type CDS > translate.fa
 
 # Extract already translated proteins from the data.
 # The translation attribute must be filled in GenBank.
-bio ncov --protein --start -10 > protein-end.fa
+bio ncov --fasta --protein --start -10 > protein-end.fa
 
 # Coding sequences for a gene.
 bio ncov --fasta --type CDS --gene S --end 10 > cds-gene-s.fa
 
-# Coding sequences for genes may be listed by gene name. Will list all coding sequences.
-bio ncov:gene:S --fasta --end 10 >  cds-gene-s.fa
+# Shorcut1, all CDS that is labeled with gene=S
+bio ncov:S --fasta --end 10 >  cds-gene-s.fa
 
-# Another shortcut, this time we access coding sequences by the id. Will list just one specific sequence.
-bio ncov:id:YP_009724390.1 --fasta --end 10 >  cds-gene-s.fa
+# Another shortcut, this time we access coding sequences by the id.
+bio ncov --id YP_009724390.1 --fasta --end 10 >  cds-gene-s.fa
 
 # Extract the already traslated protein from the data.
-bio ncov:gene:S --fasta --protein --seqid foo > s_prot_foo.fa
+bio ncov:S --fasta --protein --seqid foo > s_prot_foo.fa
 
 # Interactive mode. Data obtained from the command line paramter
 bio ATGGGC -i --fasta > inter.fa
@@ -98,20 +101,20 @@ bio MN996532 --fetch --rename ratg13 --seqid ratg13
 bio ncov ratg13 --end 210 --align > align-dna.txt
 
 # Align the DNA for the coding sequences of the S protein.
-bio ncov:gene:S ratg13:gene:S --end 210 --align > align-dna-s.txt
+bio ncov:S ratg13:S --end 210 --align > align-dna-s.txt
 
 # Align the translated DNA for the coding sequences of the S protein.
-bio ncov:gene:S ratg13:gene:S --end 210 --translate --align > align-translated-s.txt
+bio ncov:S ratg13:S --end 210 --translate --align > align-translated-s.txt
 
 # Align the already translated proteins.
 # Slice applied to the protein sequence.
-bio ncov:gene:S ratg13:gene:S --protein --end 70 --align > align-protein-s.txt
+bio ncov:S ratg13:S --protein --end 70 --align > align-protein-s.txt
 
 # Generate one letter peptide trace above the DNA
-bio ratg13:gene:S ncov:gene:S  --start 91 --end 120 --align -1 > align-short-pept.txt
+bio ratg13:S ncov:S  --start 91 --end 120 --align -1 > align-short-pept.txt
 
 # Generate three letter peptide trace above the DNA
-bio ratg13:gene:S ncov:gene:S  --start 91 --end 120 --align -3 > align-long-pept.txt
+bio ratg13:S ncov:S  --start 91 --end 120 --align -3 > align-long-pept.txt
 
 # Local alignment in interactive mode.
 bio THISLINE ISALIGNED  -i --align --local > align-local.txt

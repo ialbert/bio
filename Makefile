@@ -16,7 +16,7 @@ build_data:
 # Generate test from the example script.
 build_test:
 	(cd test && python generate.py)
-	#pytest
+	pytest
 
 # Generate the docs.
 docs:

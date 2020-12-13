@@ -1,3 +1,168 @@
->foo Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+>five_prime_UTR-2 five_prime_UTR [10:20]
 TTATACCTTCC
+
+>ORF1ab gene [10:20]
+CTTGTCCCTGG
+
+>YP_009724389.1 CDS [10:20]
+CTTGTCCCTGG
+
+>mature_protein_region-3 mature_protein_region [10:20]
+CTTGTCCCTGG
+
+>mature_protein_region-4 mature_protein_region [10:20]
+CGCTATGTCGA
+
+>mature_protein_region-5 mature_protein_region [10:20]
+AAGGTTACTTT
+
+>mature_protein_region-6 mature_protein_region [10:20]
+AATAATTGGTT
+
+>mature_protein_region-7 mature_protein_region [10:20]
+AGAAAAATGGC
+
+>mature_protein_region-8 mature_protein_region [10:20]
+AAAAGAACAAT
+
+>mature_protein_region-9 mature_protein_region [10:20]
+TCAGATGTAAA
+
+>mature_protein_region-10 mature_protein_region [10:20]
+TCAGAGTTTAG
+
+>mature_protein_region-11 mature_protein_region [10:20]
+CTTAGTCCTGT
+
+>mature_protein_region-12 mature_protein_region [10:20]
+GCAACAGAAGT
+
+>mature_protein_region-13 mature_protein_region [10:20]
+GCACAATCGTT
+
+>mature_protein_region-14 mature_protein_region [10:20]
+GCTTGTGTTCT
+
+>mature_protein_region-15 mature_protein_region [10:20]
+GTAACAGGACT
+
+>mature_protein_region-16 mature_protein_region [10:20]
+AATGTGGCTTT
+
+>mature_protein_region-17 mature_protein_region [10:20]
+GCGTGGCAACC
+
+>YP_009725295.1 CDS [10:20]
+CTTGTCCCTGG
+
+>mature_protein_region-18 mature_protein_region [10:20]
+CTTGTCCCTGG
+
+>mature_protein_region-19 mature_protein_region [10:20]
+CGCTATGTCGA
+
+>mature_protein_region-20 mature_protein_region [10:20]
+AAGGTTACTTT
+
+>mature_protein_region-21 mature_protein_region [10:20]
+AATAATTGGTT
+
+>mature_protein_region-22 mature_protein_region [10:20]
+AGAAAAATGGC
+
+>mature_protein_region-23 mature_protein_region [10:20]
+AAAAGAACAAT
+
+>mature_protein_region-24 mature_protein_region [10:20]
+TCAGATGTAAA
+
+>mature_protein_region-25 mature_protein_region [10:20]
+TCAGAGTTTAG
+
+>mature_protein_region-26 mature_protein_region [10:20]
+CTTAGTCCTGT
+
+>mature_protein_region-27 mature_protein_region [10:20]
+GCAACAGAAGT
+
+>mature_protein_region-28 mature_protein_region [10:20]
+GCACAATCGTT
+
+>stem_loop-29 stem_loop [10:20]
+TGCAGCCCGTC
+
+>stem_loop-30 stem_loop [10:20]
+TACACCGTGCG
+
+>S gene [10:20]
+TTTCTTGTTTT
+
+>YP_009724390.1 CDS [10:20]
+TTTCTTGTTTT
+
+>ORF3a gene [10:20]
+TTTATGAGAAT
+
+>YP_009724391.1 CDS [10:20]
+TTTATGAGAAT
+
+>E gene [10:20]
+TTCGTTTCGGA
+
+>YP_009724392.1 CDS [10:20]
+TTCGTTTCGGA
+
+>M gene [10:20]
+TCCAACGGTAC
+
+>YP_009724393.1 CDS [10:20]
+TCCAACGGTAC
+
+>ORF6 gene [10:20]
+CTCGTTGACTT
+
+>YP_009724394.1 CDS [10:20]
+CTCGTTGACTT
+
+>ORF7a gene [10:20]
+ATTCTTTTCTT
+
+>YP_009724395.1 CDS [10:20]
+ATTCTTTTCTT
+
+>ORF7b gene [10:20]
+CTTTCATTAAT
+
+>YP_009725318.1 CDS [10:20]
+CTTTCATTAAT
+
+>ORF8 gene [10:20]
+CTTGTTTTCTT
+
+>YP_009724396.1 CDS [10:20]
+CTTGTTTTCTT
+
+>N gene [10:20]
+AATGGACCCCA
+
+>YP_009724397.2 CDS [10:20]
+AATGGACCCCA
+
+>ORF10 gene [10:20]
+ATAAACGTTTT
+
+>YP_009725255.1 CDS [10:20]
+ATAAACGTTTT
+
+>stem_loop-31 stem_loop [10:20]
+ATGAATTCTCG
+
+>stem_loop-32 stem_loop [10:20]
+AGCACAAGTAG
+
+>three_prime_UTR-33 three_prime_UTR [10:20]
+ATCAGTGTGTA
+
+>stem_loop-34 stem_loop [10:20]
+GCCACGCGGAG
 

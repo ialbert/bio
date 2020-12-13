@@ -82,7 +82,7 @@ def router(arglist=[]):
             plac.call(lib.run)
 
             # Only one module may be called
-            sys.exit()
+            return
 
     # Default action, no subcommand was passed.
 

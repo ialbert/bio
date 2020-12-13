@@ -12,13 +12,14 @@ class Param(object):
     """
 
     def __init__(self, **kwds):
+        self.acc = ''
         self.phase = "1"
         self.seqid = None
         self.gap_open = 11
         self.gap_extend = 1
         self.matrix = None
         self.json = None
-        self.acc = None
+        self.uid = None
         self.name = None
         self.inter = None
         self.reverse = self.complement = self.revcomp = self.transcribe = None
@@ -31,23 +32,36 @@ class Param(object):
         self.__dict__.update(kwds)
 
         # Parses out colon from data name if that exists.
-        elems = self.acc.split(":", 2)
+        elems = self.acc.split(":", 1)
+
+        # The first element is the accession.
+        self.acc = elems[0]
 
         # Shortcut to types acc:type
         if len(elems) == 2:
-            self.genome, self.fasta = False, True
-            self.acc, self.type = elems
+            tmp, text = elems
 
-        # Shortcut to attrfield/value matches. acc:type:value
-        if len(elems) == 3:
-            self.genome, self.fasta = False, True
-            self.acc, field, value = elems
-            # Special casing the gene.
-            if field == "gene":
-                self.gene = value
-                self.type = "CDS"
+            # See if the second filed is splittable
+            pieces = text.split("=", 1)
+
+            # Shortcuts:
+            # acc:foo ==> --name foo, --type CDS
+            # acc:key=value ==> matches attribute
+            if len(pieces) == 1:
+                self.gene = text
             else:
-                self.acc, self.attr_name, self.attr_value = elems
+                field, value = pieces
+                # A few fields are not attributes thus handled differently.
+                if field.lower() == "name":
+                    self.name = value
+                elif field.lower() == "id":
+                    self.uid = value
+                else:
+                    self.attr_name, self.attr_value = field, value
+
+        # When setting genes select for coding sequences.
+        if self.gene:
+            self.type = "CDS"
 
         # An invalid parameter will be passed down as accession number.
         if self.acc.startswith("-"):

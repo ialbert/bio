@@ -1,9 +1,9 @@
 
-# Ident=26(86.7%)  Mis=4(13.3%)  Gaps=0(0.0%)  Target=(1, 30)  Query=(1, 30)  Length=30  Score=114.0  NUC.4.4(11,1)
+# Ident=29(96.7%)  Mis=1(3.3%)  Gaps=0(0.0%)  Target=(1, 30)  Query=(1, 30)  Length=30  Score=141.0  NUC.4.4(11,1)
 
-              S  S  T  R  G  V  Y  Y  P  D 
-QHR63300.2   TCATCCACCCGTGGTGTCTATTACCCTGAC
-             ||.|.|||.||||||||.|||||||||||| 30
-YP_009724390 TCTTTCACACGTGGTGTTTATTACCCTGAC
-              S  F  T  R  G  V  Y  Y  P  D 
+              T  V  T  R  L  H  A  *  C  T 
+ratg13       ACTGTCACTCGGCTGCATGCTTAGTGCACT
+             .||||||||||||||||||||||||||||| 30
+ncov         GCTGTCACTCGGCTGCATGCTTAGTGCACT
+              A  V  T  R  L  H  A  *  C  T 
 

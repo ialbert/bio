@@ -65,6 +65,10 @@ def filter_features(items, param):
     if param.fasta:
         items = filter(lambda f: f.get('type') != 'region', items)
 
+    # Filter by element id.
+    if param.uid:
+        items = filter(lambda f: f.get('id') == param.uid, items)
+
     # Filter by type.
     if param.type:
         valid = set(map(lambda x: x.lower(), param.type.split(",")))

@@ -20,9 +20,12 @@ SUB_COMMANDS = [
     ("--genome", "biorun.models.fastarec"),
     ("-G", "biorun.models.fastarec"),
 
-    # Fasta handler.
+    # Fasta feature convertsion.
     ("--fasta", "biorun.models.fastarec"),
     ("-F", "biorun.models.fastarec"),
+
+    # GFF conversion.
+    ("--gff", "biorun.models.gffrec"),
 
     # Alignments.
     ("--align", "biorun.methods.align"),

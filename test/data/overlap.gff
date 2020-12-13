@@ -1,6 +1,6 @@
 ##gff-version 3
 ncov	.	region	1	29903	.	+	.	ID=region-1;Name=Severe acute respiratory syndrome coronavirus 2;organism=Severe acute respiratory syndrome coronavirus 2;mol_type=genomic RNA;isolate=Wuhan-Hu-1;host=Homo sapiens;db_xref=taxon:2697049;country=China;collection_date=Dec-2019;color=#CECECE
-ncov	.	gene	266	21555	.	+	.	ID=GU280_gp01;Name=ORF1ab;gene=ORF1ab;locus_tag=GU280_gp01;db_xref=GeneID:43740578;color=#cb7a77
+ncov	.	gene	266	21555	.	+	.	ID=ORF1ab;Name=ORF1ab;gene=ORF1ab;locus_tag=GU280_gp01;db_xref=GeneID:43740578;color=#cb7a77
 ncov	.	mRNA	266	21555	.	+	.	ID=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;color=#7a77cb
 ncov	.	CDS	266	13468	.	+	.	ID=CDS-1;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;transcript_id=YP_009724389.1
 ncov	.	CDS	13468	21555	.	+	.	ID=CDS-2;Parent=YP_009724389.1;Name=YP_009724389.1;gene=ORF1ab;locus_tag=GU280_gp01;ribosomal_slippage=;note=pp1ab; translated by -1 ribosomal frameshift;codon_start=1;product=ORF1ab polyprotein;protein_id=YP_009724389.1;db_xref=GeneID:43740578;gene_id=GU280_gp01;transcript_id=YP_009724389.1
