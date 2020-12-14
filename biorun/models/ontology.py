@@ -182,7 +182,7 @@ def parse_term(fname):
     return terms, nodes, names, back_prop
 
 
-def build_database(fname, mode='wt', flg='w'):
+def build_database(fname, flg='w'):
     """
     Build the ontology database.
     """
@@ -211,11 +211,6 @@ def build_database(fname, mode='wt', flg='w'):
     save(CHILDREN, back_prop)
 
     return terms, nodes, names, back_prop
-    print("*** saving the JSON model")
-    store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop)
-    fp = open(JSON_DB, mode)
-    json.dump(store, fp, indent=4)
-    fp.close()
 
 
 def build_db():
