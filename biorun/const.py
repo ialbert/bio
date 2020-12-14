@@ -19,13 +19,33 @@ SEP = ', '
 
 CHUNK = 25000
 
+COLOR_MAP = {'ends_during': '#449A5E', 'occurs_in': '#D537FD',
+             'negatively_regulates': '#373DFD',
+             'has_part': '#00FFFF',
+             'is_a': '#000000',
+             'part_of': "#727F2D",
+             'positively_regulates': "#8D6B2E",
+             'happens_during': "#6EB129",
+             'regulates': "#203266",
+             'transcribed_to': "#98B7E4",
+             'derives_from': "#AFCDB3",
+             'contains': "#26A231",
+             'member_of': "#1A851E",
+             'transcribed_from': "#4B0201",
+             'has_quality': "#35F081",
+             'overlaps': "#C0441F",
+             'variant_of': "#B47312",
+             'non_functional_homolog_of': "#D149BE",
+             'adjacent_to': "#E1D2B5",
+             'guided_by': "#014B81",
+             'has_origin': "#57F45B"
+             }
 # Alignment modes.
 GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
 ALIGN_COMMAND, TAXON_COMMAND, DBLINK_COMMAND, ONTOLOGY_COMMAND, ENRICH_COMMAND = "--align", "--taxon", "--sra", "--define", "--enrich"
 
-SKIP_GFF_ATTR = { "id", "parent_id", "name",  "type", "start", "end", "location", "translation", "strand", "operator"}
-
+SKIP_GFF_ATTR = {"id", "parent_id", "name", "type", "start", "end", "location", "translation", "strand", "operator"}
 
 # Guess accession numbers that are proteins based on start letters
 # https: // www.ncbi.nlm.nih.gov / Sequin / acc.html

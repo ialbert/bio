@@ -2,6 +2,7 @@ import json, shutil, os, tarfile, re
 import requests
 from itertools import islice
 from textwrap import wrap
+import pygraphviz as pgv
 
 from goatools.obo_parser import GODag, GraphEngines
 from biorun.libs import placlib as plac
@@ -144,6 +145,7 @@ def parse_term(fname):
     names = {}
     nodes = {}
     back_prop = {}
+
     uid, parent, name, definition, edges = None, None, None, None, []
     print(f"*** parsing: {fname}")
     for elems in stream:
@@ -235,26 +237,35 @@ def build_db():
     return
 
 
-def walk_tree(nodes, start, etype=None, depth=0, visited=None, collect=None):
+def walk_tree(nodes, start, etype=None,
+              visited=None,
+              collect=None,
+              one_pass=False):
 
     collect = [] if collect is None else collect
-    collect.append((start, depth, etype))
+    visited = set() if visited is None else visited
+    collect.append(start)
 
     parents = nodes.get(start, [])
 
-    visited = set()
-    for node, etype in parents:
+    for node, et in parents:
         if node in visited:
             continue
 
-        if etype == "is_a":
-            walk_tree(nodes=nodes, start=node, etype=etype, visited=visited, depth=depth+1, collect=collect)
+        if (et == etype) or (etype is None):
+            walk_tree(nodes=nodes,
+                      start=node,
+                      etype=etype,
+                      visited=visited,
+                      collect=collect,
+                      one_pass=one_pass)
 
         visited.update([node])
-        depth = 0
+        if one_pass:
+            break
 
 
-def printer(uids, terms):
+def printer(uids, terms, prefix=""):
 
     seen = set()
     for uid, etype in uids:
@@ -262,48 +273,72 @@ def printer(uids, terms):
         if uid not in seen:
             name, definition = terms[uid]
             suffix = '' if etype == 'is_a' else f'({etype})'
-            print(f"- {name} {suffix}")
+            print(f"{prefix}- {name} {suffix}")
         seen.update([uid])
 
 
-def print_node(nodeid, terms, pad, add_highlight=False):
-    vals = terms.get(nodeid, [None, None])
-    name, definition = vals
-    highlight = '**' if add_highlight else ''
-    print(f"{pad}{nodeid}{INDENT}{highlight} {name} {highlight}")
+def wrap_text(text, pre=''):
+    # Keep only text within quotes (if these exist).
+    patt = r'"([^"]*)"'
+    m = re.match(patt, text)
+    text = m.groups()[0] if m else text
+    text = f"\n{pre}".join(wrap(text, 80))
+    return text
+
+
+def formatted_printer(name, uid, definition,  nodes, terms, parents=[], prefix=""):
+    definition = wrap_text(definition, pre=prefix)
+    print(f"\n{prefix}## {name} ({uid})\n\n{prefix}{definition}\n")
+    if parents:
+        print(f'{prefix}Parents:')
+        printer(uids=parents, terms=terms, prefix=prefix)
+    children = nodes.get(uid, [])
+
+    if children:
+        print(f"{prefix}\nChildren:")
+        # Print children
+        printer(uids=children, terms=terms, prefix=prefix)
+    print(" ")
     return
 
 
-def print_tree(terms, nodes, tree=None, start=None):
+def print_node(uid, name, nodes=None, terms=None, define='', pad='', is_leaf=False):
 
-    tree = [] if tree is None else tree
-    tree = reversed(tree)
+    if is_leaf:
+        formatted_printer(nodes=nodes, terms=terms,
+                          name=name,
+                          uid=uid, definition=define,
+                          parents=[], prefix=pad)
+        pass
+    else:
+        print(f"{pad}{uid}{INDENT}{name}")
 
-    # Print the definition and all children here.
-    prev_depth = None
-    count = 0
-
-    for idx, objs in enumerate(tree):
-        uid, depth, etype = objs
-        vals = terms.get(uid, [None, None])
-
-        if prev_depth == 1 and depth != 0:
-            count = 0
-        if vals:
-            add_highlight = uid.strip() == start.strip()
-            pad = INDENT * count
-            count += 1
-            print_node(uid, terms=terms, pad=pad, add_highlight=add_highlight)
-
-        prev_depth = depth
+    return
 
 
-def show_lineage(start, terms, back_prop):
+def show_lineage(start, terms, nodes, back_prop):
 
     collect = []
-    walk_tree(nodes=back_prop, start=start, collect=collect)
+    parents = back_prop.get(start, [])
 
-    print_tree(tree=collect, terms=terms, start=start, nodes=back_prop)
+    if len(parents) > 1:
+        print("*** More than on path detected, use -P to view all relationships.\n")
+
+    walk_tree(nodes=back_prop, start=start, collect=collect, one_pass=True, etype='is_a')
+
+    tree = reversed(collect)
+
+    # Print the definition and all children here.
+    for depth, uid in enumerate(tree):
+        vals = terms.get(uid)
+        if vals:
+            names, define = vals
+            is_leaf = uid.strip() == start.strip()
+            pad = INDENT * depth
+            print_node(uid=uid, name=names,
+                       define=define,
+                       pad=pad, is_leaf=is_leaf,
+                       nodes=nodes, terms=terms)
 
     return
 
@@ -320,7 +355,7 @@ def search(query, terms, prefix=""):
 
         # Print all terms containing this name.
         if (query.lower() in name) or (query in uid):
-            print(f"{uid}{INDENT}{name}")
+            print_node(uid=uid, name=name)
 
 
 def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=False):
@@ -335,7 +370,7 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=Fals
         uid = names.get(query) or query
 
         if lineage:
-            show_lineage(start=uid, terms=terms, back_prop=back_prop)
+            show_lineage(start=uid, terms=terms, back_prop=back_prop, nodes=nodes)
             return
 
         # Filter for SO: or GO: ids
@@ -348,24 +383,10 @@ def perform_query(query, terms, nodes, names, back_prop, prefix="", lineage=Fals
         # Fetch the name and definition
         name, definition = terms[uid]
 
-        # Keep only text within quotes (if these exist).
-        patt = r'"([^"]*)"'
-        m = re.match(patt, definition)
-        definition = m.groups()[0] if m else definition
-
-        definition = "\n".join(wrap(definition, 80))
-
-        print(f"\n## {name} ({uid})\n\n{definition}\n")
-
-        print(f'Parents:')
-        printer(uids=parents, terms=terms)
-        children = nodes.get(uid, [])
-        if children:
-            print("\nChildren:")
-            # Print children
-            children = nodes.get(uid, [])
-            printer(uids=children, terms=terms)
-        print ("")
+        formatted_printer(name=name, uid=uid,
+                          definition=definition,
+                          parents=parents, nodes=nodes,
+                          terms=terms)
 
         return
 
@@ -384,37 +405,55 @@ def print_stats(terms):
     return
 
 
-def is_goterm(query, names, terms):
-
-    if not query:
-        return False
-
-    exists = names.get(query) or terms.get(query)
-
-    is_go = query.startswith("GO") or names.get(query, '').startswith("GO")
-
-    return exists and is_go
-
-
-def plot_go_term(query, names, terms):
+def plot_term(query, names, terms, nodes, back_prop):
 
     # This is a valid GO term
-    if is_goterm(query, names=names, terms=terms):
+    if names.get(query) or terms.get(query):
         uid = names.get(query) or query
     else:
         return
 
-    g = GODag(GO_FILE)
-    name, definition = terms.get(uid, ['',''])
+    def frmt(uid, name):
+        out = fr"{uid}\n{name}"
+        return out
 
-    name = name.replace(' ', '-')
-    # run a test case
-    if uid is not None:
-        rec = g.query_term(uid, verbose=True)
-        g.draw_lineage([rec], engine="pygraphviz",
-                       gml=False, lineage_img=f"{name}.png",
-                       draw_parents=True,
-                       draw_children=True)
+    collect = []
+
+    # Only plot
+    etype = 'is_a' if uid.startswith('GO') else None
+    walk_tree(nodes=back_prop, start=uid, collect=collect, etype=etype)
+
+    grph = pgv.AGraph(directed=True)
+
+    for item in collect:
+        children = nodes.get(item, [])
+        chls = [c for c in children if c[0] in collect]
+        name, define = terms.get(item)
+        for child in chls:
+            chl, etype = child
+            cname, cdefine = terms.get(chl)
+            color = const.COLOR_MAP.get(etype, "black")
+            grph.add_edge(frmt(item, name), frmt(chl, cname),
+                          label=etype, color=color)
+
+        if not children:
+            grph.add_node(frmt(item, name))
+
+    grph.edge_attr.update(shape="normal", color='black', dir="back")
+    grph.node_attr.update(shape="box", style="rounded,filled",
+                          fillcolor="beige")
+    # highlight the query term
+    try:
+        name, define = terms.get(uid)
+        node = grph.get_node(frmt(uid, name))
+        node.attr.update(fillcolor="plum")
+    except Exception as exc:
+        logger.error(exc)
+        pass
+
+    grph.layout(prog='dot')
+    grph.draw('file2.pdf')
+
     return
 
 
@@ -427,10 +466,10 @@ def plot_go_term(query, names, terms):
 @plac.flg('so', "Filter query for sequence ontology terms.")
 @plac.flg('go', "Filter query for gene ontology terms.")
 @plac.flg('update', "Update latest terms from remote hosts and build with those.")
-#@plac.flg('plot', "Plot the network graph of the given GO term .")
-@plac.flg('tree_plot', "Plot the network graph of the given GO term .")
+@plac.flg('plot', "Plot the network graph of the given GO term .", abbrev="P")
+#@plac.flg('tree_plot', "Plot the network graph of the given GO term .")
 def run(query="", build=False, download=False, preload=False, so=False, go=False,
-        lineage=False, tree_plot=False, update=False, verbose=False):
+        lineage=False, plot=False, update=False, verbose=False):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
@@ -462,5 +501,5 @@ def run(query="", build=False, download=False, preload=False, so=False, go=False
     else:
         print_stats(terms=terms)
 
-    if tree_plot:
-        plot_go_term(query=query, names=names, terms=terms)
+    if plot:
+        plot_term(query=query, names=names, terms=terms, nodes=nodes, back_prop=back_prop)
