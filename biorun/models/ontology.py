@@ -389,17 +389,22 @@ def print_stats(terms):
     return
 
 
-def is_goterm(term):
+def is_goterm(query, names, terms):
 
-    return term and term.startswith("GO")
+    if not query:
+        return False
+
+    exists = names.get(query) or terms.get(query)
+
+    is_go = query.startswith("GO") or names.get(query, '').startswith("GO")
+
+    return exists and is_go
 
 
 def plot_go_term(query, names, terms):
 
     # This is a valid GO term
-    if (names.get(query) or
-        terms.get(query)) and (is_goterm(query) or
-                               is_goterm(names.get(query))):
+    if is_goterm(query, names=names, terms=terms):
         uid = names.get(query) or query
     else:
         return

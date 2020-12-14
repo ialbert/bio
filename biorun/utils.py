@@ -158,7 +158,7 @@ def download(url, dest_name, cache=False, params={}):
         for chunk in r.iter_content(chunk_size=chunk_size):
             total += len(chunk)
             if size:
-                frac = total / size
+                frac = 1 if total >= size else total / size
                 perc = frac * 100
                 bar = progress_bar(frac)
                 print(f"*** downloading [{bar}] {file_name} {human_size(size)} ({perc:.1f}%)", end="\r")
