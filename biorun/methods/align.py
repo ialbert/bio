@@ -1,6 +1,6 @@
 import warnings, sys, os
 import biorun.libs.placlib as plac
-from itertools import islice, count
+import itertools
 import textwrap
 
 from biorun import const
@@ -20,12 +20,13 @@ except ImportError as exc:
 # The default logging function.
 logger = utils.logger
 
+
 class Alignment:
     """
     A wrapper class to represent an alignment.
     """
 
-    def __init__(self,  qseq, tseq, aln, param):
+    def __init__(self, qseq, tseq, aln, param):
         self.qseq = qseq
         self.tseq = tseq
         self.score = aln.score
@@ -48,7 +49,7 @@ class Alignment:
         text = format(self.aln)
 
         # Extract the alignment elements.
-        self.query, self.trace, self.target = text.splitlines()
+        self.target, self.trace, self.query = text.splitlines()
 
         # Show only aligned regions for local and semiglobal alignments
         if self.param.mode in (const.LOCAL_ALIGN, const.SEMIGLOBAL_ALIGN):
@@ -98,18 +99,17 @@ class Alignment:
 
         # Target start/end.
         self.t_start = t_path[0][0] + 1
-        self.t_end = t_path[-1][-1] + 1
+        self.t_end = t_path[-1][-1]
 
         # Query start end.
         self.q_start = q_path[0][0] + 1
-        self.q_end = q_path[-1][-1] + 1
+        self.q_end = q_path[-1][-1]
 
 
-def biopython_align(qseq, tseq, param, table=False, strict=False):
-
+def biopython_align(qseq, tseq, param):
     # Query and target sequences.
-    q = str(qseq.seq)
-    t = str(tseq.seq)
+    q = str(qseq.seq).upper()
+    t = str(tseq.seq).upper()
 
     aligner = Align.PairwiseAligner()
 
@@ -118,7 +118,7 @@ def biopython_align(qseq, tseq, param, table=False, strict=False):
         aligner.mode = 'local'
 
     # Attempts to detect DNA vs peptide sequences.
-    param.is_dna = all(x in "ATGC" for x in q[:100])
+    param.is_dna = all(x in "ATGC" for x in t[:100] + q[:100])
 
     # Default substituion matrix.
     if not param.matrix:
@@ -132,7 +132,7 @@ def biopython_align(qseq, tseq, param, table=False, strict=False):
     aligner.extend_gap_score = -param.gap_extend
 
     # End gap scoring.
-    if strict:
+    if param.strict:
         aligner.target_end_open_gap_score = -param.gap_open
         aligner.target_end_extend_gap_score = -param.gap_extend
 
@@ -158,14 +158,15 @@ def biopython_align(qseq, tseq, param, table=False, strict=False):
     alns = map(builder, alns)
 
     # Format the aligners
-    if table:
+    if param.table:
         print_func = print_tabular
+    elif param.mutations:
+        print_func = print_mutations
     else:
         print_func = print_pairwise
 
     for index, aln in enumerate(alns):
         print_func(aln, param=param, index=index)
-
 
 
 # Enforce a fixed width on each name.
@@ -174,13 +175,16 @@ def padded(value, right=False):
     return f'{value:>12.12s}' if right else f'{value:12.12s}'
 
 
-def print_mutations(aln, index=0):
+def print_mutations(aln, param, index=0):
     """
     Print alignments as mutations with standard nomenclature
     """
 
     # Reformat the trace.
     aln.reformat_trace()
+
+    # pep_qry = get_pept(aln.query)
+    # pep_tgt = get_pept(aln.target)
 
 
 def print_tabular(aln, param, index=0):
@@ -198,13 +202,14 @@ def print_tabular(aln, param, index=0):
 
     if index == 0:
         head = [
-            "query", "target", "pident", "ident", "mism", "gaps", "score", "alen", "tlen", "tstart", "tend", "qlen", "qstart", "qend"
+            "query", "target", "pident", "ident", "mism", "gaps", "score", "alen", "tlen", "tstart", "tend", "qlen",
+            "qstart", "qend"
         ]
         print("\t".join(head))
 
     data = [
         aln.qseq.id, aln.tseq.id, iperc, aln.icount, aln.mcount, aln.gcount, aln.score,
-            aln.len, len(aln.tseq), aln.t_start, aln.t_end, len(aln.qseq), aln.q_start, aln.q_end,
+        aln.len, len(aln.tseq), aln.t_start, aln.t_end, len(aln.qseq), aln.q_start, aln.q_end,
     ]
     data = map(str, data)
     print("\t".join(data))
@@ -215,6 +220,7 @@ def get_code(name, pep3=True):
         return IUPACData.protein_letters_1to3_extended.get(name, 'xyz')
     else:
         return name
+
 
 def get_pept(seq, pep3=True):
     """
@@ -247,6 +253,7 @@ def get_pept(seq, pep3=True):
             codon = []
     return "".join(collect)
 
+
 def print_pairwise(aln, param, index=0, width=90):
     """
     A detailed visual pairwise alignment.
@@ -258,7 +265,7 @@ def print_pairwise(aln, param, index=0, width=90):
     ident = f"{aln.icount}({aln.iperc:.1f}%)"
     gaps = f"{aln.gcount}({aln.gperc:.1f}%)"
     mism = f"{aln.mcount}({aln.mperc:.1f}%)"
-    alns  = f"Target={(aln.t_start,aln.t_end)}  Query={(aln.q_start,aln.q_end)}"
+    alns = f"Target={(aln.t_start, aln.t_end)}  Query={(aln.q_start, aln.q_end)}"
 
     header = f'''
     # Ident={ident}  Mis={mism}  Gaps={gaps}  {alns}  Length={aln.len:,}  Score={aln.score:0.1f}  {aln.param.matrix}({aln.param.gap_open},{aln.param.gap_extend})
@@ -282,18 +289,20 @@ def print_pairwise(aln, param, index=0, width=90):
         tgt_seq = aln.target[start:end]
 
         if showpep:
-            qry_pep = get_pept(qry_seq, pep3=param.pep3)
-            print(f"{non_id} {qry_pep}")
-
-        print(f"{qry_id} {qry_seq}")
-        print(f"{non_id} {trc_seq} {end}")
-        print(f"{tgt_id} {tgt_seq}")
-
-        if showpep:
             tgt_pep = get_pept(tgt_seq, pep3=param.pep3)
             print(f"{non_id} {tgt_pep}")
 
+        print(f"{tgt_id} {tgt_seq}")
+        print(f"{non_id} {trc_seq} {end}")
+        print(f"{qry_id} {qry_seq}")
+
+        if showpep:
+            qry_pep = get_pept(qry_seq, pep3=param.pep3)
+            print(f"{non_id} {qry_pep}")
+
         print("")
+
+    print_mutations(aln, param)
 
 
 @plac.pos("query", "query sequence to align")
@@ -313,9 +322,11 @@ def print_pairwise(aln, param, index=0, width=90):
 @plac.flg('strict', "strict global alignment, apply end gap penalties", abbrev='R')
 @plac.flg('pep1', "shows a translated peptide with one letter code", abbrev='1')
 @plac.flg('pep3', "shows a translated peptide with three letter code", abbrev='3')
+@plac.flg('mutations', "show the mutations")
 @plac.flg('verbose', "verbose mode, progress messages printed")
 def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
-        protein=False, translate=False, inter=False, table=False, strict=False, pep1=False, pep3=False, verbose=False, target=None, query=None):
+        protein=False, translate=False, inter=False, table=False, mutations=False, strict=False,
+        pep1=False, pep3=False, verbose=False, target=None, query=None):
     """
     Performs an alignment between the query and target.
     """
@@ -327,11 +338,11 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
     utils.set_verbosity(logger, level=int(verbose))
 
     # Reset counter (needed for consistency during testing).
-    jsonrec.reset_counter()
+    jsonrec.reset_sequence_names()
 
     # This method requires two inputs.
     if not (query and target):
-        utils.error(f"Please specify both a QUERY and a TARGET")
+        utils.error(f"Please specify a TARGET and a QUERY")
 
     if global_:
         mode = const.GLOBAL_ALIGN
@@ -343,34 +354,33 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
         mode = const.GLOBAL_ALIGN
 
     # A parameter for each record.
-    param1 = objects.Param(acc=query, protein=protein, translate=translate, pep1=pep1, pep3=pep3,
-                           start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
+    common = dict(
+        protein=protein, translate=translate, mutations=mutations, fasta=True, pep1=pep1, pep3=pep3,
+        table=table, strict=strict, start=start, end=end, gap_open=gap_open, gap_extend=gap_extend,
+        mode=mode
+    )
+    param_t = objects.Param(acc=target, **common)
 
-    param2 = objects.Param(acc=target, protein=protein, translate=translate,
-                           start=start, end=end, gap_open=gap_open, gap_extend=gap_extend, mode=mode)
+    param_q = objects.Param(acc=query, **common)
 
     # Get the JSON data.
-    param1.json = storage.get_json(param1.acc, inter=inter, strict=True)
-    param2.json = storage.get_json(param2.acc, inter=inter, strict=True)
+    param_t.json = storage.get_json(param_t.acc, inter=inter, strict=True)
+    param_q.json = storage.get_json(param_q.acc, inter=inter, strict=True)
 
     # Each data object may contain several records.
-    for rec1 in param1.json:
-        for rec2 in param2.json:
+    # Will attempt to iterate in pair, it makes sense when two organisms are closely related (strains)
+    for rec1, rec2 in zip(param_q.json, param_t.json):
+        qrecs = fastarec.get_fasta(rec1, param=param_q)
+        trecs = fastarec.get_fasta(rec2, param=param_t)
+        for qseq, tseq in zip(qrecs, trecs):
 
-            qrecs = fastarec.get_fasta(rec1, param=param1)
-            trecs = fastarec.get_fasta(rec2, param=param2)
+            if (len(qseq) > MAX_LEN):
+                utils.error(f"query is longer than maximum: {len(qseq):,} > {MAX_LEN:,}")
 
-            for qseq in qrecs:
-                for tseq in trecs:
+            if (len(tseq) > MAX_LEN):
+                utils.error(f"target sequence is longer than maximum: {len(tseq):,} > {MAX_LEN:,}")
 
-                    if (len(qseq) > MAX_LEN):
-                        utils.error(f"query is longer than maximum: {len(qseq):,} > {MAX_LEN:,}")
-
-                    if (len(tseq) > MAX_LEN):
-                        utils.error(f"target sequence is longer than maximum: {len(tseq):,} > {MAX_LEN:,}")
-
-                    biopython_align(qseq=qseq, tseq=tseq, param=param1, table=table, strict=strict)
-
+            biopython_align(qseq=qseq, tseq=tseq, param=param_q)
 
 
 def main():

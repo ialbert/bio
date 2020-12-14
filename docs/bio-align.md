@@ -9,13 +9,13 @@ Use a specially designed software that relies on heuristics to perform studies n
 Align the DNA corresponding to protein `S`
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 60 --align
+bio ncov:gene:S ratg13:gene:S --end 60 --align
 ```
 
 ## DNA alignment with 1 letter amino acid codes
 
 ```{bash, comment=NA}
-bio ratg13:S ncov:S  --end 60 --align -1
+bio ratg13:gene:S ncov:S  --end 60 --align -1
 ```
 
 Reading frame will follow the slice!
@@ -23,7 +23,7 @@ Reading frame will follow the slice!
 ## DNA alignment with 3 letter amino acid codes
 
 ```{bash, comment=NA}
-bio ratg13:S ncov:S  --end 60 --align -3
+bio ratg13:gene:S ncov:gene:S  --end 60 --align -3
 ```
 
 Reading frame will follow the slice!
@@ -31,13 +31,13 @@ Reading frame will follow the slice!
 ## DNA alignment, tabular output
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 90 --align --table
+bio ncov:gene:S ratg13:gene:S --end 90 --align --table
 ```
 
 ## Align the translated regions
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 90 --translate --align 
+bio ncov:gene:S ratg13:gene:S --end 90 --translate --align 
 ```
 
 ## Align the protein corresponding to gene S
@@ -45,7 +45,7 @@ bio ncov:S ratg13:S --end 90 --translate --align
 The protein sequence is fetched from the data (if exists) and is not a translated DNA. 
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 30 --protein --align 
+bio ncov:gene:S ratg13:gene:S --end 30 --protein --align 
 ```
 
 The slice now applies to the protein sequence.

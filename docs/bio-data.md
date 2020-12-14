@@ -76,6 +76,16 @@ The default action is to view the stored data.  Locally the data is stored in a 
 
     bio ncov | head 
  
+## Filtering data
+
+See the JSON data for features of a certain type
+
+    bio ncov --type CDS
+
+there is a shortcut to type filtering, the above may also be written as:
+
+    bio ncov:CDS
+        
 ## Local data
 
 `bio` can also read and process data from local files. If you have a genbank or fasta file you can use that as input. Here we turn a genbank file into gff:

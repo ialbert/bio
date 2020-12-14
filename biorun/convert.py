@@ -53,6 +53,9 @@ def run(fasta=False, gff=False, genbank=False, fetch=False, update=False, delete
 
     """
 
+    # Reset counter (needed for consistency during testing).
+    jsonrec.reset_counter()
+
     def make_param(acc):
         """
         Creates a parameter for each accession.
@@ -72,8 +75,9 @@ def run(fasta=False, gff=False, genbank=False, fetch=False, update=False, delete
                           complement=complement, origin=origin, name=name,
                           fasta=fasta, type=type, gene=gene, regexp=match, transcribe=transcribe)
 
-        # Fill the json data for the parameter.
-        p.json = storage.get_json(p.acc, seqid=seqid, inter=inter)
+        # Fill the json data for the parameter if not an update
+        if not update:
+            p.json = storage.get_json(p.acc, seqid=seqid, inter=inter)
         return p
 
     # Allow commas in numbers, or sizes like 10Kb

@@ -6,9 +6,6 @@ from biorun.models import jsonrec
 from itertools import count
 
 
-
-
-
 def feature2gff(feat, anchor, allow_parent=True):
     """
     Returns a SeqRecord as an 11 element  GFF3 list .
@@ -61,8 +58,7 @@ def gff_view(params):
             anchor = param.seqid or item['id']
 
             # Subselect by coordinates.
-            feats = jsonrec.filter_features(feats, start=param.start, end=param.end, gene=param.gene, ftype=param.type,
-                                            regexp=param.regexp, name=param.name)
+            feats = jsonrec.filter_features(feats, param=param)
 
             # Generate the gff output
             for feat in feats:

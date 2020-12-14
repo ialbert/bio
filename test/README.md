@@ -34,6 +34,10 @@ Multiple equally scoring alignments:
 
     bio AGGATAGGAG AGGATTAG -i --align -v
 
+Translating global alignemnt:
+
+    bio AATATTAGA AGATGAGAG --align -i -pep1
+ 
 # Taxonomy test
 
     # Flowering plant

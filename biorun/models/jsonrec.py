@@ -12,6 +12,7 @@ from itertools import count
 from collections import defaultdict
 
 from pprint import pprint
+import itertools
 
 try:
     from Bio import SeqIO
@@ -27,12 +28,25 @@ except ImportError as exc:
 logger = utils.logger
 
 COUNTER = count(1)
+SEQNAME = count(1)
+
+# Using this to keep track of unique items that belong to a name.
+UNIQUE = defaultdict(int)
 
 
 # Allow for resetting the global counter. Needed for keeping test labeled consistenly.
 def reset_counter():
-    global COUNTER
+    global COUNTER, UNIQUE
     COUNTER = count(1)
+    UNIQUE = defaultdict(int)
+
+
+def reset_sequence_names():
+    global SEQNAME
+    reset_counter()
+
+    # Adds two default sequences.
+    SEQNAME = itertools.chain(["TARGET", "QUERY"], count(1))
 
 
 def has_feature(item, name="gene"):
@@ -42,7 +56,7 @@ def has_feature(item, name="gene"):
     return item.get(name, [''])[0]
 
 
-def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None, name=None, droporigin=False):
+def filter_features(items, param, droporigin=False):
     """
     Filters features based on various parameters.
     """
@@ -52,27 +66,31 @@ def filter_features(items, start=0, end=None, gene=None, ftype=None, regexp=None
         items = filter(lambda f: f.get('type') != 'region', items)
 
     # Filter by type.
-    if ftype and ftype != "all":
-        valid = set(ftype.split(","))
-        items = filter(lambda f: f.get('type') in valid, items)
+    if param.type and param.type != "all":
+        valid = set(map(lambda x: x.lower(), param.type.split(",")))
+        valid = set(valid)
+        items = filter(lambda f: f.get('type', '').lower() in valid, items)
 
     # Filter by gene.
-    if gene:
-        items = filter(lambda f: gene in f.get("gene", []), items)
+    if param.gene:
+        items = filter(lambda f: param.gene in f.get("gene", []), items)
 
     # Filter by name.
-    if name:
-        items = filter(lambda f: name in f.get("name", []), items)
+    if param.name:
+        items = filter(lambda f: param.name in f.get("name", []), items)
 
+    # Filter by external attributes.
+    if param.match_field:
+        items = filter(lambda f: param.match_value in f.get(param.match_field, []), items)
 
-    # Filter by coordinates.
-    if start or end:
-        end = sys.maxsize if end is None else end
-        items = filter(lambda f: start <= f.get('end') and end >= f.get('start'), items)
+    # Filter by coordinates. Fasta files are cut by sequence.
+    if (param.start or param.end) and not param.fasta:
+        param.end = sys.maxsize if param.end is None else param.end
+        items = filter(lambda f: param.start <= f.get('end') and param.end >= f.get('start'), items)
 
     # Filters by matching a regular expression
-    if regexp:
-        items = filter(lambda f: regexp.search(str(f)), items)
+    if param.regexp:
+        items = filter(lambda f: param.regexp.search(str(f)), items)
 
     return items
 
@@ -166,7 +184,7 @@ def get_translation_records(item, param):
     feats = filter(has_translation, feats)
 
     # Additional filters that may have been passed.
-    feats = filter_features(feats, gene=param.gene, ftype=param.type, name=param.name, regexp=param.regexp)
+    feats = filter_features(feats, param=param)
 
     # Hoist the variables out.
     start, end = param.start, param.end
@@ -215,11 +233,17 @@ def get_json_features(data):
         # Used for hierachical data.
         parent_id = None
 
+        gene_id = transcript_id = None
+
         # Hierarchical data produce a parent feature.
         if ftype == 'mRNA' or ftype == 'CDS':
 
             # Child nodes will track parent.
             parent_id = feature_id
+
+            # The GenBank nomenclature does not follow the Sequence Ontology,
+            # CDS and exons are both considered to be part of mRNA.
+            # In our model we reparent exons to transcripts and CDS to mRNA regions.
 
             # Set the parent/child types.
             if ftype == 'mRNA':
@@ -228,6 +252,10 @@ def get_json_features(data):
             else:
                 # Make a new parent for CDS regions.
                 parent_type, location_type = 'mRNA', 'CDS'
+
+            # Figure out the gene and transcripts ids.
+            gene_id = feat.get("locus_tag") or feat.get("gene") or parent_id
+            transcript_id = feat.get("protein_id") or parent_id
 
             # Copy the attributes
             parent_feat = dict(feat)
@@ -245,8 +273,11 @@ def get_json_features(data):
                 # Assign the parent.
                 loc_feat['parent_id'] = parent_id
 
-                # Add a gene id attribute.
-                loc_feat['gene_id'] = feat.get("locus_tag", ["missing"])
+                # Add a gene and transcript id attributes.
+                if gene_id:
+                    loc_feat['gene_id'] = gene_id
+                if transcript_id:
+                    loc_feat['transcript_id'] = transcript_id
 
             loc_feat['type'] = location_type
             loc_feat['start'], loc_feat['end'], loc_feat['strand'] = start, end, strand
@@ -262,7 +293,7 @@ def get_feature_records(data, param):
     feats = data[const.FEATURES]
 
     # Filter the features.
-    feats = filter_features(feats, gene=param.gene, ftype=param.type, regexp=param.regexp, name=param.name, droporigin=True)
+    feats = filter_features(feats, param=param, droporigin=True)
 
     # We can extract DNA sequences from this if needed.
     origin = data[const.ORIGIN]
@@ -279,7 +310,7 @@ def get_feature_records(data, param):
         # Concatenate locations
         locations = f.get("location", [])
 
-        # The sequence for the feature.
+        # Build the sequence for the record.
         dna = Seq('')
         for x, y, strand in locations:
             chunk = Seq(origin[x - 1:y])
@@ -287,18 +318,19 @@ def get_feature_records(data, param):
                 chunk = chunk.reverse_complement()
             dna += chunk
 
-        # Figure out description for slices.
+        # Initialize the description
+        desc = [f['type']]
+
+        # Once modified we don't keep the sequence attributes.
         if start or end:
             _end = len(dna) if end is None else end
-            desc = [f'[{start + 1}:{_end}]']
-        else:
-            desc = []
+            desc.append(f'[{start + 1}:{end}]')
 
         # Slice the resulting DNA sequence.
         seq = dna[start:end]
 
         try:
-            # Preforme reverse complement if needed.
+            # Perform sequence transformation if needed.
             if param.revcomp:
                 seq = seq.reverse_complement()
                 desc.append("reverse complemented")
@@ -322,8 +354,10 @@ def get_feature_records(data, param):
         except Exception as exc:
             utils.error(exc)
 
+        desc.append(make_attr(f))
+
         # Make a description
-        desc = ", ".join(desc) if desc else rec_desc(f)
+        desc = " ".join(desc) if desc else rec_desc(f)
 
         # Build the sequence record.
         rec = SeqRecord(seq, id=name, description=desc)
@@ -347,14 +381,17 @@ def get_origin(item, param):
     text = item[const.ORIGIN][param.start:param.end]
     seq = Seq(text)
 
+    # Translates the origin.
     if param.translate:
         seq = seq.translate() if param.translate else seq
 
+    # Fill the sequence attributes.
     desc = item[const.DEFINITION]
     seqid = item[const.SEQID]
     locus = item[const.LOCUS]
     seqid = param.seqid or seqid
 
+    # Create the sequence record.
     rec = SeqRecord(seq, id=seqid, name=locus, description=desc)
 
     yield rec
@@ -362,7 +399,7 @@ def get_origin(item, param):
 
 def json_ready(value):
     """
-    Serializes values to a type that can be turned into JSON.
+    Serializes elements in containers to a type that can be turned into JSON.
     """
 
     # The type of of the incoming value.
@@ -383,40 +420,53 @@ def json_ready(value):
     return value
 
 
-UNIQUE = dict()
+def get_next_count(label, ftype):
+    """
+    Counts
+    """
+    global UNIQUE
+    key = f"{label}-{ftype}"
+    UNIQUE[key] += 1
+    return UNIQUE[key]
 
 
 def fill_name(f):
     """
     Attempts to generate an unique id and a parent from a BioPython SeqRecord.
+    Mutates the feature dictionary passed in as parameter.
     """
     global UNIQUE
 
+    # Get the type
     ftype = f['type']
 
-    uid = name = ''
+    # Get gene name
+    gene_name = first(f, "gene")
 
-    # Dealing with mRNA
+    # Will attempt to fill in the uid from attributes.
+    uid = ''
+
+    # Deal with known types.
     if ftype == 'gene':
-        name = first(f, "gene")
-        uid = first(f, "locus_tag")
+        name = gene_name
+        uid = first(f, "locus_tag") or gene_name
     elif ftype == 'CDS':
-        name = first(f, "protein_id")
-        uid = name
+        count = get_next_count(ftype=ftype, label=gene_name)
+        uid = first(f, "protein_id") or f"{gene_name}-CDS-{count}"
+        name = uid
     elif ftype == 'mRNA':
-        name = first(f, "transcript_id")
-        uid = name
+        count = get_next_count(ftype=ftype, label=gene_name)
+        uid = first(f, "transcript_id") or f"{gene_name}-mRNA-{count}"
+        name = uid
     elif ftype == "exon":
-        name = first(f, "gene")
+        name = gene_name
     else:
-        name = first(f, "organism") or first(f, "protein_id") or first(f, "transcript_id") or ftype
+        name = first(f, "organism") or None
 
-    # Unique id.
-    uid = uid or next(COUNTER)
-
+    # Set the unique identifier.
     f['id'] = uid or f"{ftype}-{next(COUNTER)}"
 
-    # Feature name
+    # Set the feature name.
     f['name'] = name or ftype
 
     return f
@@ -428,12 +478,16 @@ def convert_genbank(recs, seqid=None):
     """
     global COUNTER
 
+    # Start the counter from the one.
+    reset_counter()
+
     # The outer dictionary containing multiple records.
     data = []
 
+    count = 0
     # Add each record separately.
     for rec in recs:
-
+        count += 1
         # Each individual SeqRecords is a dictionary.
         item = dict()
 
@@ -473,14 +527,14 @@ def convert_genbank(recs, seqid=None):
             location = [(loc.start + 1, loc.end, loc.strand) for loc in feat.location.parts]
 
             # Feature attributes
-            attrs = dict(id='', name='', start=start, end=end, type=ftype, strand=strand, location=location,
+            attrs = dict(type=ftype, name='', id='', start=start, end=end, strand=strand, location=location,
                          operator=oper)
 
             # Fills in the additional qualifiers.
             for (k, v) in feat.qualifiers.items():
                 attrs[k] = json_ready(v)
 
-            # Correct uid, parent and name
+            # Adjust uid, parent and name using the attributes.
             attrs = fill_name(attrs)
 
             # Append the attributes as a record.
@@ -519,11 +573,11 @@ def make_jsonrec(seq, seqid=None):
     """
     Makes a simple JSON representation for a text
     """
-    count = next(COUNTER)
-    name = f"S{count}"
+    name = f"{next(SEQNAME)}"
+    uid = seqid or f"{name}"
     data = []
     item = dict()
-    item[const.SEQID] = seqid or f"S{count}"
+    item[const.SEQID] = uid
     item[const.LOCUS] = ''
     item[const.DEFINITION] = ''
     item[const.ORIGIN] = str(seq)
@@ -531,12 +585,13 @@ def make_jsonrec(seq, seqid=None):
     oper = None,
     location = [[start, end, strand]]
     ftype = "sequence"
-    attrs = dict(locus_tag=[name], start=start, end=end, type=ftype, strand=strand, location=location, operator=oper,
-                 name=name, id=name)
+    attrs = dict(start=start, end=end, type=ftype, strand=strand, location=location, operator=oper,
+                 name=uid, id=uid)
     item[const.FEATURES] = [
         attrs
     ]
     data.append(item)
+
     return data
 
 
@@ -558,8 +613,7 @@ def json_view(params):
             # Selects individual features.
             for item in param.json:
                 feats = item[const.FEATURES]
-                feats = filter_features(feats, start=param.start, end=param.end, ftype=param.type, gene=param.gene,
-                                        regexp=param.regexp)
+                feats = filter_features(feats, param=param)
                 text = json.dumps(list(feats), indent=4)
                 print(text)
 
