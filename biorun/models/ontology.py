@@ -419,7 +419,7 @@ def plot_term(query, names, terms, nodes, back_prop):
 
     collect = []
 
-    # Only plot
+    # Filter for specific edge when plotting GO terms.
     etype = 'is_a' if uid.startswith('GO') else None
     walk_tree(nodes=back_prop, start=uid, collect=collect, etype=etype)
 
