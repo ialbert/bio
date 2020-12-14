@@ -1,4 +1,4 @@
-# Convert to JSON {#bio-json}
+# The JSON format {#bio-json}
 
 `bio` obtains data from NCBI and transforms it into an internal, simpler format. One would only need to process this format to provide functionality that is not yet offered in `bio` 
 
@@ -7,7 +7,7 @@
 Get SARS-COV-2 data and rename it to `ncov`:
 
 ```{bash, comment=NA}
-    bio NC_045512 --fetch --rename ncov
+bio NC_045512 --fetch --rename ncov
 ```
 
 ### The GenBank data
@@ -15,7 +15,7 @@ Get SARS-COV-2 data and rename it to `ncov`:
 Explore the contents of the file downloaded from NCBI
 
 ```{bash, comment=NA}
-bio ncov --genbank | head 
+bio ncov --genbank | head -20
 ```
 
 ### JSON data representation
@@ -23,15 +23,7 @@ bio ncov --genbank | head
 See the transformed GenBank file as the JSON representation:
 
 ```{bash, comment=NA}
-bio ncov | head
-```
-
-### The JSON for a feature
-  
-Filter the internal representation for a type and a gene name:
-  
-```{bash, comment=NA}
-bio ncov --type CDS --gene S | head 
+bio ncov --json | head -36
 ```
 
 ## References

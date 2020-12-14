@@ -45,8 +45,6 @@ SUB_COMMANDS = [
 
 ]
 
-ALIGN_COMMAND, TAXON_COMMAND, DBLINK_COMMAND, ONTOLOGY_COMMAND = "--align", "--taxon", "--sra", "--define"
-
 SKIP_GFF_ATTR = {"id", "parent_id", "name", "type", "start", "end", "location", "translation", "strand", "operator"}
 
 # Guess accession numbers that are proteins based on start letters
@@ -61,6 +59,9 @@ NCBI_PROTEIN_CODES = {"AP", "NP", "YP", "XP", "WP", "AK"}
 NCBI_NUCLEOTIDE_CODES = {"NM", "NX", "YP", "XP", "WP", "AK"}
 
 BUCKET_NAME = "biostore-bucket-001"
+
+# Types with hierachies
+MULTIPART_TYPES = {"mRNA", "CDS", "ncRNA", "tRNA"}
 
 SEQUENCE_ONTOLOGY = {
     "source": "region",
@@ -83,9 +84,13 @@ COLOR_FOR_TYPE = {
     "stem_loop": "#fa7f72",
     "mature_protein_region": "#CBAEBB",
     "region": "#CECECE",
-    "transcript": "#799351",
+    "mRNA": "#799351",
     "gene": "#cb7a77",
-    "mRNA": "#7a77cb",
+    "transcript": "#79a3b1",
+    "tRNA": "#a685e2",
+    "ncRNA": "#fca3cc",
+    "mobile_element": "#efd9d1",
+    "mRNA_region":"#7a77cb",
 }
 #
 # The GFF attributes generated for a source type.

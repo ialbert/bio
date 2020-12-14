@@ -38,11 +38,10 @@ Type `bio` followed by one or more accession numbers or data names followed by o
     
 ## Subcommands
 
-Certain flags trigger different functionality. We call these flags subcommands:
+Certain flags trigger different functionality. We call these flags subcommands.
 
-Subcommands will have separate help pages:
+Subcommands will have separate help pages that are shown when the command is run with no parameters (or using the `-h` flag)
 
-    bio --align -h
-    bio --taxon -h
-    bio --sra -h
-    
+    bio --fasta
+    bio --align
+    bio --taxon

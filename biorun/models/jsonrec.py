@@ -243,22 +243,24 @@ def get_json_features(data):
         gene_id = transcript_id = None
 
         # Hierarchical data produce a parent feature.
-        if ftype == 'mRNA' or ftype == 'CDS':
+        if ftype in const.MULTIPART_TYPES:
 
             # Child nodes will track parent.
             parent_id = feature_id
 
             # The GenBank nomenclature does not follow the Sequence Ontology,
             # CDS and exons are both considered to be part of mRNA.
-            # In our model we reparent exons to transcripts and CDS to mRNA regions.
+            # In our model we re-parent CDS to mRNA_regions.
 
             # Set the parent/child types.
             if ftype == 'mRNA':
                 # Keep the mRNA as parent of exons.
-                parent_type, location_type = 'transcript', 'exon'
+                parent_type, location_type = 'mRNA', 'exon'
+            elif ftype == 'CDS':
+                parent_type, location_type = "mRNA_region", 'CDS'
+
             else:
-                # Make a new parent for CDS regions.
-                parent_type, location_type = 'mRNA', 'CDS'
+                parent_type, location_type = ftype, 'exon'
 
             # Figure out the gene and transcripts ids.
             gene_id = feat.get("locus_tag") or feat.get("gene") or parent_id
@@ -273,6 +275,7 @@ def get_json_features(data):
         # Generate JSON record for each location separately.
         for start, end, strand in feat["location"]:
             loc_feat = dict(feat)
+
             if parent_id:
                 # Needs a new ID as the parent keeps the original id.
                 loc_feat["id"] = f"{location_type}-{next(counter)}"
@@ -289,6 +292,7 @@ def get_json_features(data):
             loc_feat['type'] = location_type
             loc_feat['start'], loc_feat['end'], loc_feat['strand'] = start, end, strand
             yield loc_feat
+
 
 def modify_record(seq, param):
     """
@@ -334,6 +338,7 @@ def modify_record(seq, param):
         utils.error(exc)
 
     return seq, desc
+
 
 def get_feature_records(data, param):
     """
@@ -483,7 +488,8 @@ def fill_name(f):
     elif ftype == "exon":
         name = gene_name
     else:
-        name = first(f, "organism") or None
+        name = first(f, "organism") or first(f, "transcript_id") or None
+        uid = first(f, "transcript_id")
 
     # Set the unique identifier.
     f['id'] = uid or f"{ftype}-{next(COUNTER)}"
