@@ -88,7 +88,7 @@ def router():
 
     elif const.ENRICH_COMMAND in sys.argv:
         # Run SRA specific functionality.
-        from biorun.models import enrich
+        from biorun.methods import enrich
         sys.argv.remove(const.ENRICH_COMMAND)
         plac.call(enrich.run)
     else:
