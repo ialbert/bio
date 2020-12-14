@@ -443,16 +443,16 @@ def plot_term(query, names, terms, nodes, back_prop):
     grph.node_attr.update(shape="box", style="rounded,filled",
                           fillcolor="beige")
     # highlight the query term
+    name, define = terms.get(uid)
     try:
-        name, define = terms.get(uid)
         node = grph.get_node(frmt(uid, name))
         node.attr.update(fillcolor="plum")
     except Exception as exc:
         logger.error(exc)
         pass
-
+    fname = name.replace(' ', '-')
     grph.layout(prog='dot')
-    grph.draw('file2.pdf')
+    grph.draw(f'{fname}.pdf')
 
     return
 
