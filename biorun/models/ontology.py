@@ -317,10 +317,6 @@ def print_node(uid, name, nodes=None, terms=None, define='', pad='', is_leaf=Fal
 def show_lineage(start, terms, nodes, back_prop):
 
     collect = []
-    parents = back_prop.get(start, [])
-
-    if len(parents) > 1:
-        print("*** More than on path detected, use -P to view all relationships.\n")
 
     walk_tree(nodes=back_prop, start=start, collect=collect, one_pass=True, etype='is_a')
 
@@ -337,6 +333,10 @@ def show_lineage(start, terms, nodes, back_prop):
                        define=define,
                        pad=pad, is_leaf=is_leaf,
                        nodes=nodes, terms=terms)
+
+    parents = back_prop.get(start, [])
+    if len(parents) > 1:
+        print("*** More than on path detected, use -P to view all relationships.\n")
 
     return
 
@@ -417,29 +417,32 @@ def plot_term(query, names, terms, nodes, back_prop):
 
     collect = []
 
-    # Filter for specific edge when plotting GO terms.
-    etype = 'is_a' if uid.startswith('GO') else None
-    walk_tree(nodes=back_prop, start=uid, collect=collect, etype=etype)
+    walk_tree(nodes=back_prop, start=uid, collect=collect)
 
     grph = pgv.AGraph(directed=True)
 
+    # Iterate through nodes and build tree.
     for item in collect:
+        # Get all children for this node present in tree
         children = nodes.get(item, [])
         chls = [c for c in children if c[0] in collect]
         name, define = terms.get(item)
+
+        # Pair item with each child as an edge.
         for child in chls:
             chl, etype = child
             cname, cdefine = terms.get(chl)
             color = const.COLOR_MAP.get(etype, "black")
-            grph.add_edge(frmt(item, name), frmt(chl, cname),
-                          label=etype, color=color)
+            # Format the edge to include both id and name.
+            grph.add_edge(frmt(item, name), frmt(chl, cname), label=etype, color=color)
 
         if not children:
             grph.add_node(frmt(item, name))
 
     grph.edge_attr.update(shape="normal", color='black', dir="back")
     grph.node_attr.update(shape="box", style="rounded,filled", fillcolor="beige")
-    # highlight the query term
+
+    # Highlight the query term.
     name, define = terms.get(uid)
     try:
         node = grph.get_node(frmt(uid, name))
@@ -447,9 +450,10 @@ def plot_term(query, names, terms, nodes, back_prop):
     except Exception as exc:
         logger.error(exc)
         pass
+
+    # Construct file name and write to pdf.
     fname = name.replace(' ', '-')
     grph.layout(prog='dot')
-
     print(f"*** Writing plot to {fname}.pdf")
     grph.draw(f'{fname}.pdf')
 
