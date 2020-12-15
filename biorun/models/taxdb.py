@@ -159,18 +159,7 @@ def build_database(fname=TAXDB_NAME, limit=None):
     node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
 
     def save_table(name, obj):
-        size = len(obj)
-        table = open_db(table=name, flag='w')
-        for index, (key, value) in enumerate(obj.items()):
-            table[key] = value
-            if index % CHUNK == 0:
-                perc = round(index / size * 100)
-                print(f"*** saving {name} with {size:,} elements ({perc:.0f}%)", end="\r")
-                table.commit()
-        print(f"*** saved {name} with {size:,} elements (100%)", end="\r")
-        print("")
-        table.commit()
-        table.close()
+        utils.save_table(name=name, obj=obj, fname=SQLITE_DB)
 
     # Save the names into the database
     save_table(NAMES, name_dict)

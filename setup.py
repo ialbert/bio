@@ -22,6 +22,8 @@ setup(
     install_requires=[
         'biopython >= 1.78',
         'requests',
+        'pygraphviz',
+        'pytest'
     ],
 
     entry_points={
