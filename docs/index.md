@@ -85,19 +85,19 @@ bio ncov --gff --type CDS  | head -5
 Now, back to our problem of aligning proteins. Let's align the first 90 base pairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut; instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
 ```{bash, comment=NA}
-bio ncov:gene:S ratg13:S --end 60 --align
+bio ncov:S ratg13:S --end 60 --align
 ```
     
 We can visualize the translation of the DNA into aminoacids with one letter (`-1`) or three-letter codes (`-3`):  
    
 ```{bash, comment=NA}
-bio ncov:gene:S ratg13:gene:S --end 60 --align -1
+bio ncov:S ratg13:S --end 60 --align -1
 ```
     
 If, instead, we wanted to align the 60bp DNA subsequences for `S` protein after their translation into proteins, we could do it like so:
 
 ```{bash, comment=NA}
-bio ncov:gene:S ratg13:gene:S --translate --end 60 --align
+bio ncov:S ratg13:S --translate --end 60 --align
 ```
     
 We can note right away that all differences in the first 60bp of DNA are synonymous substitutions, the protein translations are the same.
