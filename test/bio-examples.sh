@@ -15,29 +15,23 @@ bio ncov --delete
 # Fetch the accession, rename the data and change the sequence id.
 bio NC_045512 --fetch --rename ncov --seqid ncov
 
-# You can also fetch and convert at the same time.
-bio NC_045512 --fasta --end 100 > fetch-convert.fa
-
 # Shows the internal JSON format of the data.
-bio ncov > ncov.json
+bio ncov --json > ncov.json
 
 # Convert to GenBank.
 bio ncov --genbank > ncov.gb
 
 # Convert to FASTA.
-bio ncov --genome > ncov-genome.fa
-
-# Convert to FASTA.
-bio ncov --fasta > ncov-features.fa
+bio ncov --fasta > ncov.fa
 
 # Convert to GFF.
 bio ncov --gff > ncov.gff
 
-# Filter the internal JSON by regular expression match and type.
-bio ncov --gff --match ORF1ab  > match.gff
+# Match with regular expression.
+bio ncov --gff --match phosphoesterase  > match.gff
 
-# Convert to GFF features associated with a gene.
-bio ncov --gff --gene S > gene1.gff
+# Convert features associated with a gene to GFF.
+bio ncov --gff --gene S > gene.gff
 
 # Convert to GFF features that overlap with start to end.
 bio ncov --gff  --start 10000 --end 20000 > overlap.gff
@@ -49,38 +43,38 @@ bio ncov --gff  --start 10,000 --end 20,000 > overlap.gff
 bio ncov --gff  --start 10kb --end 20kb > overlap.gff
 
 # Convert to GFF by type.
-bio ncov --gff  --type CDS > type.gff
+bio ncov --gff  --type CDS > cds.gff
 
 # Convert to GFF by multiple types.
-bio ncov --gff  --type gene,CDS,mRNA > multiple-types.gff
+bio ncov --gff  --type gene,CDS,mRNA > manytypes.gff
 
 # Slice a FASTA to a region and change the sequence id.
-bio ncov --fasta --seqid foo --start 10 --end 20 > fasta-start.fa
+bio ncov --fasta --seqid foo --start 10 --end 20 > start.fa
 
 # Convert to FASTA features with a certain type.
-bio ncov --fasta --type CDS > CDS.fa
+bio ncov --fasta --type CDS -end 10 > cds.fa
 
 # Convert to FASTA a sub region of type filtered data.
-bio ncov --fasta --type gene --end 10 > gene-start.fa
+bio ncov --fasta --type gene --end 10 > start-gene.fa
 
 # Translate the DNA for features that have the type CDS.
-bio ncov --fasta --translate --type CDS > translate.fa
+bio ncov --fasta --translate --type CDS --end 10 > translates.fa
 
 # Extract already translated proteins from the data.
 # The translation attribute must be filled in GenBank.
 bio ncov --fasta --protein --start -10 > protein-end.fa
 
 # Coding sequences for a gene.
-bio ncov --fasta --type CDS --gene S --end 10 > cds-gene-s.fa
+bio ncov --fasta --type CDS --gene S --end 10 > cds-gene.fa
 
 # Shorcut1, all CDS that is labeled with gene=S
-bio ncov:S --fasta --end 10 >  cds-gene-s.fa
+bio ncov:S --fasta --end 10 >  cds-gene.fa
 
 # Another shortcut, this time we access coding sequences by the id.
-bio ncov --id YP_009724390.1 --fasta --end 10 >  cds-gene-s.fa
+bio ncov --id YP_009724390.1 --fasta --end 10 >  cds-gene.fa
 
 # Extract the already traslated protein from the data.
-bio ncov:S --fasta --protein --seqid foo > s_prot_foo.fa
+bio ncov:S --fasta --protein --seqid foo > cds-prot.fa
 
 # Interactive mode. Data obtained from the command line paramter
 bio ATGGGC -i --fasta > inter.fa
@@ -98,23 +92,22 @@ bio ATGGGC -i --reverse --complement --translate --seqid foo >  inter-revcomp2.f
 bio MN996532 --fetch --rename ratg13 --seqid ratg13
 
 # Align the first 200 bp across both genomes.
-bio ncov ratg13 --end 210 --align > align-dna.txt
+bio ncov ratg13 --end 180 --align > align-dna.txt
 
 # Align the DNA for the coding sequences of the S protein.
-bio ncov:S ratg13:S --end 210 --align > align-dna-s.txt
+bio ncov:S ratg13:S --end 180 --align > align-gene.txt
 
 # Align the translated DNA for the coding sequences of the S protein.
-bio ncov:S ratg13:S --end 210 --translate --align > align-translated-s.txt
-
-# Align the already translated proteins.
-# Slice applied to the protein sequence.
-bio ncov:S ratg13:S --protein --end 70 --align > align-protein-s.txt
+bio ncov:S ratg13:S --end 180 --translate --align > align-translation.txt
 
 # Generate one letter peptide trace above the DNA
-bio ratg13:S ncov:S  --start 91 --end 120 --align -1 > align-short-pept.txt
+bio ratg13:S ncov:S  --end 180 --align -1 > align-gene-pept1.txt
 
 # Generate three letter peptide trace above the DNA
-bio ratg13:S ncov:S  --start 91 --end 120 --align -3 > align-long-pept.txt
+bio ratg13:S ncov:S  --end 180 --align -3 > align-gene-pept3.txt
+
+# Align the already translated proteins.
+bio ncov:S ratg13:S --protein --end 60 --align > align-protein.txt
 
 # Local alignment in interactive mode.
 bio THISLINE ISALIGNED  -i --align --local > align-local.txt
@@ -135,7 +128,7 @@ bio 9606 --lineage --taxon > taxon_9606_lineage.txt
 bio 9606 --lineage --flat --taxon > taxon_9606_flat_lineage.txt
 
 # Taxonomy information from data.
-bio ncov ratg13 --taxon > taxon_ncov_ratg13.txt
+bio ncov ratg13 --taxon > taxon_data.txt
 
 # Remove the old ebola if exists.
 bio ebola --delete

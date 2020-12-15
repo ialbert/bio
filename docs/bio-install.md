@@ -45,3 +45,5 @@ Subcommands will have separate help pages that are shown when the command is run
     bio --fasta
     bio --align
     bio --taxon
+    bio --defint
+    bio --sra

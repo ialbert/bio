@@ -1,7 +1,0 @@
-
-# Ident=67(95.7%)  Mis=3(4.3%)  Gaps=0(0.0%)  Target=(1, 70)  Query=(1, 70)  Length=70  Score=323.0  NUC.4.4(11,1)
-
-ncov         ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAA
-             ||||||||||||||||||.|||||||||||||||||.||||.|||||||||||||||||||||||||||| 70
-ratg13       ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAA
-

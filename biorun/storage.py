@@ -277,12 +277,12 @@ def run(fetch=False, update=False, delete=False, list_=False, rename='', seqid='
 
     Valid subcommands:
 
-        --align
-        --fasta
-        --genome
-        --taxon
-        --define
-        --sra
+        bio --align
+        bio --fasta
+        bio --genome
+        bio --taxon
+        bio --define
+        bio --sra
 
     """
 

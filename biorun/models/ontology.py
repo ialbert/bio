@@ -380,8 +380,9 @@ def print_stats(terms):
 @plac.flg('download', "download newest ontological data")
 @plac.flg('so', "Filter query for sequence ontology terms.")
 @plac.flg('go', "Filter query for gene ontology terms.")
+@plac.flg('define', "search ontology for definitions", abbrev='x')
 def run(query="", build=False, download=False, preload=False, so=False, go=False,
-        lineage=False, verbose=False):
+        lineage=False, define=False, verbose=False):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))

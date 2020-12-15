@@ -85,7 +85,7 @@ def gff_view(params):
 def run(protein=False, seqid='', start='', end='', type='', gene='', name='', match='', id_='',
         inter=False, gff=False, verbose=False,  *data):
     """
-    Produces FASTA representations for data.
+    Produces GFF representations for data.
     """
 
     # Set the verbosity
@@ -104,10 +104,7 @@ def run(protein=False, seqid='', start='', end='', type='', gene='', name='', ma
 
         # A simple wrapper class to carry all parameters around.
         p = objects.Param(acc=acc, start=start, end=end, seqid=seqid, protein=protein, name=name, inter=inter,
-                          uid=id_, type=type, gene=gene, regexp=match)
-
-        # Turn off sequence mode.
-        p.genome = p.fasta = False
+                          uid=id_, type=type, gene=gene, regexp=match, record=True)
 
         # Fill the json data for the parameter if not an update
         p.json = storage.get_json(p.acc, seqid=seqid, inter=inter)

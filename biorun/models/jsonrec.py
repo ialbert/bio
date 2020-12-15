@@ -61,8 +61,8 @@ def filter_features(items, param):
     Filters features based on various parameters.
     """
 
-    # Remove source as a valid feature when producing fasta files.
-    if param.fasta:
+    # Remove source as a valid feature when not a data record mode.
+    if not param.record:
         items = filter(lambda f: f.get('type') != 'region', items)
 
     # Filter by element id.
@@ -87,8 +87,8 @@ def filter_features(items, param):
     if param.attr_name:
         items = filter(lambda f: param.attr_value in f.get(param.attr_name, []), items)
 
-    # Filter by coordinates. Fasta files are cut by sequence.
-    if (param.start or param.end) and not param.fasta:
+    # Filter by coordinates. Applies to record types only.
+    if (param.start or param.end) and param.record:
         param.end = sys.maxsize if param.end is None else param.end
         items = filter(lambda f: param.start <= f.get('end') and param.end >= f.get('start'), items)
 
@@ -306,7 +306,7 @@ def modify_record(seq, param):
     desc = []
 
     # Slice the sequence.
-    if start > 0 or end:
+    if start != 0 or end:
         # Don't exceed sequence length.
         end = len(seq) if not end else min(end, len(seq))
         seq = seq[start:end]

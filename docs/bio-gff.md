@@ -19,7 +19,7 @@ Here is a region from the GFF file created with the code above as visualized in 
 knitr::include_graphics('images/gff-model-bio.png', dpi = NA)
 ```
 
-* Exons have `transcript_id` and `gene_id` attributes set.
+* Exons will have `transcript_id` and `gene_id` attributes set.
 * CDS features have `protein_id` and `gene_id` attributes set.
 
 [SO]: http://www.sequenceontology.org/

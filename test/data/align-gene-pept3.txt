@@ -1,0 +1,15 @@
+
+# Ident=164(91.1%)  Mis=16(8.9%)  Gaps=0(0.0%)  Target=(1, 180)  Query=(1, 180)  Length=180  Score=756.0  NUC.4.4(11,1)
+
+             MetPheValPheLeuValLeuLeuProLeuValSerSerGlnCysValAsnLeuThrThrArgThrGlnLeuProProAlaTyrThrAsn
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC
+             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
+             MetPheValPheLeuValLeuLeuProLeuValSerSerGlnCysValAsnLeuThrThrArgThrGlnLeuProProAlaTyrThrAsn
+
+             SerSerThrArgGlyValTyrTyrProAspLysValPheArgSerSerValLeuHisLeuThrGlnAspLeuPheLeuProPhePheSer
+QHR63300.2   TCATCCACCCGTGGTGTCTATTACCCTGACAAAGTTTTCAGATCTTCAGTTTTACATTTAACTCAGGATTTGTTTTTACCTTTCTTCTCC
+             ||.|.|||.||||||||.||||||||||||||||||||||||||.|||||||||||||.|||||||||.|||||.|||||||||||.||| 180
+YP_009724390 TCTTTCACACGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+             SerPheThrArgGlyValTyrTyrProAspLysValPheArgSerSerValLeuHisSerThrGlnAspLeuPheLeuProPhePheSer
+

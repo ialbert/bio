@@ -20,16 +20,15 @@ def get_fasta(item, param):
         from Bio import BiopythonWarning
         warnings.simplefilter('ignore', BiopythonWarning)
 
-    # Interactive mode returns the origin.
-    if param.genome or param.inter:
+    if param.inter:
+        # Interactive mode returns the origin.
         recs = jsonrec.get_origin(item, param=param)
     elif param.protein:
         recs = jsonrec.get_translation_records(item, param=param)
-    elif param.fasta:
+    elif param.features:
         recs = jsonrec.get_feature_records(item, param=param)
     else:
-        # Sanity check to hide tacit falltrough.
-        raise Exception("this is not a valid option")
+        recs = jsonrec.get_origin(item, param=param)
 
     return recs
 
@@ -64,8 +63,6 @@ def fasta_view(params):
 
 
 @plac.pos("data", "data names")
-@plac.flg('genome', "use the origin (genome) sequence", abbrev='g')
-@plac.flg('fasta', "produce FASTA format", abbrev='F')
 @plac.flg('protein', "operate on proteins", abbrev='p')
 @plac.flg('translate', "translate DNA to protein", abbrev='T')
 @plac.flg('transcribe', "transcribe DNA to RNA", abbrev='X')
@@ -81,13 +78,18 @@ def fasta_view(params):
 @plac.flg('reverse', "reverse sequence", abbrev='R')
 @plac.flg('complement', "complement sequence", abbrev='C')
 @plac.flg('revcomp', "reverse complement sequence", abbrev='r')
+@plac.flg('features', "operate on features", abbrev='f')
+@plac.flg('fasta', "produce FASTA format", abbrev='F')
 @plac.flg('verbose', "verbose mode")
-def run(genome=False, fasta=False, protein=False, translate=False, transcribe=False, reverse=False,
+def run(protein=False, translate=False, transcribe=False, reverse=False,
         complement=False, revcomp=False, seqid='', start='', end='', type='', gene='', name='', match='', id_='',
-        inter=False, verbose=False, *data):
+        inter=False, features=False, fasta=False,  verbose=False, *data):
     """
     Produces FASTA representations for data.
     """
+
+    # Turn on features if some parameters are present.
+    features = features or (type or name or match or id_ or protein)
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
@@ -111,7 +113,7 @@ def run(genome=False, fasta=False, protein=False, translate=False, transcribe=Fa
         # A simple wrapper class to carry all parameters around.
         p = objects.Param(start=start, end=end, seqid=seqid, protein=protein, revcomp=revcomp,
                           acc=acc, translate=translate, reverse=reverse, uid=id_,
-                          complement=complement, genome=genome, name=name, inter=inter,
+                          complement=complement, name=name, inter=inter, features=features,
                           fasta=fasta, type=type, gene=gene, regexp=match, transcribe=transcribe)
 
         # Fill the json data for the parameter if not an update

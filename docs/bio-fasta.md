@@ -7,11 +7,21 @@ A GenBank file represents sequence inforamtion in multiple ways:
 
 In `bio` we operate on:
 
-* `--genome` to access the genomic sequence
-* `--fasta` to access the feature sequences
+* `--fasta` to access the genome
+* `--fasta --features` to access the features annotated on the genome
 
-both output are in Fasta format.
+The `--features` flag often  not necessary as   `bio` will set it automatically if it is obvious that the command targets features. For example `--type CDS` will turn on feature rendering mode.
 
+## Shortcuts
+
+A a colon delimited term:
+
+    bio data:name --fasta
+
+is equivalent to: 
+
+    bio data --type CDS --gene name --fasta
+    
 ### Get a dataset
 
 Get SARS-COV-2 data and rename it to `ncov`:
@@ -23,13 +33,13 @@ bio NC_045512 --fetch --rename ncov
 ### Get the sequence for the genome
 
 ```{bash, comment=NA}
-bio ncov --genome | head -3
+bio ncov --fasta | head -3
 ```
 
 ### Manipulate a genomic subsequence
 
 ```{bash, comment=NA}
-bio ncov --genome --start 100 --end 130 --seqid foo 
+bio ncov --fasta --start 100 --end 130 --seqid foo 
 ```
 
 

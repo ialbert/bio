@@ -324,10 +324,11 @@ def print_pairwise(aln, param, index=0, width=90):
 @plac.flg('pep3', "shows a translated peptide with three letter code", abbrev='3')
 @plac.flg('mutations', "show the mutations")
 @plac.flg('align', "switches to alignment subcommand")
+@plac.opt('limit', "how many input sequences to take")
 @plac.flg('verbose', "verbose mode, progress messages printed")
 def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
         protein=False, translate=False, inter=False, table=False, mutations=False, strict=False,
-        pep1=False, pep3=False, align=False, verbose=False, target=None, query=None):
+        pep1=False, pep3=False, align=False, limit=1, verbose=False, target=None, query=None):
     """
     Performs an alignment between the query and target.
     """
@@ -358,7 +359,7 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
     common = dict(
         protein=protein, translate=translate, mutations=mutations, pep1=pep1, pep3=pep3,
         table=table, strict=strict, start=start, end=end, gap_open=gap_open, gap_extend=gap_extend,
-        mode=mode, genome=True,
+        mode=mode
     )
 
     # Create parameters to represent each data.
@@ -366,8 +367,8 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
     param_q = objects.Param(acc=query, **common)
 
     # Fill JSON data for parameters.
-    param_t.json = storage.get_json(param_t.acc, inter=inter, strict=True)
-    param_q.json = storage.get_json(param_q.acc, inter=inter, strict=True)
+    param_t.json = storage.get_json(param_t.acc, inter=inter, strict=True)[:limit]
+    param_q.json = storage.get_json(param_q.acc, inter=inter, strict=True)[:limit]
 
     # Each data object may contain several records.
     #

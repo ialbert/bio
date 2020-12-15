@@ -12,32 +12,36 @@
 [docs]: https://ialbert.github.io/bio/
 [examples]: https://github.com/ialbert/bio/blob/master/test/bio-examples.sh
 
-## Why do we need this software?
+## What does this software do?
 
-If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation and numerous other preparations that slow down your progress. 
+This software was designed to teach bioinformatics concepts.
 
-Time and again I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium.  With `bio` you can write things like this:
+If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, and numerous other preparations that slow down the progress. Simple tasks can take seemingly inordinate number of complicated steps. The `bio` package is meant to solve that tedium.  With `bio` you can write things like this:
 
-    # Fetch the data from NCBI.
+1\. Fetch the data from NCBI.
+
     bio NC_045512 --fetch --rename ncov
     bio MN996532  --fetch --rename ratg13
     
-    # Align the DNA for the S protein.
-    bio ncov:gene:S ratg13:gene:S --end 60 --align
+1\. Align the DNA for the S protein and show the peptide translation with 1 letter peptide code.
+    
+    bio ncov:S ratg13:S --end 60 --align -pep1
 
-to align the first 60 basepairs of the DNA sequence for the coding sequences of the  `S` gene from the SARS-COV-2 novel coronavirus to its closest (known) relative, the bat coronavirus RaTG13. The command above will print:
+to produce 
 
 ```
 # Ident=57(95.0%)  Mis=3(5.0%)  Gaps=0(0.0%)  Target=(1, 60)  Query=(1, 60)  Length=60  Score=273.0  NUC.4.4(11,1)
 
+              M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T
 YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC
              ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||. 60
 QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACT
+              M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T
 ```
 
 If you wanted to align the same sequences as translated proteins `bio` lets you write:
 
-    bio ncov:gene:S ratg13:gene:S --end 60 --translate --align
+    bio ncov:S ratg13:S --end 60 --translate --align
     
 to generate:
 

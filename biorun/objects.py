@@ -12,6 +12,8 @@ class Param(object):
     """
 
     def __init__(self, **kwds):
+
+        # List all values to help editor figure out what are valid.
         self.acc = ''
         self.phase = "1"
         self.seqid = None
@@ -25,10 +27,17 @@ class Param(object):
         self.reverse = self.complement = self.revcomp = self.transcribe = None
         self.gff = self.protein = self.fasta = self.translate = self.mode = None
         self.gene = self.type = self.regexp = None
-        self.genome = False
+
+        # Output data should be a record type (as opposed to a sequence).
+        self.record = False
+
+        # Output features rather than genome.
+        self.features = False
+
         # Searching for attribute matches
         self.attr_name = self.attr_value = None
 
+        # Override values from the constructor.
         self.__dict__.update(kwds)
 
         # Parses out colon from data name if that exists.
@@ -37,31 +46,31 @@ class Param(object):
         # The first element is the accession.
         self.acc = elems[0]
 
-        # Shortcut to types acc:type
+        # Shortcuts: acc:type or acc:key=value
         if len(elems) == 2:
+
+            # We are selecting for features.
+            self.features = True
+
+            # Parse out the components
             tmp, text = elems
 
             # See if the second filed is splittable
             pieces = text.split("=", 1)
 
-            # Shortcuts:
-            # acc:foo ==> --name foo, --type CDS
-            # acc:key=value ==> matches attribute
+            # The "shorter" shortcut.
             if len(pieces) == 1:
                 self.gene = text
+                self.type = "CDS"
             else:
                 field, value = pieces
-                # A few fields are not attributes thus handled differently.
+                # A few fields are special cased.
                 if field.lower() == "name":
                     self.name = value
                 elif field.lower() == "id":
                     self.uid = value
                 else:
                     self.attr_name, self.attr_value = field, value
-
-        # When setting genes select for coding sequences.
-        if self.gene:
-            self.type = "CDS"
 
         # An invalid parameter will be passed down as accession number.
         if self.acc.startswith("-"):
