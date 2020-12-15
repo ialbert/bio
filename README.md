@@ -16,18 +16,18 @@
 
 This software was designed to teach bioinformatics concepts.
 
-If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, and numerous other preparations that slow down the progress. Simple tasks can take seemingly inordinate number of complicated steps. The `bio` package is meant to solve that tedium.  With `bio` you can write things like this:
+If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, and various other preparations that slow down progress. 
 
-1\. Fetch the data from NCBI.
+Even well defined, supposedly simple tasks can take seemingly inordinate number of complicated steps. The `bio` package is meant to solve that tedium.  With `bio` you can write things like this:
 
     bio NC_045512 --fetch --rename ncov
     bio MN996532  --fetch --rename ratg13
     
-1\. Align the DNA for the S protein and show the peptide translation with 1 letter peptide code.
-    
+to fetch the data from NCBI and rename data to more meaningful labels, then write:
+
     bio ncov:S ratg13:S --end 60 --align -pep1
 
-to produce 
+to align the DNA for the S protein while also showing the translation with 1 letter peptide code:
 
 ```
 # Ident=57(95.0%)  Mis=3(5.0%)  Gaps=0(0.0%)  Target=(1, 60)  Query=(1, 60)  Length=60  Score=273.0  NUC.4.4(11,1)
@@ -39,7 +39,7 @@ QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACT
               M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T
 ```
 
-If you wanted to align the same sequences as translated proteins `bio` lets you write:
+`bio` was designed to use words that make sense: align, translate, complement, protein, taxon, type etc. If you wanted to align the same sequences when translated into proteins `bio` lets you write:
 
     bio ncov:S ratg13:S --end 60 --translate --align
     
