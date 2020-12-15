@@ -11,8 +11,8 @@ rmd_files: [
   "bio-sra.md",
   "bio-comm.md",
   "bio-tips.md",
-  "bio-related.md",
   "bio-examples.md",
+  "bio-related.md",
 ]
 
 book_filename: bio

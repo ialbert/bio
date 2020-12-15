@@ -1,50 +1,87 @@
 # General tips {#bio-tips}
 
-Effort has been devoted to make the command line a bit more user friendly.
+Substantial effort has been devoted to making the command line more error-tolerant and user friendly.
 
-## Interactive mode
+## See the help
 
-Passing the `-i` flag allows data to be passed from command line. For example:
+Each command, when invoked with no parameters, will produce help:
 
-```{bash, comment=NA}
-bio --translate -i ATGATTATATATA 
-```
+    bio --align 
+    
+## Print more information
 
-Note how the input was read as parameters from the  command line. We make use of this feature when exploring simple data in an explicit way.
+Use the `-v` flag to produce verbose outputs for each command.
 
-## The paramter format is forgiving
+## Parameter order 
+
+You may write:
+
+    bio ncov --fasta --type CDS --end 10 
+
+or:
+
+    bio --type CDS --end 10 --fasta ncov 
+
+both will work and produce the same results.
+
+## Parameter action
+
+Each parameter will be applied sequentially in an internally determined order that makes the most sense: 
+
+    bio ncov --fasta --type CDS --end 10  --translate
+
+will produce the same results as:
+
+    bio ncov --translate --end 10 --type CDS --fasta
+    
+Both commands first select `CDS` types, apply a slice on each sequence, and then use the translation operator.
+ 
+## Multiple accession numbers
+   
+Many commands allow using multiple accession numbers; in that case, the operations will take place sequentially on each.
+
+    bio NC_045512 MN996532 --fetch 
+  
+## Parameter forms
 
 You may use single or double dashes on parameters:
 
     bio ncov --fasta --end 100
     
-or:
+The command above is equivalent to:
 
     bio ncov -fasta -end 100
     
-both will work the same way.
+## Interactive mode
+
+Passing the `-i` flag allows data to be passed from the command line. For example:
+
+```{bash, comment=NA}
+bio --translate -i ATGATTATATATA 
+```
+
+Note how the input was read as parameters from the command line. We make use of this feature when explicitly exploring simple data.
 
 ## The coordinate system is 1 based
 
-Coordinates are 1 based (inclusive on both ends) identical to GFF coordinate formats.
+Coordinates are one based (inclusive on both ends) identical to GFF coordinate formats.
 
-Numbers for start and end coordinates may be written in human friendly form, like so: `5000` or `5,000` or `5K` or `5KB`.
-  
-## The order of operations is pre-determined
+    bio ncov -fasta -start 10 --end 20
+    
+The interval of 10 to 20 is 11 bases long! To make a single base long slice start and end on the same value:
 
-You may combine multiple parameters, in that case each condition will be applied sequentially in a internally detrermined order
-that is independent of the order the parameters are listed. 
+    bio ncov -fasta -start 10 --end 10
 
-For example when using a `--start` and `--end` and `--translate` the selection by start and end takes place on the DNA then the resulting sequence is translated into aminoacids.
- 
-The same start, end combo followed by `--protein` applies the slice on the protein sequences as aminoacids.
-  
-## You may use multiple accession numbers
-   
-Many commands allow using multiple accession numbers, in that case the operations will take place sequentially on each.
+## Number formatting
 
-    bio NC_045512 MN996532 --fetch 
-  
-## Generate more verbose outputs
+Numbers for start and end coordinates may be written in human-friendly forms, like so: 
 
-Use the `-v` flag to produce verbose outputs for each command.
+    bio ncov -fasta -start 1kb --end 2kb 
+
+accepted formats:
+
+* `5000` 
+* `5,000`
+* `5k` or `5kb`
+* `5K` or `5KB`  
+

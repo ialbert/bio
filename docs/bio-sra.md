@@ -1,4 +1,4 @@
-# Searching SRA {#bio-sra}
+# Sequencing data {#bio-sra}
 
 `bio` has support to automatically query your data for additional information at sra.
 
