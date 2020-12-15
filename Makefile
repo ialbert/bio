@@ -28,7 +28,8 @@ sync:
 
 # Serve the documentation as a webpage.
 serve:
-	Rscript -e "bookdown::serve_book(dir='docs', preview=TRUE, output_dir='.html', port=8000)"
+	(cd docs && rm -rf .book)
+	Rscript -e "bookdown::serve_book(dir='docs', preview=TRUE, output_dir='.book', port=8000)"
 
 # Clean the files.
 clean:
