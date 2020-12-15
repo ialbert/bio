@@ -1,22 +1,27 @@
 """
-Deals with the data storage.
+Handles functionality related to data storege.
 """
-import sys, os, glob, re, gzip, json, pickle
-from biorun import const, utils
+import sys, os, glob, re, gzip, json
+from biorun import const, utils, objects
 from biorun.models import jsonrec
+import biorun.libs.placlib as plac
 
 # Module level logger.
 logger = utils.logger
 
+# A nicer error message on incorrect installation.
 try:
     from Bio import SeqIO
     from Bio import Entrez
 except ImportError as exc:
     print(f"*** Error: {exc}", file=sys.stderr)
-    print(f"*** Please install biopython: conda install -y biopython==1.76", file=sys.stderr)
+    print(f"*** This program requires biopython", file=sys.stderr)
+    print(f"*** Install: conda install -y biopython>=1.78", file=sys.stderr)
     sys.exit(-1)
 
-Entrez.email = 'bio@bio.com'
+# This is to silence Biopython warning.
+Entrez.email = 'not set'
+
 
 def resolve_fname(name, format='json'):
     """
@@ -28,7 +33,7 @@ def resolve_fname(name, format='json'):
     return fname
 
 
-def delete(params):
+def delete_data(params):
     """
     Deletes data under a filename.
     """
@@ -49,6 +54,7 @@ def read_json_file(fname):
     data = json.load(fp)
     fp.close()
     return data
+
 
 def save_json_file(fname, data):
     """
@@ -72,6 +78,7 @@ def change_seqid(json_name, seqid):
         fp = utils.gz_write(json_name)
         json.dump(data, fp)
         fp.close()
+
 
 def ncbi_efetch(name, gbk_name, db=None):
     """
@@ -99,7 +106,7 @@ def ncbi_efetch(name, gbk_name, db=None):
     utils.save_stream(stream=stream, fname=gbk_name)
 
 
-def fetch(params, seqid=None, db=None, update=False):
+def fetch_data(params, seqid=None, db=None, update=False):
     """
     Obtains data from NCBI
     """
@@ -125,10 +132,10 @@ def fetch(params, seqid=None, db=None, update=False):
         # Save JSON file.
         save_json_file(fname=json_name, data=data)
 
-def genbank_view(params):
 
+def genbank_view(params):
     for param in params:
-        altname =  resolve_fname(param.acc, format="gb")
+        altname = resolve_fname(param.acc, format="gb")
 
         if os.path.isfile(param.acc):
             stream = utils.gz_read(param.acc)
@@ -139,7 +146,7 @@ def genbank_view(params):
             utils.error(f"data not found: {param.acc}")
 
         for line in stream:
-            print (line, end='')
+            print(line, end='')
 
 
 def get_json(name, seqid=None, update=False, inter=False, strict=False):
@@ -188,8 +195,8 @@ def get_json(name, seqid=None, update=False, inter=False, strict=False):
 
     return None
 
-def rename(params, seqid=None, newname=None):
 
+def rename_data(params, seqid=None, newname=None):
     # Empty list
     if not params:
         return
@@ -207,8 +214,8 @@ def rename(params, seqid=None, newname=None):
             if seqid:
                 change_seqid(dest, seqid=seqid)
             # Link the GenBank file as well.
-            src_gb =  resolve_fname(name=name, format="gb")
-            dst_gb =  resolve_fname(name=newname, format="gb")
+            src_gb = resolve_fname(name=name, format="gb")
+            dst_gb = resolve_fname(name=newname, format="gb")
             utils.symlink(src_gb, dst_gb)
         else:
             logger.error(f"not in storage: {src}")
@@ -251,3 +258,81 @@ def print_data_list():
         line = "\t".join(row)
         print(line)
 
+
+@plac.pos("data", "data names")
+@plac.flg('fetch', "download data as accessions")
+@plac.flg('list_', "list data in storage")
+@plac.flg('delete', "delete data in storage")
+@plac.flg('update', "updates data in storage")
+@plac.opt('rename', "rename the data")
+@plac.opt('seqid', "set the sequence id of the data")
+@plac.flg('protein', "access the protein database")
+@plac.flg('genbank', "show the genbank file for the data", abbrev='G')
+@plac.flg('json_', "show the json file for the data", abbrev='J')
+@plac.flg('verbose', "verbose mode")
+def run(fetch=False, update=False, delete=False, list_=False, rename='', seqid='', protein=False, genbank=False,
+        json_=False, verbose=False, *data):
+    """
+    Manages data in storage.
+
+    Valid subcommands:
+
+        bio --align
+        bio --fasta
+        bio --genome
+        bio --taxon
+        bio --define
+        bio --sra
+
+    """
+
+    # Set the verbosity
+    utils.set_verbosity(logger, level=int(verbose))
+
+    # Reset counter (needed for consistency during testing).
+    jsonrec.reset_counter()
+
+    def make_param(acc):
+        """
+        Creates a parameter for each accession.
+
+        """
+        # Set the verbosity
+        utils.set_verbosity(logger, level=int(verbose))
+
+        # A simple wrapper class to carry all parameters around.
+        p = objects.Param(seqid=seqid, rename=rename, acc=acc, start=1, protein=protein)
+
+        # Fill the json data for the parameter if it is not updating.
+        if not update:
+            p.json = get_json(p.acc, seqid=seqid)
+
+        return p
+
+    # Each accession gets a parameter list.
+    params = list(map(make_param, data))
+
+    # Delete should be the first to execute.
+    if delete:
+        delete_data(params)
+
+    # Fetch needs to be performed before renaming.
+    if fetch:
+        db = "protein" if protein else "nuccore"
+        fetch_data(params, seqid=seqid, db=db, update=update)
+
+    # Renaming needs to be performed before listing.
+    if rename:
+        rename_data(params, seqid=seqid, newname=rename)
+
+    # List the available data.
+    if list_:
+        print_data_list()
+
+    # Prints the GenBank content of the data.
+    if genbank:
+        genbank_view(params)
+
+    # Prints the JSON format of the data.
+    if json_:
+        jsonrec.json_view(params)

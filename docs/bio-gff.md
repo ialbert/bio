@@ -19,21 +19,7 @@ Here is a region from the GFF file created with the code above as visualized in 
 knitr::include_graphics('images/gff-model-bio.png', dpi = NA)
 ```
 
-The features are explicit, well separated, colored by type, and easier to see and interpret. 
-Below is the same region of the GFF file as downloaded from NCBI. We believe it is more difficult to understand.
-
-```{r fig.align='center', echo=FALSE}
-knitr::include_graphics('images/gff-model-ncbi.png', dpi = NA)
-```
-
-`bio` follows the definitions in the [Sequence Ontology][SO]. In the GFF files created with `bio` an exon will parented to a transcript, a CDS will belong to an mRNA. NCBI will use the mRNA as the parent for both types.
-
-    gene --> transcript --> exon
-    gene --> mRNA --> CDS
-
-Other considerations:
-
-* Exons have `transcript_id` and `gene_id` attributes set.
+* Exons will have `transcript_id` and `gene_id` attributes set.
 * CDS features have `protein_id` and `gene_id` attributes set.
 
 [SO]: http://www.sequenceontology.org/
@@ -43,7 +29,7 @@ Other considerations:
 Get SARS-COV-2 data and rename it to `ncov`:
 
 ```{bash, comment=NA}
-    bio NC_045512 --fetch --rename ncov
+bio NC_045512 --fetch --rename ncov
 ```
 
 ## Convert all features to GFF:
@@ -55,7 +41,7 @@ bio ncov --gff | head -5
 ## Convert to GFF only the features with type `CDS`
 
 ```{bash, comment=NA}
-bio ncov --gff --type CDS | head -5
+bio ncov --gff --type transcript,exon,mRNA,CDS | head -5
 ```
 
 ## Convert to GFF only the features tagged with gene `S`
@@ -64,8 +50,3 @@ bio ncov --gff --type CDS | head -5
 bio ncov --gff --gene S | head -5
 ```
 
-## Convert to GFF only the features that overlap a interval
-
-```{bash, comment=NA}
-bio ncov --gff --start 2000 --end 3000 | head -5
-```

@@ -321,16 +321,18 @@ def query(taxid, names, graph):
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('update', "obtain the latest taxdump from NCBI")
 @plac.flg('preload', "loads entire database in memory")
-@plac.flg('list_', "lists database content")
+@plac.flg('list_', "lists database content", abbrev='A')
 @plac.flg('flat', "flattened output")
-@plac.flg('lineage', "show the lineage for a taxon term", abbrev="L")
+@plac.flg('lineage', "show the lineage for a taxon term", abbrev="l")
 @plac.opt('indent', "the indentation string")
 @plac.opt('sep', "separator string", abbrev="S")
-@plac.opt('limit', "limit the number of entries", type=int, abbrev='T')
+@plac.opt('limit', "limit the number of entries", type=int, abbrev='X')
 @plac.flg('download', "downloads the database from the remote site", abbrev='G')
+@plac.flg('info', "prints taxonomy database info", abbrev='I')
+@plac.flg('taxon', "run the taxonomy subcommand", abbrev='T')
 @plac.flg('verbose', "verbose mode, prints more messages")
 def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, update=False,
-        preload=False, download=False,
+        preload=False, download=False, taxon=False, info=False,
         verbose=False, *words):
     global SEP, INDENT
 

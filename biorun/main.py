@@ -1,7 +1,7 @@
 """
 The main job runner. Register functions here.
 """
-import sys
+import sys, importlib
 import biorun.libs.placlib as plac
 
 from biorun import utils, const
@@ -44,6 +44,9 @@ def proofreader(value):
 
 
 def interrupt(func):
+    """
+    Keeps from raising tracebacks on keyboard interrupts.
+    """
     def wrapper(*args, **kwargs):
         try:
             func(*args, **kwargs)
@@ -52,55 +55,45 @@ def interrupt(func):
     return wrapper
 
 @interrupt
-def router():
+def router(arglist=[]):
     """
     Routes the tasks based on incoming parameters.
     """
 
     # Allow multiple forms of parameters to be used.
-    sys.argv = list(map(proofreader, sys.argv))
+    arglist = sys.argv = list(map(proofreader, sys.argv))
 
     # Delayed imports to allow other functionality to work even when some required libraries may be missing.
 
-    if const.ALIGN_COMMAND in sys.argv:
-        # Run alignment related functionality..
-        sys.argv.remove(const.ALIGN_COMMAND)
-        from biorun.methods import align
-        plac.call(align.run)
+    # Check the presence of subcommands
+    for cmd, mod in const.SUB_COMMANDS:
 
-    elif const.TAXON_COMMAND in sys.argv:
-        # Run taxonomy related functionality.
-        from biorun.models import taxdb
-        sys.argv.remove(const.TAXON_COMMAND)
-        plac.call(taxdb.run)
+        # Found subcommand in arguments.
+        if cmd in arglist:
 
-    elif const.DBLINK_COMMAND in sys.argv:
-        # Run SRA specific functionality.
-        from biorun.models import dblink
-        sys.argv.remove(const.DBLINK_COMMAND)
-        plac.call(dblink.run)
+            # Add the help flag if no other information is present beyond subcommand.
+            if len(arglist) == 2:
+                arglist.append("-h")
 
-    elif const.ONTOLOGY_COMMAND in sys.argv:
-        # Run SRA specific functionality.
-        from biorun.models import ontology
-        sys.argv.remove(const.ONTOLOGY_COMMAND)
-        plac.call(ontology.run)
+            # Import the module.
+            lib = importlib.import_module(mod)
 
-    elif const.ENRICH_COMMAND in sys.argv:
-        # Run SRA specific functionality.
-        from biorun.methods import enrich
-        sys.argv.remove(const.ENRICH_COMMAND)
-        plac.call(enrich.run)
-    else:
-        # Default action is to convert a file.
-        from biorun import convert
+            # Execute the module.
+            plac.call(lib.run)
 
-        # Add the help flag if no other information is present.
-        if len(sys.argv) == 1:
-            sys.argv.append("-h")
+            # Only one module may be called
+            return
 
-        # Delegate parameter parsing to converter.
-        plac.call(convert.run)
+    # Default action, no subcommand was passed.
+
+    from biorun import storage
+
+    # Add the help flag if no other information is present.
+    if len(sys.argv) == 1:
+        sys.argv.append("-h")
+
+    # Delegate parameter parsing to converter.
+    plac.call(storage.run)
 
 
 if __name__ == '__main__':

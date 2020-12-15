@@ -1,9 +1,0 @@
-
-# Ident=26(86.7%)  Mis=4(13.3%)  Gaps=0(0.0%)  Target=(1, 30)  Query=(1, 30)  Length=30  Score=114.0  NUC.4.4(11,1)
-
-             SerSerThrArgGlyValTyrTyrProAsp
-QHR63300.2   TCATCCACCCGTGGTGTCTATTACCCTGAC
-             ||.|.|||.||||||||.|||||||||||| 30
-YP_009724390 TCTTTCACACGTGGTGTTTATTACCCTGAC
-             SerPheThrArgGlyValTyrTyrProAsp
-

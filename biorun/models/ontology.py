@@ -467,9 +467,9 @@ def plot_term(query, names, terms, nodes, back_prop):
 @plac.flg('go', "Filter query for gene ontology terms.")
 @plac.flg('update', "Update latest terms from remote hosts and build with those.")
 @plac.flg('plot', "Plot the network graph of the given GO term .", abbrev="P")
-#@plac.flg('tree_plot', "Plot the network graph of the given GO term .")
+@plac.flg('define', "search ontology for definitions", abbrev='x')
 def run(query="", build=False, download=False, preload=False, so=False, go=False,
-        lineage=False, plot=False, update=False, verbose=False):
+        lineage=False, update=False, plot=False, define=False, verbose=False):
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))

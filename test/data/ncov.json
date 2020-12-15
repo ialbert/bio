@@ -136,7 +136,7 @@
             {
                 "type": "gene",
                 "name": "ORF1ab",
-                "id": "GU280_gp01",
+                "id": "ORF1ab",
                 "start": 266,
                 "end": 21555,
                 "strand": 1,
@@ -1116,7 +1116,7 @@
             {
                 "type": "gene",
                 "name": "S",
-                "id": "GU280_gp02",
+                "id": "S",
                 "start": 21563,
                 "end": 25384,
                 "strand": 1,
@@ -1187,7 +1187,7 @@
             {
                 "type": "gene",
                 "name": "ORF3a",
-                "id": "GU280_gp03",
+                "id": "ORF3a",
                 "start": 25393,
                 "end": 26220,
                 "strand": 1,
@@ -1249,7 +1249,7 @@
             {
                 "type": "gene",
                 "name": "E",
-                "id": "GU280_gp04",
+                "id": "E",
                 "start": 26245,
                 "end": 26472,
                 "strand": 1,
@@ -1314,7 +1314,7 @@
             {
                 "type": "gene",
                 "name": "M",
-                "id": "GU280_gp05",
+                "id": "M",
                 "start": 26523,
                 "end": 27191,
                 "strand": 1,
@@ -1379,7 +1379,7 @@
             {
                 "type": "gene",
                 "name": "ORF6",
-                "id": "GU280_gp06",
+                "id": "ORF6",
                 "start": 27202,
                 "end": 27387,
                 "strand": 1,
@@ -1441,7 +1441,7 @@
             {
                 "type": "gene",
                 "name": "ORF7a",
-                "id": "GU280_gp07",
+                "id": "ORF7a",
                 "start": 27394,
                 "end": 27759,
                 "strand": 1,
@@ -1503,7 +1503,7 @@
             {
                 "type": "gene",
                 "name": "ORF7b",
-                "id": "GU280_gp08",
+                "id": "ORF7b",
                 "start": 27756,
                 "end": 27887,
                 "strand": 1,
@@ -1565,7 +1565,7 @@
             {
                 "type": "gene",
                 "name": "ORF8",
-                "id": "GU280_gp09",
+                "id": "ORF8",
                 "start": 27894,
                 "end": 28259,
                 "strand": 1,
@@ -1627,7 +1627,7 @@
             {
                 "type": "gene",
                 "name": "N",
-                "id": "GU280_gp10",
+                "id": "N",
                 "start": 28274,
                 "end": 29533,
                 "strand": 1,
@@ -1692,7 +1692,7 @@
             {
                 "type": "gene",
                 "name": "ORF10",
-                "id": "GU280_gp11",
+                "id": "ORF10",
                 "start": 29558,
                 "end": 29674,
                 "strand": 1,

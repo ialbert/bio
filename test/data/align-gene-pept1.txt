@@ -1,0 +1,15 @@
+
+# Ident=164(91.1%)  Mis=16(8.9%)  Gaps=0(0.0%)  Target=(1, 180)  Query=(1, 180)  Length=180  Score=756.0  NUC.4.4(11,1)
+
+              M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T  R  T  Q  L  P  P  A  Y  T  N 
+QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAAC
+             ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||||||||.||. 90
+YP_009724390 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAAT
+              M  F  V  F  L  V  L  L  P  L  V  S  S  Q  C  V  N  L  T  T  R  T  Q  L  P  P  A  Y  T  N 
+
+              S  S  T  R  G  V  Y  Y  P  D  K  V  F  R  S  S  V  L  H  L  T  Q  D  L  F  L  P  F  F  S 
+QHR63300.2   TCATCCACCCGTGGTGTCTATTACCCTGACAAAGTTTTCAGATCTTCAGTTTTACATTTAACTCAGGATTTGTTTTTACCTTTCTTCTCC
+             ||.|.|||.||||||||.||||||||||||||||||||||||||.|||||||||||||.|||||||||.|||||.|||||||||||.||| 180
+YP_009724390 TCTTTCACACGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCC
+              S  F  T  R  G  V  Y  Y  P  D  K  V  F  R  S  S  V  L  H  S  T  Q  D  L  F  L  P  F  F  S 
+
