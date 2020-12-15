@@ -4,7 +4,6 @@ from itertools import islice
 from textwrap import wrap
 import pygraphviz as pgv
 
-from goatools.obo_parser import GODag, GraphEngines
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
 from biorun import utils, const
