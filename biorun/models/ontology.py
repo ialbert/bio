@@ -294,7 +294,7 @@ def formatted_printer(name, uid, definition,  nodes, terms, parents=[], prefix="
     children = nodes.get(uid, [])
 
     if children:
-        print(f"{prefix}\nChildren:")
+        print(f"\n{prefix}Children:")
         # Print children
         printer(uids=children, terms=terms, prefix=prefix)
     print(" ")
