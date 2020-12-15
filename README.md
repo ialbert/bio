@@ -64,9 +64,9 @@ The software was written to teach bioinformatics and is the companion software t
 - Scientists working with large numbers of similar genomes (bacterial/viral strains).
 - Scientists that need to closely investigate and understand particular details of a genomic region.
 
-The ideas and motivations fueling the creation of `bio` came to us while educating the many cohorts of students that used the handbook in the classrom. 
+The ideas and motivations fueling the creation of `bio` have been developed while educating the many cohorts of students that used the handbook in the classroom. 
 
-You see, in bioinformatics, many tasks that should be straightforward are, instead, needlessly complicated. `bio` is an opinionated take on how bioinformatics, particularly data presentation and access, should be simplified. 
+You see, in bioinformatics, many tasks that should be straightforward are, instead, needlessly complicated. `bio` is an opinionated take on how bioinformatics, particularly data representation and access, should be simplified. 
 
 [handbook]: https://www.biostarhandbook.com/
 
@@ -102,7 +102,7 @@ To run all tests use:
     
 Tests are automatically built from a test script that mimics real life usage scenarios.
 
-* https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
+* https://github.com/ialbert/bio/blob/master/test/bio-examples.sh
 
 ## New tests
 
@@ -112,7 +112,7 @@ To add a new test first run the command you wish to test, for example:
 
 in the `test/data` directory. After that add the same command above into the master script:
 
-* https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
+* https://github.com/ialbert/bio/blob/master/test/bio-examples.sh
     
 followed by:
 
