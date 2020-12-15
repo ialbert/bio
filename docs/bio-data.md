@@ -1,4 +1,4 @@
-# Data management {#bio-data}
+# Getting data {#bio-data}
 
 The `bio` package helps maintain clarity and order among diverse datasets. When you obtain data with `bio` it becomes universally available to tool in `bio` regardless of your location on the filesystem.
 

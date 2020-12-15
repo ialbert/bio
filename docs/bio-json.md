@@ -1,4 +1,4 @@
-# The JSON format {#bio-json}
+# Convert to JSON {#bio-json}
 
 `bio` obtains data from NCBI and transforms it into an internal, simpler format. One would only need to process this format to provide functionality that is not yet offered in `bio` 
 
