@@ -309,7 +309,6 @@ def print_node(uid, name, nodes=None, terms=None, define='', pad='', is_leaf=Fal
                           name=name,
                           uid=uid, definition=define,
                           parents=[], prefix=pad)
-        pass
     else:
         print(f"{pad}{uid}{INDENT}{name}")
 
@@ -440,8 +439,7 @@ def plot_term(query, names, terms, nodes, back_prop):
             grph.add_node(frmt(item, name))
 
     grph.edge_attr.update(shape="normal", color='black', dir="back")
-    grph.node_attr.update(shape="box", style="rounded,filled",
-                          fillcolor="beige")
+    grph.node_attr.update(shape="box", style="rounded,filled", fillcolor="beige")
     # highlight the query term
     name, define = terms.get(uid)
     try:
@@ -452,6 +450,8 @@ def plot_term(query, names, terms, nodes, back_prop):
         pass
     fname = name.replace(' ', '-')
     grph.layout(prog='dot')
+
+    print(f"*** Writing plot to {fname}.pdf")
     grph.draw(f'{fname}.pdf')
 
     return

@@ -20,13 +20,13 @@ SEP = ', '
 CHUNK = 25000
 
 COLOR_MAP = {'ends_during': '#449A5E', 'occurs_in': '#D537FD',
-             'negatively_regulates': '#373DFD',
+             'negatively_regulates': 'orange',
              'has_part': '#00FFFF',
              'is_a': '#000000',
              'part_of': "#727F2D",
              'positively_regulates': "#8D6B2E",
              'happens_during': "#6EB129",
-             'regulates': "#203266",
+             'regulates': "plum",
              'transcribed_to': "#98B7E4",
              'derives_from': "#AFCDB3",
              'contains': "#26A231",
