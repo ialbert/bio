@@ -8,6 +8,10 @@ from biorun.libs import placlib as plac
 logger = utils.logger
 
 
+def build_population():
+    return
+
+
 @plac.pos('filenames', 'data/study data/population data/association')
 @plac.opt('--study', type=str, 'Gene names in a study')
 @plac.opt('--population', type=str, 'Gene names in population (or other study if --compare is specified)')

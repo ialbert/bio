@@ -405,7 +405,7 @@ def print_stats(terms):
 
 def plot_term(query, names, terms, nodes, back_prop):
 
-    # This is a valid GO term
+    # TODO: option to save pydot file instead of pdf
     if names.get(query) or terms.get(query):
         uid = names.get(query) or query
     else:
@@ -434,12 +434,13 @@ def plot_term(query, names, terms, nodes, back_prop):
             cname, cdefine = terms.get(chl)
             color = const.COLOR_MAP.get(etype, "black")
             # Format the edge to include both id and name.
-            grph.add_edge(frmt(item, name), frmt(chl, cname), label=etype, color=color)
+            grph.add_edge(frmt(item, name), frmt(chl, cname), label=f" {etype}", color=color)
 
+        # Add a leaf node
         if not children:
             grph.add_node(frmt(item, name))
 
-    grph.edge_attr.update(shape="normal", color='black', dir="back")
+    grph.edge_attr.update(shape="normal", color='black', dir="back", penwidth=2)
     grph.node_attr.update(shape="box", style="rounded,filled", fillcolor="beige")
 
     # Highlight the query term.

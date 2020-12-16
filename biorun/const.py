@@ -19,18 +19,49 @@ SEP = ', '
 
 CHUNK = 25000
 
+"""
+Blue
+Red
+Green
+Black
+Brown
+Azure
+Ivory
+Teal
+Silver
+Purple
+Navy blue
+Pea green
+Gray
+Orange
+Maroon
+Charcoal
+Aquamarine
+Coral
+Fuchsia
+Wheat
+Lime
+Crimson
+Khaki
+Hot pink
+Magenta
+Olden
+Plum
+Olive
+Cyan
+"""
 COLOR_MAP = {'ends_during': '#449A5E', 'occurs_in': '#D537FD',
              'negatively_regulates': 'orange',
              'has_part': '#00FFFF',
              'is_a': '#000000',
-             'part_of': "#727F2D",
-             'positively_regulates': "#8D6B2E",
+             'part_of': "chartreuse",
+             'positively_regulates': "blue",
              'happens_during': "#6EB129",
-             'regulates': "plum",
+             'regulates': "magenta2",
              'transcribed_to': "#98B7E4",
              'derives_from': "#AFCDB3",
              'contains': "#26A231",
-             'member_of': "#1A851E",
+             'member_of': "deeppink",
              'transcribed_from': "#4B0201",
              'has_quality': "#35F081",
              'overlaps': "#C0441F",
