@@ -1,4 +1,3 @@
 biopython >= 1.78
 requests
 pytest
-pygraphviz
