@@ -1,10 +1,16 @@
+---
+title: "The bio package"
+documentclass: book
+fontsize: 12pt
+numbering:  "false"
+---
 # Welcome to `bio`
 
 > The software is currently under development. It is operational but not fully vetted.
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable. `bio` streamlines the tedious bioinformatics and lets users quickly answer questions such as:
  
-- *How do I automate the sequence for a viral genome?*
+- *How do I access a sequence for a viral genome?*
 - *How do I obtain the biological annotation of data?*
 - *How do I get the coding sequence for a specific gene?* 
 - *What are the differences between two sequences?*
@@ -12,7 +18,8 @@
 - *What are minisatellites and  microsatellites?*
 - *What is a "tolerance induction to tumor cell"?* 
 
-`bio` combines and represents data from different sources: GenBank, SRA, Gene Ontology, Sequence Ontology, NCBI Taxonomy through a unified interface. Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
+`bio` combines and represents data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so], 
+[NCBI Taxonomy][taxonomy] and [Short Read Archive][sra] through a unified interface. Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
 
 The software was written to teach bioinformatics and is the companion software to the [Biostar Handbook][handbook]
  
@@ -20,7 +27,12 @@ The software was written to teach bioinformatics and is the companion software t
 [emboss]: http://emboss.sourceforge.net/
 [simplesam]: https://github.com/mdshw5/simplesam 
 [handbook]: https://www.biostarhandbook.com/
- 
+[genbank]: https://www.ncbi.nlm.nih.gov/genbank/
+[sra]: https://www.ncbi.nlm.nih.gov/sra
+[taxonomy]: https://www.ncbi.nlm.nih.gov/taxonomy
+[so]: http://www.sequenceontology.org/
+[go]: http://geneontology.org/
+
 ## Quick links
 
 * Source code: https://github.com/ialbert/bio
@@ -118,17 +130,17 @@ As it turns out the data for `ncov`  data is not adequately cross-referenced at 
 
 Let's pick another data that has better cross-references, perhaps a virus from the 2014 Ebola outbreak:
 
-    bio  KM233118 --fetch --rename ebola14
+    bio  KM233118 --fetch --rename ebola2014
 
 and now print:
 
 ```{bash, comment=NA}
-bio ebola14 --sra 
+bio ebola2014 --sra 
 ```
    
 if we wanted the SRR run numbers, we could run:
 
-    bio ebola14 --sra --sample
+    bio ebola2014 --sra --sample
  
 to get:
 

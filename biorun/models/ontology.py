@@ -2,7 +2,7 @@ import json, shutil, os, tarfile, re
 import requests
 from itertools import islice
 from textwrap import wrap
-import pygraphviz as pgv
+
 
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
@@ -38,7 +38,6 @@ GO_FILE = join(utils.DATADIR, GO_FILE)
 SO_FILE = join(utils.DATADIR, SO_FILE)
 SQLITE_DB = join(utils.DATADIR, SQLITE_DB)
 JSON_DB = join(utils.DATADIR, JSON_DB)
-
 
 INDENT = '  '
 
@@ -405,7 +404,12 @@ def print_stats(terms):
 
 def plot_term(query, names, terms, nodes, back_prop):
 
-    # TODO: option to save pydot file instead of pdf
+    try:
+        import pygraphviz as pgv
+    except ImportError as exc:
+        utils.error(exc, stop=False)
+        utils.error("Try: conda install pygraphviz")
+
     if names.get(query) or terms.get(query):
         uid = names.get(query) or query
     else:
@@ -432,9 +436,11 @@ def plot_term(query, names, terms, nodes, back_prop):
         for child in chls:
             chl, etype = child
             cname, cdefine = terms.get(chl)
-            color = const.COLOR_MAP.get(etype, "black")
+
+            style = "solid" if etype == "is_a"else "dashed"
+
             # Format the edge to include both id and name.
-            grph.add_edge(frmt(item, name), frmt(chl, cname), label=f" {etype}", color=color)
+            grph.add_edge(frmt(item, name), frmt(chl, cname), label=f" {etype}", style=style)
 
         # Add a leaf node
         if not children:
@@ -455,7 +461,10 @@ def plot_term(query, names, terms, nodes, back_prop):
     # Construct file name and write to pdf.
     fname = name.replace(' ', '-')
     grph.layout(prog='dot')
-    print(f"*** Writing plot to {fname}.pdf")
+
+    print(f"*** Writing plot to {fname}.pdf\n*** Writing DOT file to {fname}.dot")
+    # Write DOT string to file and plot to .pdf
+    open(f"{fname}.dot", 'w').write(grph.to_string())
     grph.draw(f'{fname}.pdf')
 
     return
@@ -463,17 +472,20 @@ def plot_term(query, names, terms, nodes, back_prop):
 
 @plac.pos('query', "Search database by ontological name or GO/SO ids.")
 @plac.flg('build', "build a database of all gene and sequence ontology terms. ")
-@plac.flg('preload', "loads entire database in memory")
+@plac.flg('preload', "loads entire database in memory", abbrev="P")
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('lineage', "show the ontological lineage")
 @plac.flg('download', "download prebuilt database")
 @plac.flg('so', "Filter query for sequence ontology terms.")
 @plac.flg('go', "Filter query for gene ontology terms.")
 @plac.flg('update', "Update latest terms from remote hosts and build with those.")
-@plac.flg('plot', "Plot the network graph of the given GO term .", abbrev="P")
+@plac.flg('plot', "Plot the network graph of the given GO term .", abbrev="p")
 @plac.flg('define', "search ontology for definitions", abbrev='x')
-def run(query="", build=False, download=False, preload=False, so=False, go=False,
-        lineage=False, update=False, plot=False, define=False, verbose=False):
+def run(build=False, download=False, preload=False, so=False, go=False,
+        lineage=False, update=False, plot=False, define=False, verbose=False, *query):
+
+    # Join up all words.
+    query = " ".join(query)
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))

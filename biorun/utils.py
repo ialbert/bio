@@ -361,9 +361,11 @@ def symlink(src, dst):
 logger = get_logger("main")
 
 
-def error(msg, logger=logger):
+def error(msg, logger=logger, stop=True):
     """
     The default error handler
     """
-    logger.error(f"error: {msg}")
-    sys.exit(1)
+    logger.error(f"{msg}")
+    if stop:
+        sys.exit(1)
+
