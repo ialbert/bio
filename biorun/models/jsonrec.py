@@ -20,10 +20,9 @@ try:
     from Bio.SeqRecord import SeqRecord
     from Bio.SeqFeature import Reference, CompoundLocation, FeatureLocation
 except ImportError as exc:
-    print(f"*** {exc}", file=sys.stderr)
-    print(f"*** This software requires biopython.", file=sys.stderr)
-    print(f"*** Try: conda install biopython", file=sys.stderr)
-    sys.exit(1)
+    utils.error(f"{exc}", stop=False)
+    utils.error(f"This software requires biopython.", stop=False)
+    utils.error(f"Try: conda install biopython", stop=True)
 
 logger = utils.logger
 
