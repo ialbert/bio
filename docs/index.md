@@ -1,3 +1,9 @@
+---
+title: "The bio package"
+documentclass: book
+fontsize: 12pt
+numbering:  "false"
+---
 # Welcome to `bio`
 
 > The software is currently under development. It is operational but not fully vetted.
@@ -124,17 +130,17 @@ As it turns out the data for `ncov`  data is not adequately cross-referenced at 
 
 Let's pick another data that has better cross-references, perhaps a virus from the 2014 Ebola outbreak:
 
-    bio  KM233118 --fetch --rename ebola14
+    bio  KM233118 --fetch --rename ebola2014
 
 and now print:
 
 ```{bash, comment=NA}
-bio ebola14 --sra 
+bio ebola2014 --sra 
 ```
    
 if we wanted the SRR run numbers, we could run:
 
-    bio ebola14 --sra --sample
+    bio ebola2014 --sra --sample
  
 to get:
 

@@ -1,5 +1,4 @@
 bookdown::gitbook:
-  title: foo
   css: []
   highlight: null
   includes:
