@@ -49,3 +49,6 @@ Translating global alignemnt:
     # Yucatan goby
     bio taxon 70730 --lineage
          
+Complicated GO term:
+
+    bio --define intergenic mrna trans splicing
