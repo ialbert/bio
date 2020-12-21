@@ -9,6 +9,10 @@ logger = utils.logger
 
 
 def build_population():
+    """
+    All of the associaiton files
+    """
+
     return
 
 

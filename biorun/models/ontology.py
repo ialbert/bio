@@ -26,7 +26,7 @@ DELIM = '[Term]'
 ID_PATT = r"[G|S]O:\d+"
 
 # Edge type pattern
-EDGE_TYPE_PATT = r"relationship:\s+(.+)(\s+[S|G])"
+EDGE_TYPE_PATT = r"(relationship:)\s+(\w+_\w+)"
 
 GO_ID = 'GO'
 SO_ID = 'SO'
@@ -110,8 +110,7 @@ def edge_type(item):
     """
 
     match = re.search(EDGE_TYPE_PATT, item)
-
-    etype = match.group(1) if match else None
+    etype = match.group(2) if match else None
 
     return etype
 
