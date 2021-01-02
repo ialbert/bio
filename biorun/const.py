@@ -48,6 +48,7 @@ SUB_COMMANDS = [
 
     # Ontology handlers.
     ("--define", "biorun.models.ontology"),
+    ("--enrich", "biorun.methods.enrich"),
 
     # Default behaviors.
     ("-i", "biorun.models.fastarec"),
@@ -129,3 +130,45 @@ TYPE_BY_EXTENSION = {
     "sam": SAM,
     "bam": BAM,
 }
+
+# Map and association file to a given field
+ASSOCIATION_MAP = {'aspgd': 'http://current.geneontology.org/annotations/aspgd.gaf.gz',
+                  'cgd': 'http://current.geneontology.org/annotations/cgd.gaf.gz',
+                  'dictybase': 'http://current.geneontology.org/annotations/dictybase.gaf.gz',
+                  'ecocyc': 'http://current.geneontology.org/annotations/ecocyc.gaf.gz',
+                  'fb': 'http://current.geneontology.org/annotations/fb.gaf.gz',
+                  'genedb_lmajor': 'http://current.geneontology.org/annotations/genedb_lmajor.gaf.gz',
+                   'genedb_tbrucei': 'http://current.geneontology.org/annotations/genedb_tbrucei.gaf.gz',
+                   'chicken': 'http://current.geneontology.org/annotations/goa_chicken.gaf.gz',
+                   'chicken_complex': 'http://current.geneontology.org/annotations/goa_chicken_complex.gaf.gz',
+                   'chicken_isoform': 'http://current.geneontology.org/annotations/goa_chicken_isoform.gaf.gz',
+                   'chicken_rna': 'http://current.geneontology.org/annotations/goa_chicken_rna.gaf.gz',
+                   'cow': 'http://current.geneontology.org/annotations/goa_cow.gaf.gz',
+                   'cow_complex': 'http://current.geneontology.org/annotations/goa_cow_complex.gaf.gz',
+                   'cow_isoform': 'http://current.geneontology.org/annotations/goa_cow_isoform.gaf.gz',
+                   'cow_rna': 'http://current.geneontology.org/annotations/goa_cow_rna.gaf.gz',
+                   'dog': 'http://current.geneontology.org/annotations/goa_dog.gaf.gz',
+                   'dog_complex': 'http://current.geneontology.org/annotations/goa_dog_complex.gaf.gz',
+                   'dog_isoform': 'http://current.geneontology.org/annotations/goa_dog_isoform.gaf.gz',
+                   'dog_rna': 'http://current.geneontology.org/annotations/goa_dog_rna.gaf.gz',
+                   'human': 'http://current.geneontology.org/annotations/goa_human.gaf.gz',
+                   'human_complex': 'http://current.geneontology.org/annotations/goa_human_complex.gaf.gz',
+                   'human_isoform': 'http://current.geneontology.org/annotations/goa_human_isoform.gaf.gz',
+                   'human_rna': 'http://current.geneontology.org/annotations/goa_human_rna.gaf.gz',
+                   'pig': 'http://current.geneontology.org/annotations/goa_pig.gaf.gz',
+                   'pig_complex': 'http://current.geneontology.org/annotations/goa_pig_complex.gaf.gz',
+                   'pig_isoform': 'http://current.geneontology.org/annotations/goa_pig_isoform.gaf.gz',
+                   'pig_rna': 'http://current.geneontology.org/annotations/goa_pig_rna.gaf.gz',
+                   'uniprot_all': 'http://current.geneontology.org/annotations/goa_uniprot_all.gaf.gz',
+                   'uniprot_all_noiea': 'http://current.geneontology.org/annotations/goa_uniprot_all_noiea.gaf.gz',
+                   'mgi': 'http://current.geneontology.org/annotations/mgi.gaf.gz',
+                   'pombase': 'http://current.geneontology.org/annotations/pombase.gaf.gz',
+                   'pseudocap': 'http://current.geneontology.org/annotations/pseudocap.gaf.gz',
+                   'reactome': 'http://current.geneontology.org/annotations/reactome.gaf.gz',
+                   'rgd': 'http://current.geneontology.org/annotations/rgd.gaf.gz',
+                   'sgd': 'http://current.geneontology.org/annotations/sgd.gaf.gz',
+                   'sgn': 'http://current.geneontology.org/annotations/sgn.gaf.gz',
+                   'tair': 'http://current.geneontology.org/annotations/tair.gaf.gz',
+                   'wb': 'http://current.geneontology.org/annotations/wb.gaf.gz',
+                   'zfin': 'http://current.geneontology.org/annotations/zfin.gaf.gz'
+                   }
