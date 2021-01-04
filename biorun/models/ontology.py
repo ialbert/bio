@@ -26,7 +26,7 @@ DELIM = '[Term]'
 ID_PATT = r"[G|S]O:\d+"
 
 # Edge type pattern
-EDGE_TYPE_PATT = r"relationship:\s+(.+)(\s+[S|G])"
+EDGE_TYPE_PATT = r"(relationship:)\s+(\w+_\w+)"
 
 GO_ID = 'GO'
 SO_ID = 'SO'
@@ -110,8 +110,7 @@ def edge_type(item):
     """
 
     match = re.search(EDGE_TYPE_PATT, item)
-
-    etype = match.group(1) if match else None
+    etype = match.group(2) if match else None
 
     return etype
 
@@ -410,7 +409,6 @@ def plot_term(query, names, terms, nodes, back_prop):
         utils.error(exc, stop=False)
         utils.error("Try: conda install pygraphviz")
 
-    # This is a valid GO term
     if names.get(query) or terms.get(query):
         uid = names.get(query) or query
     else:
@@ -443,10 +441,11 @@ def plot_term(query, names, terms, nodes, back_prop):
             # Format the edge to include both id and name.
             grph.add_edge(frmt(item, name), frmt(chl, cname), label=f" {etype}", style=style)
 
+        # Add a leaf node
         if not children:
             grph.add_node(frmt(item, name))
 
-    grph.edge_attr.update(shape="normal", color='black', dir="back")
+    grph.edge_attr.update(shape="normal", color='black', dir="back", penwidth=2)
     grph.node_attr.update(shape="box", style="rounded,filled", fillcolor="beige")
 
     # Highlight the query term.
@@ -461,7 +460,10 @@ def plot_term(query, names, terms, nodes, back_prop):
     # Construct file name and write to pdf.
     fname = name.replace(' ', '-')
     grph.layout(prog='dot')
-    print(f"*** Writing plot to {fname}.pdf")
+
+    print(f"*** Writing plot to {fname}.pdf\n*** Writing DOT file to {fname}.dot")
+    # Write DOT string to file and plot to .pdf
+    open(f"{fname}.dot", 'w').write(grph.to_string())
     grph.draw(f'{fname}.pdf')
 
     return
