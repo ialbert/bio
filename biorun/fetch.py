@@ -321,6 +321,7 @@ def run(fetch=False, update=False, delete=False, list_=False, rename='', seqid='
         db = "protein" if protein else "nuccore"
         fetch_data(params, seqid=seqid, db=db, update=update)
 
+
     # Renaming needs to be performed before listing.
     if rename:
         rename_data(params, seqid=seqid, newname=rename)

@@ -4,7 +4,7 @@ import itertools
 import textwrap
 
 from biorun import const
-from biorun import utils, storage, objects
+from biorun import utils, fetch, objects
 from biorun.models import jsonrec, fastarec
 
 try:
@@ -367,8 +367,8 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
     param_q = objects.Param(acc=query, **common)
 
     # Fill JSON data for parameters.
-    param_t.json = storage.get_json(param_t.acc, inter=inter, strict=True)[:limit]
-    param_q.json = storage.get_json(param_q.acc, inter=inter, strict=True)[:limit]
+    param_t.json = fetch.get_json(param_t.acc, inter=inter, strict=True)[:limit]
+    param_q.json = fetch.get_json(param_q.acc, inter=inter, strict=True)[:limit]
 
     # Each data object may contain several records.
     #

@@ -29,6 +29,13 @@ bio --define SO:0000147
     
 The first line is the ontological term that matches, with each subsequent line being a child of the first one.
 
+
+    bio --define positive regulation of cell motility
+
+    bio --define cellular response to tumor cell
+
+    bio --define intergenic mrna trans splicing
+
 ## Showing the term lineage
 
 ```{bash, comment=NA}

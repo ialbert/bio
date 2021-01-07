@@ -4,7 +4,7 @@ Handles FASTA related outputs
 
 import biorun.libs.placlib as plac
 from biorun.models import jsonrec
-from biorun import utils, const, storage, objects
+from biorun import utils, const, fetch, objects
 
 logger = utils.logger
 
@@ -117,7 +117,7 @@ def run(protein=False, translate=False, transcribe=False, reverse=False,
                           fasta=fasta, type=type, gene=gene, regexp=match, transcribe=transcribe)
 
         # Fill the json data for the parameter if not an update
-        p.json = storage.get_json(p.acc, seqid=seqid, inter=inter)
+        p.json = fetch.get_json(p.acc, seqid=seqid, inter=inter)
         return p
 
     # Each accession gets a parameter list.

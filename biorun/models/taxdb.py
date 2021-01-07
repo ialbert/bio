@@ -7,7 +7,7 @@ from urllib import request
 from biorun.libs import placlib as plac
 from itertools import count
 from biorun.models import jsonrec
-from biorun import storage, const
+from biorun import fetch, const
 
 JSON_DB_NAME = "taxdb.json"
 SQLITE_DB_NAME = "taxdb.sqlite"
@@ -43,6 +43,9 @@ def download_prebuilt():
     """
     utils.download_from_bucket(bucket_name=const.BUCKET_NAME, file_name=SQLITE_DB_NAME, cache=True)
     utils.download_from_bucket(bucket_name=const.BUCKET_NAME, file_name=JSON_DB_NAME, cache=True)
+
+    # Download the taxonomy file.
+    update_taxdump()
 
 
 def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_NAME):
@@ -364,7 +367,7 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     terms = []
     # Attempts to fetch data if possible.
     for word in words:
-        json = storage.get_json(word)
+        json = fetch.get_json(word)
         doubles = [jsonrec.find_taxid(rec) for rec in json] if json else [[]]
         taxids = [elem for sublist in doubles for elem in sublist]
         if taxids:

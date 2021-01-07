@@ -86,14 +86,14 @@ def router(arglist=[]):
 
     # Default action, no subcommand was passed.
 
-    from biorun import storage
+    from biorun import fetch
 
     # Add the help flag if no other information is present.
     if len(sys.argv) == 1:
         sys.argv.append("-h")
 
     # Delegate parameter parsing to converter.
-    plac.call(storage.run)
+    plac.call(fetch.run)
 
 
 if __name__ == '__main__':

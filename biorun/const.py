@@ -26,18 +26,19 @@ GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "lo
 # Command map
 SUB_COMMANDS = [
 
-    # Genome handler
-    ("--genome", "biorun.models.fastarec"),
-    ("-G", "biorun.models.fastarec"),
-
     # Fasta feature convertsion.
     ("--fasta", "biorun.models.fastarec"),
-    ("-F", "biorun.models.fastarec"),
+
+    # Fetch handler.
+    ("--fetch", "biorun.fetch"),
+
+    # Genome handler.
+    ("--genome", "biorun.models.genome"),
 
     # GFF conversion.
     ("--gff", "biorun.models.gffrec"),
 
-    # Alignments.
+    # Alignment handler.
     ("--align", "biorun.methods.align"),
 
     # Taxonomy browser.
@@ -48,6 +49,8 @@ SUB_COMMANDS = [
 
     # Ontology handlers.
     ("--define", "biorun.models.ontology"),
+
+    # Enrichment handler.
     ("--enrich", "biorun.methods.enrich"),
 
     # Default behaviors.

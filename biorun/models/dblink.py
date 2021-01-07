@@ -4,7 +4,7 @@ Attempts to produce the SRA and GEO based information for the record.
 The information is not always properly documented in the genbank file.
 """
 from biorun.libs import placlib as plac
-from biorun import storage, utils
+from biorun import fetch, utils
 from Bio import Entrez
 from biorun import entrez
 import json, sys, csv
@@ -63,7 +63,7 @@ def process_storage(acc):
     collect = []
 
     for name in acc:
-        data = storage.get_json(name) or []
+        data = fetch.get_json(name) or []
         for rec in data:
             store = parse_dblinks(rec)
             collect.append((name, store))

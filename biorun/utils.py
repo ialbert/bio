@@ -163,7 +163,7 @@ def download(url, dest_name, cache=False, params={}):
                 bar = progress_bar(frac)
                 print(f"*** downloading [{bar}] {file_name} {human_size(size)} ({perc:.1f}%)", end="\r")
             else:
-                print(f"*** downloading {file_name} {human_size(total)} ", end="\r")
+                print(f"*** downloading {file_name} ({human_size(total)})     ", end="\r")
             fp.write(chunk)
 
         print("")
