@@ -9,6 +9,22 @@ from biorun import utils, const
 # Module level logger
 logger = utils.logger
 
+USAGE = """
+
+bio: making bioinformatics fun again
+
+Valid subcommands:
+
+    bio --fetch
+    bio --align
+    bio --fasta
+    bio --gff
+    bio --genome
+    bio --taxon
+    bio --define
+    bio --sra
+    
+"""
 
 def proofreader(value):
     """
@@ -59,6 +75,11 @@ def router(arglist=[]):
     """
     Routes the tasks based on incoming parameters.
     """
+
+    # Print usage by default
+    if len(sys.argv)== 1:
+        print (USAGE)
+        sys.exit(1)
 
     # Allow multiple forms of parameters to be used.
     arglist = sys.argv = list(map(proofreader, sys.argv))

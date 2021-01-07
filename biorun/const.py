@@ -33,7 +33,7 @@ SUB_COMMANDS = [
     ("--fetch", "biorun.fetch"),
 
     # Genome handler.
-    ("--genome", "biorun.models.genome"),
+    ("--genome", "biorun.ncbi_genomes"),
 
     # GFF conversion.
     ("--gff", "biorun.models.gffrec"),

@@ -15,11 +15,6 @@ ASSEMBLY_FILE_NAME = "assembly_summary_genbank.txt"
 ASSEMBLY_FILE_NAME = join(utils.DATADIR, ASSEMBLY_FILE_NAME)
 
 
-#
-# Assembly summary information here
-#
-# https://ftp.ncbi.nih.gov/genomes/README_assembly_summary.txt
-#
 def parse_file(fname=ASSEMBLY_FILE_NAME):
     """
     Parse the file
@@ -53,8 +48,25 @@ def run(update=False, download=False, verbose=False, *words):
 
     parse_file()
 
+#
+# Assembly summary information here
+#
+# https://ftp.ncbi.nih.gov/genomes/README_assembly_summary.txt
+#
 if __name__ == '__main__':
     """
     
+    Genome data handling:
+
+    Falciparium
+    
+    https://www.ncbi.nlm.nih.gov/assembly/GCF_000002765.5
+    
+    bio --fetch GCF_000002765
+   
+    bio --fetch GCF_000002765.5
+   
+    bio --fetch GCF_000002765.5 --gff --protein 
+
     """
     plac.call(run)

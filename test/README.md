@@ -52,3 +52,6 @@ Translating global alignemnt:
 Complicated GO term:
 
     bio --define intergenic mrna trans splicing
+    
+
+   

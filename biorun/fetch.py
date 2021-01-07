@@ -273,17 +273,7 @@ def print_data_list():
 def run(fetch=False, update=False, delete=False, list_=False, rename='', seqid='', protein=False, genbank=False,
         json_=False, verbose=False, *data):
     """
-    Manages data in storage.
-
-    Valid subcommands:
-
-        bio --align
-        bio --fasta
-        bio --genome
-        bio --taxon
-        bio --define
-        bio --sra
-
+    Fetches and manages data in storage.
     """
 
     # Set the verbosity
