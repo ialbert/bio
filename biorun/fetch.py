@@ -108,7 +108,7 @@ def ncbi_efetch(name, gbk_name, db=None):
 
 def fetch_data(params, seqid=None, db=None, update=False):
     """
-    Obtains data from NCBI
+    Obtains data from NCBI. Fills each parameter with a json field.
     """
 
     for p in params:
@@ -123,8 +123,13 @@ def fetch_data(params, seqid=None, db=None, update=False):
         # GenBank representation of the data.
         gbk_name = resolve_fname(name=p.acc, format="gb")
 
-        # Fetch and store genbank from remote site.
-        ncbi_efetch(p.acc, db=db, gbk_name=gbk_name)
+        # Downloads genome data.
+        if p.acc.startswith("GCA") or p.acc.startswith("GFC"):
+            from biorun import ncbi
+            ncbi.fetch_genome(acc=p.acc)
+        else:
+            # Fetch and store genbank from remote site.
+            ncbi_efetch(p.acc, db=db, gbk_name=gbk_name)
 
         # Convert genbank to JSON.
         data = jsonrec.parse_file(fname=gbk_name, seqid=seqid)

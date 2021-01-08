@@ -6,7 +6,7 @@ The information is not always properly documented in the genbank file.
 from biorun.libs import placlib as plac
 from biorun import fetch, utils
 from Bio import Entrez
-from biorun import entrez
+from biorun import ncbi
 import json, sys, csv
 
 Entrez.email = "bio@example.org"
@@ -24,9 +24,9 @@ def search(term, db='sra', tabular=False, limit=None):
 
     limit = 10000 if not limit else limit
 
-    env = entrez.esearch(db=db, term=term, usehistory="y")
+    env = ncbi.esearch(db=db, term=term, usehistory="y")
 
-    data = entrez.efetch(db=db, env=env, retmax=limit, rettype="runinfo")
+    data = ncbi.efetch(db=db, env=env, retmax=limit, rettype="runinfo")
 
     elems = data.get('SraRunInfo', {}).get("Row", {})
 
