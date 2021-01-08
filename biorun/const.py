@@ -84,6 +84,15 @@ SEQUENCE_ONTOLOGY = {
     "mat_peptide": "mature_protein_region",
 }
 
+GENOMES_HEADER = ['assembly_accession', 'bioproject', 'biosample',
+                  'wgs_master', 'refseq_category', 'taxid',
+                  'species_taxid', 'organism_name', 'infraspecific_name',
+                  'isolate', 'version_status', 'assembly_level', 'release_type',
+                  'genome_rep', 'seq_rel_date', 'asm_name', 'submitter',
+                  'gbrs_paired_asm', 'paired_asm_comp', 'ftp_path',
+                  'excluded_from_refseq', 'relation_to_type_material'
+                  ]
+
 # Feature types where the name of the feature is predetermined.
 NAME_FROM_TYPE = {
     "five_prime_UTR": "five_prime_UTR",

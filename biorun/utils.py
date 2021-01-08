@@ -2,6 +2,8 @@
 Utilites funcions.
 """
 import sys, os, re, tempfile, gzip, glob, shutil, json
+from ftplib import FTP
+from urllib.parse import urlparse
 import requests
 from itertools import count, islice
 from functools import wraps
@@ -116,6 +118,18 @@ def save_table(name, obj, fname, flg='w'):
     table.close()
 
 
+def response(url, params={}):
+
+    # Open request to file
+    r = requests.get(url, stream=True, params=params)
+    try:
+        # Check valid response status.
+        r.raise_for_status()
+    except Exception as exc:
+        error(f"{exc}")
+    return r
+
+
 def download(url, dest_name, cache=False, params={}):
     """
     Downloads a URL into a destination
@@ -128,42 +142,40 @@ def download(url, dest_name, cache=False, params={}):
     else:
         path = dest_name
 
-    # Open request to file
-    r = requests.get(url, stream=True, params=params)
+    # Keep track of total size.
+    total = 0
 
-    try:
-        # Check valid response status.
-        r.raise_for_status()
-    except Exception as exc:
-        error(f"{exc}")
+    # Open request
+    url = url.replace('ftp:', 'http:') if url.startswith('ftp:') else url
 
+    r = response(url=url, params=params)
     # Attempt to determine the download size.
     headers = lower_case_keys(r.headers)
     size = headers.get("content-length", 0)
+
     size = safe_int_zero(size)
 
     # How much data to process at a time.
     chunk_size = 1 * 1024 * 1024
 
     # The name of the file that will be stored
-    file_name = os.path.split(dest_name)[-1]
+    fname = os.path.split(dest_name)[-1]
 
-    # Create file only if dowload completes successfully.
+    # Create file only if download completes successfully.
     with tempfile.NamedTemporaryFile() as fp:
 
-        # Keep track of total size.
-        total = 0
-
-        # Iterate over the content.
+        # Iterate over the content and write to temp file
         for chunk in r.iter_content(chunk_size=chunk_size):
             total += len(chunk)
+
             if size:
                 frac = 1 if total >= size else total / size
                 perc = frac * 100
                 bar = progress_bar(frac)
-                print(f"*** downloading [{bar}] {file_name} {human_size(size)} ({perc:.1f}%)", end="\r")
+                print(f"*** downloading [{bar}] {fname} {human_size(size)} ({perc:.1f}%)", end="\r")
             else:
-                print(f"*** downloading {file_name} ({human_size(total)})     ", end="\r")
+                print(f"*** downloading {fname} ({human_size(total)})     ", end="\r")
+
             fp.write(chunk)
 
         print("")
