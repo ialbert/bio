@@ -58,13 +58,16 @@ def search_file(fname=ASSEMBLY_FILE_NAME, accs=None, update=False):
     accs = set(accs)
     nhits = 0
 
-    def hit(a, r, g):
+    def hit(a, r, g, gro):
+        nonlocal nhits
         hits = []
         # Iterate and collect hits
         for ac in accs:
             val = ac.strip()
-            if (val == a or val == r or val == g) and ac not in visited:
+            if (val == a or val == r or val == g or val == gro) and ac not in visited:
                 hits.append(val)
+                nhits += 1
+
         return hits
 
     for line in stream:
@@ -75,16 +78,16 @@ def search_file(fname=ASSEMBLY_FILE_NAME, accs=None, update=False):
         acc = row['assembly_accession']
         root = acc.split('.')[0]
         gcf = row['gbrs_paired_asm']
+        groot = gcf.split('.')[0]
         path = row['ftp_path']
 
         # Check to see if this assembly is in the query list
-        matches = hit(acc, root, gcf)
+        matches = hit(acc, root, gcf, groot)
 
         # Fetch the data if found
         if matches:
             fetch_data(url=path, acc=acc, update=update)
-            visited.update([acc, root, gcf])
-            nhits += 1
+            visited.update([acc, root, gcf, groot])
 
         # Stop reading through file once all queries have been found.
         if nhits == len(accs):
