@@ -1,5 +1,6 @@
 import os, csv
 from biorun import utils, const
+from biorun.models.ontology import GRAPH, SQLITE_DB, CHILDREN, TERM, walk_tree, build_database
 from biorun.libs import placlib as plac
 
 try:
@@ -15,6 +16,7 @@ try:
 
 except ImportError as exc:
     utils.error("Goa tools needs to be installed to use this library.")
+
 
 logger = utils.logger
 
@@ -103,15 +105,15 @@ class BioCliFun(GoeaCliFnc):
         Set the study and population objects
         """
 
-        print("Study: {0} vs. Population {1}\n".format(len(self.study), len(self.population)))
+        print(f"Study: {len(self.study)} vs. Population {len(self.population)}\n")
         return self.study, self.population
 
 
-def get_study(association, size=5):
+def get_study(assc, size=5):
     """
     Return most annotated genes from association dict
     """
-    most_annotated = sorted(association.keys(), key=lambda i: len(association[i]), reverse=True)
+    most_annotated = sorted(assc.keys(), key=lambda i: len(assc[i]), reverse=True)
     study = most_annotated[:size]
     study = frozenset(study)
     print(f"*** Using the {size} most annotated genes as study: {','.join(study)} ")
@@ -180,31 +182,139 @@ def download_terms():
     return
 
 
+def nattrs(res):
+    """
+    Return a color gradient based on the
+    """
+
+    # Split list into
+
+    if res:
+        return dict(fillcolor='yellow')
+
+    return dict(fillcolor='white')
+
+
 def preform_enrichment(args, pop, assc, study):
     # Put the kwargs in a namespace for goatools
 
-    # Get data from databse or saved file
+    # Get data from database or saved file
 
     obj = BioCliFun(args=args, pop=pop, assc=assc, study=study)
 
     # Reduce results to significant results (pval<value)
-    results_specified = obj.get_results()
+    results = obj.get_results()
 
-    # Print results in a flat list
-    obj.prt_results(results_specified)
-
-    # Plot the
-
-    return
+    return results
 
 
-def plot_enrichment(kwargs):
-    kws_plt = dict(obo=GO_FILE, )
-    godag_optional_attrs = PlotCli._get_optional_attrs(kwargs)
+def get_data():
 
-    godag = GODag(GO_FILE, godag_optional_attrs)
+    # check if GO database is already built
+    if os.path.exists(SQLITE_DB):
+        terms = utils.open_db(TERM, fname=SQLITE_DB)
+        nodes = utils.open_db(GRAPH, fname=SQLITE_DB)
+        back = utils.open_db(CHILDREN, fname=SQLITE_DB)
+    else:
+        terms, nodes, names, back = build_database(GO_FILE)
 
-    PlotCli().plot(godag=godag, kws_plt=kws_plt)
+    return nodes, back, terms
+
+
+def color_gradient(vals):
+
+    vals = sorted(vals)
+
+    # Group list into 5th
+    group = int(len(vals) / 5)
+
+    color_map = dict()
+    colors = ['#F00505', '#FD6104', '#FD9A01', '#FFCE03', '#FEF001']
+    for idx, clr in zip(range(group, len(vals), group), colors):
+
+        pval = vals[idx]
+        print(idx, clr)
+
+    return color_map
+
+
+def plot_enrichment(results):
+    try:
+        import pygraphviz as pgv
+    except ImportError as exc:
+        utils.error(exc, stop=False)
+        utils.error("Try: conda install pygraphviz")
+
+    collect = []
+
+    # Collect tree for all enriched terms
+    enriched_map = {r.GO: r for r in results}
+    enriched = list(enriched_map.keys())
+
+    def frmt(uid, name):
+        out = fr"{uid}\n{name}"
+        res = enriched_map.get(uid)
+        if res:
+            ratio_s = f"{res.ratio_in_study[0]}/{res.ratio_in_study[1]}"
+            ratio_p = f"{res.ratio_in_pop[0]}/{res.ratio_in_pop[1]}"
+            out = fr"{uid} ({res.p_uncorrected:0.5f}) \n{name}\n {ratio_s} : {ratio_p}"
+
+        return out
+
+    # Retrieve the back prop to build edges.
+    nodes, back, terms = get_data()
+
+    for go in enriched:
+        # Build whole tree from the
+        walk_tree(nodes=back, start=go, collect=collect)
+
+    # Get the nodes
+    grph = pgv.AGraph(directed=True)
+    collect = set(collect)
+
+    # Get the list of pvalues
+    pvals = [r.p_uncorrected for r in results]
+
+    #color_gradient(pvals)
+    #1/0
+    for item in collect:
+        # Get all children for this node present in tree
+        children = nodes.get(item, [])
+        chls = [c for c in children if (c[0] in collect)]
+        name, define = terms.get(item)
+
+        # Pair item with each child as an edge.
+        for child in chls:
+            chl, etype = child
+            cname, cdefine = terms.get(chl)
+
+            style = "solid" if etype == "is_a" else "dashed"
+
+            par = frmt(item, name)
+            ch = frmt(chl, cname)
+
+            # Get the attributes (colors, etc).
+            pattrs = nattrs(enriched_map.get(item))
+            cattrs = nattrs(enriched_map.get(chl))
+
+            # Add a nodes
+            grph.add_node(par, **pattrs)
+            grph.add_node(ch, **cattrs)
+
+            # Format the edge to include both id and name.
+            grph.add_edge(par, ch, label=f" {etype}", style=style)
+
+        # Add a leaf node
+        if not children:
+            grph.add_node(frmt(item, name))
+
+    grph.node_attr.update(shape="box", style='filled')
+
+    # Construct file name and write to pdf.
+    fname = "test2"
+    grph.layout(prog='dot')
+    grph.draw(f'{fname}.pdf')
+
 
     return
 
@@ -213,6 +323,7 @@ def plot_enrichment(kwargs):
 @plac.pos('name', "Association to map gene name to a GO category, also used to build the population.",
           choices=const.ASSOCIATION_MAP.keys())
 @plac.flg('download', "download gaf file")
+@plac.flg('plot', "Plot the enrichment")
 @plac.flg('build', "Build database from available GAF files")
 @plac.flg('enrich', "Find GO enrichment of genes under study", abbrev='x')
 @plac.flg('prtstd',
@@ -233,7 +344,8 @@ def plot_enrichment(kwargs):
 @plac.opt('taxid', "When using NCBI's gene2go annotation file, specify desired taxid")
 @plac.opt('alpha', type=float, help='Test-wise alpha for multiple testing', abbrev='A')
 @plac.opt('pval', type=float, help="""Only print results with uncorrected p-value < PVAL.
-                                        Print all results, significant and otherwise, by setting --pval=1.0""")
+                                        Print all results, significant and otherwise, by setting --pval=1.0""",
+          abbrev='V')
 @plac.opt('field', type=str, help='Only print results when PVAL_FIELD < PVAL.')
 @plac.opt('outfile', type=str, help='Write enrichment results into xlsx or tsv file')
 @plac.opt('ns', type=str,
@@ -265,7 +377,7 @@ def plot_enrichment(kwargs):
           help=('Propagate counts up user-specified relationships ( comma separated ), which include: '
                 '{RELS}').format(RELS=' '.join(RELATIONSHIP_SET)))
 @plac.opt('method', type=str, help=Methods().getmsg_valid_methods())
-@plac.opt('pvalcalc', type=str, help=str(FisherFactory()), abbrev='P')
+@plac.opt('pvalcalc', type=str, help=str(FisherFactory()), abbrev='calc')
 @plac.opt('min_overlap', type=float,
           help="Check that a minimum amount of study genes are in the population",
           abbrev='M')
@@ -274,7 +386,7 @@ def run(name='human', taxid=9606, download=False,
         alpha=0.05, pval=.05, field='p_uncorrected', outfile='result.tsv',
         ns='BP,MF,CC', id2sym=None, detail='', sections=None,
         compare=False, ratio=None, prtstd=False, indent=False,
-        noprop=False, relationship=False, relationships='',
+        noprop=False, relationship=False, relationships='', plot=False,
         enrich=False, method="bonferroni,sidak,holm,fdr_bh", pvalcalc="fisher",
         min_overlap=0.7, goslim='goslim_generic.obo', inc='', exc='',
         *study):
@@ -289,6 +401,7 @@ def run(name='human', taxid=9606, download=False,
 
     go_args = Bunch(**go_params)
 
+    # Download file if it does not exist already.
     if download:
         download_gaf(name=name)
         return
@@ -297,11 +410,14 @@ def run(name='human', taxid=9606, download=False,
     fname = get_fname(name)
 
     # Parse the association, population, and default study
-    population, association = parse_data(fname=fname)
+    pop, assc = parse_data(fname=fname)
 
-    # Get the 5 most annotated genes when no study is given
+    # Get the 5 most annotated genes when none is given
+    study = frozenset(study) or get_study(assc=assc)
 
-    study = frozenset(study) or get_study(association=association)
+    results = preform_enrichment(args=go_args, pop=pop, assc=assc, study=study)
 
-    preform_enrichment(args=go_args, pop=population, assc=association, study=study)
+    if plot:
+        plot_enrichment(results=results)
+
     return

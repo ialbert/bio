@@ -250,14 +250,13 @@ def walk_tree(nodes, start, etype=None,
             continue
 
         if (et == etype) or (etype is None):
+            visited.update([node])
             walk_tree(nodes=nodes,
                       start=node,
                       etype=etype,
                       visited=visited,
                       collect=collect,
                       one_pass=one_pass)
-
-        visited.update([node])
         if one_pass:
             break
 
@@ -401,7 +400,7 @@ def print_stats(terms):
     return
 
 
-def plot_term(query, names, terms, nodes, back_prop):
+def plot_term(query, names, terms, nodes, back_prop, outname=''):
 
     try:
         import pygraphviz as pgv
@@ -458,13 +457,14 @@ def plot_term(query, names, terms, nodes, back_prop):
         pass
 
     # Construct file name and write to pdf.
-    fname = name.replace(' ', '-')
     grph.layout(prog='dot')
 
-    print(f"*** Writing plot to {fname}.pdf\n*** Writing DOT file to {fname}.dot")
+    print(f"*** Writing plot to {outname}")
     # Write DOT string to file and plot to .pdf
-    open(f"{fname}.dot", 'w').write(grph.to_string())
-    grph.draw(f'{fname}.pdf')
+    if outname.endswith('.dot'):
+        open(outname, 'w').write(grph.to_string())
+    else:
+        grph.draw(outname)
 
     return
 
@@ -478,10 +478,10 @@ def plot_term(query, names, terms, nodes, back_prop):
 @plac.flg('so', "Filter query for sequence ontology terms.")
 @plac.flg('go', "Filter query for gene ontology terms.")
 @plac.flg('update', "Update latest terms from remote hosts and build with those.")
-@plac.flg('plot', "Plot the network graph of the given GO term .", abbrev="p")
+@plac.opt('plot', "Plot the network graph of the given GO term into the given file name.", abbrev="p")
 @plac.flg('define', "search ontology for definitions", abbrev='x')
 def run(build=False, download=False, preload=False, so=False, go=False,
-        lineage=False, update=False, plot=False, define=False, verbose=False, *query):
+        lineage=False, update=False, plot='', define=False, verbose=False, *query):
 
     # Join up all words.
     query = " ".join(query)
@@ -517,4 +517,4 @@ def run(build=False, download=False, preload=False, so=False, go=False,
         print_stats(terms=terms)
 
     if plot:
-        plot_term(query=query, names=names, terms=terms, nodes=nodes, back_prop=back_prop)
+        plot_term(query=query, names=names, terms=terms, nodes=nodes, back_prop=back_prop, outname=plot)
