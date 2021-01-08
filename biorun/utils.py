@@ -122,62 +122,12 @@ def response(url, params={}):
 
     # Open request to file
     r = requests.get(url, stream=True, params=params)
-
     try:
         # Check valid response status.
         r.raise_for_status()
     except Exception as exc:
         error(f"{exc}")
     return r
-
-
-def get_obj(url, params={}):
-
-    # Open request to file
-    if url.startswith('ftp'):
-        domain = urlparse(url).netloc
-        path = urlparse(url).path
-        obj = FTP(domain, **params)
-        obj.login()
-        size = obj.size(path)
-    else:
-        obj = response(url=url, params=params)
-        # Attempt to determine the download size.
-        headers = lower_case_keys(obj.headers)
-        size = headers.get("content-length", 0)
-
-    size = safe_int_zero(size)
-
-    return obj, size
-
-
-def process(obj, stream, url, total=0, fname='', size=0):
-
-    def write(data):
-        nonlocal total, size
-        total += len(data)
-
-        if size:
-            frac = 1 if total >= size else total / size
-            perc = frac * 100
-            bar = progress_bar(frac)
-            print(f"*** downloading [{bar}] {fname} {human_size(size)} ({perc:.1f}%)", end="\r")
-        else:
-            print(f"*** downloading {fname} ({human_size(total)})     ", end="\r")
-
-        stream.write(data)
-
-    # How much data to process at a time.
-    chunk_size = 1 * 1024 * 1024
-
-    if url.startswith('ftp'):
-        path = urlparse(url).path
-        obj.retrbinary(f"RETR {path}", callback=write, blocksize=chunk_size)
-    else:
-        for chunk in obj.iter_content(chunk_size=chunk_size):
-            write(chunk)
-
-    return
 
 
 def download(url, dest_name, cache=False, params={}):
@@ -196,16 +146,37 @@ def download(url, dest_name, cache=False, params={}):
     total = 0
 
     # Open request
-    obj, size = get_obj(url=url, params=params)
+    url = url.replace('ftp:', 'http:') if url.startswith('ftp:') else url
+
+    r = response(url=url, params=params)
+    # Attempt to determine the download size.
+    headers = lower_case_keys(r.headers)
+    size = headers.get("content-length", 0)
+
+    size = safe_int_zero(size)
+
+    # How much data to process at a time.
+    chunk_size = 1 * 1024 * 1024
 
     # The name of the file that will be stored
     fname = os.path.split(dest_name)[-1]
 
-    # Create file only if dowload completes successfully.
+    # Create file only if download completes successfully.
     with tempfile.NamedTemporaryFile() as fp:
 
         # Iterate over the content and write to temp file
-        process(obj=obj, stream=fp, url=url, total=total,  fname=fname, size=size)
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            total += len(chunk)
+
+            if size:
+                frac = 1 if total >= size else total / size
+                perc = frac * 100
+                bar = progress_bar(frac)
+                print(f"*** downloading [{bar}] {fname} {human_size(size)} ({perc:.1f}%)", end="\r")
+            else:
+                print(f"*** downloading {fname} ({human_size(total)})     ", end="\r")
+
+            fp.write(chunk)
 
         print("")
 
