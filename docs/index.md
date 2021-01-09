@@ -6,19 +6,16 @@ numbering:  "false"
 ---
 # Welcome to `bio`
 
-> The software is currently under development. It is operational but not fully vetted.
-
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable. 
 
 `bio` streamlines the tedious bioinformatics and lets users quickly answer questions such as:
  
-- How do I access a sequence for a viral genome?
-- How do I obtain the biological annotation of data?
-- How do I get the coding sequence for a specific gene? 
-- What are the differences between two sequences?
-- What is the lineage of SARS-COV-2?
-- What are minisatellites and  microsatellites?
-- ... and many other tasks ...
+- *How do I access a sequence for a viral genome?*
+- *How do I obtain the biological annotation of data?*
+- *How do I get the coding sequence for a specific gene?* 
+- *What are the differences between two sequences?*
+- *What is the lineage of SARS-COV-2?*
+- *What are minisatellites and  microsatellites?*
 
 `bio` combines and represents data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so], 
 [NCBI Taxonomy][taxonomy] and [Short Read Archive][sra] through a unified interface. Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 

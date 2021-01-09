@@ -1,6 +1,6 @@
 # bio: making bioinformatics fun again
 
-> The software is currently under development. It is operational but not well tested and evaluated.
+> Work in progress. 
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
