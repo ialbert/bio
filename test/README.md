@@ -32,11 +32,11 @@ A weird join operator:
 
 Multiple equally scoring alignments:
 
-    bio AGGATAGGAG AGGATTAG -i --align -v
+    bio align AGGATAGGAG AGGATTAG -i -v
 
 Translating global alignemnt:
 
-    bio AATATTAGA AGATGAGAG --align -i -pep1
+    bio align AATATTAGA AGATGAGAG -i -pep1
  
 # Taxonomy test
 

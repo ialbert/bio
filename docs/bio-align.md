@@ -9,13 +9,13 @@ Use a specially designed software that relies on heuristics to perform studies n
 Align the DNA corresponding to protein `S`
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 60 --align
+bio align ncov:S ratg13:S --end 60 
 ```
 
 ## DNA alignment with 1 letter amino acid codes
 
 ```{bash, comment=NA}
-bio ratg13:S ncov:S  --end 60 --align -1
+bio align ratg13:S ncov:S  --end 60  -1
 ```
 
 Reading frame will follow the slice!
@@ -23,7 +23,7 @@ Reading frame will follow the slice!
 ## DNA alignment with 3 letter amino acid codes
 
 ```{bash, comment=NA}
-bio ratg13:S ncov:S  --end 60 --align -3
+bio align ratg13:S ncov:S  --end 60  -3
 ```
 
 Reading frame will follow the slice!
@@ -31,13 +31,13 @@ Reading frame will follow the slice!
 ## DNA alignment, tabular output
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 90 --align --table
+bio align ncov:S ratg13:S --end 90  --table
 ```
 
 ## Align the translated regions
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 90 --translate --align 
+bio align ncov:S ratg13:S --end 90 --translate  
 ```
 
 ## Align the protein corresponding to gene S
@@ -45,7 +45,7 @@ bio ncov:S ratg13:S --end 90 --translate --align
 The protein sequence is fetched from the data (if exists) and is not a translated DNA. 
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 30 --protein --align 
+bio align ncov:S ratg13:S --end 30 --protein  
 ```
 
 The slice now applies to the protein sequence.
@@ -55,7 +55,7 @@ The slice now applies to the protein sequence.
 With the default global alignment end gaps are have no penalty.
 
 ```{bash, comment=NA}
-bio THISLINE ISALIGNED  -i --align
+bio align THISLINE ISALIGNED  -i 
 ```
 
 There is a strict mode that applies end gap penalties.
@@ -65,7 +65,7 @@ There is a strict mode that applies end gap penalties.
 All alignment may be formatted with tabular output
 
 ```{bash, comment=NA}
-bio THISLINE ISALIGNED  -i --align --table
+bio align THISLINE ISALIGNED  -i --table
 ```
 
 ## Local alignment
@@ -73,13 +73,13 @@ bio THISLINE ISALIGNED  -i --align --table
 Will produce all local alignments.
 
 ```{bash, comment=NA}
-bio THISLINE ISALIGNED -i --align --local
+bio align THISLINE ISALIGNED -i --local
 ```
 
 ## Global alignment
 
 ```{bash, comment=NA}
-bio THISLINE ISALIGNED -i --align --global
+bio align THISLINE ISALIGNED -i --global
 ```
 
 ## Semiglobal alignment
@@ -87,7 +87,7 @@ bio THISLINE ISALIGNED -i --align --global
 Same as zero endgap global but reports only the aligned region:
 
 ```{bash, comment=NA}
-bio  THISLINE ISALIGNED -i --align --semiglobal
+bio align THISLINE ISALIGNED -i --semiglobal
 ```
 
 ## Strict global alignment
@@ -95,6 +95,5 @@ bio  THISLINE ISALIGNED -i --align --semiglobal
 Applies  end gap penalities.
 
 ```{bash, comment=NA}
-bio THISLINE ISALIGNED -i --align --global --strict
+bio align THISLINE ISALIGNED -i --global --strict
 ```
-

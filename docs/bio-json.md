@@ -7,7 +7,7 @@
 Get SARS-COV-2 data and rename it to `ncov`:
 
 ```{bash, comment=NA}
-bio NC_045512 --fetch --rename ncov
+bio fetch NC_045512 --rename ncov
 ```
 
 ### The GenBank data
@@ -15,7 +15,7 @@ bio NC_045512 --fetch --rename ncov
 Explore the contents of the file downloaded from NCBI
 
 ```{bash, comment=NA}
-bio ncov --genbank | head -20
+bio convert ncov --genbank | head -20
 ```
 
 ### JSON data representation
@@ -23,7 +23,7 @@ bio ncov --genbank | head -20
 See the transformed GenBank file as the JSON representation:
 
 ```{bash, comment=NA}
-bio ncov --json | head -36
+bio convert ncov --json | head -36
 ```
 
 ## References

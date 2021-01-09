@@ -5,11 +5,11 @@
 `bio` creates more meaningful  and nicer GFF visualizations:
 
     # Get chromosome 2L for Drosophila melanogaster (fruit-fly)
-    bio NT_033779 --fetch --rename fly 
+    bio fetch NT_033779  --rename fly 
 
 convert it to gff:
 
-    bio fly --gff > annotations.gff
+    bio convert fly --gff > annotations.gff
     
 ## GFF created with `bio`
    
@@ -29,24 +29,24 @@ knitr::include_graphics('images/gff-model-bio.png', dpi = NA)
 Get SARS-COV-2 data and rename it to `ncov`:
 
 ```{bash, comment=NA}
-bio NC_045512 --fetch --rename ncov
+bio fetch NC_045512 --rename ncov
 ```
 
 ## Convert all features to GFF:
 
 ```{bash, comment=NA}
-bio ncov --gff | head -5
+bio convert ncov --gff | head -5
 ```
 
 ## Convert to GFF only the features with type `CDS`
 
 ```{bash, comment=NA}
-bio ncov --gff --type transcript,exon,mRNA,CDS | head -5
+bio convert ncov --gff --type transcript,exon,mRNA,CDS | head -5
 ```
 
 ## Convert to GFF only the features tagged with gene `S`
 
 ```{bash, comment=NA}
-bio ncov --gff --gene S | head -5
+bio convert ncov --gff --gene S | head -5
 ```
 

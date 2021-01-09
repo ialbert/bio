@@ -16,55 +16,55 @@ The `--features` flag often  not necessary as   `bio` will set it automatically 
 
 A a colon delimited term:
 
-    bio data:name --fasta
+    bio convert foo:bar --fasta
 
 is equivalent to: 
 
-    bio data --type CDS --gene name --fasta
+    bio convert foo --type CDS --gene bar --fasta
     
 ### Get a dataset
 
 Get SARS-COV-2 data and rename it to `ncov`:
 
 ```{bash, comment=NA}
-bio NC_045512 --fetch --rename ncov
+bio fetch NC_045512 --rename ncov
 ```
 
 ### Get the sequence for the genome
 
 ```{bash, comment=NA}
-bio ncov --fasta | head -3
+bio convert ncov --fasta | head -3
 ```
 
 ### Manipulate a genomic subsequence
 
 ```{bash, comment=NA}
-bio ncov --fasta --start 100 --end 130 --seqid foo 
+bio convert ncov --fasta --start 100 --end 130 --seqid foo 
 ```
 
 
 ### Extract the sequences for annotations of a certain type
 
 ```{bash, comment=NA}
-bio ncov --fasta --type CDS | head -3
+bio convert ncov --fasta --type CDS | head -3
 ```
 
 ### Extract CDS sequences by gene name
 
 ```{bash, comment=NA}
-bio ncov --gene S --fasta --end 60 
+bio convert ncov --gene S --fasta --end 60 
 ```
 
 a shortcut notation of the above:
 
 ```{bash, comment=NA}
-bio ncov:S --fasta --start 100 --end 150 
+bio convert ncov:S --fasta --start 100 --end 150 
 ```
 
 ### Extract sequence by feature accession number
 
 ```{bash, comment=NA}
-bio ncov -id YP_009724390.1 --fasta --start 100 --end 150 
+bio convert ncov -id YP_009724390.1 --fasta --start 100 --end 150 
 ```
 
 ### Translate the sequence
@@ -72,7 +72,7 @@ bio ncov -id YP_009724390.1 --fasta --start 100 --end 150
 This command translates the DNA sequence to peptides:
 
 ```{bash, comment=NA}
-bio ncov:S --fasta --end 180 --translate
+bio convert ncov:S --fasta --end 180 --translate
 ```
 
 The slice to 180 is applied on the DNA sequence before the translation.
@@ -82,7 +82,7 @@ The slice to 180 is applied on the DNA sequence before the translation.
 This flag extracts the protein sequence embedded in the original GenBank file:
 
 ```{bash, comment=NA}
-bio ncov:S --fasta --end 60 --protein
+bio convert ncov:S --fasta --end 60 --protein
 ```
 
 Note how in this case the slice to 60 is applied on the protein sequence.

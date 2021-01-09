@@ -8,15 +8,17 @@ numbering:  "false"
 
 > The software is currently under development. It is operational but not fully vetted.
 
-`bio` - command-line utilities to make bioinformatics explorations more enjoyable. `bio` streamlines the tedious bioinformatics and lets users quickly answer questions such as:
+`bio` - command-line utilities to make bioinformatics explorations more enjoyable. 
+
+`bio` streamlines the tedious bioinformatics and lets users quickly answer questions such as:
  
-- *How do I access a sequence for a viral genome?*
-- *How do I obtain the biological annotation of data?*
-- *How do I get the coding sequence for a specific gene?* 
-- *What are the differences between two sequences?*
-- *What is the lineage of SARS-COV-2?*
-- *What are minisatellites and  microsatellites?*
-- *What is a "tolerance induction to tumor cell"?* 
+- How do I access a sequence for a viral genome?
+- How do I obtain the biological annotation of data?
+- How do I get the coding sequence for a specific gene? 
+- What are the differences between two sequences?
+- What is the lineage of SARS-COV-2?
+- What are minisatellites and  microsatellites?
+- ... and many other tasks ...
 
 `bio` combines and represents data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so], 
 [NCBI Taxonomy][taxonomy] and [Short Read Archive][sra] through a unified interface. Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
@@ -48,15 +50,16 @@ Time and again, I found myself not pursuing an idea because getting to the fun p
 
 ## Diving right in
 
-Here is how to align the sequences of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`):
-
-    # Obtain the data.
-    bio NC_045512 MN996532 --fetch 
-    
-Align the sequences (showing 60bp for brevity).
+Here is how to align the sequences of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`). First get the data:
 
 ```{bash, comment=NA}
-bio NC_045512 MN996532 --align --end 60  
+bio fetch NC_045512 MN996532
+```
+    
+Now align the sequences (showing 60bp for brevity).
+
+```{bash, comment=NA}
+bio align NC_045512 MN996532 --end 60  
 ```
 
 ## A more realistic workflow
@@ -71,8 +74,10 @@ With the `bio` package, the process takes simple, concise steps.
 
 First, we download and rename the data keep our sanity:
 
-    bio NC_045512 --fetch --rename ncov
-    bio MN996532  --fetch --rename ratg13
+```{bash, comment=NA}
+bio fetch NC_045512 --rename ncov
+bio fetch MN996532  --rename ratg13
+```
 
 From now on, `bio` can operate on  `NC_045512` using the name `ncov` and on `MN996532` using the name `ratg13` no matter where you are on your computer! 
 
@@ -81,7 +86,7 @@ From now on, `bio` can operate on  `NC_045512` using the name `ncov` and on `MN9
 `bio` stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory, you now can type:
 
 ```{bash, comment=NA}
-    bio ncov --fasta --end 100 | head -2
+bio convert ncov --fasta --end 100 | head -2
 ```
     
 and it will show you the FASTA representation of  the genome     
@@ -89,7 +94,7 @@ and it will show you the FASTA representation of  the genome
 You could also convert the data stored under `ncov` name to other formats. Let's convert features with type `CDS` to `GFF`:
 
 ```{bash, comment=NA}
-bio ncov --gff --type CDS  | head -5
+bio convert ncov --gff --type CDS  | head -5
 ```
 
 ## Align nucleotides or peptides
@@ -97,19 +102,19 @@ bio ncov --gff --type CDS  | head -5
 Now, back to our problem of aligning proteins. Let's align the first 90 base pairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut; instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 60 --align
+bio align ncov:S ratg13:S --end 60
 ```
     
 We can visualize the translation of the DNA into aminoacids with one letter (`-1`) or three-letter codes (`-3`):  
    
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --end 60 --align -1
+bio align ncov:S ratg13:S --end 60 -1
 ```
     
 If, instead, we wanted to align the 60bp DNA subsequences for `S` protein after their translation into proteins, we could do it like so:
 
 ```{bash, comment=NA}
-bio ncov:S ratg13:S --translate --end 60 --align
+bio align ncov:S ratg13:S --translate --end 60
 ```
     
 We can note right away that all differences in the first 60bp of DNA are synonymous substitutions, the protein translations are the same.
@@ -120,7 +125,7 @@ We can note right away that all differences in the first 60bp of DNA are synonym
 `bio` understands taxonomies. Finding the lineage of the organism is as simple as:
 
 ```{bash, comment=NA}
-bio ncov --taxon --lineage
+bio taxon ncov --lineage
 ```
 
 ## See the bioproject
@@ -130,17 +135,19 @@ As it turns out the data for `ncov`  data is not adequately cross-referenced at 
 
 Let's pick another data that has better cross-references, perhaps a virus from the 2014 Ebola outbreak:
 
-    bio  KM233118 --fetch --rename ebola2014
+```{bash, comment=NA}
+bio fetch KM233118 --rename ebola
+```
 
 and now print:
 
 ```{bash, comment=NA}
-bio ebola2014 --sra 
+bio runinfo ebola 
 ```
    
 if we wanted the SRR run numbers, we could run:
 
-    bio ebola2014 --sra --sample
+    bio runinfo ebola --sample
  
 to get:
 
@@ -172,12 +179,12 @@ Beyond the functionality that we show, `bio` is also an exploration into modelin
 In contrast `bio` represents data in simple, efficient, compressed in JSON format. 
 
 ```{bash, comment=NA}
-bio ncov | head -20
+bio convert ncov --json | head -20
 ```
 
 The data layout allows `bio` to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds, `bio`  can convert that information FASTA or GFF; it can filter it by type, translate the sequence, extract proteins, slice by coordinate, etc.:
 
-    time bio chr1 --fasta | wc -c
+    time bio convert chr1 --fasta | wc -c
     253105766
 
     real    0m6.238s

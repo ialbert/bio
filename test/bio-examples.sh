@@ -18,7 +18,6 @@ bio fetch NC_045512 --rename ncov --seqid ncov
 # Get the RaTG13 data.
 bio fetch MN996532 --rename ratg13 --seqid ratg13
 
-
 # Shows the internal JSON format of the data.
 bio convert ncov --json > ncov.json
 

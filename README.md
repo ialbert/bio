@@ -4,6 +4,12 @@
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
+Typical usage:
+
+    bio task data1 data2 --param1 --param2
+
+where task can be: `fetch`, `align`, `convert` and many others.
+
 ## Quick links
 
 * Documentation: https://www.bioinfo.help/
@@ -14,18 +20,18 @@
 
 ## What does this software do?
 
-This software is designed to teach bioinformatics concepts.
+This software is designed to teach bioinformatics concepts. 
 
 If you've ever done bioinformatics, you know how even seemingly straightforward tasks require multiple steps, arcane incantations, and various other preparations that slow down progress. 
 
 Even well-defined, supposedly simple tasks can take a seemingly inordinate number of complicated steps. The `bio` package is meant to solve that tedium.  With `bio`, you can write things like this:
 
-    bio NC_045512 --fetch --rename ncov
-    bio MN996532  --fetch --rename ratg13
+    bio fetch NC_045512 --rename ncov
+    bio fetch MN996532  --rename ratg13
     
 to fetch the data from NCBI and rename data to more meaningful labels, then write:
 
-    bio ncov:S ratg13:S --end 60 --align -pep1
+    bio align ncov:S ratg13:S --end 60 --pep1
 
 to align the DNA for the S protein while also showing the translation with one letter peptide code:
 
@@ -41,7 +47,7 @@ QHR63300.2   ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACT
 
 `bio` was designed to use words that make sense: align, translate, complement, protein, taxon, type, etc. If you wanted to align the same sequences when translated into proteins `bio` lets you write:
 
-    bio ncov:S ratg13:S --end 60 --translate --align
+    bio align ncov:S ratg13:S --end 60 --translate 
     
 to generate:
 
@@ -108,7 +114,7 @@ Tests are automatically built from a test script that mimics real-life usage sce
 
 To add a new test, first run the command you wish to test, for example:
 
-    bio foo --gff > output.gff
+    bio fetch foo --gff > output.gff
 
 in the `test/data` directory. After that, add the same command above into the master script:
 

@@ -323,12 +323,11 @@ def print_pairwise(aln, param, index=0, width=90):
 @plac.flg('pep1', "shows a translated peptide with one letter code", abbrev='1')
 @plac.flg('pep3', "shows a translated peptide with three letter code", abbrev='3')
 @plac.flg('mutations', "show the mutations")
-@plac.flg('align', "switches to alignment subcommand")
 @plac.opt('limit', "how many input sequences to take")
 @plac.flg('verbose', "verbose mode, progress messages printed")
 def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
         protein=False, translate=False, inter=False, table=False, mutations=False, strict=False,
-        pep1=False, pep3=False, align=False, limit=1, verbose=False, target=None, query=None):
+        pep1=False, pep3=False, limit=1, verbose=False, target=None, query=None):
     """
     Performs an alignment between the query and target.
     """

@@ -12,7 +12,7 @@ The command above has to be run once (perhaps on a monthly basis) to download th
 ## Check database
 ```{bash, comment=NA}
 # Check the database
-bio --define
+bio define
 ```
 
 There are a total of `47,218` ontology terms out of which `47,218` are gene and `2,529` are sequence.
@@ -20,19 +20,19 @@ There are a total of `47,218` ontology terms out of which `47,218` are gene and 
 ## Define a term 
 ```{bash, comment=NA}
 # Define the term
-bio --define exon
+bio define exon
 ```
 ```{bash, comment=NA}
 # Define term by SO id
-bio --define SO:0000147
+bio define SO:0000147
 ```
     
 The first line is the ontological term that matches, with each subsequent line being a child of the first one.
 
 
-    bio --define positive regulation of cell motility
+    bio define positive regulation of cell motility
 
-    bio --define cellular response to tumor cell
+    bio define cellular response to tumor cell
 
     bio --define intergenic mrna trans splicing
 
@@ -40,12 +40,12 @@ The first line is the ontological term that matches, with each subsequent line b
 
 ```{bash, comment=NA}
 # show term lineage 
-bio --define exon --lineage
+bio define exon --lineage
 ```
 
 ```{bash, comment=NA}
 # Show term lineage by SO name
-bio --define SO:0000147 --lineage
+bio define SO:0000147 --lineage
 ```
 
 
@@ -60,16 +60,14 @@ To search for both sequence and gene ontology:
 
 ```{bash, comment=NA}
 # Search by a keyboard
-bio histone --define | head 
+bio define histone | head 
 ```
 
-
-    
 To search for gene ontology:
     
 ```{bash, comment=NA}
 # Search by a keyboard
-bio histone --define -go |head 
+bio define histone --go |head 
 ```
 
 

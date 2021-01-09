@@ -18,15 +18,15 @@ then proceed with `pip install bio --upgrade`.
 
 Run a simple fetch command, set the verbose mode to see what is happening:
 
-    bio NC_045512 --fetch -v
+    bio fetch NC_045512 -v
 
 now list the known data:
 
-    bio --list
+    bio data
 
 try out a conversion:
 
-    bio NC_045512 --gff
+    bio convert NC_045512
 
 ## Usage
 
@@ -36,14 +36,6 @@ Type `bio` followed by one or more accession numbers or data names followed by o
 
     bio -h
     
-## Subcommands
+## Tasks
 
-Certain flags trigger different functionality. We call these flags subcommands.
-
-Subcommands will have separate help pages that are shown when the command is run with no parameters (or using the `-h` flag)
-
-    bio --fasta
-    bio --align
-    bio --taxon
-    bio --defint
-    bio --sra
+Tasks will have separate help pages that are shown when the command is run with no parameters (or using the `-h` flag)

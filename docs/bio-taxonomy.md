@@ -6,14 +6,14 @@ The `bio` package provides utilities to visualize NCBI taxonomies.
 
 Before using the taxonomy related database needs to downloaded with:
 
-    bio --taxon --download 
+    bio taxon --download 
 
 The above command takes about 6 minutes to obtain the remote databases and store them locally.
 
 ## Check database
 
 
-    bio --taxon
+    bio taxon
     
 prints:
 
@@ -51,18 +51,18 @@ produces:
 
 Once you fetch the data
     
-    bio NC_045512 --fetch --rename ncov
+    bio fetch NC_045512 --rename ncov
         
 you can view the descendants:
 
 ```{bash, comment=NA}
-bio ncov --taxon
+bio taxon ncov
 ```
 
 or view the lineage:
 
 ```{bash, comment=NA}
-bio ncov --taxon --lineage
+bio taxon ncov --lineage
 ```
 
 ## View taxonomy by tax id
@@ -70,7 +70,7 @@ bio ncov --taxon --lineage
 Pass a NCBI taxonomical id to see all the descendants of it:
 
 ```{bash, comment=NA}
-bio 117565 --taxon | head
+bio taxon 117565 | head
 ```
 
 ## View a tax id 
@@ -78,19 +78,19 @@ bio 117565 --taxon | head
 Pass a NCBI taxonomical id to see all the descendants of it:
 
 ```{bash, comment=NA}
-bio 117565 --taxon | head
+bio taxon 117565 | head
 ```
 
 To print the lineage of a term use:
 
 ```{bash, comment=NA}
-    bio 564286 --taxon --lineage
+bio taxon 564286 --lineage
 ```
 
 the lineage may be flattened:
 
 ```{bash, comment=NA}
-    bio 564286 --taxon --lineage --flat
+bio taxon 564286 --lineage --flat
 ```
    
 ## Filter blast results
@@ -99,7 +99,7 @@ the lineage may be flattened:
 
 ## List the content of the database:
 
-    bio --taxon --list | head
+    bio taxon --list | head
     
 prints:
 
@@ -120,7 +120,7 @@ Note: this command benefits greatly from using `--preload`.
 
 You may build the newest version locally:
 
-    bio --taxon --update --build
+    bio taxon --update --build
     
 The command will download and build a new taxonomy using the latest NCBI taxonomy data. The efficiency of the process depends on the speed of the hard drive and takes around 30 minutes.
 
@@ -132,11 +132,11 @@ Internally, during operation, the software will query the database for each chil
 
 For example the command below attempts to render the complete NCBI taxonomic tree with over 2.2 million descendant nodes. When run like so it will take a very long time to produce the output (more than two hours):
 
-    bio 1 --taxon 
+    bio taxon 1 
 
 The software can operate in a different mode to speed up the process massively by preloading all the data into memory at the cost of imposing a 6 second pre-loading penalty.
 
-    bio 1 --taxon --preload
+    bio taxon 1 --preload
     
 When run with the `--preload` flag the command takes a total of just 11 seconds to generate the same large tree of the entire NCBI taxonomical tree. We don't apply this mode by default because all queries would then take at least 6 seconds, even those that currently finish very quickly.
 
