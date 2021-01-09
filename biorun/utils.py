@@ -207,6 +207,14 @@ def maybe_ncbi(text):
 
     return upper and size and is_int(rest)
 
+def no_dash(alist):
+    """
+
+    """
+    elems = list(filter(lambda x: x.startswith('-'), alist))
+    if elems:
+        msg = f"Invalid accessions: {elems}"
+        error(msg)
 
 def zero_based(start, end):
     """

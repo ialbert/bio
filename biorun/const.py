@@ -27,9 +27,9 @@ GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "lo
 SUB_COMMANDS = dict(
     data=("biorun.fetch.data", False, "list or rename data"),
     fetch=("biorun.fetch.run", True, "downloads data from repositories"),
-    align=("biorun.align.run", True, "performs sequence alignments"),
-    taxon=("biorun.taxon.run", True, "displays NCBI taxonomies"),
-    define=("biorun.define.run", True, "explains biological terms"),
+    align=("biorun.methods.align.run", True, "performs sequence alignments"),
+    taxon=("biorun.models.taxdb.run", True, "displays NCBI taxonomies"),
+    define=("biorun.models.ontology.run", True, "explains biological terms"),
     convert=("biorun.convert.run", True, "converts data to different formats"),
     runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
 )

@@ -35,14 +35,11 @@ def run(cmd, capsys, fname=None):
     Runs a command and returns its out.
     """
 
-    # Drop the leading command (bio)
-    arglist = cmd.split()
-
     # Override the system arguments.
-    sys.argv = arglist
+    sys.argv = cmd.split()
 
     # Dispatch the commands.
-    main.router(arglist=arglist)
+    main.router()
 
     # Read the standard output.
     result = capsys.readouterr().out

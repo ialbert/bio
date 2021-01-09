@@ -128,7 +128,7 @@ def genbank_view(params):
             print(line, end='')
 
 
-def get_json(name, seqid=None):
+def get_json(name, seqid=None, inter=False, strict=False):
     """
     Attempts to return a JSON formatted data based on a name.
     """
@@ -161,6 +161,14 @@ def get_json(name, seqid=None):
         data = save_json_file(fname=json_name, data=data)
         return data
 
+    # Interactive input, make JSON from name
+    if inter:
+        data = jsonrec.make_jsonrec(name, seqid=seqid)
+        return data
+
+    # Raise error if in strict mode
+    if strict:
+        utils.error(f"data not found: {name}")
     return None
 
 
@@ -269,6 +277,6 @@ def data(delete, verbose=False):
     # Delete should be the first to execute.
     if delete:
         delete_data(delete)
-
-    # Prints the data listing.
-    print_data_list()
+    else:
+        # Prints the data listing.
+        print_data_list()

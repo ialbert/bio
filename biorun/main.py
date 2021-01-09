@@ -64,7 +64,7 @@ def interrupt(func):
     return wrapper
 
 @interrupt
-def router(arglist=[]):
+def router():
     """
     Route the tasks based on subcommands parameters.
     """
