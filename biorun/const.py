@@ -22,42 +22,18 @@ CHUNK = 25000
 # Alignment modes.
 GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
-
 # Command map
-SUB_COMMANDS = [
+# module.function, helpflag, descriptin
+SUB_COMMANDS = dict(
+    data=("biorun.fetch.data", False, "list or rename data"),
+    fetch=("biorun.fetch.run", True, "downloads data from repositories"),
+    align=("biorun.align.run", True, "performs sequence alignments"),
+    taxon=("biorun.taxon.run", True, "displays NCBI taxonomies"),
+    define=("biorun.define.run", True, "explains biological terms"),
+    convert=("biorun.convert.run", True, "converts data to different formats"),
+    runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
+)
 
-    # Fasta feature convertsion.
-    ("--fasta", "biorun.models.fastarec"),
-
-    # Fetch handler.
-    ("--fetch", "biorun.fetch"),
-
-    # Genome handler.
-    ("--genome", "biorun.ncbi_genomes"),
-
-    # GFF conversion.
-    ("--gff", "biorun.models.gffrec"),
-
-    # Alignment handler.
-    ("--align", "biorun.methods.align"),
-
-    # Taxonomy browser.
-    ("--taxon", "biorun.models.taxdb"),
-
-    # Database links.
-    ("--sra", "biorun.models.dblink"),
-
-    # Ontology handlers.
-    ("--define", "biorun.models.ontology"),
-
-    # Enrichment handler.
-    ("--enrich", "biorun.methods.enrich"),
-
-    # Default behaviors.
-    ("-i", "biorun.models.fastarec"),
-    ("--inter", "biorun.models.fastarec"),
-
-]
 
 SKIP_GFF_ATTR = {"id", "parent_id", "name", "type", "start", "end", "location", "translation", "strand", "operator"}
 

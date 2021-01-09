@@ -8,8 +8,19 @@ import requests
 from biorun import utils
 from biorun.libs import xmltodict
 from urllib.parse import urlsplit, urlunsplit
-import json, os, csv
+import json, os, csv, sys
 from biorun import const
+
+try:
+    from Bio import Entrez
+except ImportError as exc:
+    print(f"*** Error: {exc}", file=sys.stderr)
+    print(f"*** This program requires biopython", file=sys.stderr)
+    print(f"*** Install: conda install -y biopython>=1.78", file=sys.stderr)
+    sys.exit(-1)
+
+# This is to silence Biopython warning.
+Entrez.email = 'not set'
 
 # Entrez URL settings.
 ESEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
@@ -131,24 +142,50 @@ def download_file(url, dest):
 
     return
 
+def genbank_save(name, fname, db=None):
+    """
+    Connects to Entrez Direct to download data.
+    """
+    # Get the entire GenBank file.
+    format, retmode = "gbwithparts", "text"
 
-def fetch_genome(acc, dest, update=False, fname=ASSEMBLY_FILE_NAME, ):
+    # Guess accession numbers that are proteins.
+    # https: // www.ncbi.nlm.nih.gov / Sequin / acc.html
+
+    if utils.maybe_prot(name):
+        db = db or "protein"
+    else:
+        db = db or "nuccore"
+
+    try:
+        logger.info(f"connecting to Entrez for {name}")
+        stream = Entrez.efetch(id=name, db=db, rettype=format, retmode=retmode)
+    except Exception as exc:
+        msg = f"{exc} for efetch acc={name} db={db} format={format} mode={retmode}"
+        utils.error(msg)
+
+    # Save the stream to GenBank.
+    utils.save_stream(stream=stream, fname=fname)
+
+
+
+def genome(name, fname, update=False, summary=ASSEMBLY_FILE_NAME, ):
     """
     Parse and search and assembly file for an accession number.
     """
 
     # Update assembly information if it is missing.
-    if not os.path.isfile(fname):
+    if not os.path.isfile(summary):
         update = True
 
-    # Force the update
+    # When update is true get the assembly summary file again.
     if update:
-        logger.info("updating assembly information")
+        logger.info("updating assembly summary")
         download_assembly()
 
     # Read the file line by line.
-    logger.info(f"*** parsing {fname}")
-    stream = open(fname, 'rt', encoding='utf-8')
+    logger.info(f"*** parsing {summary}")
+    stream = open(summary, 'rt', encoding='utf-8')
     stream = filter(lambda x: x[0] != '#', stream)
     stream = csv.DictReader(stream, fieldnames=const.GENOME_ASSEMBLY_HEADER, delimiter='\t')
 
@@ -167,12 +204,12 @@ def fetch_genome(acc, dest, update=False, fname=ASSEMBLY_FILE_NAME, ):
         url = row['ftp_path']
 
         # Found the match. Store by accession number.
-        if acc in (gb_base, gb_vers, rf_base, rf_vers):
-            download_file(url=url, dest=dest, acc=acc, update=update)
+        if name in (gb_base, gb_vers, rf_base, rf_vers):
+            download_file(url=url, dest=fname)
             return
 
     # If we go this far we have not found the data.
-    print(f'*** accession not found: {acc}')
+    print(f'*** accession not found: {name}')
 
 
 def download_assembly(url=ASSEMBLY_URL, dest_name=ASSEMBLY_FILE_NAME):

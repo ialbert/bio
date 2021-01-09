@@ -15,6 +15,7 @@ class Param(object):
 
         # List all values to help editor figure out what are valid.
         self.acc = ''
+        self.db = ''
         self.phase = "1"
         self.seqid = None
         self.gap_open = 11
@@ -24,6 +25,7 @@ class Param(object):
         self.uid = None
         self.name = None
         self.inter = None
+        self.update = False
         self.reverse = self.complement = self.revcomp = self.transcribe = None
         self.gff = self.protein = self.fasta = self.translate = self.mode = None
         self.gene = self.type = self.regexp = None
