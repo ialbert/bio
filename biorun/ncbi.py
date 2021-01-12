@@ -9,7 +9,7 @@ from biorun import utils
 from biorun.libs import xmltodict
 from urllib.parse import urlsplit, urlunsplit
 import json, os, csv, sys
-from biorun import const
+from biorun import const, utils
 
 try:
     from Bio import Entrez
@@ -29,9 +29,12 @@ EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 # NCBI Assembly
 ASSEMBLY_URL = "https://ftp.ncbi.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt"
 ASSEMBLY_FILE_NAME = "assembly_summary_genbank.txt"
+ASSEMBLY_JSON_DB = "assembly_summary.json"
 
 # Create the full paths
 ASSEMBLY_FILE_NAME = os.path.join(utils.DATADIR, ASSEMBLY_FILE_NAME)
+
+ASSEMBLY_JSON_DB = os.path.join(utils.DATADIR, ASSEMBLY_JSON_DB)
 
 # Logging function
 logger = utils.logger
@@ -142,6 +145,7 @@ def download_file(url, dest):
 
     return
 
+
 def genbank_save(name, fname, db=None):
     """
     Connects to Entrez Direct to download data.
@@ -168,8 +172,50 @@ def genbank_save(name, fname, db=None):
     utils.save_stream(stream=stream, fname=fname)
 
 
+@utils.time_it
+def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
 
-def genome(name, fname, update=False, summary=ASSEMBLY_FILE_NAME, ):
+    print(target,  os.path.exists(target))
+    if os.path.exists(target):
+        logger.info(f"*** Json found at {target}")
+        return
+
+    # Read the file line by line.
+    print(f"*** parsing {summary}")
+    stream = open(summary, 'rt', encoding='utf-8')
+    stream = filter(lambda x: x[0] != '#', stream)
+    stream = csv.DictReader(stream, fieldnames=const.GENOME_ASSEMBLY_HEADER, delimiter='\t')
+
+    data = {}
+
+    # Read the through the file to to find the name
+    for row in stream:
+
+        # Genbank version and root.
+        gb_vers = row['assembly_accession']
+        gb_base = gb_vers.split('.')[0]
+
+        # Refseq version and root.
+        rf_vers = row['gbrs_paired_asm']
+        rf_base = rf_vers.split('.')[0]
+
+        # The path to the file.
+        url = row['ftp_path']
+        data[gb_base] = url
+        data[gb_vers] = url
+        data[rf_base] = url
+        data[rf_vers] = url
+
+    # Store to json file
+    fp = open(target, "wt")
+    json.dump(data, fp, indent=4)
+    fp.close()
+
+    return data
+
+
+def genome(name, fname, update=False, summary=ASSEMBLY_FILE_NAME,
+           jsondb=ASSEMBLY_JSON_DB):
     """
     Parse and search and assembly file for an accession number.
     """
@@ -183,33 +229,15 @@ def genome(name, fname, update=False, summary=ASSEMBLY_FILE_NAME, ):
         logger.info("updating assembly summary")
         download_assembly()
 
+    data = json.load(open(jsondb, 'r'))
+    urlpath = data.get(name)
+
     # Read the file line by line.
-    logger.info(f"*** parsing {summary}")
-    stream = open(summary, 'rt', encoding='utf-8')
-    stream = filter(lambda x: x[0] != '#', stream)
-    stream = csv.DictReader(stream, fieldnames=const.GENOME_ASSEMBLY_HEADER, delimiter='\t')
-
-    # Read the through the file to to find the
-    for row in stream:
-
-        # Genbank version and root.
-        gb_vers = row['assembly_accession']
-        gb_base = gb_vers.split('.')[0]
-
-        # Refseq version and root.
-        rf_vers = row['gbrs_paired_asm']
-        rf_base = rf_vers.split('.')[0]
-
-        # The path to the file.
-        url = row['ftp_path']
-
-        # Found the match. Store by accession number.
-        if name in (gb_base, gb_vers, rf_base, rf_vers):
-            download_file(url=url, dest=fname)
-            return
-
-    # If we go this far we have not found the data.
-    print(f'*** accession not found: {name}')
+    if urlpath:
+        download_file(url=urlpath, dest=fname)
+    else:
+        # If we go this far we have not found the data.
+        print(f'*** accession not found: {name}')
 
 
 def download_assembly(url=ASSEMBLY_URL, dest_name=ASSEMBLY_FILE_NAME):
