@@ -172,10 +172,8 @@ def genbank_save(name, fname, db=None):
     utils.save_stream(stream=stream, fname=fname)
 
 
-@utils.time_it
 def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
 
-    print(target,  os.path.exists(target))
     if os.path.exists(target):
         logger.info(f"*** Json found at {target}")
         return
@@ -201,16 +199,26 @@ def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
 
         # The path to the file.
         url = row['ftp_path']
+
+        # The taxid for this assembly
+        taxid = int(row['taxid'])
         data[gb_base] = url
         data[gb_vers] = url
         data[rf_base] = url
         data[rf_vers] = url
+        #data[taxid] = row
+        data.setdefault(taxid, []).append(gb_vers)
 
     # Store to json file
     fp = open(target, "wt")
     json.dump(data, fp, indent=4)
     fp.close()
 
+    return data
+
+
+def get_data(jsondb=ASSEMBLY_JSON_DB):
+    data = json.load(open(jsondb, 'r')) if os.path.exists(jsondb) else {}
     return data
 
 
@@ -228,6 +236,9 @@ def genome(name, fname, update=False, summary=ASSEMBLY_FILE_NAME,
     if update:
         logger.info("updating assembly summary")
         download_assembly()
+
+    if not os.path.isfile(jsondb):
+        utils.error("json db needs to be built")
 
     data = json.load(open(jsondb, 'r'))
     urlpath = data.get(name)

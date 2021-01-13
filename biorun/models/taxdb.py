@@ -7,7 +7,7 @@ from urllib import request
 from biorun.libs import placlib as plac
 from itertools import count
 from biorun.models import jsonrec
-from biorun import fetch, const
+from biorun import fetch, const, ncbi
 
 JSON_DB_NAME = "taxdb.json"
 SQLITE_DB_NAME = "taxdb.sqlite"
@@ -179,6 +179,9 @@ def build_database(fname=TAXDB_NAME, limit=None):
     json.dump(store, fp, indent=4)
     fp.close()
 
+    # Build the assembly db
+    ncbi.build_db()
+
 
 def open_db(table, fname=SQLITE_DB, flag='c'):
     """
@@ -191,17 +194,18 @@ def open_db(table, fname=SQLITE_DB, flag='c'):
 queue = list()
 
 
-def dfs(graph, node, names, depth=0, collect=[], visited=None):
+def dfs(graph, node, names, assembly, depth=0, collect=[], visited=None):
     # Initialize the visited nodes once.
     visited = visited if visited else set()
 
     if node not in visited:
-        text = node_formatter(node, names=names, depth=depth)
+        text = node_formatter(node, names=names, assembly=assembly, depth=depth)
         print(text)
         collect.append((depth, node))
         visited.add(node)
         for nbr in graph.get(node, []):
-            dfs(graph=graph, node=nbr, names=names, depth=depth + 1, collect=collect, visited=visited)
+            dfs(graph=graph, node=nbr, names=names, assembly=assembly, depth=depth + 1,
+                collect=collect, visited=visited)
 
 
 def get_values(node, names):
@@ -210,7 +214,7 @@ def get_values(node, names):
     return sname, rank, cname, parent
 
 
-def node_formatter(node, names, depth):
+def node_formatter(node, names, depth, assembly={}):
     """
     Creates a long form representation of a node.
     """
@@ -219,10 +223,12 @@ def node_formatter(node, names, depth):
     sname, rank, cname, parent = get_values(node, names)
 
     # Decide what to do with common names.
+    nassem = len(set(assembly.get(str(node), [])))
+    suffix = f"{nassem} assemblies"
     if cname and cname != sname:
-        text = f"{indent}{rank}{sep}{sname} ({cname}){sep}{node}"
+        text = f"{indent}{rank}{sep}{sname} ({cname}){sep}{node}, {suffix}"
     else:
-        text = f"{indent}{rank}{sep}{sname}{sep}{node}"
+        text = f"{indent}{rank}{sep}{sname}{sep}{node} {suffix}"
 
     return text
 
@@ -235,7 +241,7 @@ def backprop(node, names, collect=[]):
             backprop(parent, names, collect)
 
 
-def print_lineage(taxid, names, flat=1):
+def print_lineage(taxid, names, flat=1, assembly={}):
     step = count(0)
     if taxid in names:
         collect = [taxid]
@@ -255,7 +261,7 @@ def print_lineage(taxid, names, flat=1):
 
         else:
             for node in collect:
-                text = node_formatter(node, names=names, depth=next(step))
+                text = node_formatter(node, names=names, depth=next(step), assembly=assembly)
                 print(text)
 
 
@@ -270,7 +276,9 @@ def get_data(preload=False):
         names = open_db(NAMES)
         graph = open_db(GRAPH)
 
-    return names, graph
+    assembly = ncbi.get_data()
+
+    return names, graph, assembly
 
 
 def print_stats(names, graph):
@@ -279,13 +287,13 @@ def print_stats(names, graph):
 
 
 def search_taxa(word, preload=False):
-    names, graph = get_data(preload=preload)
+    names, graph, assembly = get_data(preload=preload)
 
     word = codecs.decode(word, 'unicode_escape')
 
     print(f"# searching taxonomy for: {word}")
     for taxid, name in search_names(word):
-        text = node_formatter(taxid, names=names, depth=0)
+        text = node_formatter(taxid, names=names, depth=0, assembly=assembly)
         print(text)
 
 
@@ -303,7 +311,7 @@ def print_database(names, graph):
         print(text)
 
 
-def query(taxid, names, graph):
+def query(taxid, names, graph, assembly={}):
     """
     Prints the descendants of node
     """
@@ -314,7 +322,7 @@ def query(taxid, names, graph):
 
     if taxid in names:
         collect = []
-        dfs(graph, taxid, names=names, collect=collect)
+        dfs(graph, taxid, names=names, collect=collect, assembly=assembly)
 
     else:
         search_taxa(taxid)
@@ -349,7 +357,7 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     utils.set_verbosity(logger, level=int(verbose))
 
     # Access the database.
-    names, graph = get_data(preload=preload)
+    names, graph, assembly = get_data(preload=preload)
 
     if download:
         download_prebuilt()
@@ -378,9 +386,9 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     for word in terms:
 
         if lineage:
-            print_lineage(word, names=names, flat=flat)
+            print_lineage(word, names=names, flat=flat, assembly=assembly)
         else:
-            query(word, names=names, graph=graph)
+            query(word, names=names, graph=graph, assembly=assembly)
 
     # No terms listed. Print database stats.
     if not terms:
