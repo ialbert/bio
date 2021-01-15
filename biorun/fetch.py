@@ -75,13 +75,15 @@ def change_seqid(json_name, seqid):
         fp.close()
 
 
-
 def fetch_data(data, param):
     """
     Obtains data from NCBI. Fills each parameter with a json field.
     """
 
     db = "protein" if param.protein else "nuccore"
+
+    # Ensure json DB is built
+    ncbi.build_db()
 
     for name in data:
 
@@ -232,12 +234,12 @@ def print_data_list():
 @plac.opt('rename', "rename the data")
 @plac.opt('seqid', "set the sequence id of the data")
 @plac.flg('protein', "use the protein database")
+@plac.flg('build', "build the database")
 @plac.flg('verbose', "verbose mode")
 def run(update=False, rename='', seqid='', protein=False, verbose=False, *data):
     """
     Fetches and manages data in storage.
     """
-
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))

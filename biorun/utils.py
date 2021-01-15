@@ -39,7 +39,7 @@ def time_it(func):
             diff = int(round((end - start), 1)) or 0.1
             if diff > 120:
                 diff, units = diff / 60, "minutes"
-            logger.info(f"{func.__name__} runtime: {diff} {units}")
+            print(f"{func.__name__} runtime: {diff} {units}")
 
     return timer
 
