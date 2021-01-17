@@ -134,7 +134,6 @@ def esearch(db, **kwds):
         logger.error(exc)
 
 
-@utils.time_it
 def download_file(url, dest):
     # Split the urls
     (scheme, loc, path, query, frag) = urlsplit(url)
@@ -183,7 +182,6 @@ def genbank_save(name, fname, db=None):
     utils.save_stream(stream=stream, fname=fname)
 
 
-@utils.time_it
 def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
 
     if os.path.exists(target):
@@ -216,7 +214,9 @@ def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
         taxid = int(row['taxid'])
         # Save the base
         genbank[gb_base] = url
+        genbank[gb_vers] = url
         refseq[rf_base] = url
+        refseq[rf_vers] = url
 
         taxids.setdefault(taxid, []).append(gb_vers)
 
@@ -240,7 +240,6 @@ def get_data(jsondb=ASSEMBLY_JSON_DB):
     return genbank, taxids, refseq
 
 
-@utils.time_it
 def genome(name, fname, update=False, genbank={}, refseq={}, summary=ASSEMBLY_FILE_NAME,
            jsondb=ASSEMBLY_JSON_DB):
     """
