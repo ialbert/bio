@@ -194,18 +194,19 @@ def open_db(table, fname=SQLITE_DB, flag='c'):
 queue = list()
 
 
-def dfs(graph, node, names, assembly, depth=0, collect=[], visited=None):
+def dfs(graph, node, names, assembly, depth=0, collect=[], visited=None, accessions=False):
     # Initialize the visited nodes once.
     visited = visited if visited else set()
 
     if node not in visited:
-        text = node_formatter(node, names=names, assembly=assembly, depth=depth)
+        text = node_formatter(node, names=names, assembly=assembly, accessions=accessions,
+                              depth=depth)
         print(text)
         collect.append((depth, node))
         visited.add(node)
         for nbr in graph.get(node, []):
             dfs(graph=graph, node=nbr, names=names, assembly=assembly, depth=depth + 1,
-                collect=collect, visited=visited)
+                collect=collect, visited=visited, accessions=accessions)
 
 
 def get_values(node, names):
@@ -214,7 +215,7 @@ def get_values(node, names):
     return sname, rank, cname, parent
 
 
-def node_formatter(node, names, depth, assembly={}):
+def node_formatter(node, names, depth, assembly={}, accessions=False):
     """
     Creates a long form representation of a node.
     """
@@ -222,11 +223,19 @@ def node_formatter(node, names, depth, assembly={}):
     indent = INDENT * depth
     sname, rank, cname, parent = get_values(node, names)
 
+    # Get any full genome assemblies this node may have.
+    acce = set(assembly.get(str(node), []))
+    nacce = len(acce)
+
+    suffix = utils.plural('assembly', nacce)
+    suffix = f", {nacce} {suffix}"
+
+    if accessions and nacce:
+        suffix = f"{suffix}, {','.join(acce)}"
+
     # Decide what to do with common names.
-    nassem = len(set(assembly.get(str(node), [])))
-    suffix = f"{nassem} assemblies"
     if cname and cname != sname:
-        text = f"{indent}{rank}{sep}{sname} ({cname}){sep}{node}, {suffix}"
+        text = f"{indent}{rank}{sep}{sname} ({cname}){sep}{node}{suffix}"
     else:
         text = f"{indent}{rank}{sep}{sname}{sep}{node} {suffix}"
 
@@ -241,7 +250,7 @@ def backprop(node, names, collect=[]):
             backprop(parent, names, collect)
 
 
-def print_lineage(taxid, names, flat=1, assembly={}):
+def print_lineage(taxid, names, flat=1, assembly={}, accessions=False):
     step = count(0)
     if taxid in names:
         collect = [taxid]
@@ -261,7 +270,8 @@ def print_lineage(taxid, names, flat=1, assembly={}):
 
         else:
             for node in collect:
-                text = node_formatter(node, names=names, depth=next(step), assembly=assembly)
+                text = node_formatter(node, names=names, depth=next(step), assembly=assembly,
+                                      accessions=accessions)
                 print(text)
 
 
@@ -276,9 +286,9 @@ def get_data(preload=False):
         names = open_db(NAMES)
         graph = open_db(GRAPH)
 
-    assembly = ncbi.get_data()
+    genbank, taxids, refseq = ncbi.get_data()
 
-    return names, graph, assembly
+    return names, graph, taxids
 
 
 def print_stats(names, graph):
@@ -311,7 +321,7 @@ def print_database(names, graph):
         print(text)
 
 
-def query(taxid, names, graph, assembly={}):
+def query(taxid, names, graph, assembly={}, accessions=False):
     """
     Prints the descendants of node
     """
@@ -322,7 +332,7 @@ def query(taxid, names, graph, assembly={}):
 
     if taxid in names:
         collect = []
-        dfs(graph, taxid, names=names, collect=collect, assembly=assembly)
+        dfs(graph, taxid, names=names, collect=collect, assembly=assembly, accessions=accessions)
 
     else:
         search_taxa(taxid)
@@ -342,8 +352,9 @@ def query(taxid, names, graph, assembly={}):
 @plac.flg('info', "prints taxonomy database info", abbrev='I')
 @plac.flg('taxon', "run the taxonomy subcommand", abbrev='T')
 @plac.flg('verbose', "verbose mode, prints more messages")
+@plac.flg('accessions', "Print the accessions number for each ")
 def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, update=False,
-        preload=False, download=False, taxon=False, info=False,
+        preload=False, download=False, taxon=False, info=False, accessions=False,
         verbose=False, *words):
     global SEP, INDENT
 
@@ -386,9 +397,9 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     for word in terms:
 
         if lineage:
-            print_lineage(word, names=names, flat=flat, assembly=assembly)
+            print_lineage(word, names=names, flat=flat, assembly=assembly, accessions=accessions)
         else:
-            query(word, names=names, graph=graph, assembly=assembly)
+            query(word, names=names, graph=graph, assembly=assembly, accessions=accessions)
 
     # No terms listed. Print database stats.
     if not terms:

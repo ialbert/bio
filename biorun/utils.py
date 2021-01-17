@@ -118,6 +118,16 @@ def save_table(name, obj, fname, flg='w'):
     table.close()
 
 
+def plural(target, val=0, end='ies'):
+    """
+    Make the target string plural
+    """
+
+    output = target if val == 1 else f"{target[:-1]}{end}"
+
+    return output
+
+
 def response(url, params={}):
 
     # Open request to file

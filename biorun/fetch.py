@@ -85,6 +85,8 @@ def fetch_data(data, param):
     # Ensure json DB is built
     ncbi.build_db()
 
+    genbank, taxids, refseq = ncbi.get_data()
+
     for name in data:
 
         # Pretend no data if it is an update.
@@ -102,7 +104,8 @@ def fetch_data(data, param):
 
         # Genome assembly data.
         if name.startswith("GCA") or name.startswith("GCF"):
-            ncbi.genome(name=name, fname=gbk_name, update=param.update)
+            ncbi.genome(name=name, fname=gbk_name, update=param.update, genbank=genbank,
+                        refseq=refseq)
         else:
             # Genbank data.
             ncbi.genbank_save(name, db=db, fname=gbk_name)
