@@ -30,12 +30,9 @@ EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 ASSEMBLY_URL = "https://ftp.ncbi.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt"
 ASSEMBLY_FILE_NAME = "assembly_summary_genbank.txt"
 ASSEMBLY_JSON_DB = "assembly_summary.json"
-SQLITE_DB = "assembly_summary.db"
 
 # Create the full paths
 ASSEMBLY_FILE_NAME = os.path.join(utils.DATADIR, ASSEMBLY_FILE_NAME)
-
-SQLITE_DB = os.path.join(utils.DATADIR, SQLITE_DB)
 
 ASSEMBLY_JSON_DB = os.path.join(utils.DATADIR, ASSEMBLY_JSON_DB)
 
