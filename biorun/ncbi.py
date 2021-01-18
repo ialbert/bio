@@ -36,6 +36,13 @@ ASSEMBLY_FILE_NAME = os.path.join(utils.DATADIR, ASSEMBLY_FILE_NAME)
 
 ASSEMBLY_JSON_DB = os.path.join(utils.DATADIR, ASSEMBLY_JSON_DB)
 
+TAXIDS = 'TAXIDS'
+
+ACCESSION = 'ACCESSION'
+
+REFSEQ = 'REFSEQ'
+
+
 # Logging function
 logger = utils.logger
 
@@ -178,17 +185,17 @@ def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
         logger.info(f"*** Json found at {target}")
         return
 
-    # Read the file line by line.
     print(f"*** parsing {summary}")
     stream = open(summary, 'rt', encoding='utf-8')
     stream = filter(lambda x: x[0] != '#', stream)
     stream = csv.DictReader(stream, fieldnames=const.GENOME_ASSEMBLY_HEADER, delimiter='\t')
 
-    data = {}
+    genbank = {}
+    refseq = {}
+    taxids = {}
 
     # Read the through the file to to find the name
     for row in stream:
-
         # Genbank version and root.
         gb_vers = row['assembly_accession']
         gb_base = gb_vers.split('.')[0]
@@ -202,27 +209,35 @@ def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
 
         # The taxid for this assembly
         taxid = int(row['taxid'])
-        data[gb_base] = url
-        data[gb_vers] = url
-        data[rf_base] = url
-        data[rf_vers] = url
-        #data[taxid] = row
-        data.setdefault(taxid, []).append(gb_vers)
+        # Save the base
+        genbank[gb_base] = url
+        genbank[gb_vers] = url
+        refseq[rf_base] = url
+        refseq[rf_vers] = url
+
+        taxids.setdefault(taxid, []).append(gb_vers)
+
+    data = dict(ACCESSION=genbank, TAXIDS=taxids, REFSEQ=refseq)
 
     # Store to json file
     fp = open(target, "wt")
     json.dump(data, fp, indent=4)
     fp.close()
 
-    return data
+    return
 
 
 def get_data(jsondb=ASSEMBLY_JSON_DB):
-    data = json.load(open(jsondb, 'r')) if os.path.exists(jsondb) else {}
-    return data
+
+    store = json.load(open(jsondb, 'r'))
+    genbank = store[ACCESSION]
+    refseq = store[REFSEQ]
+    taxids = store[TAXIDS]
+
+    return genbank, taxids, refseq
 
 
-def genome(name, fname, update=False, summary=ASSEMBLY_FILE_NAME,
+def genome(name, fname, update=False, genbank={}, refseq={}, summary=ASSEMBLY_FILE_NAME,
            jsondb=ASSEMBLY_JSON_DB):
     """
     Parse and search and assembly file for an accession number.
@@ -240,8 +255,7 @@ def genome(name, fname, update=False, summary=ASSEMBLY_FILE_NAME,
     if not os.path.isfile(jsondb):
         utils.error("json db needs to be built")
 
-    data = json.load(open(jsondb, 'r'))
-    urlpath = data.get(name)
+    urlpath = genbank.get(name) or refseq.get(name)
 
     # Read the file line by line.
     if urlpath:
