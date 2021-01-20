@@ -648,6 +648,10 @@ def parse_file(fname, seqid=None):
 
     logger.info(f"parsing {fname}")
 
+    if not os.path.exists(fname):
+        logger.warning(f"File does not exist: {fname}")
+        return
+
     # Handle both compressed and uncompressed formats.
     stream = gzip.open(fname, 'rt') if fname.endswith(".gz") else open(fname, 'rt')
 

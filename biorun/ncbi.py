@@ -36,7 +36,7 @@ ASSEMBLY_FILE_NAME = os.path.join(utils.DATADIR, ASSEMBLY_FILE_NAME)
 
 ASSEMBLY_JSON_DB = os.path.join(utils.DATADIR, ASSEMBLY_JSON_DB)
 
-TAXIDS = 'TAXIDS'
+TAXON_ACC = 'TAXON_ACC'
 
 ACCESSION = 'ACCESSION'
 
@@ -179,22 +179,14 @@ def genbank_save(name, fname, db=None):
     utils.save_stream(stream=stream, fname=fname)
 
 
-def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
+def parse_summary(summary=ASSEMBLY_FILE_NAME):
 
-    if os.path.exists(target):
-        logger.info(f"*** Json found at {target}")
-        return
-
-    print(f"*** parsing {summary}")
     stream = open(summary, 'rt', encoding='utf-8')
     stream = filter(lambda x: x[0] != '#', stream)
     stream = csv.DictReader(stream, fieldnames=const.GENOME_ASSEMBLY_HEADER, delimiter='\t')
 
-    genbank = {}
-    refseq = {}
-    taxids = {}
+    genbank, refseq, acc = {}, {}, {}
 
-    # Read the through the file to to find the name
     for row in stream:
         # Genbank version and root.
         gb_vers = row['assembly_accession']
@@ -215,9 +207,26 @@ def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
         refseq[rf_base] = url
         refseq[rf_vers] = url
 
-        taxids.setdefault(taxid, []).append(gb_vers)
+        acc.setdefault(taxid, []).append(gb_vers)
 
-    data = dict(ACCESSION=genbank, TAXIDS=taxids, REFSEQ=refseq)
+    return genbank, refseq, acc
+
+
+def build_db(summary=ASSEMBLY_FILE_NAME, target=ASSEMBLY_JSON_DB):
+
+    if os.path.exists(target):
+        logger.info(f"*** Json found at {target}")
+        return
+
+    if not os.path.exists(summary):
+        logger.info(f"*** Downlading summary from :{summary}")
+        download_assembly()
+
+    print(f"*** parsing {summary}")
+
+    genbank, refseq, acc = parse_summary(summary=summary)
+
+    data = dict(ACCESSION=genbank, TAXON_ACC=acc, REFSEQ=refseq)
 
     # Store to json file
     fp = open(target, "wt")
@@ -232,9 +241,9 @@ def get_data(jsondb=ASSEMBLY_JSON_DB):
     store = json.load(open(jsondb, 'r'))
     genbank = store[ACCESSION]
     refseq = store[REFSEQ]
-    taxids = store[TAXIDS]
+    taxon_acc = store[TAXON_ACC]
 
-    return genbank, taxids, refseq
+    return genbank, taxon_acc, refseq
 
 
 def genome(name, fname, update=False, genbank={}, refseq={}, summary=ASSEMBLY_FILE_NAME,
