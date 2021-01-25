@@ -145,6 +145,56 @@ def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
     return node_dict, back_dict
 
 
+# def counts_dfs(graph, node, names, depth=0, acount=0, collect=[], visited=None):
+#     # Initialize the visited nodes once.
+#     visited = visited if visited else set()
+#
+#     if node not in visited:
+#
+#         acount = get_values(node=node, names=names)[-1]
+#         collect.append((depth, acount, node))
+#         visited.add(node)
+#
+#         for nbr in graph.get(str(node), []):
+#             counts_dfs(graph=graph, node=nbr, depth=depth +1 ,names=names, acount=acount,
+#                        collect=collect, visited=visited)
+#
+#
+# def propagate_counts(names, graph):
+#     # Get all nodes,
+#     # Build tree
+#     print("*** Propagating")
+#     collect = []
+#     counts_dfs(graph, 1, names=names, collect=collect)
+#     print(len(collect))
+#
+#     total = 0
+#     current = 0
+#     prev_depth = None
+#     collect = reversed(collect)
+#
+#     for depth, acount, node in collect:
+#         print(acount, depth, node)
+#         # This node is a parent, collate counts and set.
+#         if depth < prev_depth:
+#             current += acount
+#             names[str(node)][-1] = current
+#             #current += acount
+#         elif depth == prev_depth:
+#             current += acount
+#         else:
+#             total += acount
+#             # If this node does not have parents, do not assign a total to it
+#             names[str(node)][-1] = total
+#             total = 0
+#
+#         prev_depth = depth
+#
+#     print(names['1'][-1])
+#
+#     return
+
+
 def build_database(fname=TAXDB_NAME, limit=None):
     """
     Downloads taxdump file.
@@ -164,6 +214,9 @@ def build_database(fname=TAXDB_NAME, limit=None):
 
     # Parse the nodes.
     node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
+
+    # Propagate the accession counts
+    #propagate_counts(name_dict, node_dict)
 
     def save_table(name, obj):
         utils.save_table(name=name, obj=obj, fname=SQLITE_DB)
