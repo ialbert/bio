@@ -86,7 +86,7 @@ def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
                 yield taxid, name
 
 
-def parse_names(fname, name="names.dmp", limit=None):
+def parse_names(fname, name="names.dmp", limit=None, taxon_acc={}):
     """
     Parses the names.dmp component of the taxdump.
     """
@@ -102,16 +102,17 @@ def parse_names(fname, name="names.dmp", limit=None):
     print(f"*** parsing: {name}")
     for index, elems in enumerate(stream):
         taxid, name, label = elems[0], elems[2], elems[6]
+        acount = len(set(taxon_acc.get(int(taxid), [])))
         if label == 'scientific name':
             # Store name, rank, common name, parent
-            name_dict[taxid] = [name, "", "", ""]
+            name_dict[taxid] = [name, "", "", "", acount]
         elif label == 'genbank common name':
             comm_dict[taxid] = name
 
     # Fill in common genbank names when exist
     for key, cname in comm_dict.items():
         if key in name_dict:
-            sciname, rank, _1, _2 = name_dict[key]
+            sciname, rank, _1, _2, _3 = name_dict[key]
             if sciname != cname:
                 name_dict[key][2] = cname
 
@@ -144,6 +145,56 @@ def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
     return node_dict, back_dict
 
 
+# def counts_dfs(graph, node, names, depth=0, acount=0, collect=[], visited=None):
+#     # Initialize the visited nodes once.
+#     visited = visited if visited else set()
+#
+#     if node not in visited:
+#
+#         acount = get_values(node=node, names=names)[-1]
+#         collect.append((depth, acount, node))
+#         visited.add(node)
+#
+#         for nbr in graph.get(str(node), []):
+#             counts_dfs(graph=graph, node=nbr, depth=depth +1 ,names=names, acount=acount,
+#                        collect=collect, visited=visited)
+#
+#
+# def propagate_counts(names, graph):
+#     # Get all nodes,
+#     # Build tree
+#     print("*** Propagating")
+#     collect = []
+#     counts_dfs(graph, 1, names=names, collect=collect)
+#     print(len(collect))
+#
+#     total = 0
+#     current = 0
+#     prev_depth = None
+#     collect = reversed(collect)
+#
+#     for depth, acount, node in collect:
+#         print(acount, depth, node)
+#         # This node is a parent, collate counts and set.
+#         if depth < prev_depth:
+#             current += acount
+#             names[str(node)][-1] = current
+#             #current += acount
+#         elif depth == prev_depth:
+#             current += acount
+#         else:
+#             total += acount
+#             # If this node does not have parents, do not assign a total to it
+#             names[str(node)][-1] = total
+#             total = 0
+#
+#         prev_depth = depth
+#
+#     print(names['1'][-1])
+#
+#     return
+
+
 def build_database(fname=TAXDB_NAME, limit=None):
     """
     Downloads taxdump file.
@@ -155,11 +206,17 @@ def build_database(fname=TAXDB_NAME, limit=None):
     if not os.path.isfile(path):
         utils.error(f"no taxdump file found, run the --download flag")
 
+    # Get the assembly.
+    _, _, taxon_acc = ncbi.parse_summary()
+
     # Parse the names
-    name_dict = parse_names(fname, limit=limit)
+    name_dict = parse_names(fname, limit=limit, taxon_acc=taxon_acc)
 
     # Parse the nodes.
     node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
+
+    # Propagate the accession counts
+    #propagate_counts(name_dict, node_dict)
 
     def save_table(name, obj):
         utils.save_table(name=name, obj=obj, fname=SQLITE_DB)
@@ -179,9 +236,6 @@ def build_database(fname=TAXDB_NAME, limit=None):
     json.dump(store, fp, indent=4)
     fp.close()
 
-    # Build the assembly db
-    ncbi.build_db()
-
 
 def open_db(table, fname=SQLITE_DB, flag='c'):
     """
@@ -194,25 +248,25 @@ def open_db(table, fname=SQLITE_DB, flag='c'):
 queue = list()
 
 
-def dfs(graph, node, names, assembly, depth=0, collect=[], visited=None, accessions=False):
+def dfs(graph, node, names, assembly={}, depth=0, collect=[], visited=None, accessions=False):
     # Initialize the visited nodes once.
     visited = visited if visited else set()
 
     if node not in visited:
-        text = node_formatter(node, names=names, assembly=assembly, accessions=accessions,
+        text = node_formatter(node, names=names, accessions=accessions, assembly=assembly,
                               depth=depth)
         print(text)
         collect.append((depth, node))
         visited.add(node)
         for nbr in graph.get(node, []):
-            dfs(graph=graph, node=nbr, names=names, assembly=assembly, depth=depth + 1,
+            dfs(graph=graph, node=nbr, names=names, depth=depth + 1, assembly=assembly,
                 collect=collect, visited=visited, accessions=accessions)
 
 
 def get_values(node, names):
     # Avoiding code duplication everywhere
-    sname, rank, cname, parent = names.get(node, ("MISSING", "NO RANK", "", ""))
-    return sname, rank, cname, parent
+    sname, rank, cname, parent, acount = names.get(node, ("MISSING", "NO RANK", "", "", 0))
+    return sname, rank, cname, parent, acount
 
 
 def node_formatter(node, names, depth, assembly={}, accessions=False):
@@ -221,17 +275,16 @@ def node_formatter(node, names, depth, assembly={}, accessions=False):
     """
     sep = SEP
     indent = INDENT * depth
-    sname, rank, cname, parent = get_values(node, names)
+    sname, rank, cname, parent, acount = get_values(node, names)
 
     # Get any full genome assemblies this node may have.
-    acce = set(assembly.get(str(node), []))
-    nacce = len(acce)
 
-    suffix = utils.plural('assembly', nacce)
-    suffix = f", {nacce} {suffix}"
+    suffix = utils.plural('assembly', acount)
+    suffix = f", {acount} {suffix}"
 
-    if accessions and nacce:
-        suffix = f"{suffix}, {','.join(acce)}"
+    if accessions and acount:
+        assembelies = set(assembly.get(str(node), []))
+        suffix = f"{suffix}: {','.join(assembelies)}"
 
     # Decide what to do with common names.
     if cname and cname != sname:
@@ -244,7 +297,7 @@ def node_formatter(node, names, depth, assembly={}, accessions=False):
 
 def backprop(node, names, collect=[]):
     if node in names:
-        sciname, rank, cname, parent = names[node]
+        sciname, rank, cname, parent, acount = names[node]
         if parent and parent != node:
             collect.append(parent)
             backprop(parent, names, collect)
@@ -262,7 +315,7 @@ def print_lineage(taxid, names, flat=1, assembly={}, accessions=False):
         if flat:
             output = []
             for node in collect:
-                sname, rank, cname, parent = get_values(node, names)
+                sname, rank, cname, parent, _1 = get_values(node, names)
                 output.append(sname)
 
             result = [taxid, ";".join(output)]
@@ -270,12 +323,12 @@ def print_lineage(taxid, names, flat=1, assembly={}, accessions=False):
 
         else:
             for node in collect:
-                text = node_formatter(node, names=names, depth=next(step), assembly=assembly,
-                                      accessions=accessions)
+                text = node_formatter(node, names=names, depth=next(step),
+                                      accessions=accessions, assembly=assembly)
                 print(text)
 
 
-def get_data(preload=False):
+def get_data(preload=False, acc=False):
     if preload:
         if not os.path.isfile(JSON_DB):
             utils.error(f"taxonomy file not found (you must build it first): {JSON_DB}")
@@ -286,9 +339,12 @@ def get_data(preload=False):
         names = open_db(NAMES)
         graph = open_db(GRAPH)
 
-    genbank, taxids, refseq = ncbi.get_data()
+    if acc:
+        _, taxon_acc, _ = ncbi.get_data()
+    else:
+        taxon_acc = {}
 
-    return names, graph, taxids
+    return names, graph, taxon_acc
 
 
 def print_stats(names, graph):
@@ -303,7 +359,7 @@ def search_taxa(word, preload=False):
 
     print(f"# searching taxonomy for: {word}")
     for taxid, name in search_names(word):
-        text = node_formatter(taxid, names=names, depth=0, assembly=assembly)
+        text = node_formatter(taxid, names=names, depth=0)
         print(text)
 
 
@@ -368,7 +424,7 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     utils.set_verbosity(logger, level=int(verbose))
 
     # Access the database.
-    names, graph, assembly = get_data(preload=preload)
+    names, graph, assembly = get_data(preload=preload, acc=accessions)
 
     if download:
         download_prebuilt()
