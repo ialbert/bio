@@ -23,7 +23,7 @@ JSON_DB = join(utils.DATADIR, JSON_DB_NAME)
 
 # Create the thing here.
 
-GRAPH, BACK, NAMES, SYNON = "GRAPH", "BACKLINKS", "NAMES", "SYNONYMS"
+GRAPH, BACK, NAMES, SYNON, LATIN = "GRAPH", "BACKLINKS", "NAMES", "SYNONYMS", "LATIN"
 
 # Indentation character
 INDENT = '  '
@@ -99,15 +99,18 @@ def parse_names(fname, name="names.dmp", limit=None, taxon_acc={}):
 
     name_dict = {}
     comm_dict = {}
+    latin_names = {}
     print(f"*** parsing: {name}")
     for index, elems in enumerate(stream):
         taxid, name, label = elems[0], elems[2], elems[6]
         acount = len(set(taxon_acc.get(int(taxid), [])))
         if label == 'scientific name':
-            # Store name, rank, common name, parent
+            # Store name, rank, common name, parent, accession count
             name_dict[taxid] = [name, "", "", "", acount]
         elif label == 'genbank common name':
             comm_dict[taxid] = name
+        kname = name.lower()
+        latin_names[kname] = taxid
 
     # Fill in common genbank names when exist
     for key, cname in comm_dict.items():
@@ -116,7 +119,7 @@ def parse_names(fname, name="names.dmp", limit=None, taxon_acc={}):
             if sciname != cname:
                 name_dict[key][2] = cname
 
-    return name_dict
+    return name_dict, latin_names
 
 
 def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
@@ -145,56 +148,6 @@ def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
     return node_dict, back_dict
 
 
-# def counts_dfs(graph, node, names, depth=0, acount=0, collect=[], visited=None):
-#     # Initialize the visited nodes once.
-#     visited = visited if visited else set()
-#
-#     if node not in visited:
-#
-#         acount = get_values(node=node, names=names)[-1]
-#         collect.append((depth, acount, node))
-#         visited.add(node)
-#
-#         for nbr in graph.get(str(node), []):
-#             counts_dfs(graph=graph, node=nbr, depth=depth +1 ,names=names, acount=acount,
-#                        collect=collect, visited=visited)
-#
-#
-# def propagate_counts(names, graph):
-#     # Get all nodes,
-#     # Build tree
-#     print("*** Propagating")
-#     collect = []
-#     counts_dfs(graph, 1, names=names, collect=collect)
-#     print(len(collect))
-#
-#     total = 0
-#     current = 0
-#     prev_depth = None
-#     collect = reversed(collect)
-#
-#     for depth, acount, node in collect:
-#         print(acount, depth, node)
-#         # This node is a parent, collate counts and set.
-#         if depth < prev_depth:
-#             current += acount
-#             names[str(node)][-1] = current
-#             #current += acount
-#         elif depth == prev_depth:
-#             current += acount
-#         else:
-#             total += acount
-#             # If this node does not have parents, do not assign a total to it
-#             names[str(node)][-1] = total
-#             total = 0
-#
-#         prev_depth = depth
-#
-#     print(names['1'][-1])
-#
-#     return
-
-
 def build_database(fname=TAXDB_NAME, limit=None):
     """
     Downloads taxdump file.
@@ -210,13 +163,10 @@ def build_database(fname=TAXDB_NAME, limit=None):
     _, _, taxon_acc = ncbi.parse_summary()
 
     # Parse the names
-    name_dict = parse_names(fname, limit=limit, taxon_acc=taxon_acc)
+    name_dict, latin_dict = parse_names(fname, limit=limit, taxon_acc=taxon_acc)
 
     # Parse the nodes.
     node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
-
-    # Propagate the accession counts
-    #propagate_counts(name_dict, node_dict)
 
     def save_table(name, obj):
         utils.save_table(name=name, obj=obj, fname=SQLITE_DB)
@@ -227,11 +177,14 @@ def build_database(fname=TAXDB_NAME, limit=None):
     # Save the nodes.
     save_table(GRAPH, node_dict)
 
+    # Save the latin names.
+    save_table(LATIN, latin_dict)
+
     print("*** saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
 
     # JSON will only have the graph and names.
-    store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={})
+    store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={}, LATIN=latin_dict)
     fp = open(json_path, 'wt')
     json.dump(store, fp, indent=4)
     fp.close()
@@ -248,19 +201,17 @@ def open_db(table, fname=SQLITE_DB, flag='c'):
 queue = list()
 
 
-def dfs(graph, node, names, assembly={}, depth=0, collect=[], visited=None, accessions=False):
+def dfs(graph, node, names, depth=0, collect=[], visited=None):
     # Initialize the visited nodes once.
     visited = visited if visited else set()
 
     if node not in visited:
-        text = node_formatter(node, names=names, accessions=accessions, assembly=assembly,
-                              depth=depth)
+        text = node_formatter(node, names=names, depth=depth)
         print(text)
         collect.append((depth, node))
         visited.add(node)
         for nbr in graph.get(node, []):
-            dfs(graph=graph, node=nbr, names=names, depth=depth + 1, assembly=assembly,
-                collect=collect, visited=visited, accessions=accessions)
+            dfs(graph=graph, node=nbr, names=names, depth=depth + 1, collect=collect, visited=visited)
 
 
 def get_values(node, names):
@@ -269,7 +220,18 @@ def get_values(node, names):
     return sname, rank, cname, parent, acount
 
 
-def node_formatter(node, names, depth, assembly={}, accessions=False):
+def print_assemblies(taxid, assembly):
+    """
+    Print assemblies
+    """
+
+    assemblies = assembly.get(taxid, [])
+
+    for acc in assemblies:
+        print(f'{taxid}{INDENT}{acc}')
+
+
+def node_formatter(node, names, depth):
     """
     Creates a long form representation of a node.
     """
@@ -281,10 +243,6 @@ def node_formatter(node, names, depth, assembly={}, accessions=False):
 
     suffix = utils.plural('assembly', acount)
     suffix = f", {acount} {suffix}"
-
-    if accessions and acount:
-        assembelies = set(assembly.get(str(node), []))
-        suffix = f"{suffix}: {','.join(assembelies)}"
 
     # Decide what to do with common names.
     if cname and cname != sname:
@@ -303,7 +261,7 @@ def backprop(node, names, collect=[]):
             backprop(parent, names, collect)
 
 
-def print_lineage(taxid, names, flat=1, assembly={}, accessions=False):
+def print_lineage(taxid, names, flat=1):
     step = count(0)
     if taxid in names:
         collect = [taxid]
@@ -323,8 +281,7 @@ def print_lineage(taxid, names, flat=1, assembly={}, accessions=False):
 
         else:
             for node in collect:
-                text = node_formatter(node, names=names, depth=next(step),
-                                      accessions=accessions, assembly=assembly)
+                text = node_formatter(node, names=names, depth=next(step))
                 print(text)
 
 
@@ -335,16 +292,18 @@ def get_data(preload=False, acc=False):
         store = json.load(open(JSON_DB))
         names = store[NAMES]
         graph = store[GRAPH]
+        latin = store[LATIN]
     else:
         names = open_db(NAMES)
         graph = open_db(GRAPH)
+        latin = open_db(LATIN)
 
     if acc:
         _, taxon_acc, _ = ncbi.get_data()
     else:
         taxon_acc = {}
 
-    return names, graph, taxon_acc
+    return names, graph, taxon_acc, latin
 
 
 def print_stats(names, graph):
@@ -353,7 +312,7 @@ def print_stats(names, graph):
 
 
 def search_taxa(word, preload=False):
-    names, graph, assembly = get_data(preload=preload)
+    names, graph, assembly, latin = get_data(preload=preload)
 
     word = codecs.decode(word, 'unicode_escape')
 
@@ -377,7 +336,7 @@ def print_database(names, graph):
         print(text)
 
 
-def query(taxid, names, graph, assembly={}, accessions=False):
+def query(taxid, names, graph, assembly={}):
     """
     Prints the descendants of node
     """
@@ -386,12 +345,78 @@ def query(taxid, names, graph, assembly={}, accessions=False):
         print(f"# taxid not found in database: {taxid}")
         sys.exit()
 
+    if assembly:
+        print_assemblies(taxid=taxid, assembly=assembly)
+        return
+
     if taxid in names:
         collect = []
-        dfs(graph, taxid, names=names, collect=collect, assembly=assembly, accessions=accessions)
+        dfs(graph, taxid, names=names, collect=collect)
 
     else:
         search_taxa(taxid)
+
+
+def simple_formatter(name, node, prefix=''):
+    print(f'{prefix}{name}\t{node}')
+    return
+
+
+def simple_dfs(graph, node, names, depth=0, visited=None, exclude=False):
+
+    visited = visited if visited else set()
+
+    # Exclude children and only print current node.
+    if exclude:
+        sciname, _, _, _, _ = names.get(node)
+        simple_formatter(prefix='', name=sciname, node=node)
+        return
+
+    if node not in visited:
+        sciname, _, _, _, _ = names.get(node)
+        sep = INDENT * depth
+        simple_formatter(prefix=sep, name=sciname, node=node)
+        visited.add(node)
+        for nbr in graph.get(node, []):
+            simple_dfs(graph=graph, node=nbr, names=names, depth=depth + 1, visited=visited)
+
+    return
+
+
+def search_file(fname, names, latin, graph, include=False):
+    """
+    input:
+
+    human
+    gorilla
+
+    output:
+
+    Homo sapiens	9606
+    Gorilla beringei	499232
+
+    """
+
+    stream = open(fname, 'r')
+    stream = filter(lambda line: line.strip(), stream)
+
+    for word in stream:
+
+        word = codecs.decode(word, 'unicode_escape').strip().lower()
+
+        # Get tax id from latin/common name.
+        taxid = latin.get(word)
+
+        # Get correct scientific name to show.
+        vals = names.get(taxid)
+
+        if vals:
+            sciname, _, _, _, _ = vals
+            exclude = not include
+            simple_dfs(graph, taxid, names=names, exclude=exclude)
+
+        else:
+            print(f"{word}\tNAN")
 
 
 @plac.pos("words", "taxids or search queries")
@@ -400,6 +425,8 @@ def query(taxid, names, graph, assembly={}, accessions=False):
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('list_', "lists database content", abbrev='A')
 @plac.flg('flat', "flattened output")
+@plac.opt('scinames', "File with scientific or common names in each line. ", abbrev="n")
+@plac.flg('children', "Include children when returning when parsing latin names", abbrev='C')
 @plac.flg('lineage', "show the lineage for a taxon term", abbrev="l")
 @plac.opt('indent', "the indentation string")
 @plac.opt('sep', "separator string", abbrev="S")
@@ -410,7 +437,7 @@ def query(taxid, names, graph, assembly={}, accessions=False):
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('accessions', "Print the accessions number for each ")
 def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, update=False,
-        preload=False, download=False, taxon=False, info=False, accessions=False,
+        preload=False, download=False, taxon=False, info=False, accessions=False, scinames='',children=False,
         verbose=False, *words):
     global SEP, INDENT
 
@@ -424,7 +451,7 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     utils.set_verbosity(logger, level=int(verbose))
 
     # Access the database.
-    names, graph, assembly = get_data(preload=preload, acc=accessions)
+    names, graph, assembly, latin = get_data(preload=preload, acc=accessions)
 
     if download:
         download_prebuilt()
@@ -438,6 +465,10 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
 
     if build:
         build_database(limit=limit)
+
+    if scinames:
+        search_file(scinames, names=names, latin=latin, graph=graph, include=children)
+        sys.exit()
 
     terms = []
     # Attempts to fetch data if possible.
@@ -453,9 +484,9 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     for word in terms:
 
         if lineage:
-            print_lineage(word, names=names, flat=flat, assembly=assembly, accessions=accessions)
+            print_lineage(word, names=names, flat=flat)
         else:
-            query(word, names=names, graph=graph, assembly=assembly, accessions=accessions)
+            query(word, names=names, graph=graph, assembly=assembly)
 
     # No terms listed. Print database stats.
     if not terms:
