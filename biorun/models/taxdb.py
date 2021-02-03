@@ -357,8 +357,9 @@ def query(taxid, names, graph, assembly={}):
         search_taxa(taxid)
 
 
-def simple_formatter(name, node, prefix=''):
-    print(f'{prefix}{name}\t{node}')
+def simple_formatter(sciname, cname, rank, node):
+    cname = cname or 'NAN'
+    print(f'{rank}\t{sciname}\t{cname}\t{node}')
     return
 
 
@@ -368,14 +369,13 @@ def simple_dfs(graph, node, names, depth=0, visited=None, exclude=False):
 
     # Exclude children and only print current node.
     if exclude:
-        sciname, _, _, _, _ = names.get(node)
-        simple_formatter(prefix='', name=sciname, node=node)
+        sciname, rank, cname, _, _ = names.get(node)
+        simple_formatter(sciname, cname, rank, node)
         return
 
     if node not in visited:
-        sciname, _, _, _, _ = names.get(node)
-        sep = INDENT * depth
-        simple_formatter(prefix=sep, name=sciname, node=node)
+        sciname, rank, cname, _, _ = names.get(node)
+        simple_formatter(sciname, cname, rank, node)
         visited.add(node)
         for nbr in graph.get(node, []):
             simple_dfs(graph=graph, node=nbr, names=names, depth=depth + 1, visited=visited)
@@ -407,14 +407,9 @@ def search_file(fname, names, latin, graph, include=False):
         # Get tax id from latin/common name.
         taxid = latin.get(word)
 
-        # Get correct scientific name to show.
-        vals = names.get(taxid)
-
-        if vals:
-            sciname, _, _, _, _ = vals
+        if taxid in names:
             exclude = not include
             simple_dfs(graph, taxid, names=names, exclude=exclude)
-
         else:
             print(f"{word}\tNAN")
 
