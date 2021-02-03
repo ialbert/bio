@@ -375,7 +375,6 @@ def simple_dfs(graph, node, names, depth=0, visited=None, exclude=False):
 
     if node not in visited:
         sciname, rank, cname, _, _ = names.get(node)
-        sep = INDENT * depth
         simple_formatter(sciname, cname, rank, node)
         visited.add(node)
         for nbr in graph.get(node, []):
@@ -408,13 +407,9 @@ def search_file(fname, names, latin, graph, include=False):
         # Get tax id from latin/common name.
         taxid = latin.get(word)
 
-        # Get correct scientific name to show.
-        vals = names.get(taxid)
-
-        if vals:
+        if taxid in names:
             exclude = not include
             simple_dfs(graph, taxid, names=names, exclude=exclude)
-
         else:
             print(f"{word}\tNAN")
 
