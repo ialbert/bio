@@ -235,20 +235,16 @@ def node_formatter(node, names, depth):
     """
     Creates a long form representation of a node.
     """
-    sep = SEP
     indent = INDENT * depth
     sname, rank, cname, parent, acount = get_values(node, names)
 
     # Get any full genome assemblies this node may have.
 
-    suffix = utils.plural('assembly', acount)
-    suffix = f", {acount} {suffix}"
-
     # Decide what to do with common names.
     if cname and cname != sname:
-        text = f"{indent}{rank}{sep}{sname} ({cname}){sep}{node}{suffix}"
+        text = f"{indent}{rank}\t{sname}\t{cname}\t{node}\t{acount}"
     else:
-        text = f"{indent}{rank}{sep}{sname}{sep}{node} {suffix}"
+        text = f"{indent}{rank}\t{sname}\t{node}\t{acount}"
 
     return text
 
@@ -357,30 +353,21 @@ def query(taxid, names, graph, assembly={}):
         search_taxa(taxid)
 
 
-def simple_formatter(sciname, cname, rank, node):
-    cname = cname or 'NAN'
-    print(f'{rank}\t{sciname}\t{cname}\t{node}')
-    return
-
-
 def simple_dfs(graph, node, names, depth=0, visited=None, exclude=False):
 
     visited = visited if visited else set()
 
     # Exclude children and only print current node.
+    txt = node_formatter(node, names, depth)
     if exclude:
-        sciname, rank, cname, _, _ = names.get(node)
-        simple_formatter(sciname, cname, rank, node)
+        print(txt)
         return
 
     if node not in visited:
-        sciname, rank, cname, _, _ = names.get(node)
-        simple_formatter(sciname, cname, rank, node)
+        print(txt)
         visited.add(node)
         for nbr in graph.get(node, []):
             simple_dfs(graph=graph, node=nbr, names=names, depth=depth + 1, visited=visited)
-
-    return
 
 
 def search_file(fname, names, latin, graph, include=False):
@@ -462,6 +449,7 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
         build_database(limit=limit)
 
     if scinames:
+
         search_file(scinames, names=names, latin=latin, graph=graph, include=children)
         sys.exit()
 
