@@ -39,7 +39,7 @@ def time_it(func):
             diff = int(round((end - start), 1)) or 0.1
             if diff > 120:
                 diff, units = diff / 60, "minutes"
-            logger.info(f"{func.__name__} runtime: {diff} {units}")
+            print(f"{func.__name__} runtime: {diff} {units}")
 
     return timer
 
@@ -116,6 +116,16 @@ def save_table(name, obj, fname, flg='w'):
     print("")
     table.commit()
     table.close()
+
+
+def plural(target, val=0, end='ies'):
+    """
+    Make the target string plural
+    """
+
+    output = target if val == 1 else f"{target[:-1]}{end}"
+
+    return output
 
 
 def response(url, params={}):

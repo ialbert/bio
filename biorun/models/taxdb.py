@@ -7,7 +7,7 @@ from urllib import request
 from biorun.libs import placlib as plac
 from itertools import count
 from biorun.models import jsonrec
-from biorun import fetch, const
+from biorun import fetch, const, ncbi
 
 JSON_DB_NAME = "taxdb.json"
 SQLITE_DB_NAME = "taxdb.sqlite"
@@ -23,7 +23,7 @@ JSON_DB = join(utils.DATADIR, JSON_DB_NAME)
 
 # Create the thing here.
 
-GRAPH, BACK, NAMES, SYNON = "GRAPH", "BACKLINKS", "NAMES", "SYNONYMS"
+GRAPH, BACK, NAMES, SYNON, LATIN = "GRAPH", "BACKLINKS", "NAMES", "SYNONYMS", "LATIN"
 
 # Indentation character
 INDENT = '  '
@@ -86,7 +86,7 @@ def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
                 yield taxid, name
 
 
-def parse_names(fname, name="names.dmp", limit=None):
+def parse_names(fname, name="names.dmp", limit=None, taxon_acc={}):
     """
     Parses the names.dmp component of the taxdump.
     """
@@ -99,23 +99,27 @@ def parse_names(fname, name="names.dmp", limit=None):
 
     name_dict = {}
     comm_dict = {}
+    latin_names = {}
     print(f"*** parsing: {name}")
     for index, elems in enumerate(stream):
         taxid, name, label = elems[0], elems[2], elems[6]
+        acount = len(set(taxon_acc.get(int(taxid), [])))
         if label == 'scientific name':
-            # Store name, rank, common name, parent
-            name_dict[taxid] = [name, "", "", ""]
+            # Store name, rank, common name, parent, accession count
+            name_dict[taxid] = [name, "", "", "", acount]
         elif label == 'genbank common name':
             comm_dict[taxid] = name
+        kname = name.lower()
+        latin_names[kname] = taxid
 
     # Fill in common genbank names when exist
     for key, cname in comm_dict.items():
         if key in name_dict:
-            sciname, rank, _1, _2 = name_dict[key]
+            sciname, rank, _1, _2, _3 = name_dict[key]
             if sciname != cname:
                 name_dict[key][2] = cname
 
-    return name_dict
+    return name_dict, latin_names
 
 
 def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
@@ -155,8 +159,11 @@ def build_database(fname=TAXDB_NAME, limit=None):
     if not os.path.isfile(path):
         utils.error(f"no taxdump file found, run the --download flag")
 
+    # Get the assembly.
+    _, _, taxon_acc = ncbi.parse_summary()
+
     # Parse the names
-    name_dict = parse_names(fname, limit=limit)
+    name_dict, latin_dict = parse_names(fname, limit=limit, taxon_acc=taxon_acc)
 
     # Parse the nodes.
     node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
@@ -170,11 +177,14 @@ def build_database(fname=TAXDB_NAME, limit=None):
     # Save the nodes.
     save_table(GRAPH, node_dict)
 
+    # Save the latin names.
+    save_table(LATIN, latin_dict)
+
     print("*** saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
 
     # JSON will only have the graph and names.
-    store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={})
+    store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={}, LATIN=latin_dict)
     fp = open(json_path, 'wt')
     json.dump(store, fp, indent=4)
     fp.close()
@@ -206,30 +216,42 @@ def dfs(graph, node, names, depth=0, collect=[], visited=None):
 
 def get_values(node, names):
     # Avoiding code duplication everywhere
-    sname, rank, cname, parent = names.get(node, ("MISSING", "NO RANK", "", ""))
-    return sname, rank, cname, parent
+    sname, rank, cname, parent, acount = names.get(node, ("MISSING", "NO RANK", "", "", 0))
+    return sname, rank, cname, parent, acount
+
+
+def print_assemblies(taxid, assembly):
+    """
+    Print assemblies
+    """
+
+    assemblies = assembly.get(taxid, [])
+
+    for acc in assemblies:
+        print(f'{taxid}{INDENT}{acc}')
 
 
 def node_formatter(node, names, depth):
     """
     Creates a long form representation of a node.
     """
-    sep = SEP
     indent = INDENT * depth
-    sname, rank, cname, parent = get_values(node, names)
+    sname, rank, cname, parent, acount = get_values(node, names)
+
+    # Get any full genome assemblies this node may have.
 
     # Decide what to do with common names.
     if cname and cname != sname:
-        text = f"{indent}{rank}{sep}{sname} ({cname}){sep}{node}"
+        text = f"{indent}{rank}\t{sname}\t{cname}\t{node}\t{acount}"
     else:
-        text = f"{indent}{rank}{sep}{sname}{sep}{node}"
+        text = f"{indent}{rank}\t{sname}\t{node}\t{acount}"
 
     return text
 
 
 def backprop(node, names, collect=[]):
     if node in names:
-        sciname, rank, cname, parent = names[node]
+        sciname, rank, cname, parent, acount = names[node]
         if parent and parent != node:
             collect.append(parent)
             backprop(parent, names, collect)
@@ -247,7 +269,7 @@ def print_lineage(taxid, names, flat=1):
         if flat:
             output = []
             for node in collect:
-                sname, rank, cname, parent = get_values(node, names)
+                sname, rank, cname, parent, _1 = get_values(node, names)
                 output.append(sname)
 
             result = [taxid, ";".join(output)]
@@ -259,18 +281,25 @@ def print_lineage(taxid, names, flat=1):
                 print(text)
 
 
-def get_data(preload=False):
+def get_data(preload=False, acc=False):
     if preload:
         if not os.path.isfile(JSON_DB):
             utils.error(f"taxonomy file not found (you must build it first): {JSON_DB}")
         store = json.load(open(JSON_DB))
         names = store[NAMES]
         graph = store[GRAPH]
+        latin = store[LATIN]
     else:
         names = open_db(NAMES)
         graph = open_db(GRAPH)
+        latin = open_db(LATIN)
 
-    return names, graph
+    if acc:
+        _, taxon_acc, _ = ncbi.get_data()
+    else:
+        taxon_acc = {}
+
+    return names, graph, taxon_acc, latin
 
 
 def print_stats(names, graph):
@@ -279,7 +308,7 @@ def print_stats(names, graph):
 
 
 def search_taxa(word, preload=False):
-    names, graph = get_data(preload=preload)
+    names, graph, assembly, latin = get_data(preload=preload)
 
     word = codecs.decode(word, 'unicode_escape')
 
@@ -303,7 +332,7 @@ def print_database(names, graph):
         print(text)
 
 
-def query(taxid, names, graph):
+def query(taxid, names, graph, assembly={}):
     """
     Prints the descendants of node
     """
@@ -311,6 +340,10 @@ def query(taxid, names, graph):
     if isnum and (taxid not in names):
         print(f"# taxid not found in database: {taxid}")
         sys.exit()
+
+    if assembly:
+        print_assemblies(taxid=taxid, assembly=assembly)
+        return
 
     if taxid in names:
         collect = []
@@ -320,12 +353,62 @@ def query(taxid, names, graph):
         search_taxa(taxid)
 
 
+def simple_dfs(graph, node, names, depth=0, visited=None, exclude=False):
+
+    visited = visited if visited else set()
+
+    # Exclude children and only print current node.
+    txt = node_formatter(node, names, depth)
+    if exclude:
+        print(txt)
+        return
+
+    if node not in visited:
+        print(txt)
+        visited.add(node)
+        for nbr in graph.get(node, []):
+            simple_dfs(graph=graph, node=nbr, names=names, depth=depth + 1, visited=visited)
+
+
+def search_file(fname, names, latin, graph, include=False):
+    """
+    input:
+
+    human
+    gorilla
+
+    output:
+
+    Homo sapiens	9606
+    Gorilla beringei	499232
+
+    """
+
+    stream = open(fname, 'r')
+    stream = filter(lambda line: line.strip(), stream)
+
+    for word in stream:
+
+        word = codecs.decode(word, 'unicode_escape').strip().lower()
+
+        # Get tax id from latin/common name.
+        taxid = latin.get(word)
+
+        if taxid in names:
+            exclude = not include
+            simple_dfs(graph, taxid, names=names, exclude=exclude)
+        else:
+            print(f"{word}\tNAN")
+
+
 @plac.pos("words", "taxids or search queries")
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('update', "obtain the latest taxdump from NCBI")
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('list_', "lists database content", abbrev='A')
 @plac.flg('flat', "flattened output")
+@plac.opt('scinames', "File with scientific or common names in each line. ", abbrev="n")
+@plac.flg('children', "Include children when returning when parsing latin names", abbrev='C')
 @plac.flg('lineage', "show the lineage for a taxon term", abbrev="l")
 @plac.opt('indent', "the indentation string")
 @plac.opt('sep', "separator string", abbrev="S")
@@ -335,8 +418,9 @@ def query(taxid, names, graph):
 @plac.flg('taxon', "run the taxonomy subcommand", abbrev='T')
 @plac.flg('filter', "filters a dataset by first column", abbrev='F')
 @plac.flg('verbose', "verbose mode, prints more messages")
+@plac.flg('accessions', "Print the accessions number for each ")
 def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, update=False,
-        preload=False, download=False, taxon=False, info=False,
+        preload=False, download=False, taxon=False, info=False, accessions=False, scinames='',children=False,
         verbose=False, *words):
     global SEP, INDENT
 
@@ -350,7 +434,7 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
     utils.set_verbosity(logger, level=int(verbose))
 
     # Access the database.
-    names, graph = get_data(preload=preload)
+    names, graph, assembly, latin = get_data(preload=preload, acc=accessions)
 
     if download:
         download_prebuilt()
@@ -364,6 +448,11 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
 
     if build:
         build_database(limit=limit)
+
+    if scinames:
+
+        search_file(scinames, names=names, latin=latin, graph=graph, include=children)
+        sys.exit()
 
     terms = []
     # Attempts to fetch data if possible.
@@ -381,7 +470,7 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
         if lineage:
             print_lineage(word, names=names, flat=flat)
         else:
-            query(word, names=names, graph=graph)
+            query(word, names=names, graph=graph, assembly=assembly)
 
     # No terms listed. Print database stats.
     if not terms:
