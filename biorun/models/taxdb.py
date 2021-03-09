@@ -370,6 +370,23 @@ def simple_dfs(graph, node, names, depth=0, visited=None, exclude=False):
             simple_dfs(graph=graph, node=nbr, names=names, depth=depth + 1, visited=visited)
 
 
+def dfs_tmp(graph, node, depth=0, visited=None):
+    """
+    Work in progress.
+
+    Collects output into the visited dictionary keyed by depth.
+    """
+    visited = visited if visited else {}
+
+    if node not in visited:
+        visited[node] = depth
+        for nbr in graph.get(node, []):
+            dfs_tmp(graph=graph, node=nbr, depth=depth+1, visited=visited)
+
+
+def filter_file(fname, words, graph, colnum=0):
+    pass
+
 def search_file(fname, names, latin, graph, include=False):
     """
     input:
@@ -400,15 +417,14 @@ def search_file(fname, names, latin, graph, include=False):
         else:
             print(f"{word}\tNAN")
 
-
 @plac.pos("words", "taxids or search queries")
 @plac.flg('build', "build a database from a taxdump")
 @plac.flg('update', "obtain the latest taxdump from NCBI")
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('list_', "lists database content", abbrev='A')
 @plac.flg('flat', "flattened output")
-@plac.opt('scinames', "File with scientific or common names in each line. ", abbrev="n")
-@plac.flg('children', "Include children when returning when parsing latin names", abbrev='C')
+@plac.opt('scinames', "scientific or common names in each line. ", abbrev="n")
+@plac.flg('children', "include children when returning when parsing latin names", abbrev='C')
 @plac.flg('lineage', "show the lineage for a taxon term", abbrev="l")
 @plac.opt('indent', "the indentation string")
 @plac.opt('sep', "separator string", abbrev="S")
@@ -416,12 +432,12 @@ def search_file(fname, names, latin, graph, include=False):
 @plac.flg('download', "downloads the database from the remote site", abbrev='G')
 @plac.flg('info', "prints taxonomy database info", abbrev='I')
 @plac.flg('taxon', "run the taxonomy subcommand", abbrev='T')
-@plac.flg('filter', "filters a dataset by first column", abbrev='F')
+@plac.opt('filter_', "filters a dataset by first column", abbrev='F')
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('accessions', "Print the accessions number for each ")
-def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, update=False,
+def run(limit=0, list_=False, flat=False, indent='    ', sep=', ', lineage=False, build=False, update=False,
         preload=False, download=False, taxon=False, info=False, accessions=False, scinames='',children=False,
-        verbose=False, *words):
+        filter_='', verbose=False, *words):
     global SEP, INDENT
 
     limit = limit or None
@@ -450,8 +466,12 @@ def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False,
         build_database(limit=limit)
 
     if scinames:
-
         search_file(scinames, names=names, latin=latin, graph=graph, include=children)
+        sys.exit()
+
+    # Filters a file by a colum.
+    if filter_:
+        filter_file(fname=filter_, words=words, graph=graph, colnum=0)
         sys.exit()
 
     terms = []

@@ -19,7 +19,10 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+
+    # numpy < 1.20 for Python 3.6 compatibility.
     install_requires=[
+        'numpy < 1.20',
         'biopython >= 1.78',
         'requests',
     ],
