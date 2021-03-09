@@ -333,6 +333,7 @@ def query(taxid, names, graph):
 @plac.flg('download', "downloads the database from the remote site", abbrev='G')
 @plac.flg('info', "prints taxonomy database info", abbrev='I')
 @plac.flg('taxon', "run the taxonomy subcommand", abbrev='T')
+@plac.flg('filter', "filters a dataset by first column", abbrev='F')
 @plac.flg('verbose', "verbose mode, prints more messages")
 def run(limit=0, list_=False, flat=False, indent='   ', sep=', ', lineage=False, build=False, update=False,
         preload=False, download=False, taxon=False, info=False,
