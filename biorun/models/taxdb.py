@@ -1,13 +1,18 @@
-import os, csv, json, gzip, sys, tarfile, re, codecs
-import shutil
-from itertools import islice
-from biorun.libs.sqlitedict import SqliteDict
-from biorun import utils
-from urllib import request
-from biorun.libs import placlib as plac
+import codecs
+import csv
+import json
+import os
+import re
+import sys
+import tarfile
 from itertools import count
-from biorun.models import jsonrec
+from itertools import islice
+
 from biorun import fetch, const, ncbi
+from biorun import utils
+from biorun.libs import placlib as plac
+from biorun.libs.sqlitedict import SqliteDict
+from biorun.models import jsonrec
 
 JSON_DB_NAME = "taxdb.json"
 SQLITE_DB_NAME = "taxdb.sqlite"
@@ -31,6 +36,10 @@ INDENT = '  '
 # Fields separator
 
 SEP = ', '
+
+# Used during debugging only to speed up database builds.
+# Keep it at None
+LIMIT = None
 
 CHUNK = 25000
 
@@ -65,28 +74,36 @@ def get_stream(tar, name, limit=None):
 
 def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
     """
-    Parses the names.dmp component of the taxdump.
+    Processes the names.dmp component of the taxdump.
     """
 
+    # Needs a taxdump to work.
     if not os.path.isfile(fname):
         utils.error("taxdump file not found (download and build it first)")
 
     # The taxdump file.
     tar = tarfile.open(fname, "r:gz")
-
     stream = get_stream(tar=tar, name=name, limit=limit)
     stream = csv.reader(stream, delimiter="\t")
 
+    # The pattern may be regular expression.
     patt = re.compile(word, re.IGNORECASE)
 
-    for index, elems in enumerate(stream):
+    # Labels that will be searched.
+    valid = {'scientific name', 'equivalent name', 'genbank common name'}
+
+    def select(row):
+        taxid, name, label = row[0], row[2], row[6]
+        return label in valid and patt.search(name)
+
+    # Apply the selector.
+    stream = filter(select, stream)
+    for elems in stream:
         taxid, name, label = elems[0], elems[2], elems[6]
-        if label == 'scientific name' or label == 'equivalent name' or label == 'genbank common name':
-            if patt.search(name):
-                yield taxid, name
+        yield taxid, name
 
 
-def parse_names(fname, name="names.dmp", limit=None, taxon_acc={}):
+def parse_names(fname, name="names.dmp", limit=None):
     """
     Parses the names.dmp component of the taxdump.
     """
@@ -97,29 +114,30 @@ def parse_names(fname, name="names.dmp", limit=None, taxon_acc={}):
     stream = get_stream(tar=tar, name=name, limit=limit)
     stream = csv.reader(stream, delimiter="\t")
 
-    name_dict = {}
-    comm_dict = {}
-    latin_names = {}
+    # Various lookup tables.
+    tax2data, name2tax = {}, {}
+
     print(f"*** parsing: {name}")
+
     for index, elems in enumerate(stream):
         taxid, name, label = elems[0], elems[2], elems[6]
-        acount = len(set(taxon_acc.get(int(taxid), [])))
+
+        # Assembly count (TODO)
+        count = 0
+
+        # Scientific name fields.
         if label == 'scientific name':
-            # Store name, rank, common name, parent, accession count
-            name_dict[taxid] = [name, "", "", "", acount]
+            # Name, rank, common name, parent, assembly count
+            tax2data[taxid] = [name, "", "", "", count]
         elif label == 'genbank common name':
-            comm_dict[taxid] = name
-        kname = name.lower()
-        latin_names[kname] = taxid
+            name2tax[name] = taxid
 
-    # Fill in common genbank names when exist
-    for key, cname in comm_dict.items():
-        if key in name_dict:
-            sciname, rank, _1, _2, _3 = name_dict[key]
-            if sciname != cname:
-                name_dict[key][2] = cname
+    # Backfill common names when these are different.
+    for taxid, name in name2tax.items():
+        if taxid in tax2data:
+            tax2data[taxid][2] = name
 
-    return name_dict, latin_names
+    return tax2data
 
 
 def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
@@ -160,10 +178,10 @@ def build_database(fname=TAXDB_NAME, limit=None):
         utils.error(f"no taxdump file found, run the --download flag")
 
     # Get the assembly.
-    _, _, taxon_acc = ncbi.parse_summary()
+    #_, _, taxon_acc = ncbi.parse_summary()
 
     # Parse the names
-    name_dict, latin_dict = parse_names(fname, limit=limit, taxon_acc=taxon_acc)
+    name_dict = parse_names(fname, limit=limit)
 
     # Parse the nodes.
     node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
@@ -177,14 +195,11 @@ def build_database(fname=TAXDB_NAME, limit=None):
     # Save the nodes.
     save_table(GRAPH, node_dict)
 
-    # Save the latin names.
-    save_table(LATIN, latin_dict)
-
     print("*** saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
 
     # JSON will only have the graph and names.
-    store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={}, LATIN=latin_dict)
+    store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={})
     fp = open(json_path, 'wt')
     json.dump(store, fp, indent=4)
     fp.close()
@@ -236,52 +251,64 @@ def node_formatter(node, names, depth):
     Creates a long form representation of a node.
     """
     indent = INDENT * depth
-    sname, rank, cname, parent, acount = get_values(node, names)
+    sname, rank, name, parent, count = get_values(node, names)
 
     # Get any full genome assemblies this node may have.
 
+
     # Decide what to do with common names.
-    if cname and cname != sname:
-        text = f"{indent}{rank}\t{sname}\t{cname}\t{node}\t{acount}"
+    if name and name != sname:
+        data = [rank, node, sname, name]
     else:
-        text = f"{indent}{rank}\t{sname}\t{node}\t{acount}"
+        data = [rank, node, sname]
+
+
+    text = indent + SEP.join(data)
 
     return text
 
 
 def backprop(node, names, collect=[]):
+    """
+    Collects nodes when propagating backwards.
+    """
     if node in names:
-        sciname, rank, cname, parent, acount = names[node]
+        sciname, rank, name, parent, count = names[node]
         if parent and parent != node:
             collect.append(parent)
             backprop(parent, names, collect)
 
 
-def print_lineage(taxid, names, flat=1):
-    step = count(0)
-    if taxid in names:
-        collect = [taxid]
-        backprop(taxid, names, collect=collect)
+def print_lineage(taxid, names, flat=0):
+    """
+    Prints the lineage for a taxid.
+    """
 
-        collect = collect[:-1]
-        collect = reversed(collect)
+    # Must be a valid taxid.
+    if taxid not in names:
+        msg = f"Invalid taxid: {taxid}"
+        utils.error(msg)
 
-        if flat:
-            output = []
-            for node in collect:
-                sname, rank, cname, parent, _1 = get_values(node, names)
-                output.append(sname)
+    # Will back propagate to parents.
+    collect = [ taxid ]
+    backprop(taxid, names, collect=collect)
 
-            result = [taxid, ";".join(output)]
-            print("\t".join(result))
+    # Going back to superkingdom only.
+    collect = collect[:-1]
 
-        else:
-            for node in collect:
-                text = node_formatter(node, names=names, depth=next(step))
-                print(text)
+    # Start at the parent.
+    collect = reversed(collect)
+
+    # Format each node.
+    for step, node in enumerate(collect):
+        text = node_formatter(node, names=names, depth=step)
+        print(text)
 
 
 def get_data(preload=False, acc=False):
+    """
+    Returns the graph structure for the database.
+    """
     if preload:
         if not os.path.isfile(JSON_DB):
             utils.error(f"taxonomy file not found (you must build it first): {JSON_DB}")
@@ -310,9 +337,9 @@ def print_stats(names, graph):
 def search_taxa(word, preload=False):
     names, graph, assembly, latin = get_data(preload=preload)
 
-    word = codecs.decode(word, 'unicode_escape')
+    word = decode(word)
 
-    print(f"# searching taxonomy for: {word}")
+    print(f"# Searching taxonomy for: {word}")
     for taxid, name in search_names(word):
         text = node_formatter(taxid, names=names, depth=0)
         print(text)
@@ -332,119 +359,119 @@ def print_database(names, graph):
         print(text)
 
 
-def query(taxid, names, graph, assembly={}):
+def print_term(taxid, graph, names):
     """
-    Prints the descendants of node
+    Prints a term when visited via DFS.
     """
-    isnum = check_num(taxid)
-    if isnum and (taxid not in names):
-        print(f"# taxid not found in database: {taxid}")
-        sys.exit()
 
-    if assembly:
-        print_assemblies(taxid=taxid, assembly=assembly)
-        return
+    def formatter(node, depth, **kwds):
+        text = node_formatter(node, names=names, depth=depth)
+        print(text)
 
-    if taxid in names:
-        collect = []
-        dfs(graph, taxid, names=names, collect=collect)
-
-    else:
-        search_taxa(taxid)
+    dfs_visitor(graph, taxid, visited={}, func=formatter)
 
 
-def simple_dfs(graph, node, names, depth=0, visited=None, exclude=False):
-
-    visited = visited if visited else set()
-
-    # Exclude children and only print current node.
-    txt = node_formatter(node, names, depth)
-    if exclude:
-        print(txt)
-        return
-
-    if node not in visited:
-        print(txt)
-        visited.add(node)
-        for nbr in graph.get(node, []):
-            simple_dfs(graph=graph, node=nbr, names=names, depth=depth + 1, visited=visited)
-
-
-def dfs_tmp(graph, node, depth=0, visited=None):
+def donothing(*args, **kwds):
     """
-    Work in progress.
-
-    Collects output into the visited dictionary keyed by depth.
+    Placeholder to perform no action.
     """
-    visited = visited if visited else {}
-
-    if node not in visited:
-        visited[node] = depth
-        for nbr in graph.get(node, []):
-            dfs_tmp(graph=graph, node=nbr, depth=depth+1, visited=visited)
-
-
-def filter_file(fname, words, graph, colnum=0):
     pass
 
-def search_file(fname, names, latin, graph, include=False):
+
+def dfs_visitor(graph, node, visited, depth=0, func=donothing):
     """
-    input:
-
-    human
-    gorilla
-
-    output:
-
-    Homo sapiens	9606
-    Gorilla beringei	499232
-
+    Performs depth-first search and collects output into the visited dictionary keyed by depth.
+    Calls func at every visit.
     """
+    if node not in visited:
+        visited[node] = depth
+        func(node=node, depth=depth, visited=visited)
+        for nbr in graph.get(node, []):
+            dfs_visitor(graph=graph, node=nbr, depth=depth + 1, visited=visited, func=func)
 
-    stream = open(fname, 'r')
-    stream = filter(lambda line: line.strip(), stream)
+def filter_file(fname, terms, graph, colidx=0):
+    """
+    Filters a file to retain only the rows where a taxid is ina subtree.
+    """
+    # Collects all children of the taxids.
+    visited = {}
 
-    for word in stream:
+    # The file to be filtered.
+    if not os.path.isfile(fname):
+        msg = f"File not found: {fname}"
+        utils.error(msg)
 
-        word = codecs.decode(word, 'unicode_escape').strip().lower()
+    # Collect the matching nodes.
+    for term in terms:
+        dfs_visitor(graph=graph, node=term, visited=visited)
 
-        # Get tax id from latin/common name.
-        taxid = latin.get(word)
+    # Input stream.
+    stream = open(fname)
 
-        if taxid in names:
-            exclude = not include
-            simple_dfs(graph, taxid, names=names, exclude=exclude)
-        else:
-            print(f"{word}\tNAN")
+    # Figure out the dialect from the file.
+    dialect = csv.Sniffer().sniff(stream.read(1024))
 
-@plac.pos("words", "taxids or search queries")
-@plac.flg('build', "build a database from a taxdump")
-@plac.flg('update', "obtain the latest taxdump from NCBI")
+    # Rewind stream to the start.
+    stream.seek(0)
+
+    # Read the stream.
+    reader = csv.reader(stream, dialect)
+
+    # Selection condition.
+    def select(row):
+        taxid = row[colidx]
+        return taxid in visited
+
+    # Apply condition on the stream.
+    reader = filter(select, reader)
+
+    # Generate the output.
+    writer = csv.writer(sys.stdout, dialect=dialect)
+    writer.writerows(reader)
+
+
+
+def parse_taxids(json):
+    """
+    Attempts to parse taxids from a json data
+    """
+    # Parses the taxids
+    doubles = [jsonrec.find_taxid(rec) for rec in json] if json else [[]]
+    # Flatten the list
+    taxids = [elem for sublist in doubles for elem in sublist]
+    return taxids
+
+
+def decode(text):
+    """
+    Recognize string encodings: \t etc
+    """
+    return codecs.decode(text, 'unicode_escape')
+
+
+@plac.pos("terms", "taxids or search queries")
+@plac.flg('update', "updates and builds a local database")
 @plac.flg('preload', "loads entire database in memory")
-@plac.flg('list_', "lists database content", abbrev='A')
-@plac.flg('flat', "flattened output")
-@plac.opt('scinames', "scientific or common names in each line. ", abbrev="n")
+@plac.flg('list_', "lists database content", abbrev='l')
+@plac.opt('scinames', "scientific or common names in each line. ", abbrev="S")
 @plac.flg('children', "include children when returning when parsing latin names", abbrev='C')
-@plac.flg('lineage', "show the lineage for a taxon term", abbrev="l")
-@plac.opt('indent', "the indentation string")
-@plac.opt('sep', "separator string", abbrev="S")
-@plac.opt('limit', "limit the number of entries", type=int, abbrev='X')
+@plac.flg('lineage', "show the lineage for a taxon term", abbrev="L")
+@plac.opt('indent', "the indentation depth (set to zero for flat)")
+@plac.opt('sep', "separator (default is tab)", abbrev='s')
 @plac.flg('download', "downloads the database from the remote site", abbrev='G')
-@plac.flg('info', "prints taxonomy database info", abbrev='I')
-@plac.flg('taxon', "run the taxonomy subcommand", abbrev='T')
 @plac.opt('filter_', "filters a dataset by first column", abbrev='F')
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('accessions', "Print the accessions number for each ")
-def run(limit=0, list_=False, flat=False, indent='    ', sep=', ', lineage=False, build=False, update=False,
-        preload=False, download=False, taxon=False, info=False, accessions=False, scinames='',children=False,
-        filter_='', verbose=False, *words):
-    global SEP, INDENT
+def run(lineage=False, update=False, download=False, accessions=False, filter_='',
+        scinames='', children=False, list_=False, indent=2, sep='',
+        preload=False, verbose=False, *terms):
+    global SEP, INDENT, LIMIT
 
-    limit = limit or None
+    # Indentation level
+    INDENT = ' ' * indent
 
-    # Recognize string encodings: \t etc.
-    INDENT = codecs.decode(indent, 'unicode_escape')
-    SEP = codecs.decode(sep, 'unicode_escape')
+    # Separator string.
+    SEP = decode(sep) if sep else ", "
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
@@ -452,18 +479,19 @@ def run(limit=0, list_=False, flat=False, indent='    ', sep=', ', lineage=False
     # Access the database.
     names, graph, assembly, latin = get_data(preload=preload, acc=accessions)
 
+    # Download prebuilt database.
     if download:
         download_prebuilt()
 
+    # Updates the taxdump and builds a new taxonomy file.
+    if update:
+        #update_taxdump()
+        build_database(limit=LIMIT)
+
+    # List the content of a database.
     if list_:
         print_database(names=names, graph=graph)
         sys.exit()
-
-    if update:
-        update_taxdump()
-
-    if build:
-        build_database(limit=limit)
 
     if scinames:
         search_file(scinames, names=names, latin=latin, graph=graph, include=children)
@@ -471,30 +499,56 @@ def run(limit=0, list_=False, flat=False, indent='    ', sep=', ', lineage=False
 
     # Filters a file by a colum.
     if filter_:
-        filter_file(fname=filter_, words=words, graph=graph, colnum=0)
+        filter_file(fname=filter_, terms=terms, graph=graph, colidx=0)
         sys.exit()
 
-    terms = []
-    # Attempts to fetch data if possible.
-    for word in words:
-        json = fetch.get_json(word)
-        doubles = [jsonrec.find_taxid(rec) for rec in json] if json else [[]]
-        taxids = [elem for sublist in doubles for elem in sublist]
-        if taxids:
-            terms.extend(taxids)
-        else:
-            terms.append(word)
-
-    for word in terms:
-
-        if lineage:
-            print_lineage(word, names=names, flat=flat)
-        else:
-            query(word, names=names, graph=graph, assembly=assembly)
-
-    # No terms listed. Print database stats.
+    # No valid terms found. Print database stats.
     if not terms:
         print_stats(names=names, graph=graph)
+        sys.exit()
+
+    # These are the terms looked up in the database.
+    words = []
+
+    # Some terms may be valid data names.
+    for term in terms:
+        # Attempts to interpret the word as an existing dataset.
+        json = fetch.get_json(term)
+
+        # Extend the search temrs.
+        taxids = parse_taxids(json) if json else [term]
+
+        # Add to the terms.
+        words.extend(taxids)
+
+    # Produce lineages
+    if lineage:
+        for term in words:
+            print_lineage(term, names=names)
+        sys.exit()
+
+    # Will check to mixed terms (valid taxids and search words mixed)
+
+    # Truth vector to terms in names.
+    valid = list(map(lambda x: x in names, words))
+    any_valid = any(valid)
+    all_valid = all(valid)
+
+    # Mixed term condition.
+    mixed_terms = any_valid and not all_valid
+
+    # We don't allow mixed terms (produces different outputs).
+    if mixed_terms:
+        invalid = ", ".join(filter(lambda x: x not in names, words))
+        msg = f"Unkown taxids: {invalid}"
+        utils.error(msg)
+
+    # Apply the approprate task to each term separately.
+    for term in words:
+        if all_valid:
+            print_term(term, names=names, graph=graph)
+        else:
+            search_taxa(term)
 
 
 if __name__ == '__main__':
