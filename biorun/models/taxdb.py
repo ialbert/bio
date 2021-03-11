@@ -5,7 +5,6 @@ import os
 import re
 import sys
 import tarfile
-from itertools import count
 from itertools import islice
 
 from biorun import fetch, const, ncbi
@@ -178,7 +177,7 @@ def build_database(fname=TAXDB_NAME, limit=None):
         utils.error(f"no taxdump file found, run the --download flag")
 
     # Get the assembly.
-    #_, _, taxon_acc = ncbi.parse_summary()
+    # _, _, taxon_acc = ncbi.parse_summary()
 
     # Parse the names
     name_dict = parse_names(fname, limit=limit)
@@ -228,7 +227,22 @@ def dfs____(graph, node, names, depth=0, collect=[], visited=None):
         for nbr in graph.get(node, []):
             dfs(graph=graph, node=nbr, names=names, depth=depth + 1, collect=collect, visited=visited)
 
-def download_metadata(taxid=2697049):
+
+def print_metadata(terms):
+    def formatter(row):
+        print("\t".join(row))
+
+    for term in terms:
+        lines = get_metadata(term)
+        old_header = next(lines)
+        new_header = "host species accession date location isolate".split()
+
+        print("\t".join(new_header))
+        for line in lines:
+            print(line)
+
+
+def get_metadata(taxid, limit=None):
     """
     Returns all accessions
     """
@@ -242,20 +256,23 @@ def download_metadata(taxid=2697049):
         'refseq_only': "false",
         'complete_only': 'true',
         'table_fields': [
-            'nucleotide_accession', 'collection_date', 'host_tax_id', 'geo_location', 'isolate_name', 'species_tax_id'
+            'host_tax_id', 'species_tax_id',
+            'nucleotide_accession',
+            'collection_date', 'geo_location', 'isolate_name',
         ]
     }
 
     conn = requests.get(url, stream=True, params=params)
     lines = conn.iter_lines()
-    lines = islice(lines, 10)
+    lines = islice(lines, limit)
+
     if conn.status_code != 200:
         msg = f"HTTP status code: {conn.status_code}"
         utils.error(msg)
 
-    for line in lines:
-        line = line.decode()
-        print(line.split("\t"))
+    lines = map(decode, lines)
+
+    return lines
 
 
 def get_values(node, names):
@@ -284,13 +301,11 @@ def node_formatter(node, names, depth):
 
     # Get any full genome assemblies this node may have.
 
-
     # Decide what to do with common names.
     if name and name != sname:
         data = [rank, node, sname, name]
     else:
         data = [rank, node, sname]
-
 
     text = indent + SEP.join(data)
 
@@ -319,7 +334,7 @@ def print_lineage(taxid, names, flat=0):
         utils.error(msg)
 
     # Will back propagate to parents.
-    collect = [ taxid ]
+    collect = [taxid]
     backprop(taxid, names, collect=collect)
 
     # Going back to superkingdom only.
@@ -418,6 +433,7 @@ def dfs_visitor(graph, node, visited, depth=0, func=donothing):
         for nbr in graph.get(node, []):
             dfs_visitor(graph=graph, node=nbr, depth=depth + 1, visited=visited, func=func)
 
+
 def filter_file(fname, terms, graph, colidx=0):
     """
     Filters a file to retain only the rows where a taxid is ina subtree.
@@ -459,7 +475,6 @@ def filter_file(fname, terms, graph, colidx=0):
     writer.writerows(reader)
 
 
-
 def parse_taxids(json):
     """
     Attempts to parse taxids from a json data
@@ -477,6 +492,23 @@ def decode(text):
     """
     return codecs.decode(text, 'unicode_escape')
 
+def isnum(x):
+    try:
+        int(x)
+        return True
+    except ValueError as exc:
+        return False
+
+def parse_lines(text):
+    lines = [line.strip() for line in text.splitlines()]
+    lines = filter(None, lines)
+    lines = filter(lambda x: not x.startswith('#'), lines)
+    lines = filter(lambda x: isnum(x), lines)
+    uniq = dict([(k, 1) for k in lines])
+    lines = list(uniq.keys())
+    print (lines)
+    return lines
+
 
 @plac.pos("terms", "taxids or search queries")
 @plac.flg('update', "updates and builds a local database")
@@ -486,15 +518,21 @@ def decode(text):
 @plac.flg('children', "include children when returning when parsing latin names", abbrev='C')
 @plac.flg('lineage', "show the lineage for a taxon term", abbrev="L")
 @plac.opt('indent', "the indentation depth (set to zero for flat)")
-@plac.opt('sep', "separator (default is tab)", abbrev='s')
+@plac.opt('sep', "separator (default is ', ')", abbrev='s')
+@plac.flg('metadata', "downloads metadata for the taxon", abbrev='m')
 @plac.flg('download', "downloads the database from the remote site", abbrev='G')
 @plac.opt('filter_', "filters a dataset by first column", abbrev='F')
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('accessions', "Print the accessions number for each ")
 def run(lineage=False, update=False, download=False, accessions=False, filter_='',
-        scinames='', children=False, list_=False, indent=2, sep='',
-        preload=False, verbose=False, *terms):
+        scinames='', children=False, list_=False, metadata=False, preload=False, indent=2, sep='',
+        verbose=False, *terms):
     global SEP, INDENT, LIMIT
+
+    # Input connected to a stream
+    if not sys.stdin.isatty():
+        text = sys.stdin.read()
+        terms = parse_lines(text)
 
     # Indentation level
     INDENT = ' ' * indent
@@ -514,13 +552,18 @@ def run(lineage=False, update=False, download=False, accessions=False, filter_='
 
     # Updates the taxdump and builds a new taxonomy file.
     if update:
-        #update_taxdump()
+        # update_taxdump()
         build_database(limit=LIMIT)
 
     # List the content of a database.
     if list_:
         print_database(names=names, graph=graph)
         sys.exit()
+
+    # Obtain metadata for the taxon
+    if metadata:
+        print_metadata(terms)
+        return
 
     if scinames:
         search_file(scinames, names=names, latin=latin, graph=graph, include=children)

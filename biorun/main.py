@@ -1,17 +1,22 @@
 """
 The main job runner. Register functions here.
 """
-import sys, importlib
-import biorun.libs.placlib as plac
+import importlib
+import sys
 
+import biorun.libs.placlib as plac
 from biorun import utils, const
 
 # Module level logger
 logger = utils.logger
 
-block = [ f"   bio {key:7} : {value[2]}" for (key, value) in const.SUB_COMMANDS.items() ]
+# Generates the nicely indented help for each subcommand
+block = [f"   bio {key:7} : {value[2]}" for (key, value) in const.SUB_COMMANDS.items()]
+
+# Join help into a section.
 block = "\n".join(block)
 
+# Fill help section into the usage.
 USAGE = f"""
 bio: making bioinformatics fun again
 
@@ -19,6 +24,7 @@ Valid commands:
 
 {block}
 """
+
 
 def proof_reader(value):
     """
@@ -56,12 +62,15 @@ def interrupt(func):
     """
     Intercept keyboard interrupts.
     """
+
     def wrapper(*args, **kwargs):
         try:
             func(*args, **kwargs)
         except KeyboardInterrupt:
             sys.exit(0)
+
     return wrapper
+
 
 @interrupt
 def router():
@@ -70,8 +79,8 @@ def router():
     """
 
     # Print usage when no parameters are passed.
-    if len(sys.argv)== 1:
-        print (USAGE)
+    if len(sys.argv) == 1:
+        print(USAGE)
         sys.exit(1)
 
     # Lowercase the subcommand.
@@ -111,6 +120,7 @@ def router():
 
     # Execute the function with plac.
     plac.call(func)
+
 
 if __name__ == '__main__':
     router()

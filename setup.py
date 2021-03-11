@@ -31,6 +31,7 @@ setup(
         'console_scripts': [
             'bio=biorun.__main__:run',
             'comm.py=biorun.methods.comm:run',
+            'uniq.py=biorun.methods.uniq:run',
         ],
     },
 
