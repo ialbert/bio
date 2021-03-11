@@ -215,25 +215,13 @@ def open_db(table, fname=SQLITE_DB, flag='c'):
 queue = list()
 
 
-def dfs____(graph, node, names, depth=0, collect=[], visited=None):
-    # Initialize the visited nodes once.
-    visited = visited if visited else set()
-
-    if node not in visited:
-        text = node_formatter(node, names=names, depth=depth)
-        print(text)
-        collect.append((depth, node))
-        visited.add(node)
-        for nbr in graph.get(node, []):
-            dfs(graph=graph, node=nbr, names=names, depth=depth + 1, collect=collect, visited=visited)
-
-
 def print_metadata(terms):
     def formatter(row):
         print("\t".join(row))
 
     for term in terms:
         lines = get_metadata(term)
+        lines = filter(lambda x: x.split(), lines)
         old_header = next(lines)
         new_header = "host species accession date location isolate".split()
 
@@ -403,7 +391,7 @@ def print_database(names, graph):
         print(text)
 
 
-def print_term(taxid, graph, names):
+def print_term(taxid, graph, names, maxdepth=0):
     """
     Prints a term when visited via DFS.
     """
@@ -412,7 +400,7 @@ def print_term(taxid, graph, names):
         text = node_formatter(node, names=names, depth=depth)
         print(text)
 
-    dfs_visitor(graph, taxid, visited={}, func=formatter)
+    dfs_visitor(graph, taxid, visited={}, func=formatter, maxdepth=maxdepth)
 
 
 def donothing(*args, **kwds):
@@ -422,7 +410,7 @@ def donothing(*args, **kwds):
     pass
 
 
-def dfs_visitor(graph, node, visited, depth=0, func=donothing):
+def dfs_visitor(graph, node, visited, depth=0, func=donothing, maxdepth=0):
     """
     Performs depth-first search and collects output into the visited dictionary keyed by depth.
     Calls func at every visit.
@@ -431,47 +419,49 @@ def dfs_visitor(graph, node, visited, depth=0, func=donothing):
         visited[node] = depth
         func(node=node, depth=depth, visited=visited)
         for nbr in graph.get(node, []):
-            dfs_visitor(graph=graph, node=nbr, depth=depth + 1, visited=visited, func=func)
+            nextdepth = depth + 1
+            if maxdepth and nextdepth >= maxdepth:
+                continue
+            dfs_visitor(graph=graph, node=nbr, depth=nextdepth, visited=visited, func=func, maxdepth=maxdepth)
 
 
-def filter_file(fname, terms, graph, colidx=0):
+def filter_file(stream, keep, remove, graph, colidx=0):
     """
     Filters a file to retain only the rows where a taxid is ina subtree.
     """
     # Collects all children of the taxids.
-    visited = {}
-
-    # The file to be filtered.
-    if not os.path.isfile(fname):
-        msg = f"File not found: {fname}"
-        utils.error(msg)
+    keep_dict, remove_dict = {}, {}
 
     # Collect the matching nodes.
-    for term in terms:
-        dfs_visitor(graph=graph, node=term, visited=visited)
+    for term in keep.split(","):
+        dfs_visitor(graph=graph, node=term, visited=keep_dict)
 
-    # Input stream.
-    stream = open(fname)
-
-    # Figure out the dialect from the file.
-    dialect = csv.Sniffer().sniff(stream.read(1024))
-
-    # Rewind stream to the start.
-    stream.seek(0)
+    # Collect the matching nodes.
+    for term in remove.split(","):
+        dfs_visitor(graph=graph, node=term, visited=remove_dict)
 
     # Read the stream.
-    reader = csv.reader(stream, dialect)
+    reader = csv.reader(stream, delimiter="\t")
 
     # Selection condition.
-    def select(row):
+    def keep_func(row):
         taxid = row[colidx]
-        return taxid in visited
+        return taxid in keep_dict
 
-    # Apply condition on the stream.
-    reader = filter(select, reader)
+    def remove_func(row):
+        taxid = row[colidx]
+        return taxid not in remove_dict
+
+    # What to keep.
+    if keep:
+        reader = filter(keep_func, reader)
+
+    # What to remove.
+    if remove:
+        reader = filter(remove_func, reader)
 
     # Generate the output.
-    writer = csv.writer(sys.stdout, dialect=dialect)
+    writer = csv.writer(sys.stdout, delimiter="\t")
     writer.writerows(reader)
 
 
@@ -492,6 +482,7 @@ def decode(text):
     """
     return codecs.decode(text, 'unicode_escape')
 
+
 def isnum(x):
     try:
         int(x)
@@ -499,15 +490,12 @@ def isnum(x):
     except ValueError as exc:
         return False
 
-def parse_lines(text):
-    lines = [line.strip() for line in text.splitlines()]
-    lines = filter(None, lines)
-    lines = filter(lambda x: not x.startswith('#'), lines)
-    lines = filter(lambda x: isnum(x), lines)
-    uniq = dict([(k, 1) for k in lines])
-    lines = list(uniq.keys())
-    print (lines)
-    return lines
+
+def parse_lines(stream, field=1, sep="\t"):
+    colidx = field - 1
+    stream = filter(lambda x: len(x.split(sep)) >= colidx, stream)
+    stream = filter(lambda x: not x.startswith('#'), stream)
+    return stream
 
 
 @plac.pos("terms", "taxids or search queries")
@@ -521,18 +509,20 @@ def parse_lines(text):
 @plac.opt('sep', "separator (default is ', ')", abbrev='s')
 @plac.flg('metadata', "downloads metadata for the taxon", abbrev='m')
 @plac.flg('download', "downloads the database from the remote site", abbrev='G')
-@plac.opt('filter_', "filters a dataset by first column", abbrev='F')
+@plac.opt('depth', "how deep to visit a clade ", abbrev='d', type=int)
+@plac.opt('keep', "clade to keep", abbrev='K')
+@plac.opt('remove', "clade to remove", abbrev='R')
+@plac.opt('field', "which column to read when filtering")
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('accessions', "Print the accessions number for each ")
-def run(lineage=False, update=False, download=False, accessions=False, filter_='',
-        scinames='', children=False, list_=False, metadata=False, preload=False, indent=2, sep='',
+def run(lineage=False, update=False, download=False, accessions=False, keep='', remove='', field=1,
+        scinames='', children=False, list_=False, depth=0, metadata=False, preload=False, indent=2, sep='',
         verbose=False, *terms):
     global SEP, INDENT, LIMIT
 
     # Input connected to a stream
     if not sys.stdin.isatty():
-        text = sys.stdin.read()
-        terms = parse_lines(text)
+        terms = sys.stdin.readlines()
 
     # Indentation level
     INDENT = ' ' * indent
@@ -569,10 +559,18 @@ def run(lineage=False, update=False, download=False, accessions=False, filter_='
         search_file(scinames, names=names, latin=latin, graph=graph, include=children)
         sys.exit()
 
-    # Filters a file by a colum.
-    if filter_:
-        filter_file(fname=filter_, terms=terms, graph=graph, colidx=0)
+    # Filters a file by a column.
+    if keep or remove:
+        filter_file(stream=terms, keep=keep, remove=remove, graph=graph, colidx=field - 1)
         sys.exit()
+
+
+    # Input may come from a file or command line.
+    colidx = field - 1
+    terms = parse_lines(terms)
+    terms = map(lambda x: x.split("\t")[colidx].strip(), terms)
+    terms = filter(None, terms)
+    terms = list(terms)
 
     # No valid terms found. Print database stats.
     if not terms:
@@ -584,6 +582,7 @@ def run(lineage=False, update=False, download=False, accessions=False, filter_='
 
     # Some terms may be valid data names.
     for term in terms:
+        term = term.strip()
         # Attempts to interpret the word as an existing dataset.
         json = fetch.get_json(term)
 
@@ -618,7 +617,7 @@ def run(lineage=False, update=False, download=False, accessions=False, filter_='
     # Apply the approprate task to each term separately.
     for term in words:
         if all_valid:
-            print_term(term, names=names, graph=graph)
+            print_term(term, names=names, graph=graph, maxdepth=depth)
         else:
             search_taxa(term)
 

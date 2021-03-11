@@ -31,23 +31,9 @@ def main(field=1, delim=''):
     # Input stream.
     stream = sys.stdin
 
-    delim = decode(delim)
+    delim = decode(delim) if delim else "\t"
 
-    if delim:
-        reader = csv.reader(stream, delimiter=delim)
-    else:
-        # Figure out the dialect from the file.
-        try:
-            dialect = csv.Sniffer().sniff(stream.read(1024))
-
-            # Rewind stream to the start.
-            stream.seek(0)
-
-            # Read the stream.
-            reader = csv.reader(stream, dialect)
-
-        except Exception as exc:
-            reader = csv.reader(stream, delimiter="\t")
+    reader = csv.reader(stream, delimiter=delim)
 
     # Stores the counter.
     store = defaultdict(int)
