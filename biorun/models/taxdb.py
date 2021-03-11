@@ -216,7 +216,7 @@ def open_db(table, fname=SQLITE_DB, flag='c'):
 queue = list()
 
 
-def dfs(graph, node, names, depth=0, collect=[], visited=None):
+def dfs____(graph, node, names, depth=0, collect=[], visited=None):
     # Initialize the visited nodes once.
     visited = visited if visited else set()
 
@@ -227,6 +227,35 @@ def dfs(graph, node, names, depth=0, collect=[], visited=None):
         visited.add(node)
         for nbr in graph.get(node, []):
             dfs(graph=graph, node=nbr, names=names, depth=depth + 1, collect=collect, visited=visited)
+
+def download_metadata(taxid=2697049):
+    """
+    Returns all accessions
+    """
+    import requests
+
+    # The dataset accession point.
+    url = f"https://api.ncbi.nlm.nih.gov/datasets/v1alpha/virus/taxon/{taxid}/genome/table"
+
+    params = {
+        'format': 'tsv',
+        'refseq_only': "false",
+        'complete_only': 'true',
+        'table_fields': [
+            'nucleotide_accession', 'collection_date', 'host_tax_id', 'geo_location', 'isolate_name', 'species_tax_id'
+        ]
+    }
+
+    conn = requests.get(url, stream=True, params=params)
+    lines = conn.iter_lines()
+    lines = islice(lines, 10)
+    if conn.status_code != 200:
+        msg = f"HTTP status code: {conn.status_code}"
+        utils.error(msg)
+
+    for line in lines:
+        line = line.decode()
+        print(line.split("\t"))
 
 
 def get_values(node, names):
