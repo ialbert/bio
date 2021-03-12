@@ -45,7 +45,7 @@ build:
 	python setup.py sdist bdist_wheel
 
 # Upload new version to PyPI.
-publish: test build
+pypi: test build
 	rm -rf dist
 	python setup.py sdist bdist_wheel
 	#python -m twine upload --repository testpypi dist/*
