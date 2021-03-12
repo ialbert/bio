@@ -37,7 +37,7 @@ def run(cmd, capsys, fname=None):
 
     # Need to disable input capture when reading stdin while running tests.
     from biorun.models import taxdb
-    taxdb.CAPSYS = False
+    taxdb.ALLOW_CAPTURE = False
 
     # Override the system arguments.
     sys.argv = cmd.split()

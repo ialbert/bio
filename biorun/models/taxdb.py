@@ -35,7 +35,7 @@ INDENT = '  '
 SEP = ', '
 
 # Needs to be disabled during testing.
-CAPSYS = True
+ALLOW_CAPTURE = True
 
 # Used during debugging only to speed up database builds.
 # Keep it at None
@@ -481,10 +481,28 @@ def isnum(x):
         return False
 
 
-def parse_lines(stream, field=1, sep="\t"):
+def parse_stream(stream, field=1, delim="\t"):
+    """
+    Parses a stream for a column.
+    """
+    # One based coordinate system.
     colidx = field - 1
-    stream = filter(lambda x: len(x.split(sep)) >= colidx, stream)
+
+    # Sanity check.
+    assert colidx >= 0
+
+    # Remove comments
     stream = filter(lambda x: not x.startswith('#'), stream)
+
+    # Remove empty lines
+    stream = filter(lambda x: not x.strip(), stream)
+
+    # Create a reader.
+    stream = csv.reader(stream, delim=delim)
+
+    # Keep only rows that have data for the column
+    stream = filter(lambda row: len(row) >= colidx, stream)
+
     return stream
 
 
@@ -510,9 +528,11 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
         verbose=False, *terms):
     global SEP, INDENT, LIMIT
 
-    # Input connected to a stream
-    if CAPSYS and  sys.stdin.isatty():
-        terms = sys.stdin.readlines()
+    # Input may come as a stream.
+    if ALLOW_CAPTURE and not sys.stdin.isatty():
+        stream = sys.stdin.readlines()
+    else:
+        stream = None
 
     # Indentation level
     INDENT = ' ' * indent
@@ -523,22 +543,21 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
 
-    # Access the database.
-    names, graph = get_data(preload=preload, acc=accessions)
-
-    # Download prebuilt database.
+    # Download the prebuilt database.
     if download:
         download_prebuilt()
 
-    # Updates the taxdump and builds a new taxonomy file.
+    # Downloads a new taxdump and builds a new taxonomy database.
     if update:
-        # update_taxdump()
         build_database(limit=LIMIT)
+
+    # Get the content of the database.
+    names, graph = get_data(preload=preload, acc=accessions)
 
     # List the content of a database.
     if list_:
         print_database(names=names, graph=graph)
-        sys.exit(0)
+        return
 
     # Obtain metadata for the taxon
     if metadata:
@@ -551,9 +570,8 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
 
     # Filters a file by a column.
     if keep or remove:
-        filter_file(stream=terms, keep=keep, remove=remove, graph=graph, colidx=field - 1)
+        filter_file(stream=stream, keep=keep, remove=remove, graph=graph, colidx=field - 1)
         return
-
 
     # Input may come from a file or command line.
     colidx = field - 1
