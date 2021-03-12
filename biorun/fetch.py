@@ -182,19 +182,30 @@ def rename_data(data, param, newname=None):
     """
     Rename data.
     """
-    # It only makes sense to rename one data.
+    # Will only rename a single data
     newnames = newname.split(",")
 
     for name1, name2 in zip(data, newnames):
-        src = resolve_fname(name=name1, format="json")
-        dest = resolve_fname(name=name2, format="json")
-        if os.path.isfile(src):
+        src_json = resolve_fname(name=name1, format="json")
+        dest_json = resolve_fname(name=name2, format="json")
+
+        src_gb = resolve_fname(name=name1, format="gb")
+        dest_gb = resolve_fname(name=name2, format="gb")
+
+        if os.path.isfile(src_json):
             logger.info(f"renamed {name1} as {name2}")
-            os.rename(src, dest)
+            os.rename(src_json, dest_json)
             if param.seqid:
-                change_seqid(dest, seqid=param.seqid)
+                change_seqid(dest_json, seqid=param.seqid)
         else:
-            logger.info(f"file not found: {src}")
+            logger.info(f"file not found: {src_json}")
+
+        if os.path.isfile(src_gb):
+            if not os.path.isfile(dest_gb):
+                os.symlink(src_gb, dest_gb)
+        else:
+            logger.info(f"file not found: {src_gb}")
+
 
 def print_data_list():
     """
