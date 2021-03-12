@@ -16,7 +16,7 @@ build_data:
 # Generate test from the example script.
 build_test:
 	(cd test && python generate.py)
-	pytest
+	pytest --ff -x
 
 # Generate the docs.
 docs:
@@ -45,15 +45,19 @@ build:
 	python setup.py sdist bdist_wheel
 
 # Upload new version to PyPI.
-upload: test build
+publish: test build
 	rm -rf dist
 	python setup.py sdist bdist_wheel
 	#python -m twine upload --repository testpypi dist/*
 	python -m twine upload --repository pypi dist/*
 
-# Uploads prebuilt data to Google Cloud
-upload_prebuilt:
-	bash docs/upload_prebuilt_data.sh
+
+REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
+
+# Upload prebuilt data to distribution site.
+upload:
+	rsync -avz --progress ~/.bio/taxdb.json ${REMOTE}
+	rsync -avz --progress ~/.bio/taxdb.sqlite ${REMOTE}
 
 
 

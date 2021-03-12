@@ -1,15 +1,6 @@
 set -uex
 
-BUCKET_NAME="gs://biostore-bucket-001"
+REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
 
-# This directory will sync the prebuilt data
-PRE="~/.bio/pre"
-
-mkdir -p $PRE
-
-# The files that need to be synchronized to the bucket.
-ln -sf ~/.bio/taxdb.json $PRE
-
-ln -sf ~/.bio/taxdb.sqlite $PRE
-
-time gsutil rsync $PRE $BUCKET_NAME
+rsync $FLAGS ~/.bio/taxdb.json  $HOST:$DIR
+rsync $FLAGS ~/.bio/taxdb.sqlite  $HOST:$DIR

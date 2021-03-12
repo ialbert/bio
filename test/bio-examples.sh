@@ -125,7 +125,7 @@ bio taxon 9606 > taxon_9606.txt
 bio taxon 9606 --lineage > taxon_9606_lineage.txt
 
 # The lineage may be flattened to a single line.
-bio taxon 9606 --lineage --flat > taxon_9606_flat_lineage.txt
+bio taxon 9606 --depth 1 > taxon_9606_depth_1.txt
 
 # Taxonomy information from data.
 bio taxon  ncov ratg13 > taxon_data.txt

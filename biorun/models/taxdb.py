@@ -25,16 +25,17 @@ TAXDB_NAME = join(utils.DATADIR, TAXDB_NAME)
 SQLITE_DB = join(utils.DATADIR, SQLITE_DB_NAME)
 JSON_DB = join(utils.DATADIR, JSON_DB_NAME)
 
-# Create the thing here.
-
-GRAPH, BACK, NAMES, SYNON, LATIN = "GRAPH", "BACKLINKS", "NAMES", "SYNONYMS", "LATIN"
+# Keys into the database
+GRAPH, BACK, TAXID = "GRAPH", "BACK", "TAXID"
 
 # Indentation character
 INDENT = '  '
 
 # Fields separator
-
 SEP = ', '
+
+# Needs to be disabled during testing.
+CAPSYS = True
 
 # Used during debugging only to speed up database builds.
 # Keep it at None
@@ -44,17 +45,20 @@ CHUNK = 25000
 
 logger = utils.logger
 
-
 def download_prebuilt():
     """
-    Download prebuild databases.
+    Downloads prebuild databases.
     """
-    utils.download_from_bucket(bucket_name=const.BUCKET_NAME, file_name=SQLITE_DB_NAME, cache=True)
-    utils.download_from_bucket(bucket_name=const.BUCKET_NAME, file_name=JSON_DB_NAME, cache=True)
+    url = "http://data.biostarhandbook.com/bio/"
 
-    # Download the taxonomy file.
-    update_taxdump()
+    url_sqlite = f"{url}/taxdb.sqlite"
+    url_json = f"{url}/taxdb.json"
 
+    utils.download(url=url_sqlite, dest_name=SQLITE_DB_NAME, cache=True)
+    utils.download(url=url_json, dest_name=JSON_DB_NAME, cache=True)
+
+    # Download the updated taxonomy file from NCBI.
+    #update_taxdump()
 
 def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_NAME):
     """
@@ -62,28 +66,30 @@ def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_NAME):
     """
     utils.download(url=url, dest_name=dest_name)
 
-
-def get_stream(tar, name, limit=None):
-    mem = tar.getmember(name)
+def open_tarfile(archive, filename, limit=None, delimiter="\t"):
+    """
+    Returns the content of named file in a tarred archive.
+    """
+    tar = tarfile.open(archive, "r:gz")
+    mem = tar.getmember(filename)
     stream = tar.extractfile(mem)
     stream = map(lambda x: x.decode("ascii"), stream)
     stream = islice(stream, limit)
+    stream = csv.reader(stream, delimiter=delimiter)
     return stream
 
 
-def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
+def search_names(word, archive=TAXDB_NAME, name="names.dmp", limit=None):
     """
     Processes the names.dmp component of the taxdump.
     """
 
     # Needs a taxdump to work.
-    if not os.path.isfile(fname):
+    if not os.path.isfile(archive):
         utils.error("taxdump file not found (download and build it first)")
 
-    # The taxdump file.
-    tar = tarfile.open(fname, "r:gz")
-    stream = get_stream(tar=tar, name=name, limit=limit)
-    stream = csv.reader(stream, delimiter="\t")
+    # Open stream into the tarfile.
+    stream = open_tarfile(archive=archive, filename=name, limit=limit)
 
     # The pattern may be regular expression.
     patt = re.compile(word, re.IGNORECASE)
@@ -102,36 +108,37 @@ def search_names(word, fname=TAXDB_NAME, name="names.dmp", limit=None):
         yield taxid, name
 
 
-def parse_names(fname, name="names.dmp", limit=None):
+def parse_names(archive, filename="names.dmp", limit=None):
     """
     Parses the names.dmp component of the taxdump.
     """
 
-    # The taxdump file.
-    tar = tarfile.open(fname, "r:gz")
+    # Parse the tarfile.
+    stream = open_tarfile(archive=archive, filename=filename, limit=limit)
 
-    stream = get_stream(tar=tar, name=name, limit=limit)
-    stream = csv.reader(stream, delimiter="\t")
-
-    # Various lookup tables.
+    # Lookup tables.
     tax2data, name2tax = {}, {}
 
-    print(f"*** parsing: {name}")
+    print(f"*** processing: {filename}")
 
-    for index, elems in enumerate(stream):
-        taxid, name, label = elems[0], elems[2], elems[6]
+    # Process the nodes.dmp file.
+    for row in stream:
 
-        # Assembly count (TODO)
+        # The names.dmp file structure.
+        taxid, name, label = row[0], row[2], row[6]
+
+        # Assembly count if exists (TODO)
         count = 0
 
-        # Scientific name fields.
+        # Populate only for scientific names.
         if label == 'scientific name':
-            # Name, rank, common name, parent, assembly count
+            # 5 columns: sciname, rank, common name, parent, assembly count
+            # Some information will be only known later, from the nodes.dmp
             tax2data[taxid] = [name, "", "", "", count]
         elif label == 'genbank common name':
             name2tax[name] = taxid
 
-    # Backfill common names when these are different.
+    # Fill common names when it exists.
     for taxid, name in name2tax.items():
         if taxid in tax2data:
             tax2data[taxid][2] = name
@@ -139,66 +146,70 @@ def parse_names(fname, name="names.dmp", limit=None):
     return tax2data
 
 
-def parse_nodes(fname, name_dict, name="nodes.dmp", limit=None):
+def parse_nodes(archive, tax2data, filename="nodes.dmp", limit=None):
     """
     Parses the names.dmp component of the taxdump.
     """
 
-    # The taxdump file.
-    tar = tarfile.open(fname, "r:gz")
+    # Parse the NCBI taxump.
+    stream = open_tarfile(archive=archive, filename=filename, limit=limit)
 
-    stream = get_stream(tar=tar, name=name, limit=limit)
-    stream = csv.reader(stream, delimiter="\t")
+    # Data structures to fill.
+    graph = {}
 
-    node_dict = {}
-    back_dict = {}
+    print("*** processing: nodes.dmp")
 
-    print("*** parsing: nodes.dmp")
-    for elems in stream:
-        child, parent, rank = elems[0], elems[2], elems[4]
-        back_dict[child] = parent
-        node_dict.setdefault(parent, []).append(child)
-        if child in name_dict:
-            name_dict[child][1] = rank
-            name_dict[child][3] = parent
+    # Process the nodes.dmp file.
+    for row in stream:
 
-    return node_dict, back_dict
+        # nodes.dmp file format.
+        child, parent, rank = row[0], row[2], row[4]
+
+        # Connect parent to all children
+        graph.setdefault(parent, []).append(child)
+
+        # Mutates existing datastructure with rank and parent info.
+        if child in tax2data:
+            tax2data[child][1] = rank
+            tax2data[child][3] = parent
+
+    return graph
 
 
-def build_database(fname=TAXDB_NAME, limit=None):
+def build_database(archive=TAXDB_NAME, limit=None):
     """
     Downloads taxdump file.
     """
-    print(f"*** building database from: {fname}")
-    path = os.path.join(utils.DATADIR, fname)
+    print(f"*** building database from: {archive}")
+
+    # The location of the archive.
+    path = os.path.join(utils.DATADIR, archive)
 
     # Check the file.
     if not os.path.isfile(path):
         utils.error(f"no taxdump file found, run the --download flag")
 
-    # Get the assembly.
-    # _, _, taxon_acc = ncbi.parse_summary()
-
     # Parse the names
-    name_dict = parse_names(fname, limit=limit)
+    tax2data = parse_names(archive, limit=limit)
 
-    # Parse the nodes.
-    node_dict, back_dict = parse_nodes(fname, name_dict=name_dict, limit=limit)
+    # Parse the nodes and backpropagation.
+    graph = parse_nodes(archive, tax2data=tax2data, limit=limit)
 
+    # A shortcut to the function.
     def save_table(name, obj):
         utils.save_table(name=name, obj=obj, fname=SQLITE_DB)
 
-    # Save the names into the database
-    save_table(NAMES, name_dict)
+    # Save the taxid definitions.
+    save_table(TAXID, tax2data)
 
-    # Save the nodes.
-    save_table(GRAPH, node_dict)
+    # Save the graph.
+    save_table(GRAPH, graph)
 
     print("*** saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
 
-    # JSON will only have the graph and names.
-    store = dict(NAMES=name_dict, GRAPH=node_dict, SYNONYMS={}, BACK={})
+    # Save the JSON file as well.
+    store = dict(TAXID=tax2data, GRAPH=graph)
     fp = open(json_path, 'wt')
     json.dump(store, fp, indent=4)
     fp.close()
@@ -264,20 +275,8 @@ def get_metadata(taxid, limit=None):
 
 
 def get_values(node, names):
-    # Avoiding code duplication everywhere
-    sname, rank, cname, parent, acount = names.get(node, ("MISSING", "NO RANK", "", "", 0))
-    return sname, rank, cname, parent, acount
-
-
-def print_assemblies(taxid, assembly):
-    """
-    Print assemblies
-    """
-
-    assemblies = assembly.get(taxid, [])
-
-    for acc in assemblies:
-        print(f'{taxid}{INDENT}{acc}')
+    sciname, rank, name, parent, count = names.get(node, ("MISSING", "NO RANK", "", "", 0))
+    return sciname, rank, name, parent, count
 
 
 def node_formatter(node, names, depth):
@@ -285,15 +284,13 @@ def node_formatter(node, names, depth):
     Creates a long form representation of a node.
     """
     indent = INDENT * depth
-    sname, rank, name, parent, count = get_values(node, names)
+    sciname, rank, name, parent, count = get_values(node, names)
 
-    # Get any full genome assemblies this node may have.
-
-    # Decide what to do with common names.
-    if name and name != sname:
-        data = [rank, node, sname, name]
+    # Write common name if exists and different from sciname
+    if name and name != sciname:
+        data = [rank, node, sciname, name]
     else:
-        data = [rank, node, sname]
+        data = [rank, node, sciname]
 
     text = indent + SEP.join(data)
 
@@ -345,20 +342,13 @@ def get_data(preload=False, acc=False):
         if not os.path.isfile(JSON_DB):
             utils.error(f"taxonomy file not found (you must build it first): {JSON_DB}")
         store = json.load(open(JSON_DB))
-        names = store[NAMES]
+        names = store[TAXID]
         graph = store[GRAPH]
-        latin = store[LATIN]
     else:
-        names = open_db(NAMES)
+        names = open_db(TAXID)
         graph = open_db(GRAPH)
-        latin = open_db(LATIN)
 
-    if acc:
-        _, taxon_acc, _ = ncbi.get_data()
-    else:
-        taxon_acc = {}
-
-    return names, graph, taxon_acc, latin
+    return names, graph
 
 
 def print_stats(names, graph):
@@ -367,7 +357,7 @@ def print_stats(names, graph):
 
 
 def search_taxa(word, preload=False):
-    names, graph, assembly, latin = get_data(preload=preload)
+    names, graph = get_data(preload=preload)
 
     word = decode(word)
 
@@ -521,7 +511,7 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     global SEP, INDENT, LIMIT
 
     # Input connected to a stream
-    if not sys.stdin.isatty():
+    if CAPSYS and  sys.stdin.isatty():
         terms = sys.stdin.readlines()
 
     # Indentation level
@@ -534,7 +524,7 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     utils.set_verbosity(logger, level=int(verbose))
 
     # Access the database.
-    names, graph, assembly, latin = get_data(preload=preload, acc=accessions)
+    names, graph = get_data(preload=preload, acc=accessions)
 
     # Download prebuilt database.
     if download:
@@ -548,7 +538,7 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     # List the content of a database.
     if list_:
         print_database(names=names, graph=graph)
-        sys.exit()
+        sys.exit(0)
 
     # Obtain metadata for the taxon
     if metadata:
@@ -557,12 +547,12 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
 
     if scinames:
         search_file(scinames, names=names, latin=latin, graph=graph, include=children)
-        sys.exit()
+        return
 
     # Filters a file by a column.
     if keep or remove:
         filter_file(stream=terms, keep=keep, remove=remove, graph=graph, colidx=field - 1)
-        sys.exit()
+        return
 
 
     # Input may come from a file or command line.
@@ -575,7 +565,7 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     # No valid terms found. Print database stats.
     if not terms:
         print_stats(names=names, graph=graph)
-        sys.exit()
+        return
 
     # These are the terms looked up in the database.
     words = []
@@ -596,7 +586,7 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     if lineage:
         for term in words:
             print_lineage(term, names=names)
-        sys.exit()
+        return
 
     # Will check to mixed terms (valid taxids and search words mixed)
 

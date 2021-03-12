@@ -160,8 +160,8 @@ def test_38(capsys):
     run(cmd, capsys=capsys, fname="taxon_9606_lineage.txt")
 
 def test_39(capsys):
-    cmd = "bio taxon 9606 --lineage --flat"
-    run(cmd, capsys=capsys, fname="taxon_9606_flat_lineage.txt")
+    cmd = "bio taxon 9606 --depth 1"
+    run(cmd, capsys=capsys, fname="taxon_9606_depth_1.txt")
 
 def test_40(capsys):
     cmd = "bio taxon  ncov ratg13"
