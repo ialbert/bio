@@ -86,12 +86,6 @@ To print the lineage of a term use:
 ```{bash, comment=NA}
 bio taxon 564286 --lineage
 ```
-
-the lineage may be flattened:
-
-```{bash, comment=NA}
-bio taxon 564286 --lineage --flat
-```
    
 ## Filter blast results
 
