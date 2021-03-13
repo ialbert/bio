@@ -130,6 +130,9 @@ bio taxon 9606 --depth 1 > taxon_9606_depth_1.txt
 # Taxonomy information from data.
 bio taxon  ncov ratg13 > taxon_data.txt
 
+# Taxonomy information from standard input
+echo 9606 | bio taxon > taxon_ids.txt
+
 # Remove the old ebola if exists.
 bio data --delete ebola
 

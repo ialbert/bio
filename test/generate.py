@@ -9,7 +9,6 @@ Each line in the shell script will be a line in the
 from itertools import count
 from textwrap import dedent
 import os, sys, difflib
-from biorun import main
 
 # Test naming index.
 COUNTER = count(1)
@@ -20,50 +19,58 @@ CURR_DIR = os.path.dirname(__file__)
 # The default data directory.
 DATA_DIR = os.path.join(CURR_DIR, "data")
 
+# The run directory
+RUN_NAME = "run"
+RUN_DIR = os.path.join(CURR_DIR, RUN_NAME)
 
-def read(fname, datadir=DATA_DIR):
+def init_dirs():
     """
-    Reads a file in the datadir
+    Initializes the test run
     """
-    path = os.path.join(datadir, fname) if datadir else fname
-    text = open(path).read()
-    return text
+    # Change to current directory.        
+    os.chdir(CURR_DIR)
 
+    # Clean up the test directory.
+    cmd = f"rm -rf {RUN_NAME}"
+    os.system(cmd)
 
-def run(cmd, capsys, fname=None):
+    # Make the run directory
+    cmd = f"mkdir -p {RUN_NAME}"
+    os.system(cmd)
+
+    # Switch to run directory
+    os.chdir(RUN_DIR)
+
+join = os.path.join
+
+def diff(cmd, expect, result):
     """
-    Runs a command and returns its out.
+    User friendly diffs
     """
+    lines1 = expect.splitlines()
+    lines2 = result.splitlines()
+    diffs = difflib.unified_diff(lines1, lines2)
+    print (cmd)
+    print ("-" * 10)
+    for diff in diffs:
+        print(diff)
 
-    # Need to disable input capture when reading stdin while running tests.
-    from biorun.models import taxdb
-    taxdb.ALLOW_CAPTURE = False
+def run(cmd):
+    """
+    Runs a command and checks the output if it has one.
+    """
+    # Run the command
+    os.system(cmd)
 
-    # Override the system arguments.
-    sys.argv = cmd.split()
-
-    # Dispatch the commands.
-    main.router()
-
-    # Read the standard output.
-    result = capsys.readouterr().out
-
-    # Check the output if we pass expected value here.
-    if fname:
-        expect = read(fname)
+    # If it produces output verify the correctness
+    parts = cmd.split(">")
+    if len(parts) == 2:
+        fname = parts[-1].strip()
+        result = open(join(RUN_DIR, fname)).read() 
+        expect = open(join(DATA_DIR, fname)).read()
         if expect != result:
-            lines1 = expect.splitlines()
-            lines2 = result.splitlines()
-            diffs = difflib.unified_diff(lines1, lines2)
-            print (cmd)
-            print (f"File: {fname}")
-            print ("-" * 10)
-            for diff in diffs:
-                print(diff)
+            diff(cmd=cmd, expect=expect, result=result)
             assert result == expect
-
-    return result
-
 
 init = '''
 #
@@ -71,7 +78,10 @@ init = '''
 #
 
 # Get the helper utitilies.
-from generate import run
+from generate import *
+
+# Initialize directories.
+init_dirs()
 '''
 
 
@@ -82,26 +92,15 @@ def generate_tests(infile, outfile="test_bio.py"):
     print(f"*** script {infile}")
     print(f"*** tests {outfile}")
 
-    stream = open(infile)
-    lines = map(lambda x: x.strip(), stream)
-    # Test only bio commands.
-    lines = filter(lambda x: x[:3] == "bio", lines)
-    lines = list(lines)
-
     collect = []
-    for line in lines:
-        if ">" in line:
-            cmd, fname = line.split(">")
-            cmd = cmd.strip()
-            fname = fname.strip()
-            fname = f'"{fname}"'
-        else:
-            cmd, fname = line, None
-
+    stream = open(infile)
+    stream = filter(lambda x: not x.startswith('#'), stream)
+    stream = filter(lambda x: x.strip(), stream)
+    for cmd in stream:
+        cmd = cmd.strip()
         patt = f"""
         def test_{next(COUNTER)}(capsys):
-            cmd = "{cmd}"
-            run(cmd, capsys=capsys, fname={fname})
+            run("{cmd}")
         """
         collect.append(dedent(patt))
 
@@ -111,6 +110,12 @@ def generate_tests(infile, outfile="test_bio.py"):
     fp.close()
 
 if __name__ == '__main__':
-    infile = os.path.join(CURR_DIR, "bio-examples.sh")
+
+    infile = os.path.join(CURR_DIR, "all_tests.sh")    
     outfile = os.path.join(CURR_DIR, "test_bio.py")
+
+    # Generate tests from a subset of
+    if len(sys.argv) > 1:
+        infile = sys.argv[1]
+
     generate_tests(infile=infile, outfile=outfile)

@@ -2,10 +2,16 @@ from biorun.methods import comm
 import biorun.libs.placlib as plac
 import os
 
+join = os.path.join
 
-FNAME1="test/data/file1.txt"
-FNAME2="test/data/file2.txt"
+# The path to the current file.
+CURR_DIR = os.path.dirname(__file__)
 
+# The default data directory.
+DATA_DIR = join(CURR_DIR, "data")
+
+FNAME1= join(DATA_DIR, "file1.txt")
+FNAME2= join(DATA_DIR, "file2.txt")
 
 def test_comm_1(capsys):
     params = dict(

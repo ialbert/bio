@@ -7,16 +7,12 @@ all: serve
 
 # Run the tests.
 test:
-	pytest
-
-# Generate the test data for the tests.
-build_data:
-	(cd test/data && bash ../bio-examples.sh)
+	pytest 
 
 # Generate test from the example script.
-build_test:
+generate:
 	(cd test && python generate.py)
-	pytest --ff -x
+	pytest -x
 
 # Generate the docs.
 docs:
@@ -58,8 +54,3 @@ REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
 upload:
 	rsync -avz --progress ~/.bio/taxdb.json ${REMOTE}
 	rsync -avz --progress ~/.bio/taxdb.sqlite ${REMOTE}
-
-
-
-
-

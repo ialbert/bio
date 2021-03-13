@@ -34,9 +34,6 @@ INDENT = '  '
 # Fields separator
 SEP = ', '
 
-# Needs to be disabled during testing.
-ALLOW_CAPTURE = True
-
 # Used during debugging only to speed up database builds.
 # Keep it at None
 LIMIT = None
@@ -58,13 +55,15 @@ def download_prebuilt():
     utils.download(url=url_json, dest_name=JSON_DB_NAME, cache=True)
 
     # Download the updated taxonomy file from NCBI.
-    #update_taxdump()
+    # update_taxdump()
+
 
 def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_NAME):
     """
     Downloads taxdump file.
     """
     utils.download(url=url, dest_name=dest_name)
+
 
 def open_tarfile(archive, filename, limit=None, delimiter="\t"):
     """
@@ -495,15 +494,15 @@ def parse_stream(stream, field=1, delim="\t"):
     stream = filter(lambda x: not x.startswith('#'), stream)
 
     # Remove empty lines
-    stream = filter(lambda x: not x.strip(), stream)
+    stream = filter(lambda x: x.strip(), stream)
 
     # Create a reader.
-    stream = csv.reader(stream, delim=delim)
+    reader = csv.reader(stream, delimiter=delim)
 
     # Keep only rows that have data for the column
-    stream = filter(lambda row: len(row) >= colidx, stream)
+    reader = filter(lambda row: len(row) >= colidx, reader)
 
-    return stream
+    return [row[colidx] for row in reader]
 
 
 @plac.pos("terms", "taxids or search queries")
@@ -529,8 +528,8 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     global SEP, INDENT, LIMIT
 
     # Input may come as a stream.
-    if ALLOW_CAPTURE and not sys.stdin.isatty():
-        stream = sys.stdin.readlines()
+    if not terms and not sys.stdin.isatty():
+        stream = sys.stdin
     else:
         stream = None
 
@@ -574,11 +573,8 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
         return
 
     # Input may come from a file or command line.
-    colidx = field - 1
-    terms = parse_lines(terms)
-    terms = map(lambda x: x.split("\t")[colidx].strip(), terms)
-    terms = filter(None, terms)
-    terms = list(terms)
+    if stream:
+        terms = parse_stream(stream, field=1)
 
     # No valid terms found. Print database stats.
     if not terms:
