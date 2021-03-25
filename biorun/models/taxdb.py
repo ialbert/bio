@@ -7,7 +7,7 @@ import sys
 import tarfile
 from itertools import islice
 
-from biorun import fetch, const, ncbi
+from biorun import fetch
 from biorun import utils
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
@@ -41,6 +41,7 @@ LIMIT = None
 CHUNK = 25000
 
 logger = utils.logger
+
 
 def download_prebuilt():
     """
@@ -233,7 +234,7 @@ def print_metadata(terms):
         lines = get_metadata(term)
         lines = filter(lambda x: x.split(), lines)
         old_header = next(lines)
-        new_header = "host species accession date location isolate".split()
+        new_header = "host species accession date location isolate ".split()
 
         print("\t".join(new_header))
         for line in lines:
@@ -414,10 +415,16 @@ def dfs_visitor(graph, node, visited, depth=0, func=donothing, maxdepth=0):
             dfs_visitor(graph=graph, node=nbr, depth=nextdepth, visited=visited, func=func, maxdepth=maxdepth)
 
 
-def filter_file(stream, keep, remove, graph, colidx=0):
+def filter_file(stream, terms, keep, remove, graph, colidx=0):
     """
     Filters a file to retain only the rows where a taxid is ina subtree.
     """
+    if not stream:
+        if len(terms) == 0:
+            msg = f"filtering needs an input stream or a filename"
+            utils.error(msg)
+        stream = open(terms[0])
+
     # Collects all children of the taxids.
     keep_dict, remove_dict = {}, {}
 
@@ -569,7 +576,7 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
 
     # Filters a file by a column.
     if keep or remove:
-        filter_file(stream=stream, keep=keep, remove=remove, graph=graph, colidx=field - 1)
+        filter_file(stream=stream, terms=terms, keep=keep, remove=remove, graph=graph, colidx=field - 1)
         return
 
     # Input may come from a file or command line.
