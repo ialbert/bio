@@ -40,7 +40,7 @@ Suppose you wanted to align the sequences of SARS-COV-2 (`NC_045512`) versus the
 
 ### 1. Fetch data
 
-Ddownload the data so that `bio` can operate on it. This step needs to be peformed once only:
+First we download the data so that `bio` can operate on it. The step needs to be done only once:
 
 ```{bash, child='code/index-fetch.txt'}
 ```
