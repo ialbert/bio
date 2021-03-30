@@ -49,15 +49,21 @@ Time and again, I found myself not pursuing an idea because getting to the fun p
 
 Here is how to align the sequences of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`). First get the data:
 
-```{bash, comment=NA}
-bio fetch NC_045512 MN996532
+```{bash, eval=FALSE, code=readLines("code/intro-01.sh")}
 ```
-    
+
+```{r, eval=FALSE, code=readLines("code/intro-01.sh.txt")}
+```
+
+
 Now align the sequences (showing 60bp for brevity).
 
-```{bash, comment=NA}
-bio align NC_045512 MN996532 --end 60  
+```{bash, eval=FALSE, code=readLines("code/intro-02.sh")}
 ```
+
+```{r, eval=FALSE, code=readLines("code/intro-02.sh.txt")}
+```
+
 
 ## A more realistic workflow
 
@@ -71,10 +77,10 @@ With the `bio` package, the process takes simple, concise steps.
 
 First, we download and rename the data keep our sanity:
 
-```{bash, comment=NA}
-bio fetch NC_045512 --rename ncov
-bio fetch MN996532  --rename ratg13
-```
+
+    bio fetch NC_045512 --rename ncov
+    bio fetch MN996532  --rename ratg13
+
 
 From now on, `bio` can operate on  `NC_045512` using the name `ncov` and on `MN996532` using the name `ratg13` no matter where you are on your computer! 
 
@@ -82,37 +88,31 @@ From now on, `bio` can operate on  `NC_045512` using the name `ncov` and on `MN9
 
 `bio` stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory, you now can type:
 
-```{bash, comment=NA}
-bio convert ncov --fasta --end 100 | head -2
-```
+
+    bio convert ncov --fasta --end 100 | head -2
+
     
 and it will show you the FASTA representation of  the genome     
 
 You could also convert the data stored under `ncov` name to other formats. Let's convert features with type `CDS` to `GFF`:
 
-```{bash, comment=NA}
-bio convert ncov --gff --type CDS  | head -5
-```
+    bio convert ncov --gff --type CDS  | head -5
 
 ## Align nucleotides or peptides
 
 Now, back to our problem of aligning proteins. Let's align the first 90 base pairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut; instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
 
-```{bash, comment=NA}
-bio align ncov:S ratg13:S --end 60
-```
-    
+    bio align ncov:S ratg13:S --end 60
+
 We can visualize the translation of the DNA into aminoacids with one letter (`-1`) or three-letter codes (`-3`):  
    
-```{bash, comment=NA}
-bio align ncov:S ratg13:S --end 60 -1
-```
-    
+    bio align ncov:S ratg13:S --end 60 -1
+
 If, instead, we wanted to align the 60bp DNA subsequences for `S` protein after their translation into proteins, we could do it like so:
 
-```{bash, comment=NA}
-bio align ncov:S ratg13:S --translate --end 60
-```
+
+    bio align ncov:S ratg13:S --translate --end 60
+
     
 We can note right away that all differences in the first 60bp of DNA are synonymous substitutions, the protein translations are the same.
 
@@ -121,53 +121,9 @@ We can note right away that all differences in the first 60bp of DNA are synonym
 
 `bio` understands taxonomies. Finding the lineage of the organism is as simple as:
 
-```{bash, comment=NA}
-bio taxon ncov --lineage
-```
 
-## See the bioproject
+    bio taxon ncov --lineage
 
-`bio` knows about bio projects and sequencing data.
-As it turns out the data for `ncov`  data is not adequately cross-referenced at NCBI ... thus, we can't quite get the SRR run numbers automatically, even at NCBI.
-
-Let's pick another data that has better cross-references, perhaps a virus from the 2014 Ebola outbreak:
-
-```{bash, comment=NA}
-bio fetch KM233118 --rename ebola
-```
-
-and now print:
-
-```{bash, comment=NA}
-bio runinfo ebola 
-```
-   
-if we wanted the SRR run numbers, we could run:
-
-    bio runinfo ebola --sample
- 
-to get:
-
-     
-    [
-        {
-            "Run": "SRR1553609",
-            "ReleaseDate": "2014-08-19 11:41:53",
-            "LoadDate": "2014-08-19 11:18:49",
-            "spots": "464802",
-            "bases": "93890004",
-            "spots_with_mates": "464802",
-            "avgLength": "202",
-            "size_MB": "51",
-            "download_path": "https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/SRR1553609/SRR1553609.1",
-            "Experiment": "SRX674271",
-            "LibraryName": "NM042.3.FCH9",
-            "LibraryStrategy": "RNA-Seq",
-            "LibrarySelection": "cDNA",
-            "LibrarySource": "TRANSCRIPTOMIC",
-            "LibraryLayout": "PAIRED",
-    ...
-                
 
 ## `bio` is a data model
 
@@ -175,9 +131,7 @@ Beyond the functionality that we show, `bio` is also an exploration into modelin
 
 In contrast `bio` represents data in simple, efficient, compressed in JSON format. 
 
-```{bash, comment=NA}
-bio convert ncov --json | head -20
-```
+    bio convert ncov --json | head -20
 
 The data layout allows `bio` to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds, `bio`  can convert that information FASTA or GFF; it can filter it by type, translate the sequence, extract proteins, slice by coordinate, etc.:
 

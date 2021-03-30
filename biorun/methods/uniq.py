@@ -25,9 +25,10 @@ def decode(text):
     """
     return codecs.decode(text, 'unicode_escape')
 
+@plac.flg('count', "produce counts")
 @plac.opt('field', "field index (1 by default)", type=int)
 @plac.opt('delim', "delimiter (guess by default)")
-def main(field=1, delim=''):
+def main(field=1, delim='', count=False):
     # Input stream.
     stream = sys.stdin
 
@@ -49,11 +50,15 @@ def main(field=1, delim=''):
 
         store[key] += 1
 
-    pairs = [(v, k) for k, v in store.items()]
-
-    pairs.sort(key=lambda x: (-x[0], x[1]))
-    for v, k in pairs:
-        print(f"{v}\t{k}")
+    if count:
+        # Produce sorted counts.
+        pairs = [(v, k) for k, v in store.items()]
+        pairs.sort(key=lambda x: (-x[0], x[1]))
+        for v, k in pairs:
+            print(f"{v}\t{k}")
+    else:
+        for k in store:
+            print(f"{k}")
 
 @nointerrupt
 def run():

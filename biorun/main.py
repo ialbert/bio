@@ -89,6 +89,9 @@ def router():
     # Check the subcommand.
     cmd = sys.argv[1]
 
+    # Maintain compatibility with a prior use case (convert == view).
+    cmd = "view" if cmd == "convert" else cmd
+
     # Raise an error is not a valid subcommand.
     if cmd not in const.SUB_COMMANDS:
         print(USAGE, file=sys.stderr)

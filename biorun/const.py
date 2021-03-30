@@ -30,7 +30,7 @@ SUB_COMMANDS = dict(
     align=("biorun.methods.align.run", True, "performs sequence alignments"),
     taxon=("biorun.models.taxdb.run", False, "displays NCBI taxonomies"),
     define=("biorun.models.ontology.run", False, "explains biological terms"),
-    convert=("biorun.convert.run", True, "converts data to different formats"),
+    view=("biorun.view.run", True, "converts data to different formats"),
     runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
 )
 

@@ -1,0 +1,1 @@
+bio fetch NC_045512 MN996532
