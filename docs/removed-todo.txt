@@ -1,0 +1,51 @@
+## Download and rename
+
+First, we download and rename the data keep our sanity:
+
+
+    bio fetch NC_045512 --rename ncov
+    bio fetch MN996532  --rename ratg13
+
+
+From now on, `bio` can operate on  `NC_045512` using the name `ncov` and on `MN996532` using the name `ratg13` no matter where you are on your computer!
+
+## Convert to different formats
+
+`bio` stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory, you now can type:
+
+
+    bio convert ncov --fasta --end 100 | head -2
+
+
+and it will show you the FASTA representation of  the genome
+
+You could also convert the data stored under `ncov` name to other formats. Let's convert features with type `CDS` to `GFF`:
+
+    bio convert ncov --gff --type CDS  | head -5
+
+## Align nucleotides or peptides
+
+Now, back to our problem of aligning proteins. Let's align the first 90 base pairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut; instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
+
+    bio align ncov:S ratg13:S --end 60
+
+We can visualize the translation of the DNA into aminoacids with one letter (`-1`) or three-letter codes (`-3`):
+
+    bio align ncov:S ratg13:S --end 60 -1
+
+If, instead, we wanted to align the 60bp DNA subsequences for `S` protein after their translation into proteins, we could do it like so:
+
+
+    bio align ncov:S ratg13:S --translate --end 60
+
+
+We can note right away that all differences in the first 60bp of DNA are synonymous substitutions, the protein translations are the same.
+
+
+## Look up the taxonomy
+
+`bio` understands taxonomies. Finding the lineage of the organism is as simple as:
+
+
+    bio taxon ncov --lineage
+

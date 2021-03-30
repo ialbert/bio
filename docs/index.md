@@ -45,84 +45,38 @@ If you've ever done bioinformatics you know how even seemingly straightforward t
 
 Time and again, I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium. 
 
-## Diving right in
+## Quickstart example
 
-Here is how to align the sequences of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`). First get the data:
+Suppose you wanted to align the sequences of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`).
 
-```{bash, eval=FALSE, code=readLines("code/intro-01.sh")}
+### Fetch data
+
+This is how to download the data so that `bio` can operate on it:
+
+```{bash, child='code/index-fetch.txt'}
 ```
 
-```{r, eval=FALSE, code=readLines("code/intro-01.sh.txt")}
-```
-
+### Align the genomes
 
 Now align the sequences (showing 60bp for brevity).
 
-```{bash, eval=FALSE, code=readLines("code/intro-02.sh")}
+```{bash, child='code/index-align.txt'}
 ```
 
-```{r, eval=FALSE, code=readLines("code/intro-02.sh.txt")}
+### Convert to FASTA format
+
+Bioinformatics workflows require you to have data in different formats. `bio` can convert data for you.
+
+```{bash, child='code/index-fasta.txt'}
 ```
 
+### Convert to GFF format:
 
-## A more realistic workflow
+```{bash, child='code/index-gff.txt'}
+```
 
-Suppose you wanted to identify the mutations between the `S` protein of the bat coronavirus deposited as `MN996532` and the `S` protein of the ancestral SARS-COV-2 virus designated by the NCBI via accession number `NC_045512`. 
+View the resulting files in IGV
 
-If you are a trained bioinformatician, think about all the steps you would need to perform to accomplish this task, then think about the effort it would take you to teach someone else how to do the same. 
-
-With the `bio` package, the process takes simple, concise steps.
-
-## Download and rename
-
-First, we download and rename the data keep our sanity:
-
-
-    bio fetch NC_045512 --rename ncov
-    bio fetch MN996532  --rename ratg13
-
-
-From now on, `bio` can operate on  `NC_045512` using the name `ncov` and on `MN996532` using the name `ratg13` no matter where you are on your computer! 
-
-## Convert to different formats
-
-`bio` stores data in an internal storage system that it can find from any location. There is no clutter of files or paths to remember. For example, in any directory, you now can type:
-
-
-    bio convert ncov --fasta --end 100 | head -2
-
-    
-and it will show you the FASTA representation of  the genome     
-
-You could also convert the data stored under `ncov` name to other formats. Let's convert features with type `CDS` to `GFF`:
-
-    bio convert ncov --gff --type CDS  | head -5
-
-## Align nucleotides or peptides
-
-Now, back to our problem of aligning proteins. Let's align the first 90 base pairs of DNA sequences for the `S` protein for each organism, `bio` even gives you a shortcut; instead of typing `--gene S --type CDS` you can write it as `ncov:S` :
-
-    bio align ncov:S ratg13:S --end 60
-
-We can visualize the translation of the DNA into aminoacids with one letter (`-1`) or three-letter codes (`-3`):  
-   
-    bio align ncov:S ratg13:S --end 60 -1
-
-If, instead, we wanted to align the 60bp DNA subsequences for `S` protein after their translation into proteins, we could do it like so:
-
-
-    bio align ncov:S ratg13:S --translate --end 60
-
-    
-We can note right away that all differences in the first 60bp of DNA are synonymous substitutions, the protein translations are the same.
-
-
-## Look up the taxonomy
-
-`bio` understands taxonomies. Finding the lineage of the organism is as simple as:
-
-
-    bio taxon ncov --lineage
 
 
 ## `bio` is a data model
