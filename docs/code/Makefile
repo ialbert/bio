@@ -4,6 +4,8 @@ TARGETS = $(SOURCES:.sh=.txt)
 %.txt: %.sh
 	python build.py $< > $@
 
+
+
 all: $(TARGETS)
 
 push:
@@ -13,3 +15,6 @@ push:
 # Generate the docs.
 docs:
 	(cd .. && Rscript -e "bookdown::render_book(input='index.txt', output_dir='.book', output_format='bookdown::gitbook')")
+
+clean:
+	rm -rf *.txt tempfile

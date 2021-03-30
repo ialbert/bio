@@ -6,21 +6,20 @@ numbering:  "false"
 ---
 # Welcome to `bio`
 
-`bio` - command-line utilities to make bioinformatics explorations more enjoyable. 
+If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation, and other preparations that slow down progress. Time and again, I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package was designed  to solve that tedium.
 
-`bio` streamlines the tedious bioinformatics and lets users quickly answer questions such as:
+The `bio` software was written to make bioinformatics explorations more enjoyable. The software lets users quickly answer questions such as:
  
 - *How do I access a sequence for a viral genome?*
 - *How do I obtain the biological annotation of data?*
-- *How do I get the coding sequence for a specific gene?* 
-- *What are the differences between two sequences?*
+- *How do I get the coding sequence for a specific gene?*
 - *What is the lineage of SARS-COV-2?*
 - *What are minisatellites and  microsatellites?*
 
-`bio` combines and represents data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so], 
-[NCBI Taxonomy][taxonomy] and [Short Read Archive][sra] through a unified interface. Having access to all the utility described above makes the `bio` package well suited for exploratory analysis of genomes. 
+`bio` combines data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so],
+[NCBI Taxonomy][taxonomy] and provides an logical, unified interface. The utility described above makes the `bio` package exceedingly well suited for exploratory analysis of genomes.
 
-The software was written to teach bioinformatics and is the companion software to the [Biostar Handbook][handbook]
+The software is also used to demonstrate and teach bioinformatics and is the companion software to the [Biostar Handbook][handbook].
  
 [biopython]: https://biopython.org/
 [emboss]: http://emboss.sourceforge.net/
@@ -32,40 +31,32 @@ The software was written to teach bioinformatics and is the companion software t
 [so]: http://www.sequenceontology.org/
 [go]: http://geneontology.org/
 
-## Quick links
-
-* Source code: https://github.com/ialbert/bio
-* Documentation: https://www.bioinfo.help
 
 [usage]: https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
 
-## Why does this software exist?
+## Quickstart
 
-If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation, and numerous other preparations that slow down your progress. 
+Suppose you wanted to align the sequences of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`). Here is how it would work with `bio`.
 
-Time and again, I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package is meant to solve that tedium. 
+### 1. Fetch data
 
-## Quickstart example
-
-Suppose you wanted to align the sequences of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`).
-
-### Fetch data
-
-This is how to download the data so that `bio` can operate on it:
+Ddownload the data so that `bio` can operate on it. This step needs to be peformed once only:
 
 ```{bash, child='code/index-fetch.txt'}
 ```
 
-### Align the genomes
+### 2. Align the genomes
 
-Now align the sequences (showing 60bp for brevity).
+Now align the sequences (showing just 60bp for brevity).
 
 ```{bash, child='code/index-align.txt'}
 ```
 
-### Convert to FASTA format
+## Data conversion
 
-Bioinformatics workflows require you to have data in different formats. `bio` can convert data for you.
+Bioinformatics workflows often requires you to present data in different formats. `bio` can convert it for you on the fly:
+
+### Convert to FASTA format
 
 ```{bash, child='code/index-fasta.txt'}
 ```
@@ -77,25 +68,35 @@ Bioinformatics workflows require you to have data in different formats. `bio` ca
 
 View the resulting files in IGV
 
+```{r fig.align='center', echo=FALSE}
+knitr::include_graphics('images/igv-index.png', dpi = NA)
+```
 
+Among the many useful features, `bio` is also able to generate beautiful data models from GenBank file.
 
-## `bio` is a data model
+## Data integration
 
-Beyond the functionality that we show, `bio` is also an exploration into modeling biological data. The current standards and practices are woefully antiquated and painfully inadequate. Default formats such as GenBank or EMBL are inefficient and tedious to program with. 
+`bio` understands taxonomies, NCBI bioprojects and metadata.
 
-In contrast `bio` represents data in simple, efficient, compressed in JSON format. 
+### Navigate the taxonomy
 
-    bio convert ncov --json | head -20
+ Finding the lineage of the organism in a GenBank file is as simple as:
 
-The data layout allows `bio` to read in the entire human chromosome 1, with its 253 million characters and 328 thousand genomic features, in just three(!) seconds. In another 3 seconds, `bio`  can convert that information FASTA or GFF; it can filter it by type, translate the sequence, extract proteins, slice by coordinate, etc.:
+```{bash, child='code/index-taxon.txt'}
+```
 
-    time bio convert chr1 --fasta | wc -c
-    253105766
+### Getting sample metadata
 
-    real    0m6.238s
-    user    0m4.156s
-    sys     0m2.172s
+Get sample metadata for the viral genomes (taxid `2697049`):
 
-For shorter genomes, bacterial or viral, the conversion times are under a fraction of a second.  
+```{bash, child='code/index-meta.txt'}
+```
 
-Thanks to the representation, it is trivially easy to extend `bio`. The data is already structured in an efficient layout that needs no additional parsing to load. 
+## Where to go next
+
+Look at the sidebar for detailed documentation on how `bio` operates.
+
+## Other links
+
+* Source code: https://github.com/ialbert/bio
+* Documentation: https://www.bioinfo.help
