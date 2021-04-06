@@ -275,15 +275,15 @@ def run(update=False, rename='', seqid='', protein=False, verbose=False, *data):
 
 @plac.opt('delete', "deletes foo from storage", metavar='foo')
 @plac.flg('verbose', "verbose mode")
-def data(delete, verbose=False):
+def manage(delete, verbose=False):
     """
     Shows the data in the storage.
 
     Usage:
 
-        bio data                   : lists the data
-        bio data --delete foo      : deletes data called foo
-        bio data --delete foo,bar  : deletes multiple datasets
+        bio manage                   : lists the data
+        bio manage --delete foo      : deletes data called foo
+        bio manage --delete foo,bar  : deletes multiple datasets
     """
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))

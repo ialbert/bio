@@ -25,13 +25,14 @@ GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "lo
 # Command map
 # module.function, helpflag, descriptin
 SUB_COMMANDS = dict(
-    data=("biorun.fetch.data", False, "list or rename data"),
     fetch=("biorun.fetch.run", True, "downloads data from repositories"),
+    manage=("biorun.fetch.manage", False, "list/delete downloaded data"),
+    view=("biorun.view.run", True, "converts data to various formats"),
     align=("biorun.methods.align.run", True, "performs sequence alignments"),
     taxon=("biorun.models.taxdb.run", False, "displays NCBI taxonomies"),
     define=("biorun.models.ontology.run", False, "explains biological terms"),
-    view=("biorun.view.run", True, "converts data to different formats"),
-    runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
+
+    #runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
 )
 
 
