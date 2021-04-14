@@ -32,6 +32,7 @@ setup(
             'bio=biorun.__main__:run',
             'comm.py=biorun.methods.comm:run',
             'uniq.py=biorun.methods.uniq:run',
+            'fasta_filter.py=biorun.methods.fasta_filter:run',
         ],
     },
 

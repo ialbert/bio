@@ -399,6 +399,12 @@ def donothing(*args, **kwds):
     """
     pass
 
+def valid_int(text):
+    try:
+        int(text)
+        return True
+    except ValueError as exc:
+        return False
 
 def dfs_visitor(graph, node, visited, depth=0, func=donothing, maxdepth=0):
     """
@@ -428,12 +434,15 @@ def filter_file(stream, terms, keep, remove, graph, colidx=0):
     # Collects all children of the taxids.
     keep_dict, remove_dict = {}, {}
 
-    # Collect the matching nodes.
-    for term in keep.split(","):
+    # Taxids to keep
+    keeper = keep.split(",")
+    # Fill the keeper dictionary.
+    for term in keeper:
         dfs_visitor(graph=graph, node=term, visited=keep_dict)
 
-    # Collect the matching nodes.
-    for term in remove.split(","):
+    # Fill the remover dictionary.
+    remover = remove.split(",")
+    for term in remover:
         dfs_visitor(graph=graph, node=term, visited=remove_dict)
 
     # Read the stream.
