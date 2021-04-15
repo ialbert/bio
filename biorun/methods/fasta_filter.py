@@ -43,7 +43,7 @@ def main(minL=-1, maxN=-1, maxX=-1, invert=False, acc=False):
 
     if maxX > -1:
         op2 = operator.gt if invert else operator.le
-        stream = filter(lambda r: op2(r.seq.count("X"), maxN), stream)
+        stream = filter(lambda r: op2(r.seq.count("X"), maxX), stream)
 
     # Produce the output
     if acc:
