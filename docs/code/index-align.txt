@@ -1,6 +1,6 @@
 
 ```bash
-bio align NC_045512 MN996532 --end 60
+bio align --db genomes.fa NC_045512 MN996532 --end 60
 ```
 
 the command above prints:

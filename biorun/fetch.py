@@ -1,299 +1,130 @@
 """
 Handles functionality related to data storege.
 """
-import sys, os, glob, re, gzip, json
-from biorun import const, utils, objects, ncbi
-from biorun.models import jsonrec
+import sys, os
+from biorun import utils
 import biorun.libs.placlib as plac
+from itertools import *
 
 # Module level logger.
 logger = utils.logger
 
 # A nicer error message on incorrect installation.
 try:
-    from Bio import SeqIO
+    from Bio import Entrez
 except ImportError as exc:
     print(f"*** Error: {exc}", file=sys.stderr)
     print(f"*** This program requires biopython", file=sys.stderr)
     print(f"*** Install: conda install -y biopython>=1.78", file=sys.stderr)
     sys.exit(-1)
 
-def resolve_fname(name, format='json'):
-    """
-    Resolve a file name given an accession number.
-    """
-    ext = format.lower()
-    fname = f"{name}.{ext}.gz"
-    fname = os.path.join(utils.DATADIR, fname)
-    return fname
+# This is to silence Biopython warning.
+Entrez.email = 'not set'
+
+def info(msg='', quiet=False, end="\n", file=sys.stderr):
+    if not quiet:
+        print(f"*** {msg}", file=file, end=end)
 
 
-def delete_data(text):
+def ncbi_efetch(ids, db, rettype='gbwithparths', retmode='text', quiet=False):
     """
-    Deletes data under a filename.
-    """
-    for name in text.split(","):
-        fname = resolve_fname(name)
-        if os.path.isfile(fname):
-            os.remove(fname)
-            logger.info(f"removed: {fname}")
-        else:
-            logger.info(f"file does not exist: {fname}")
-
-
-def read_json_file(fname):
-    """
-    Returns the content of a JSON file.
-    """
-    fp = utils.gz_read(fname)
-    data = json.load(fp)
-    fp.close()
-    return data
-
-
-def save_json_file(fname, data):
-    """
-    Returns the content of a JSON file.
-    """
-    fp = utils.gz_write(fname)
-    json.dump(data, fp)
-    fp.close()
-    logger.info(f"saved {fname}")
-    return data
-
-
-def change_seqid(json_name, seqid):
-    """
-    Changes the sequence id stored in a json file.
-    """
-    if os.path.isfile(json_name):
-        data = read_json_file(json_name)
-        for item in data:
-            item[const.SEQID] = seqid
-        fp = utils.gz_write(json_name)
-        json.dump(data, fp)
-        fp.close()
-
-
-def fetch_data(data, param):
-    """
-    Obtains data from NCBI. Fills each parameter with a json field.
+    Connects to Entrez Direct to download data.
     """
 
-    db = "protein" if param.protein else "nuccore"
+    # Guess accession numbers that are proteins.
+    # https: // www.ncbi.nlm.nih.gov /Sequin /acc.html
 
-    # Ensure json DB is built
-    ncbi.build_db()
+    size = 10000
 
-    genbank, taxon_acc, refseq = ncbi.get_data()
+    idtext = ",".join(ids)
 
-    for name in data:
+    try:
+        info(f"connecting to Entrez for {len(ids)} records", quiet=quiet)
+        stream = Entrez.epost(db=db, id=idtext)
+        results = Entrez.read(stream)
+        webenv = results["WebEnv"]
+        query_key = results["QueryKey"]
+        stream = Entrez.efetch(webenv=webenv, query_key=query_key, db=db, rettype=rettype, retmode=retmode)
+    except KeyError as exc:
+        msg1 = f"{exc}"
+        msg2 = f"efetch acc={ids} db={db} rettype={rettype} retmode={retmode}"
+        logger.error(msg1)
+        logger.error(msg2)
 
-        # Pretend no data if it is an update.
-        json = None if param.update else get_json(name)
+        sys.exit()
 
-        # The data exists, nothing needs to be done.
-        if json:
-            continue
+    recnum = 0
+    step = count(1)
+    for index, line in zip(step, stream):
 
-        # The JSON representation of the data.
-        json_name = resolve_fname(name=name, format="json")
+        # Print line to standard output.
+        print(line, end="")
 
-        # GenBank representation of the data.
-        gbk_name = resolve_fname(name=name, format="gb")
+        # New record was hit.
+        start = line.startswith("LOCUS")
 
-        # Genome assembly data.
-        if name.startswith("GCA") or name.startswith("GCF"):
+        # Increment record number.
+        if start:
+            recnum += 1
 
-            ncbi.genome(name=name, fname=gbk_name, update=param.update, genbank=genbank,
-                        refseq=refseq)
-        else:
-            # Genbank data.
-            ncbi.genbank_save(name, db=db, fname=gbk_name)
+        # Download progress messages.
+        if start or (index % size) == 0:
+            info(f"{recnum} records, processed {index:,d} lines\r", quiet=quiet, end='')
 
-        # Convert Genbank to JSON.
-        data = jsonrec.parse_file(fname=gbk_name, seqid=param.seqid)
+    # Final message
+    info(f"downloaded {recnum} records, processed {index:,d} lines\r", quiet=quiet, end='')
 
-        # Save JSON file.
-        save_json_file(fname=json_name, data=data)
-
-
-def genbank_view(params):
-    for param in params:
-        altname = resolve_fname(param.acc, format="gb")
-
-        if os.path.isfile(param.acc):
-            stream = utils.gz_read(param.acc)
-        elif os.path.isfile(altname):
-            stream = utils.gz_read(altname)
-        else:
-            stream = []
-            utils.error(f"data not found: {param.acc}")
-
-        for line in stream:
-            print(line, end='')
+    # Move cursor on new line.
+    info(quiet=quiet)
 
 
-def get_json(name, seqid=None, inter=False, strict=False):
-    """
-    Attempts to return a JSON formatted data based on a name.
-    """
+# Guess accession numbers that are proteins.
+# https://www.ncbi.nlm.nih.gov/genbank/acc_prefix/
 
-    # Data is an existing path to a JSON file.
-    if os.path.isfile(name):
-        try:
-            data = jsonrec.parse_file(name, seqid=seqid)
-        except Exception as exc:
-            logger.error(f"JSON parsing error for file {name}: {exc}")
-            sys.exit(-1)
-        return data
+def validator(acc):
+    '''
+    Validate accession numbers
+    '''
+    # Get rid of version number
+    acc = acc.split(".")[0]
 
-    # The JSON representation of the data.
-    json_name = resolve_fname(name=name, format="json")
+    # Last 5 digits need to be numerals
+    size = len(acc)
 
-    # GenBank representation of the data.
-    gbk_name = resolve_fname(name=name, format="gb")
+    try:
+        int(acc[-5:])
+    except ValueError as exc:
+        return False
 
-    # Found the JSON representation of the file.
-    if os.path.isfile(json_name):
-        logger.info(f"found {json_name}")
-        data = read_json_file(json_name)
-        return data
-
-    # There is no JSON file but there is a GenBank file.
-    if os.path.isfile(gbk_name):
-        logger.info(f"found {gbk_name}")
-        data = jsonrec.parse_file(fname=gbk_name, seqid=seqid)
-        data = save_json_file(fname=json_name, data=data)
-        return data
-
-    # Interactive input, make JSON from name
-    if inter:
-        data = jsonrec.make_jsonrec(name, seqid=seqid)
-        return data
-
-    # Raise error if in strict mode
-    if strict:
-        utils.error(f"data not found: {name}")
-    return None
+    return size >= 5
 
 
-def rename_data(data, param, newname=None):
-    """
-    Rename data.
-    """
-    # Will only rename a single data
-    newnames = newname.split(",")
-
-    for name1, name2 in zip(data, newnames):
-        src_json = resolve_fname(name=name1, format="json")
-        dest_json = resolve_fname(name=name2, format="json")
-
-        src_gb = resolve_fname(name=name1, format="gb")
-        dest_gb = resolve_fname(name=name2, format="gb")
-
-        if os.path.isfile(src_json):
-            logger.info(f"renamed {name1} as {name2}")
-            os.rename(src_json, dest_json)
-            if param.seqid:
-                change_seqid(dest_json, seqid=param.seqid)
-        else:
-            logger.info(f"file not found: {src_json}")
-
-        if os.path.isfile(src_gb):
-            if not os.path.isfile(dest_gb):
-                os.symlink(src_gb, dest_gb)
-        else:
-            logger.info(f"file not found: {src_gb}")
-
-
-def print_data_list():
-    """
-    Returns a list of the files in the data directory
-    """
-    pattern = os.path.join(os.path.join(utils.DATADIR, '*.json.gz'))
-    matched = glob.glob(pattern)
-
-    # Extract the definition from the JSON without parsing it.
-    patt = re.compile(r'(definition\":\s*)(?P<value>\".+?\")')
-    collect = []
-
-    for path in matched:
-        fsize = utils.human_size(os.path.getsize(path))
-        base, fname = os.path.split(path)
-        fname = fname.rsplit(".", maxsplit=2)[0]
-
-        # Parse the first N lines
-        stream = gzip.open(path, 'rt') if path.endswith('gz') else open(path, 'rt')
-        text = stream.read(1000)
-        match = patt.search(text)
-
-        title = match.group("value") if match else ''
-        title = title.strip('", ')
-
-        # Trim the title
-        stitle = title[:100]
-        stitle = stitle + "..." if len(title) != len(stitle) else stitle
-
-        collect.append((str(fsize), f"{fname:10s}", stitle))
-
-    collect = sorted(collect, key=lambda x: x[2])
-    for row in collect:
-        line = "\t".join(row)
-        print(line)
-
-
-@plac.pos("data", "data names")
-@plac.flg('fetch', "download data as accessions")
-@plac.flg('update', "updates data in storage")
-@plac.opt('rename', "rename the data")
-@plac.opt('seqid', "set the sequence id of the data")
-@plac.flg('protein', "use the protein database")
-@plac.flg('build', "build the database")
-@plac.flg('verbose', "verbose mode")
-def run(update=False, rename='', seqid='', protein=False, verbose=False, *data):
+@plac.opt('db', "database name")
+@plac.opt('chunk', "chunk size (max records per connection)")
+@plac.opt('format_', "output format")
+@plac.flg('quiet', "quiet mode")
+def run(db='nuccore', format_="gb", quiet=False, chunk=1000, *data):
     """
     Fetches and manages data in storage.
     """
 
-    # Set the verbosity
-    utils.set_verbosity(logger, level=int(verbose))
+    ids = []
+    for elem in data:
+        if os.path.isfile(elem):
+            elems = map(lambda x: x.strip().split()[0], open(elem))
+            ids.extend(elems)
+        else:
+            ids.append(elem)
 
-    # Reset counter (needed for consistency during testing).
-    jsonrec.reset_counter()
+    ids = filter(validator, ids)
+    ids = list(ids)
 
-    # A simple wrapper class to represent input parameters.
-    param = objects.Param(seqid=seqid, rename=rename, start=1, protein=protein, update=update)
+    chunks = [ids[x:x + chunk] for x in range(0, len(ids), chunk)]
 
-    # Fetch the data.
-    fetch_data(data, param=param)
+    if len(chunks) > 1:
+        info(f"input data contains {len(ids)} records", quiet=quiet)
 
-    # Renaming after fetching.
-    if rename:
-        rename_data(data, param=param, newname=rename)
-
-
-@plac.opt('delete', "deletes foo from storage", metavar='foo')
-@plac.flg('verbose', "verbose mode")
-def manage(delete, verbose=False):
-    """
-    Shows the data in the storage.
-
-    Usage:
-
-        bio manage                   : lists the data
-        bio manage --delete foo      : deletes data called foo
-        bio manage --delete foo,bar  : deletes multiple datasets
-    """
-    # Set the verbosity
-    utils.set_verbosity(logger, level=int(verbose))
-
-    # Reset counter (needed for consistency during testing).
-    jsonrec.reset_counter()
-
-    # Delete should be the first to execute.
-    if delete:
-        delete_data(delete)
-    else:
-        # Prints the data listing.
-        print_data_list()
+    # A shortcut notation
+    format_ = 'gbwithparts' if format_ == 'gb' else format_
+    for subset in chunks:
+        ncbi_efetch(subset, db=db, rettype=format_, quiet=quiet)

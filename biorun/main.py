@@ -5,13 +5,33 @@ import importlib
 import sys
 
 import biorun.libs.placlib as plac
-from biorun import utils, const
+from biorun import utils
 
 # Module level logger
 logger = utils.logger
 
+
+#
+# Valid subcommands:
+#
+# name = (module.function, auto_help, command_help)
+#
+SUB_COMMANDS = dict(
+    fetch=("biorun.fetch.run", True, "downloads data from repositories"),
+    json=("biorun.jsony.run", False, "converts GenBank to JSON format"),
+    fasta=("biorun.fasta.run", False, "converts JSON to FASTA format"),
+    meta=("biorun.meta.run", False, "fetches metadata from NCBI"),
+    align=("biorun.align.run", True, "performs sequence alignments"),
+
+    # view=("biorun.view.run", True, "converts data to various formats"),
+    # taxon=("biorun.models.taxdb.run", False, "displays NCBI taxonomies"),
+    # define=("biorun.models.ontology.run", False, "explains biological terms"),
+    # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
+)
+
+
 # Generates the nicely indented help for each subcommand
-block = [f"   bio {key:7} : {value[2]}" for (key, value) in const.SUB_COMMANDS.items()]
+block = [f"   bio {key:7} : {value[2]}" for (key, value) in SUB_COMMANDS.items()]
 
 # Join help into a section.
 block = "\n".join(block)
@@ -93,7 +113,7 @@ def router():
     cmd = "view" if cmd == "convert" else cmd
 
     # Raise an error is not a valid subcommand.
-    if cmd not in const.SUB_COMMANDS:
+    if cmd not in SUB_COMMANDS:
         print(USAGE, file=sys.stderr)
         logger.error(f"invalid command: {cmd}")
         sys.exit(-1)
@@ -105,7 +125,7 @@ def router():
     sys.argv = list(map(proof_reader, sys.argv))
 
     # Delegate to the imported method
-    modfunc, flag, help = const.SUB_COMMANDS[cmd]
+    modfunc, flag, help = SUB_COMMANDS[cmd]
 
     # Add the help flag if no other information is present beyond command.
     if flag and len(sys.argv) == 1:

@@ -1,11 +1,11 @@
-import warnings, sys, os
-import biorun.libs.placlib as plac
-import itertools
+import json
+import os
+import sys
 import textwrap
 
-from biorun import const
-from biorun import utils, fetch, objects
-from biorun.models import jsonrec, fastarec
+import biorun.libs.placlib as plac
+from biorun import jsony
+from biorun import utils
 
 try:
     from Bio.Seq import Seq
@@ -16,6 +16,9 @@ except ImportError as exc:
     print(f"*** Please install biopython: conda install -y biopython", file=sys.stderr)
     print(f"*** Error: {exc}", file=sys.stderr)
     sys.exit(-1)
+
+# Alignment modes.
+GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "local", "semiglobal", "strictglobal"
 
 # The default logging function.
 logger = utils.logger
@@ -52,9 +55,9 @@ class Alignment:
         self.target, self.trace, self.query = text.splitlines()
 
         # Show only aligned regions for local and semiglobal alignments
-        if self.param.mode in (const.LOCAL_ALIGN, const.SEMIGLOBAL_ALIGN):
+        if self.param.mode in (LOCAL_ALIGN, SEMIGLOBAL_ALIGN):
 
-            char = " " if self.param.mode == const.LOCAL_ALIGN else "-"
+            char = " " if self.param.mode == LOCAL_ALIGN else "-"
             lcount = len(self.trace) - len(self.trace.lstrip(char))
             rcount = len(self.trace) - len(self.trace.rstrip(char))
 
@@ -111,10 +114,11 @@ def biopython_align(qseq, tseq, param):
     q = str(qseq.seq).upper()
     t = str(tseq.seq).upper()
 
+    # Create the aligner
     aligner = Align.PairwiseAligner()
 
     # Select local mode. Global, semiglobal are about scoring.
-    if param.mode == const.LOCAL_ALIGN:
+    if param.mode == LOCAL_ALIGN:
         aligner.mode = 'local'
 
     # Attempts to detect DNA vs peptide sequences.
@@ -143,7 +147,7 @@ def biopython_align(qseq, tseq, param):
         aligner.query_end_gap_score = 0.0
 
     # Semiglobal will override strict mode.
-    if param.mode == const.SEMIGLOBAL_ALIGN:
+    if param.mode == SEMIGLOBAL_ALIGN:
         aligner.target_end_gap_score = 0.0
         aligner.query_end_gap_score = 0.0
 
@@ -305,8 +309,17 @@ def print_pairwise(aln, param, index=0, width=90):
     print_mutations(aln, param)
 
 
-@plac.pos("query", "query sequence to align")
-@plac.pos("target", "target sequence to align")
+class Param:
+    def __init__(self, **kwds):
+        self.__dict__.update(kwds)
+
+    def __getattr__(self, item):
+        return None
+
+
+@plac.opt("db", "json database that stores the accession numbers")
+@plac.pos("query", "query accession/file to align")
+@plac.pos("target", "target accesion/file to align")
 @plac.opt('start', "start coordinate ", type=int)
 @plac.opt('end', "end coordinate")
 @plac.opt('matrix', "scoring matrix", abbrev='M')
@@ -325,7 +338,7 @@ def print_pairwise(aln, param, index=0, width=90):
 @plac.flg('mutations', "show the mutations")
 @plac.opt('limit', "how many input sequences to take")
 @plac.flg('verbose', "verbose mode, progress messages printed")
-def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
+def run(db='', start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False,
         protein=False, translate=False, inter=False, table=False, mutations=False, strict=False,
         pep1=False, pep3=False, limit=1, verbose=False, target=None, query=None):
     """
@@ -338,52 +351,83 @@ def run(start=1, end='', gap_open=11, gap_extend=1, local_=False, global_=False,
     # Set the verbosity of the process.
     utils.set_verbosity(logger, level=int(verbose))
 
-    # Reset counter (needed for consistency during testing).
-    jsonrec.reset_sequence_names()
-
     # This method requires two inputs.
     if not (query and target):
         utils.error(f"Please specify a TARGET and a QUERY")
 
-    if global_:
-        mode = const.GLOBAL_ALIGN
-    elif local_:
-        mode = const.LOCAL_ALIGN
-    elif semiglobal:
-        mode = const.SEMIGLOBAL_ALIGN
-    else:
-        mode = const.GLOBAL_ALIGN
 
-    # A parameter for each record.
-    common = dict(
+    target_data = query_data = []
+
+
+    # Attempt to read the query as files.
+    if os.path.isfile(target):
+        target_data = jsony.parse_stream(target, type="fasta")
+
+    if os.path.isfile(query):
+        query_data = jsony.parse_stream(query, type="fasta")
+
+
+    # User wants to run a database
+    if db:
+        if not os.path.isfile(db):
+            logger.error(f"database file not found: {db}")
+            sys.exit(1)
+        data = json.load(open(db))
+    else:
+        data = []
+
+    # Interactive input is also possible
+    if not target_data and not db:
+        target_data = jsony.make_jsonrec(target, seqid='A')
+
+    if not query_data and not db:
+        query_data = jsony.make_jsonrec(query, seqid='B')
+
+
+    # Generate the SeqRecords
+    targets = jsony.select_records(target_data)
+    queries = jsony.select_records(query_data)
+
+    if global_:
+        mode = GLOBAL_ALIGN
+    elif local_:
+        mode = LOCAL_ALIGN
+    elif semiglobal:
+        mode = SEMIGLOBAL_ALIGN
+    else:
+        mode = GLOBAL_ALIGN
+
+        # A parameter for each record.
+    param = Param(
         protein=protein, translate=translate, mutations=mutations, pep1=pep1, pep3=pep3,
         table=table, strict=strict, start=start, end=end, gap_open=gap_open, gap_extend=gap_extend,
         mode=mode
     )
 
-    # Create parameters to represent each data.
-    param_t = objects.Param(acc=target, **common)
-    param_q = objects.Param(acc=query, **common)
+    for tseq in targets:
+        for qseq in queries:
 
-    # Fill JSON data for parameters.
-    param_t.json = fetch.get_json(param_t.acc, inter=inter, strict=True)[:limit]
-    param_q.json = fetch.get_json(param_q.acc, inter=inter, strict=True)[:limit]
+            if len(qseq) > MAX_LEN:
+                logger.error(f"query is longer than maximum: {len(qseq):,} > {MAX_LEN:,}")
+                sys.exit(1)
+
+            if len(tseq) > MAX_LEN:
+                logger.error(f"target sequence is longer than maximum: {len(tseq):,} > {MAX_LEN:,}")
+                sys.exit(1)
+
+            biopython_align(qseq=qseq, tseq=tseq, param=param)
+
+    return
 
     # Each data object may contain several records.
     #
     # For more than one record we iterate in pairs
     #
+
     for rec1, rec2 in zip(param_q.json, param_t.json):
         qrecs = fastarec.get_fasta(rec1, param=param_q)
         trecs = fastarec.get_fasta(rec2, param=param_t)
         for qseq, tseq in zip(qrecs, trecs):
-
-            if (len(qseq) > MAX_LEN):
-                utils.error(f"query is longer than maximum: {len(qseq):,} > {MAX_LEN:,}")
-
-            if (len(tseq) > MAX_LEN):
-                utils.error(f"target sequence is longer than maximum: {len(tseq):,} > {MAX_LEN:,}")
-
             biopython_align(qseq=qseq, tseq=tseq, param=param_q)
 
 

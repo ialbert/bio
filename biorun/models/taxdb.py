@@ -26,7 +26,7 @@ SQLITE_DB = join(utils.DATADIR, SQLITE_DB_NAME)
 JSON_DB = join(utils.DATADIR, JSON_DB_NAME)
 
 # Keys into the database
-GRAPH, BACK, TAXID = "GRAPH", "BACK", "TAXID"
+GRAPH, BACK, TAXID = "GRAPH", "BACK", "TAXIDS"
 
 # Indentation character
 INDENT = '  '

@@ -11,7 +11,6 @@ import time
 import logging
 from os.path import expanduser
 from biorun.libs.sqlitedict import SqliteDict
-from biorun import const
 from pprint import pprint
 
 # The path to the current file.
@@ -44,12 +43,23 @@ def time_it(func):
     return timer
 
 
-def maybe_prot(name):
+def alias_dict(fname):
     """
-    Name may be a proteing accession
+    Aliases hard to read accessions to easier to read names:
+    NC_045512  wuhan-hu-1
+    MN996532   raTG13
     """
-    return name[:2] in const.NCBI_PROTEIN_CODES
-
+    if not fname or not os.path.isfile(fname):
+        return dict()
+    stream = open(fname)
+    lines = map(lambda x: x.strip(), stream)
+    lines = filter(lambda x: not x.startswith("#"), lines)
+    lines = filter(None, lines)
+    lines = map(lambda x: x.split(), lines)
+    lines = filter(lambda x: len(x) > 1, lines)
+    pairs = map(lambda x: (x[0].strip(), x[1].strip()), lines)
+    remap = dict(pairs)
+    return remap
 
 def is_int(text):
     try:
@@ -102,13 +112,14 @@ def open_db(table, fname, flag='c'):
     conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
     return conn
 
+CHUNK = 25000
 
 def save_table(name, obj, fname, flg='w'):
     size = len(obj)
     table = open_db(table=name, fname=fname, flag=flg)
     for index, (key, value) in enumerate(obj.items()):
         table[key] = value
-        if index % const.CHUNK == 0:
+        if index % CHUNK == 0:
             perc = round(index / size * 100)
             print(f"*** saving {name} with {size:,} elements ({perc:.0f}%)", end="\r")
             table.commit()
@@ -258,8 +269,8 @@ def safe_int(text):
     try:
         return int(text)
     except ValueError as exc:
-        error(f"not an integer value: {text}")
-
+        logger.error(f"not a valid integer value: {text}")
+        sys.exit()
 
 def parse_number(text):
     """
@@ -268,6 +279,7 @@ def parse_number(text):
     text = str(text)
     text = text.lower()
 
+    # Get rid of commas
     text = text.replace(",", '')
 
     if text.endswith("k") or text.endswith("kb"):
@@ -278,7 +290,7 @@ def parse_number(text):
         value = safe_int(text.split("m")[0])
         text = f"{value * 1000 * 1000}"
 
-    return text
+    return safe_int(text)
 
 
 def save_stream(stream, fname, trigger=10000, file=sys.stderr, flag='wt'):
@@ -336,7 +348,7 @@ def gz_read(fname, flag='rt'):
     return stream
 
 
-def get_logger(name, hnd=None, fmt=None, terminator='\n'):
+def get_logger(name="bio", hnd=None, fmt=None, terminator='\n'):
     """
     Initializes a logger with a handler and formatter.
     """

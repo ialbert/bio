@@ -25,6 +25,7 @@ setup(
         'numpy < 1.20',
         'biopython >= 1.78',
         'requests',
+        'plac',
     ],
 
     entry_points={

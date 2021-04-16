@@ -84,7 +84,6 @@ For many use cases,  the default behavior is plenty fast and can produce family,
 
 Internally, during operation, the software will query the database for each child node. When selecting a rank where the number of descendant nodes is large (over 10,000 nodes) the run time of the independent queries adds up to a substantial overhead.
 
-
 When run like so it will around 6 seconds:
 
     bio regulation --define

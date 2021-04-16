@@ -23,15 +23,15 @@ def print_acc(records):
         print (rec.id)
 
 @plac.opt('minL', "minimum lenght", type=int, abbrev="L")
-@plac.opt('maxN', "maximum number of Ns", type=int, abbrev="N")
+@plac.opt('maxN', "maximum number of Ns", abbrev="N")
+@plac.opt('maxX', "maximum number of Xs", abbrev="X")
 @plac.flg('invert', "invert the action")
 @plac.flg('acc', "print accession numbers only")
-def main(minL=-1, maxN=-1, invert=False, acc=False):
-
+def main(minL=-1, maxN=-1, maxX=-1, invert=False, acc=False):
     # Parse the input string.
     stream = SeqIO.parse(sys.stdin, "fasta")
 
-    # Apply the minimal length filter
+    # Apply the minimal lenght filter
     if minL > -1:
         op1 = operator.lt if invert else operator.ge
         stream = filter(lambda r: op1(len(r.seq), minL), stream)
@@ -40,6 +40,10 @@ def main(minL=-1, maxN=-1, invert=False, acc=False):
     if maxN > -1:
         op2 = operator.gt if invert else operator.le
         stream = filter(lambda r: op2(r.seq.count("N"), maxN), stream)
+
+    if maxX > -1:
+        op2 = operator.gt if invert else operator.le
+        stream = filter(lambda r: op2(r.seq.count("X"), maxX), stream)
 
     # Produce the output
     if acc:

@@ -8,6 +8,38 @@ from biorun import utils, const, fetch, objects
 # Module level logger.
 logger = utils.logger
 
+
+def make_attr(feat, color=None):
+    """
+    Creates GFF style attributes from JSON fields.
+    """
+
+    # The feature name.
+    name = feat['name']
+    uid = feat['id']
+    pid = feat.get("parent_id")
+
+    data = [f"ID={uid}"]
+
+    # Add parent id
+    if pid:
+        data.append(f"Parent={pid}")
+
+    # Add the data name.
+    data.append(f"Name={name}")
+
+    # Fill in all the fields.
+    for key, value in pairs:
+        data.append(f"{key}={value[0]}")
+
+    # Attach a color to the feature.
+    if color:
+        data.append(f"color={color}")
+
+    return ";".join(data)
+
+
+
 def feature2gff(feat, anchor, allow_parent=True):
     """
     Returns a SeqRecord as an 11 element  GFF3 list .
