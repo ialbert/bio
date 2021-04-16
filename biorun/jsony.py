@@ -371,7 +371,11 @@ def feature_records(data, skip=True):
 
 
 def simple_description(f):
-    return f"{f['type']}"
+    desc = f"type={f['type']}"
+    gene = first(f, "gene")
+    if gene:
+        desc = f"{desc} gene={gene}"
+    return desc
 
 
 def protein_records(item):

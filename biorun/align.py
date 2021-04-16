@@ -355,38 +355,34 @@ def run(db='', start=1, end='', gap_open=11, gap_extend=1, local_=False, global_
     if not (query and target):
         utils.error(f"Please specify a TARGET and a QUERY")
 
-
-    target_data = query_data = []
-
-
-    # Attempt to read the query as files.
-    if os.path.isfile(target):
-        target_data = jsony.parse_stream(target, type="fasta")
-
-    if os.path.isfile(query):
-        query_data = jsony.parse_stream(query, type="fasta")
-
-
-    # User wants to run a database
+        # User wants to run a database
     if db:
         if not os.path.isfile(db):
             logger.error(f"database file not found: {db}")
             sys.exit(1)
-        data = json.load(open(db))
+        json_data = json.load(open(db))
     else:
-        data = []
-
-    # Interactive input is also possible
-    if not target_data and not db:
-        target_data = jsony.make_jsonrec(target, seqid='A')
-
-    if not query_data and not db:
-        query_data = jsony.make_jsonrec(query, seqid='B')
+        json_data = {}
 
 
-    # Generate the SeqRecords
-    targets = jsony.select_records(target_data)
-    queries = jsony.select_records(query_data)
+    def get_recs(word, json_data=None, seqid='A'):
+
+        if os.path.isfile(word):
+            data = jsony.parse_stream(word, type="fasta")
+        elif json_data:
+            recs = jsony.select_records(json_data, name=word)
+            if recs:
+                return recs
+        else:
+            data = jsony.make_jsonrec(word, seqid=seqid)
+
+        # Need to apply other filters
+        recs = jsony.select_records(data)
+
+        return recs
+
+    targets = get_recs(target, json_data=json_data, seqid='A')
+    queries = get_recs(query, json_data=json_data, seqid='B')
 
     if global_:
         mode = GLOBAL_ALIGN
@@ -397,7 +393,7 @@ def run(db='', start=1, end='', gap_open=11, gap_extend=1, local_=False, global_
     else:
         mode = GLOBAL_ALIGN
 
-        # A parameter for each record.
+    # A parameter for each record.
     param = Param(
         protein=protein, translate=translate, mutations=mutations, pep1=pep1, pep3=pep3,
         table=table, strict=strict, start=start, end=end, gap_open=gap_open, gap_extend=gap_extend,
@@ -415,7 +411,13 @@ def run(db='', start=1, end='', gap_open=11, gap_extend=1, local_=False, global_
                 logger.error(f"target sequence is longer than maximum: {len(tseq):,} > {MAX_LEN:,}")
                 sys.exit(1)
 
-            biopython_align(qseq=qseq, tseq=tseq, param=param)
+            try:
+                biopython_align(qseq=qseq, tseq=tseq, param=param)
+            except Exception as exc:
+                logger.error(f"{exc}")
+                logger.error(f"target = {tseq.seq[:20]}")
+                logger.error(f"query  = {qseq.seq[:20]}")
+                sys.exit(1)
 
     return
 
