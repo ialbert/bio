@@ -32,7 +32,7 @@ def print_metadata(terms, limit=None):
         lines = get_metadata(term, limit=limit)
         lines = filter(lambda x: x.split(), lines)
         old_header = next(lines)
-        new_header = "host species accession date location isolate ".split()
+        new_header = "species host accession date location isolate ".split()
 
         print("\t".join(new_header))
         for line in lines:
@@ -53,13 +53,13 @@ def get_metadata(taxid, limit=None, complete=True):
         'refseq_only': "false",
         'complete_only': complete_only,
         'table_fields': [
-            'host_tax_id',
             'species_tax_id',
+            'host_tax_id',
             'nucleotide_accession',
             'collection_date',
             'geo_location',
             'isolate_name',
-            'polyprotein_name',
+            'species_name',
         ]
     }
 
