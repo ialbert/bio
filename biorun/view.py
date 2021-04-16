@@ -77,7 +77,5 @@ def run(protein=False, translate=False, transcribe=False, reverse=False,
         gffrec.gff_view(params)
     elif json:
         jsonrec.json_view(params)
-    elif genbank:
-        fetch.genbank_view(params)
     else:
         fastarec.fasta_view(params)

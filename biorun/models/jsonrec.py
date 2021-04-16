@@ -10,8 +10,7 @@ from collections import OrderedDict
 from biorun import utils, const
 from itertools import count
 from collections import defaultdict
-
-from pprint import pprint
+import plac
 import itertools
 
 try:
@@ -27,95 +26,11 @@ except ImportError as exc:
 
 logger = utils.logger
 
-COUNTER = count(1)
-SEQNAME = count(1)
+# Globally generates unqiue counters.
+SEQ_COUNTER = count(1)
 
-# Using this to keep track of unique items that belong to a name.
+# Keeps track of unique items that belong to a name.
 UNIQUE = defaultdict(int)
-
-
-# Allow for resetting the global counter. Needed for keeping test labeled consistenly.
-def reset_counter():
-    global COUNTER, UNIQUE
-    COUNTER = count(1)
-    UNIQUE = defaultdict(int)
-
-
-def reset_sequence_names():
-    global SEQNAME
-    reset_counter()
-
-    # Adds two default sequences.
-    SEQNAME = itertools.chain(["TARGET", "QUERY"], count(1))
-
-
-def has_feature(item, name="gene"):
-    """
-    A filtering function to checks if a record contains keys with a name.
-    """
-    return item.get(name, [''])[0]
-
-
-def filter_features(items, param):
-    """
-    Filters features based on various parameters.
-    """
-
-    # Remove source as a valid feature when not a data record mode.
-    if not param.record:
-        items = filter(lambda f: f.get('type') != 'region', items)
-
-    # Filter by element id.
-    if param.uid:
-        items = filter(lambda f: f.get('id') == param.uid, items)
-
-    # Filter by type.
-    if param.type:
-        valid = set(map(lambda x: x.lower(), param.type.split(",")))
-        valid = set(valid)
-        items = filter(lambda f: f.get('type', '').lower() in valid, items)
-
-    # Filter by gene.
-    if param.gene:
-        items = filter(lambda f: param.gene in f.get("gene", []), items)
-
-    # Filter by name.
-    if param.name:
-        items = filter(lambda f: param.name in f.get("name", []), items)
-
-    # Filter by external attributes.
-    if param.attr_name:
-        items = filter(lambda f: param.attr_value in f.get(param.attr_name, []), items)
-
-    # Filter by coordinates. Applies to record types only.
-    if (param.start or param.end) and param.record:
-        param.end = sys.maxsize if param.end is None else param.end
-        items = filter(lambda f: param.start <= f.get('end') and param.end >= f.get('start'), items)
-
-    # Filters by matching a regular expression
-    if param.regexp:
-        items = filter(lambda f: param.regexp.search(str(f)), items)
-
-    return items
-
-
-def find_taxid(rec):
-    """
-    Attempts to extract the taxonomy id from a record.
-
-    For GenBank files the taxid is the listed in the first feature (the source)
-
-    "db_xref": [
-                "taxon:11191"
-    ],
-
-    """
-    feats = rec.get(const.FEATURES, [])
-    db_xref = feats[0].get("db_xref", []) if feats else []
-    values = [x for x in db_xref if x.startswith("taxon:")]
-    taxids = [x.split(":")[1] for x in values]
-    return taxids
-
 
 def first(item, key, default=""):
     """
@@ -124,13 +39,80 @@ def first(item, key, default=""):
     return item.get(key, [default])[0]
 
 
-def rec_name(f):
+def json_ready(value):
     """
-    Generates a record name from a JSON feature.
+    Serializes elements in containers to a type that can be turned into JSON.
     """
 
-    name = f['name']
-    return name
+    # The type of of the incoming value.
+    curr_type = type(value)
+
+    # Reference types will be dictionaries.
+    if curr_type == Reference:
+        return dict(title=value.title, authors=value.authors, journal=value.journal, pubmed_id=value.pubmed_id)
+
+    # Serialize each element of the list.
+    if curr_type == list:
+        return [json_ready(x) for x in value]
+
+    # Serialize the values of an Ordered dictionary.
+    if curr_type == OrderedDict:
+        return dict((k, json_ready(v)) for (k, v) in value.items())
+
+    return value
+
+def get_next_count(label, ftype):
+    """
+    Counts
+    """
+    global UNIQUE
+    key = f"{label}-{ftype}"
+    UNIQUE[key] += 1
+    return UNIQUE[key]
+
+def fill_name(f):
+    """
+    Attempts to generate an unique id and a parent from a BioPython SeqRecord.
+    Mutates the feature dictionary passed in as parameter.
+    """
+    global UNIQUE
+
+    # Get the type
+    ftype = f['type']
+
+    # Get gene name
+    gene_name = first(f, "gene")
+
+    # Will attempt to fill in the uid from attributes.
+    uid = ''
+
+    # Deal with known types.
+    if ftype == 'gene':
+        name = gene_name or first(f, "locus_tag")
+        uid = name
+    elif ftype == 'CDS':
+        count = get_next_count(ftype=ftype, label=gene_name)
+        prot = first(f, "protein_id") or f"{gene_name}-CDS-{count}"
+        uid = f"{prot}"
+        name = prot
+    elif ftype == 'mRNA':
+        count = get_next_count(ftype=ftype, label=gene_name)
+        uid = first(f, "transcript_id") or f"{gene_name}-mRNA-{count}"
+        name = uid
+    elif ftype == "exon":
+        name = gene_name
+    else:
+        name = first(f, "organism") or first(f, "transcript_id") or None
+        uid = first(f, "transcript_id")
+
+    # Set the unique identifier.
+    f['id'] = uid or f"{ftype}-{next(SEQ_COUNTER)}"
+
+    # Set the feature name.
+    f['name'] = name or ftype
+
+    return f
+
 
 
 def make_attr(feat, color=None):
@@ -172,342 +154,11 @@ def rec_desc(f):
     """
     return make_attr(f)
 
-
-def get_translation_records(item, param):
-    """
-    Yields BioPython SeqRecords for JSON features that do have translations.
-    """
-
-    # All features for the item
-    feats = item[const.FEATURES]
-
-    # Filtering function for translations.
-    has_translation = lambda f: f.get('translation', [''])[0]
-
-    # Features with translation.
-    feats = filter(has_translation, feats)
-
-    # Additional filters that may have been passed.
-    feats = filter_features(feats, param=param)
-
-    # Produce the translation records.
-    for f in feats:
-        # Fetch the translation.
-        trans = first(f, "translation")
-
-        # Create BioPython sequence.
-        seq = Seq(trans)
-
-        # Modify translation.
-        seq, ops = modify_record(seq, param=param)
-
-        # Operations change the description
-        if ops:
-            desc = ", ".join(ops)
-        else:
-            desc = rec_desc(f)
-
-        # Override the sequence id.
-        seqid = param.seqid or rec_name(f)
-
-        # Form the sequence record.
-        rec = SeqRecord(seq, id=seqid, description=desc)
-
-        yield rec
-
-
-def get_json_features(data):
-    """
-    Generates features from data.
-    It will also generate the parent child relationships for hierachical features (mRNA and CDS).
-    """
-
-    feats = data[const.FEATURES]
-
-    counter = count(1)
-
-    for feat in feats:
-
-        # The type of the location
-        ftype = feat['type']
-
-        # The unique id of the feature.
-        feature_id = feat['id']
-
-        # Overriden during hierachical data.
-        location_type = ftype
-
-        # Used for hierachical data.
-        parent_id = None
-
-        gene_id = transcript_id = None
-
-        # Hierarchical data produce a parent feature.
-        if ftype in const.MULTIPART_TYPES:
-
-            # Child nodes will track parent.
-            parent_id = feature_id
-
-            # The GenBank nomenclature does not follow the Sequence Ontology,
-            # CDS and exons are both considered to be part of mRNA.
-            # In our model we re-parent CDS to mRNA_regions.
-
-            # Set the parent/child types.
-            if ftype == 'mRNA':
-                # Keep the mRNA as parent of exons.
-                parent_type, location_type = 'mRNA', 'exon'
-            elif ftype == 'CDS':
-                parent_type, location_type = "mRNA_region", 'CDS'
-
-            else:
-                parent_type, location_type = ftype, 'exon'
-
-            # Figure out the gene and transcripts ids.
-            gene_id = feat.get("locus_tag") or feat.get("gene") or parent_id
-            transcript_id = feat.get("protein_id") or parent_id
-
-            # Copy the attributes
-            parent_feat = dict(feat)
-            parent_feat['type'] = parent_type
-
-            yield parent_feat
-
-        # Generate JSON record for each location separately.
-        for start, end, strand in feat["location"]:
-            loc_feat = dict(feat)
-
-            if parent_id:
-                # Needs a new ID as the parent keeps the original id.
-                loc_feat["id"] = f"{location_type}-{next(counter)}"
-
-                # Assign the parent.
-                loc_feat['parent_id'] = parent_id
-
-                # Add a gene and transcript id attributes.
-                if gene_id:
-                    loc_feat['gene_id'] = gene_id
-                if transcript_id:
-                    loc_feat['transcript_id'] = transcript_id
-
-            loc_feat['type'] = location_type
-            loc_feat['start'], loc_feat['end'], loc_feat['strand'] = start, end, strand
-            yield loc_feat
-
-
-def modify_record(seq, param):
-    """
-    Modifies a sequence record based on parameters.
-    """
-
-    # Shortcuts to coordinates.
-    start, end = param.start, param.end
-
-    # Words are added to description to keep track of operations
-    desc = []
-
-    # Slice the sequence.
-    if start != 0 or end:
-        # Don't exceed sequence length.
-        end = len(seq) if not end else min(end, len(seq))
-        seq = seq[start:end]
-        desc.append(f'[{start + 1}:{end}]')
-
-    try:
-        # Possible sequence transformations.
-        if param.revcomp:
-            seq = seq.reverse_complement()
-            desc.append("reverse-complemented")
-
-        if param.reverse:
-            seq = seq[::-1]
-            desc.append("reversed")
-
-        if param.complement:
-            seq = seq.complement()
-            desc.append("complemented")
-
-        if param.translate:
-            seq = seq.translate()
-            desc.append("translated")
-
-        if param.transcribe:
-            seq = seq.transcribe()
-            desc.append("transcribed DNA")
-
-    except Exception as exc:
-        utils.error(exc)
-
-    return seq, desc
-
-
-def get_feature_records(data, param):
-    """
-    Yields BioPython SeqRecords from JSON data.
-    """
-
-    # The feature generator
-    feats = data[const.FEATURES]
-
-    # Filter the features.
-    feats = filter_features(feats, param=param)
-
-    # We can extract DNA sequences from this if needed.
-    origin = data[const.ORIGIN]
-
-    # Create a SeqRecord from each feature.
-    for f in feats:
-
-        # Concatenate locations
-        locations = f.get("location", [])
-
-        # Build the sequence for the record.
-        dna = Seq('')
-        for x, y, strand in locations:
-            chunk = Seq(origin[x - 1:y])
-            if strand == -1:
-                chunk = chunk.reverse_complement()
-            dna += chunk
-
-        # Alter the Seqrecord by paramters.
-        seq, ops = modify_record(dna, param=param)
-
-        # Operations change the description
-        if ops:
-            desc = " ".join([f['type']] + ops)
-        else:
-            desc = make_attr(f)
-
-        # Build the sequence record.
-        rec = SeqRecord(seq, id=f['id'], description=desc)
-
-        # Sanity check for translation
-        if param.translate:
-            expected = first(f, "translation")
-            # Stop codon is present in the CDS but not in the translation.
-            observed = str(seq)[:-1]
-
-            # Checking for non-standard translations.
-            if expected and expected != observed:
-                logger.info(f"translation mismatch for: {rec.id}")
-
-        yield rec
-
-
-def get_origin(item, param):
-    """
-    Returns the origin sequence from an JSON item
-    """
-    # Get origin sequence.
-    stx = item[const.ORIGIN]
-
-    # Transform to BioPython Sequence.
-    seq = Seq(stx)
-
-    # Alter the Seqrecord by paramters.
-    seq, ops = modify_record(seq, param=param)
-
-    # Operations change the description
-    if ops:
-        desc = " ".join(ops)
-    else:
-        desc = item[const.DEFINITION]
-
-    # Fill additional sequence attributes.
-    seqid = param.seqid or item[const.SEQID]
-    locus = item[const.LOCUS]
-
-    # Build a BioPython sequence record.
-    rec = SeqRecord(seq, id=seqid, name=locus, description=desc)
-
-    # Must be iterable
-    yield rec
-
-
-def json_ready(value):
-    """
-    Serializes elements in containers to a type that can be turned into JSON.
-    """
-
-    # The type of of the incoming value.
-    curr_type = type(value)
-
-    # Reference types will be dictionaries.
-    if curr_type == Reference:
-        return dict(title=value.title, authors=value.authors, journal=value.journal, pubmed_id=value.pubmed_id)
-
-    # Serialize each element of the list.
-    if curr_type == list:
-        return [json_ready(x) for x in value]
-
-    # Serialize the values of an Ordered dictionary.
-    if curr_type == OrderedDict:
-        return dict((k, json_ready(v)) for (k, v) in value.items())
-
-    return value
-
-
-def get_next_count(label, ftype):
-    """
-    Counts
-    """
-    global UNIQUE
-    key = f"{label}-{ftype}"
-    UNIQUE[key] += 1
-    return UNIQUE[key]
-
-
-def fill_name(f):
-    """
-    Attempts to generate an unique id and a parent from a BioPython SeqRecord.
-    Mutates the feature dictionary passed in as parameter.
-    """
-    global UNIQUE
-
-    # Get the type
-    ftype = f['type']
-
-    # Get gene name
-    gene_name = first(f, "gene")
-
-    # Will attempt to fill in the uid from attributes.
-    uid = ''
-
-    # Deal with known types.
-    if ftype == 'gene':
-        name = gene_name or first(f, "locus_tag")
-        uid = name
-    elif ftype == 'CDS':
-        count = get_next_count(ftype=ftype, label=gene_name)
-        prot = first(f, "protein_id") or f"{gene_name}-CDS-{count}"
-        uid = f"{prot}"
-        name = prot
-    elif ftype == 'mRNA':
-        count = get_next_count(ftype=ftype, label=gene_name)
-        uid = first(f, "transcript_id") or f"{gene_name}-mRNA-{count}"
-        name = uid
-    elif ftype == "exon":
-        name = gene_name
-    else:
-        name = first(f, "organism") or first(f, "transcript_id") or None
-        uid = first(f, "transcript_id")
-
-    # Set the unique identifier.
-    f['id'] = uid or f"{ftype}-{next(COUNTER)}"
-
-    # Set the feature name.
-    f['name'] = name or ftype
-
-    return f
-
-
 def convert_genbank(recs, seqid=None):
     """
     Converts BioPython SeqRecords obtained from a GENBANK file to a JSON representation.
     """
-    global COUNTER
-
-    # Start the counter from the one.
-    reset_counter()
+    global SEQ_COUNTER
 
     # The outer dictionary containing multiple records.
     data = []
@@ -595,12 +246,12 @@ def convert_fasta(recs, seqid=None):
         data.append(item)
     return data
 
-
 def make_jsonrec(seq, seqid=None):
     """
     Makes a simple JSON representation for a text
     """
-    name = f"{next(SEQNAME)}"
+    global SEQ_COUNTER
+    name = f"{next(SEQ_COUNTER)}"
     uid = seqid or f"{name}"
     data = []
     item = dict()
@@ -622,60 +273,125 @@ def make_jsonrec(seq, seqid=None):
     return data
 
 
-def json_view(params):
+def origin_records(item):
     """
-    Prints json output to
+    Returns the origin sequence from an JSON item
     """
-    for param in params:
+    # Get origin sequence.
+    text = item[const.ORIGIN]
 
-        # Stop if data was not found.
-        if not param.json:
-            utils.error(f"data not found: {param.acc}")
+    # Transform to BioPython Sequence.
+    seq = Seq(text)
 
-        # Override the sequence ids for every record.
-        if param.seqid:
-            for rec in param.json:
-                rec[const.SEQID] = param.seqid
+    # Additional sequence attributes.
+    seqid = item[const.SEQID]
+    locus = item[const.LOCUS]
+    desc = item.get("definition", "")
 
-        # Produce the a nicely indended JSON representation.
-        text = json.dumps(param.json, indent=4)
-        print(text)
+    # Build a BioPython sequence record.
+    rec = SeqRecord(seq, id=seqid, name=locus, description=desc)
+
+    # Must be iterable
+    yield rec
 
 
-def parse_file(fname, seqid=None):
+def feature_records(data, translate=False):
+    """
+    Yields BioPython SeqRecords from JSON data.
+    """
+
+    # The feature generator
+    feats = data[const.FEATURES]
+
+    # We can extract DNA sequences from this if needed.
+    origin = data[const.ORIGIN]
+
+    # Create a SeqRecord from each feature.
+    for f in feats[1:]:
+
+        ftype = f['type']
+
+        # Skip the origin.
+        if ftype == 'region':
+            continue
+
+        # Concatenate locations
+        locations = f.get("location", [])
+
+        # Build the sequence for the record.
+        dna = Seq('')
+        for x, y, strand in locations:
+            chunk = Seq(origin[x - 1:y])
+            if strand == -1:
+                chunk = chunk.reverse_complement()
+            dna += chunk
+
+        # Generate a simple description.
+        desc = simple_description(f)
+
+        # Build the sequence record.
+        rec = SeqRecord(dna, id=f['id'], description=desc)
+
+        yield rec
+
+
+def simple_description(f):
+    return f"{f['type']}"
+
+def protein_records(item):
+    """
+    Yields BioPython SeqRecords for JSON features that do have protein translations.
+    """
+
+
+    # All features for the item
+    feats = item[const.FEATURES]
+
+    # Filtering function for translations.
+    has_translation = lambda f: f.get('translation', [''])[0]
+
+    # Features with translation.
+    feats = filter(has_translation, feats)
+
+    # Produce the translation records.
+    for f in feats:
+        # Fetch the translation.
+        trans = first(f, "translation")
+
+        # Create BioPython sequence.
+        seq = Seq(trans)
+
+        # Generate a simple description
+        desc = simple_description(f)
+
+        # Form the sequence record.
+        rec = SeqRecord(seq, id=f['id'], description=desc)
+
+        yield rec
+
+
+def parse_stream(stream, type='genbank'):
     """
     Parses a recognized file into a JSON representation
     """
 
-    logger.info(f"parsing {fname}")
-
-    if not os.path.exists(fname):
-        logger.warning(f"File does not exist: {fname}")
-        return
-
-    # Handle both compressed and uncompressed formats.
-    stream = gzip.open(fname, 'rt') if fname.endswith(".gz") else open(fname, 'rt')
-
-    # Detect extentions
-    name, ext = os.path.splitext(fname)
-    ext = ext.lower()
-
-    # Split extension one more time if it looks like a compressed file.
-    if ext == ".gz":
-        name, ext = os.path.splitext(name)
-        ext = ext.lower()
-
-    # Cascade over the known file formats.
-    if ext in (".gb", ".gbk", ".genbank"):
-        recs = SeqIO.parse(stream, format=const.GENBANK)
-        data = convert_genbank(recs, seqid=seqid)
-    elif ext in (".fa", ".fasta"):
+    # Cascade over the known formats.
+    if type=='fasta':
         recs = SeqIO.parse(stream, format=const.FASTA)
-        data = convert_fasta(recs, seqid=seqid)
+        data = convert_fasta(recs)
     else:
-        utils.error(f"file format not recognized: {fname}")
+        recs = SeqIO.parse(stream, format=const.GENBANK)
+        data = convert_genbank(recs)
 
-    return data
+    text = json.dumps(data, indent=4)
+    print(text)
+
+@plac.opt("type_", "input type", choices=["gb", "fasta"])
+def run(type_="gb"):
+    """
+    The main JSON converter.
+    """
+    parse_stream(sys.stdin)
 
 
 if __name__ == "__main__":

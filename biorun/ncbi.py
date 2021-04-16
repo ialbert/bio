@@ -10,6 +10,7 @@ from biorun.libs import xmltodict
 from urllib.parse import urlsplit, urlunsplit
 import json, os, csv, sys
 from biorun import const, utils
+from itertools import *
 
 try:
     from Bio import Entrez
@@ -153,30 +154,7 @@ def download_file(url, dest):
     return
 
 
-def genbank_save(name, fname, db=None):
-    """
-    Connects to Entrez Direct to download data.
-    """
-    # Get the entire GenBank file.
-    format, retmode = "gbwithparts", "text"
 
-    # Guess accession numbers that are proteins.
-    # https: // www.ncbi.nlm.nih.gov / Sequin / acc.html
-
-    if utils.maybe_prot(name):
-        db = db or "protein"
-    else:
-        db = db or "nuccore"
-
-    try:
-        logger.info(f"connecting to Entrez for {name}")
-        stream = Entrez.efetch(id=name, db=db, rettype=format, retmode=retmode)
-    except Exception as exc:
-        msg = f"{exc} for efetch acc={name} db={db} format={format} mode={retmode}"
-        utils.error(msg)
-
-    # Save the stream to GenBank.
-    utils.save_stream(stream=stream, fname=fname)
 
 
 def parse_summary(summary=ASSEMBLY_FILE_NAME):

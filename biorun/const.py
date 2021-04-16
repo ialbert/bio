@@ -26,9 +26,11 @@ GLOBAL_ALIGN, LOCAL_ALIGN, SEMIGLOBAL_ALIGN, STRICT_GLOBAL_ALIGN = "global", "lo
 # module.function, helpflag, descriptin
 SUB_COMMANDS = dict(
     fetch=("biorun.fetch.run", True, "downloads data from repositories"),
-    manage=("biorun.fetch.manage", False, "list/delete downloaded data"),
-    view=("biorun.view.run", True, "converts data to various formats"),
-    align=("biorun.methods.align.run", True, "performs sequence alignments"),
+    json=("biorun.models.jsonrec.run", False, "converts GenBank to JSON format"),
+    fasta=("biorun.models.fastarec.run", False, "converts JSON to FASTA format"),
+
+    #view=("biorun.view.run", True, "converts data to various formats"),
+    #align=("biorun.methods.align.run", True, "performs sequence alignments"),
     taxon=("biorun.models.taxdb.run", False, "displays NCBI taxonomies"),
     define=("biorun.models.ontology.run", False, "explains biological terms"),
     meta=("biorun.models.meta.run", False, "fetches metadata from NCBI"),

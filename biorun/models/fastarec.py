@@ -2,62 +2,60 @@
 Handles FASTA related outputs
 """
 
-import biorun.libs.placlib as plac
+import sys, json
+import plac
 from biorun.models import jsonrec
-from biorun import utils, const, fetch, objects
+from biorun import utils, const
 
 logger = utils.logger
 
 
-def get_fasta(item, param):
+def get_records(item, features=False, proteins=False, translate=False):
     """
-    Returns a fasta seqrecord for a JSON item.
+    Selects the source of the records.
     """
 
-    # Ignore translation warnings when the sequence in not a multiple of 3.
-    if param.translate:
-        import warnings
-        from Bio import BiopythonWarning
-        warnings.simplefilter('ignore', BiopythonWarning)
+    # Produce the origin by default
+    origin = not(features or proteins or translate)
 
-    if param.inter:
-        # Interactive mode returns the origin.
-        recs = jsonrec.get_origin(item, param=param)
-    elif param.protein:
-        recs = jsonrec.get_translation_records(item, param=param)
-    elif param.features:
-        recs = jsonrec.get_feature_records(item, param=param)
+    if origin:
+        recs = jsonrec.origin_records(item)
+    elif proteins:
+        recs = jsonrec.protein_records(item)
+    elif features:
+        recs = jsonrec.feature_records(item)
     else:
-        recs = jsonrec.get_origin(item, param=param)
+        recs = []
+
+    # Apply the translation here.
+    if translate:
+        pass
+        #def func(f):
+        #    expected = first(f, "translation")
+        #    # Stop codon is present in the CDS but not in the translation.
+        #    observed = str(dna)[:-1]
+        #
+        #    # Checking for non-standard translations.
+        #    if expected and expected != observed:
+        #        logger.info(f"translation mismatch for: {rec.id}")
 
     return recs
 
-
-def print_fasta(recs):
-    """
-    Prints fasta records
-    """
-    for rec in recs:
-        print(rec.format("fasta"))
-
-
-def fasta_view(params):
+@plac.flg("features", "convert the features")
+@plac.flg("proteins", "extract embedded protein sequences")
+@plac.flg("translate", "translate DNA sequences")
+def run(features=False, proteins=False, translate=False):
     """
     Converts data to fastya
     """
 
-    for param in params:
+    data = json.loads(sys.stdin.read())
 
-        # Stop when data was not found.
-        if not param.json:
-            utils.error(f"data not found: {param.acc}")
+    for item in data:
 
-        # Each data may have multiple entries.
-        for item in param.json:
+        recs = get_records(item, features=features, proteins=proteins, translate=translate)
 
-            # Get the fasta for each entry.
-            recs = get_fasta(item, param=param)
+        for rec in recs:
+            print(rec.format("fasta"), end='')
 
-            # Print the fasta records.
-            print_fasta(recs)
 
