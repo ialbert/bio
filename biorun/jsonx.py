@@ -428,6 +428,56 @@ def parse_stream(stream, type='genbank', remap={}):
     return data
 
 
+def select_features(data, start=0, end=0, ftype=None, seqid=None, name=None, gene=None, match=None):
+    """
+    Selects features with certain properties
+    """
+    for item in data:
+
+        seqid = item['id']
+
+        # Overriden for hierachical data.
+        #location_type = ftype
+
+        #parent_id = gene_id = transcript_id = None
+        features = item[FEATURE_LIST]
+
+        for feat in features:
+
+            feat_id = feat['id']
+            feat_type = feat['type']
+
+            locations = feat["location"]
+            size = len(locations)
+            # Deal with multilevel locations
+            if feat_type == "mRNA" or feat_type == "CDS":
+
+                transcript_id = feat.get("transcript_id") or [ feat_id ]
+                gene_id = feat.get("locus_tag") or feat.get("gene") or [ feat_id ]
+
+                if feat_type == "mRNA":
+                    child_type = "exon"
+                    yield seqid, feat
+                else:
+                    child_type = "CDS"
+
+                counter = count(1)
+
+                for start, end, strand in locations:
+                    uid = f"{child_type}-{feat_id}-{next(counter)}"
+                    entry = dict(parent_id=feat_id, type=child_type, strand=strand,
+                                 start=start, end=end, name=uid, id=uid,
+                                 transcript_id=transcript_id, gene_id=gene_id)
+
+                    yield seqid, entry
+            elif size > 1:
+                for start, end, strand in locations:
+                    entry = dict(feat)
+                    entry['parent_id'] = feat_id
+                    entry['start'], entry['end'], entry['strand'] = start, end, strand
+                    yield seqid, entry
+            else:
+                yield seqid, feat
 
 def select_records(data, features=False, proteins=False,
                    translate=False, start=0, end=0, ftype=None, seqid=None, name=None, gene=None, match=None):

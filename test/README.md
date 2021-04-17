@@ -12,6 +12,18 @@ Another Ebola (2014):
 
     time bio KJ660346 --fetch --rename ebola14
 
+# Transcript 
+/transcript_id="NM_164349.3"
+/db_xref="FLYBASE:FBtr0078171"
+/db_xref="GeneID:33156"
+/db_xref="FLYBASE:FBgn0002121"
+
+# Protein
+/protein_id="NP_722583.1"
+/db_xref="FLYBASE:FBpp0077824"
+/db_xref="GeneID:33156"
+/db_xref="FLYBASE:FBgn0002121"
+
 Bacteria, Escherichia coli: NC_002695 (2 minutes, 10MB)
 
     time bio NC_002695 --fetch -v 

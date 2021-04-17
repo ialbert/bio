@@ -6,7 +6,7 @@ import json
 import sys
 
 import plac
-from biorun import jsony
+from biorun import jsonx
 from biorun import utils
 
 logger = utils.logger
@@ -36,7 +36,7 @@ def run(features=False, proteins=False, translate=False,
     ftype = type_
     seqid = id_
 
-    recs = jsony.select_records(data, features=features,
+    recs = jsonx.select_records(data, features=features,
                                 proteins=proteins, translate=translate,
                                 start=start, end=end, ftype=ftype, seqid=seqid, name=name, gene=gene)
 

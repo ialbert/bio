@@ -17,9 +17,10 @@ logger = utils.logger
 # name = (module.function, auto_help, command_help)
 #
 SUB_COMMANDS = dict(
-    fetch=("biorun.fetch.run", True, "downloads data from repositories"),
-    json=("biorun.jsony.run", False, "converts GenBank to JSON format"),
+    fetch=("biorun.fetch.run", True, "downloads GenBank data from NCBI"),
+    json=("biorun.jsonx.run", False, "converts GenBank to JSON format"),
     fasta=("biorun.fasta.run", False, "converts JSON to FASTA format"),
+    gff=("biorun.gff.run", False, "converts JSON to GFF format"),
     meta=("biorun.meta.run", False, "fetches metadata from NCBI"),
     align=("biorun.align.run", True, "performs sequence alignments"),
 

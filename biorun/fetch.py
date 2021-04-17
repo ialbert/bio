@@ -34,7 +34,7 @@ def ncbi_efetch(ids, db, rettype='gbwithparths', retmode='text', quiet=False):
     # Guess accession numbers that are proteins.
     # https: // www.ncbi.nlm.nih.gov /Sequin /acc.html
 
-    size = 10000
+    size = 2000
 
     idtext = ",".join(ids)
 

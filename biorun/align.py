@@ -4,7 +4,7 @@ import sys
 import textwrap
 
 import biorun.libs.placlib as plac
-from biorun import jsony
+from biorun import jsonx
 from biorun import utils
 
 try:
@@ -368,16 +368,16 @@ def run(db='', start=1, end='', gap_open=11, gap_extend=1, local_=False, global_
     def get_recs(word, json_data=None, seqid='A'):
 
         if os.path.isfile(word):
-            data = jsony.parse_stream(word, type="fasta")
+            data = jsonx.parse_stream(word, type="fasta")
         elif json_data:
-            recs = jsony.select_records(json_data, name=word)
+            recs = jsonx.select_records(json_data, name=word)
             if recs:
                 return recs
         else:
-            data = jsony.make_jsonrec(word, seqid=seqid)
+            data = jsonx.make_jsonrec(word, seqid=seqid)
 
         # Need to apply other filters
-        recs = jsony.select_records(data)
+        recs = jsonx.select_records(data)
 
         return recs
 
