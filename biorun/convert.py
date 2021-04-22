@@ -85,7 +85,7 @@ def read_input(fname, store=None, interactive=False):
 @plac.flg("proteins", "operate on the protein sequences", abbrev='P')
 @plac.flg("translate", "translate DNA sequences", abbrev='R')
 def run(features=False, proteins=False, translate=False, gff_=False, fasta_=False,
-        start='0', end='0', type_='', id_='', name='', gene='', *fnames):
+        start='1', end=None, type_='', id_='', name='', gene='', *fnames):
     """
     Convert data to various formats
     """
@@ -111,11 +111,20 @@ def run(features=False, proteins=False, translate=False, gff_=False, fasta_=Fals
         rec.id = ALIAS.get(rec.id, rec.id)
         return rec
 
+    def slicer(rec):
+        if start or end:
+            startx = start - 1
+            endx = end if end else len(rec.seq)
+            rec.description = f"{rec.description} [{start+1}:{endx}]"
+            rec.seq = rec.seq[startx:end]
+        return rec
+
     formatter = fasta_formatter
 
     for fname in fnames:
         recs = read_input(fname, interactive=False)
         recs = map(remapper, recs)
+        recs = map(slicer, recs)
         for rec in recs:
             formatter(rec)
 
