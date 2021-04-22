@@ -18,6 +18,7 @@ logger = utils.logger
 #
 SUB_COMMANDS = dict(
     fetch=("biorun.fetch.run", True, "downloads GenBank data from NCBI"),
+    convert=("biorun.convert.run", True, "performs data conversion"),
     json=("biorun.jsonx.run", False, "converts GenBank to JSON format"),
     fasta=("biorun.fasta.run", False, "converts JSON to FASTA format"),
     gff=("biorun.gff.run", False, "converts JSON to GFF format"),
@@ -111,7 +112,7 @@ def router():
     cmd = sys.argv[1]
 
     # Maintain compatibility with a prior use case (convert == view).
-    cmd = "view" if cmd == "convert" else cmd
+    cmd = "convert" if cmd == "view" else cmd
 
     # Raise an error is not a valid subcommand.
     if cmd not in SUB_COMMANDS:

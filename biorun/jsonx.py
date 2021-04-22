@@ -5,12 +5,12 @@ There is functionality to convert from SeqRecord to JSON and back.
 
 Storing data as JSON instead of FASTA or GENBANK allows for much faster processing.
 """
-import json
-import sys
+import sys, os, json, gzip, pathlib
 from collections import OrderedDict
 from collections import defaultdict
 from functools import partial
 from itertools import count
+from biorun.alias import ALIAS
 
 import plac
 from biorun import utils, reclib
@@ -184,7 +184,7 @@ def convert_genbank(recs, remap={}):
         item = dict()
 
         # Fill the standard SeqRecord fields.
-        item[ID] = remap.get(rec.name) or rec.id
+        item[ID] = ALIAS.get(rec.id, rec.id)
         item[ACCESSION] = rec.id
         item[DEFINITION] = rec.description
         item[DBLINK] = rec.dbxrefs
@@ -227,7 +227,6 @@ def convert_genbank(recs, remap={}):
             for (k, v) in feat.qualifiers.items():
                 attrs[k] = json_ready(v)
 
-
             feat = fill_name(attrs, seqid=item[ID])
 
             # Append the attributes as a record.
@@ -246,6 +245,7 @@ def convert_genbank(recs, remap={}):
         data.append(item)
 
     return data
+
 
 def convert_fasta(recs, remap={}):
     """
@@ -313,16 +313,6 @@ def origin_records(item):
 
     # Must be iterable
     yield rec
-
-
-# def func(f):
-#    expected = first(f, "translation")
-#    # Stop codon is present in the CDS but not in the translation.
-#    observed = str(dna)[:-1]
-#
-#    # Checking for non-standard translations.
-#    if expected and expected != observed:
-#        logger.info(f"translation mismatch for: {rec.id}")
 
 
 def feature_records(data, skip=True):
@@ -434,13 +424,17 @@ def select_features(data, start=0, end=0, ftype=None, seqid=None, name=None, gen
     """
     for item in data:
 
-        seqid = item['id']
+        itemid = item['id']
 
-        # Overriden for hierachical data.
-        #location_type = ftype
-
-        #parent_id = gene_id = transcript_id = None
+        # parent_id = gene_id = transcript_id = None
         features = item[FEATURE_LIST]
+
+        if ftype:
+            features = filter(lambda x: x['type'] == ftype, features)
+
+        if seqid:
+            if itemid != seqid:
+                continue
 
         for feat in features:
 
@@ -452,12 +446,12 @@ def select_features(data, start=0, end=0, ftype=None, seqid=None, name=None, gen
             # Deal with multilevel locations
             if feat_type == "mRNA" or feat_type == "CDS":
 
-                transcript_id = feat.get("transcript_id") or [ feat_id ]
-                gene_id = feat.get("locus_tag") or feat.get("gene") or [ feat_id ]
+                transcript_id = feat.get("transcript_id") or [feat_id]
+                gene_id = feat.get("locus_tag") or feat.get("gene") or [feat_id]
 
                 if feat_type == "mRNA":
                     child_type = "exon"
-                    yield seqid, feat
+                    yield itemid, feat
                 else:
                     child_type = "CDS"
 
@@ -469,15 +463,16 @@ def select_features(data, start=0, end=0, ftype=None, seqid=None, name=None, gen
                                  start=start, end=end, name=uid, id=uid,
                                  transcript_id=transcript_id, gene_id=gene_id)
 
-                    yield seqid, entry
+                    yield itemid, entry
             elif size > 1:
                 for start, end, strand in locations:
                     entry = dict(feat)
                     entry['parent_id'] = feat_id
                     entry['start'], entry['end'], entry['strand'] = start, end, strand
-                    yield seqid, entry
+                    yield itemid, entry
             else:
-                yield seqid, feat
+                yield itemid, feat
+
 
 def select_records(data, features=False, proteins=False,
                    translate=False, start=0, end=0, ftype=None, seqid=None, name=None, gene=None, match=None):
@@ -486,6 +481,7 @@ def select_records(data, features=False, proteins=False,
     """
 
     for item in data:
+
         # Turn on features when selecting for types
         features = True if (ftype or seqid or name or gene) else features
 
@@ -498,7 +494,6 @@ def select_records(data, features=False, proteins=False,
             recs = feature_records(item, skip=skip)
         else:
             recs = origin_records(item)
-
 
         # Filter for a name
         func_gene = partial(reclib.filter_gene, gene=gene)
@@ -539,7 +534,8 @@ def run(type_="gb", alias=''):
     remap = utils.alias_dict(fname=alias)
     data = parse_stream(sys.stdin, remap=remap)
     text = json.dumps(data, indent=4)
-    print (text)
+    print(text)
+
 
 if __name__ == "__main__":
     import doctest

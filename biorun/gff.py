@@ -1,8 +1,6 @@
 """
 Generates GFF outputs from a JSON record.
 """
-import sys, json
-import biorun.libs.placlib as plac
 from biorun import utils, jsonx
 from urllib.parse import  quote
 
@@ -104,35 +102,5 @@ def feature2gff(feat, seqid):
 
     yield data
 
-@plac.flg("features", "convert the features")
-@plac.opt("start", "start coordinate")
-@plac.opt("end", "end coordinate")
-@plac.opt("type_", "filter for a feature type")
-@plac.opt("id_", "filter for a sequence id")
-@plac.opt("name", "filter for a sequence name")
-@plac.opt("gene", "filter for a gene name")
-@plac.flg("proteins", "extract embedded protein sequences")
-@plac.flg("translate", "translate DNA sequences", abbrev='R')
-def run(features=False, proteins=False, translate=False,
-        start='0', end='0', type_='', id_='', name='', gene=''):
-    """
-    Converts data to fastyaq
-    """
 
-    # Load the data
-    data = json.loads(sys.stdin.read())
-
-    # Parse start and end into user friendly numbers.
-    start = utils.parse_number(start)
-    end = utils.parse_number(end)
-    ftype = type_
-    seqid = id_
-
-    feats = jsonx.select_features(data)
-
-    print("##gff-version 3")
-    for seqid, feat in feats:
-        for values in feature2gff(feat, seqid=seqid):
-            values = map(str, values)
-            print("\t".join(values))
 

@@ -36,21 +36,13 @@ The software is also used to demonstrate and teach bioinformatics and is the com
 
 ## Quickstart
 
-Suppose you wanted to align the sequences of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`). Here is how it would work with `bio`.
-
-### 1. Fetch data
+Suppose you wanted to align the sequences of the S gene of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`). Even when we do have access to high performance alignment software, extracting and manipulating the data can be suprisingly tedious. Here is how `bio` would help with the process.
 
 First we download the data so that `bio` can operate on it. The step needs to be done only once:
 
-```{bash, child='code/index-fetch.txt'}
+```{bash, child='code/index-demo.txt'}
 ```
 
-### 2. Align the genomes
-
-Now align the sequences (showing just 60bp for brevity).
-
-```{bash, child='code/index-align.txt'}
-```
 
 ## Data conversion
 
