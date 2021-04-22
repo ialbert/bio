@@ -133,9 +133,10 @@ class Record:
     """
     SOURCE = "source"
 
-    def __init__(self, rec, feat, ftype, start, end, strand, annot={}, attrs=None):
+    def __init__(self, rec, seqid, feat, ftype, start, end, strand, annot={}, attrs=None):
         # The original object
         self.obj = rec
+        self.seqid = ALIAS.get(seqid, seqid)
         self.feat = feat
         self.attrs = attrs
         self.type = SEQUENCE_ONTOLOGY.get(ftype, ftype)
@@ -150,7 +151,6 @@ class Record:
 
         # Store the locations.
         self.locations = [(loc.start, loc.end, loc.strand) for loc in self.feat.location.parts]
-
 
 def get_records(recs):
     """
@@ -175,7 +175,7 @@ def get_records(recs):
             # Create an id, name and descriptions
             uid, name, desc = guess_name(ftype=ftype, annot=annot)
 
-            # Source objects need to be filled
+            # Source objects need to be matched to top level annotations
             if ftype == Record.SOURCE:
                 uid = obj.id
                 name = obj.name
@@ -183,11 +183,15 @@ def get_records(recs):
                 pairs = [(k, json_ready(v)) for (k, v) in obj.annotations.items()]
                 annot.update(pairs)
 
+            # Remap the uid
+            uid = ALIAS.get(uid, uid)
+
             # Create the sequence record.
             rec = SeqRecord(seq=seq, name=name, description=desc, id=uid)
 
             # A Wrapper object that mixes Seqrecord and Features
-            out = Record(rec=rec, feat=feat, annot=annot, ftype=ftype, strand=feat.strand, start=start, end=end)
+            out = Record(rec=rec, feat=feat, seqid=obj.id, annot=annot, ftype=ftype, strand=feat.strand, start=start,
+                         end=end)
 
             yield out
 
@@ -268,8 +272,32 @@ def sequence_slicer(start=0, end=None):
 
 
 def type_selector(ftype):
+    types = set(ftype.split(","))
     def func(rec):
-        return rec.type == ftype if ftype else True
+        return rec.type in types if ftype else True
+
+    return func
+
+
+def gene_selector(name):
+    genes = set(name.split(","))
+    def func(rec):
+        return first(rec.annot, "gene") in genes if name else True
+
+    return func
+
+def name_selector(name):
+    names = set(name.split(","))
+    def func(rec):
+        return rec.id in names if name else True
+
+    return func
+
+
+def seqid_selector(seqid):
+    targets = set(seqid.split(","))
+    def func(rec):
+        return rec.seqid in targets if seqid else True
 
     return func
 
@@ -283,13 +311,16 @@ def translate_recs(flag):
 
     return func
 
-def source_filter(keep):
+
+def feature_filter(flag):
     def func(rec):
-        if keep:
-            return rec.type == Record.SOURCE
-        else:
+        if flag:
             return rec.type != Record.SOURCE
+        else:
+            return rec.type == Record.SOURCE
+
     return func
+
 
 def protein_filter(rec):
     return "translation" in rec.annot
@@ -318,6 +349,12 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     Convert data to various formats
     """
 
+    # When to generate features
+    features = features or (type_ or gene or translate or name)
+
+    # Turn type to CDS if gene is selected
+    type_ = 'CDS' if gene else type_
+
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)
 
@@ -329,25 +366,11 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     ftype = type_
     seqid = id_
 
-    elems = seqid.split(":")
-    if len(elems) == 2:
-        seqid, gene = elems
-        ftype = "CDS"
-
     # Default format is fasta if nothing is specified.
     fasta_ = False if (gff_ and not fasta_) else True
 
     # Select the formatter.
     formatter = fasta_formatter
-
-    # Slice the sequences
-    slicer = sequence_slicer(start=start, end=end)
-
-    # Type selector
-    typer = type_selector(type_)
-
-    # Translates the sequences
-    translator = translate_recs(translate)
 
     # Handle each input separately.
     for fname in fnames:
@@ -355,9 +378,20 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
         # Produces the input as a record generator.
         recs = read_input(fname, interactive=False)
 
+        # Remap aliases/
+        recs = map(remapper, recs)
+
+        # Filter by sequence name
+        recs = filter(name_selector(name), recs)
+
         # Should we keep the source
-        keep_source = not features
-        recs = filter(source_filter(keep_source), recs)
+        recs = filter(feature_filter(features), recs)
+
+        # Filters gene and CDS
+        recs = filter(gene_selector(gene), recs)
+
+        # Filter by seqid
+        recs = filter(seqid_selector(seqid), recs)
 
         # Extract proteins.
         if protein:
@@ -365,10 +399,9 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
             recs = map(protein_extract, recs)
 
         # Apply additonal filters.
-        recs = filter(typer, recs)
-        recs = map(remapper, recs)
-        recs = map(slicer, recs)
-        recs = map(translator, recs)
+        recs = filter(type_selector(ftype), recs)
+        recs = map(sequence_slicer(start=start, end=end), recs)
+        recs = map(translate_recs(translate), recs)
 
         # Display the results.
         for rec in recs:
