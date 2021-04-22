@@ -84,16 +84,13 @@ def next_count(ftype):
     return f'{ftype}-{UNIQUE[ftype]}'
 
 
-def guess_name(ftype, annot, seqid=''):
+def guess_name(ftype, annot):
     """
     Attempts to generate an unique id name for a BioPython feature
     """
     uid = desc = ''
 
-    if ftype == 'source':
-        name = seqid.split(".")[0]
-        uid = seqid
-    elif ftype == 'gene':
+    if ftype == 'gene':
         name = first(annot, "gene")
         desc = first(annot, "locus_tag")
     elif ftype == 'CDS':
@@ -125,6 +122,7 @@ class RecAttrs:
         self.id = obj.id
         self.name = obj.name
         self.seq = obj.seq
+        self.title = obj.description
         pairs = [(k, json_ready(v)) for (k, v) in self.obj.annotations.items()]
         self.annot = dict(pairs)
 
@@ -144,6 +142,7 @@ class Record:
         self.id = rec.id
         self.name = rec.name
         self.title = rec.description
+
         self.start, self.end, self.strand = start, end, strand
 
         # Fill the annotations
@@ -158,32 +157,39 @@ def get_records(recs):
     Returns sequence features
     """
     for obj in recs:
-        attrs = RecAttrs(obj=obj)
 
         for feat in obj.features:
             # Normalize the feature type.
             ftype = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
 
             # Sequence for this feature
-            seq = feat.extract(attrs.seq)
+            seq = feat.extract(obj.seq)
 
             # The start/end locations
             start, end = int(feat.location.start), int(feat.location.end)
 
             # Qualifiers are transformed into annotations.
-            annot = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
-            annot = dict(annot)
+            pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
+            annot = dict(pairs)
 
             # Create an id, name and descriptions
-            uid, name, desc = guess_name(ftype=ftype, annot=annot, seqid=attrs.id)
+            uid, name, desc = guess_name(ftype=ftype, annot=annot)
 
-            # Create the new seqrecord.
-            new = SeqRecord(seq=seq, name=name, description=desc, id=uid)
+            # Source objects need to be filled
+            if ftype == Record.SOURCE:
+                uid = obj.id
+                name = obj.name
+                desc = obj.description
+                pairs = [(k, json_ready(v)) for (k, v) in obj.annotations.items()]
+                annot.update(pairs)
 
-            # The Record that represent all information.
-            rec = Record(rec=new, feat=feat, annot=annot, ftype=ftype, strand=feat.strand, start=start, end=end, attrs=attrs)
+            # Create the sequence record.
+            rec = SeqRecord(seq=seq, name=name, description=desc, id=uid)
 
-            yield rec
+            # A Wrapper object that mixes Seqrecord and Features
+            out = Record(rec=rec, feat=feat, annot=annot, ftype=ftype, strand=feat.strand, start=start, end=end)
+
+            yield out
 
 
 def parse(fname):
@@ -277,6 +283,13 @@ def translate_recs(flag):
 
     return func
 
+def source_filter(keep):
+    def func(rec):
+        if keep:
+            return rec.type == Record.SOURCE
+        else:
+            return rec.type != Record.SOURCE
+    return func
 
 def protein_filter(rec):
     return "translation" in rec.annot
@@ -324,6 +337,7 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     # Default format is fasta if nothing is specified.
     fasta_ = False if (gff_ and not fasta_) else True
 
+    # Select the formatter.
     formatter = fasta_formatter
 
     # Slice the sequences
@@ -335,20 +349,28 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     # Translates the sequences
     translator = translate_recs(translate)
 
+    # Handle each input separately.
     for fname in fnames:
+
+        # Produces the input as a record generator.
         recs = read_input(fname, interactive=False)
 
+        # Should we keep the source
+        keep_source = not features
+        recs = filter(source_filter(keep_source), recs)
+
+        # Extract proteins.
         if protein:
             recs = filter(protein_filter, recs)
             recs = map(protein_extract, recs)
 
+        # Apply additonal filters.
         recs = filter(typer, recs)
         recs = map(remapper, recs)
         recs = map(slicer, recs)
         recs = map(translator, recs)
 
-
-
+        # Display the results.
         for rec in recs:
             formatter(rec)
 
