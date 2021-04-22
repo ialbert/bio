@@ -3,65 +3,68 @@ Converts across formats
 """
 import sys, json, os, pathlib, gzip
 import biorun.libs.placlib as plac
-from biorun import utils, jsonx, reclib, gff
+from biorun import utils
+from biorun.alias import ALIAS
 from functools import partial
 
 # Module level logger.
 logger = utils.logger
 
-def is_type(fname, ext=[]):
-    path = pathlib.Path(fname)
-    expect = set(x.lower() for x in ext)
-    found = set(x.lower().strip(".") for x in path.suffixes)
-    if (found & expect):
-        return True
+try:
+    from Bio import SeqIO
+    from Bio.Seq import Seq
+    from Bio.SeqRecord import SeqRecord
+    from Bio.SeqFeature import Reference, CompoundLocation, FeatureLocation
+except ImportError as exc:
+    logger.error(f"{__name__}", stop=False)
+    logger.error(f"{exc}", stop=False)
+    logger.error(f"This software requires biopython.")
+    logger.error(f"Try: conda install biopython>=1.78")
+    sys.exit()
 
-    return False
+def is_fasta(fname):
+    exts = "fa fasta fa.gz fasta.gz".split()
+    found = filter(lambda x:fname.endswith(x), exts)
+    return any(found)
 
+def is_genbank(fname):
+    exts = "gb gb.gz genbank genbank.gz gpff gpff.gz".split()
+    found = filter(lambda x:fname.endswith(x), exts)
+    return any(found)
 
-def read_file(fname):
+def parse(fname):
     """
-    Returns a JSON representation from a file.
+    Parses a filename with the appropriate readers.
     """
     stream = gzip.open(fname) if fname.endswith("gz") else open(fname)
-    if is_type(fname, ext=["json"]):
-        data = json.load(stream)
-    elif is_type(fname, ext=["fa", "fasta"]):
-        data = jsonx.parse_stream(stream, type="fasta")
-    elif is_type(fname, ext=["gb", "genbank", "gpff"]):
-        data = jsonx.parse_stream(stream, type="genbank")
+    if is_fasta(fname):
+        recs = SeqIO.parse(stream, format="fasta")
+    elif is_genbank(fname):
+        recs = SeqIO.parse(stream, format="genbank")
     else:
         logger.error(f"file extension not recognized: {fname}")
         sys.exit()
-    return data
 
+    return recs
 
-def read_inputs(fname, store=None, interactive=False):
+def make_record(text, seqid=1, locus="", desc=""):
+    seq = Seq(text)
+    rec = SeqRecord(seq=seq, id=seqid, name=locus, description=desc)
+    return rec
+
+def read_input(fname, store=None, interactive=False):
     """
     Attempts load the correct input.
-
-    Priorities:
-
-    1. file loaded first
-    2. then database
-
-
     """
 
     # Item is a valid file.
     if os.path.isfile(fname):
-        data = read_file(fname)
+        data = parse(fname)
         return data
-
-    # Try to load a database
-    if store:
-        items = [item for item in store if item['id'] == fname]
-        if items:
-            return items
 
     # Generate an interactive data.
     if interactive:
-        data = jsonx.make_jsonrec(fname)
+        data = make_record(text=fname)
         return data
 
     # Invalid data.
@@ -71,7 +74,6 @@ def read_inputs(fname, store=None, interactive=False):
 
 @plac.pos("data", "input data")
 @plac.flg("features", "convert the features", abbrev='F')
-@plac.flg("json_", "convert to json")
 @plac.flg("fasta_", "convert to fasta")
 @plac.flg("gff_", "convert to gff")
 @plac.opt("start", "start coordinate")
@@ -82,7 +84,7 @@ def read_inputs(fname, store=None, interactive=False):
 @plac.opt("gene", "filter for a gene name", abbrev='G')
 @plac.flg("proteins", "operate on the protein sequences", abbrev='P')
 @plac.flg("translate", "translate DNA sequences", abbrev='R')
-def run(features=False, proteins=False, translate=False, json_=False, gff_=False, fasta_=False,
+def run(features=False, proteins=False, translate=False, gff_=False, fasta_=False,
         start='0', end='0', type_='', id_='', name='', gene='', *fnames):
     """
     Convert data to various formats
@@ -99,22 +101,33 @@ def run(features=False, proteins=False, translate=False, json_=False, gff_=False
         seqid, gene = elems
         ftype = "CDS"
 
-
     # Default format is fasta if nothing is specified.
-    fasta_ = False if ((json_ or gff_) and not fasta_) else True
+    fasta_ = False if (gff_ and not fasta_) else True
 
-    # File remapper.
-    reader = partial(read_inputs, interactive=False)
+    def fasta_formatter(rec, start=None, end=None):
+        print(rec.format("fasta"), end='')
 
-    # Generate the input data.
-    inputs = map(reader, fnames)
+    def remapper(rec):
+        rec.id = ALIAS.get(rec.id, rec.id)
+        return rec
 
-    for data in inputs:
+    formatter = fasta_formatter
+
+    for fname in fnames:
+        recs = read_input(fname, interactive=False)
+        recs = map(remapper, recs)
+        for rec in recs:
+            formatter(rec)
+
+    sys.exit()
+
+    '''
+    for datreca in inputs:
         if fasta_:
             recs = jsonx.select_records(data, features=features, proteins=proteins, translate=translate,
                                         start=start, end=end, ftype=ftype, seqid=seqid, name=name, gene=gene)
             for rec in recs:
-                print(rec.format("fasta"), end='')
+
 
         elif gff_:
             feats = jsonx.select_features(data, start=start, end=end, ftype=ftype, seqid=seqid, name=name, gene=gene)
@@ -128,3 +141,4 @@ def run(features=False, proteins=False, translate=False, json_=False, gff_=False
         elif json_:
             text = json.dumps(list(data), indent=4)
             print(text)
+    '''
