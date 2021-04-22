@@ -10,7 +10,6 @@ from biorun import utils
 # Module level logger
 logger = utils.logger
 
-
 #
 # Valid subcommands:
 #
@@ -19,18 +18,14 @@ logger = utils.logger
 SUB_COMMANDS = dict(
     fetch=("biorun.fetch.run", True, "downloads GenBank data from NCBI"),
     convert=("biorun.convert.run", True, "performs data conversion"),
-    json=("biorun.jsonx.run", False, "converts GenBank to JSON format"),
-    fasta=("biorun.fasta.run", False, "converts JSON to FASTA format"),
-    gff=("biorun.gff.run", False, "converts JSON to GFF format"),
-    meta=("biorun.meta.run", False, "fetches metadata from NCBI"),
-    align=("biorun.align.run", True, "performs sequence alignments"),
+
+    # meta=("biorun.meta.run", False, "fetches metadata from NCBI"),
 
     # view=("biorun.view.run", True, "converts data to various formats"),
     # taxon=("biorun.models.taxdb.run", False, "displays NCBI taxonomies"),
     # define=("biorun.models.ontology.run", False, "explains biological terms"),
     # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
 )
-
 
 # Generates the nicely indented help for each subcommand
 block = [f"   bio {key:7} : {value[2]}" for (key, value) in SUB_COMMANDS.items()]

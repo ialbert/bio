@@ -1,11 +1,15 @@
 """
 Converts across formats
 """
-import sys, json, os, pathlib, gzip
+import gzip
+import os
+import sys
+from collections import OrderedDict, defaultdict
+from itertools import count
+
 import biorun.libs.placlib as plac
 from biorun import utils
 from biorun.alias import ALIAS
-from functools import partial
 
 # Module level logger.
 logger = utils.logger
@@ -22,15 +26,165 @@ except ImportError as exc:
     logger.error(f"Try: conda install biopython>=1.78")
     sys.exit()
 
+# GenBank terms to remap according to sequence ontology.
+SEQUENCE_ONTOLOGY = {
+    "5'UTR": "five_prime_UTR",
+    "3'UTR": "three_prime_UTR",
+    "mat_peptide": "mature_protein_region",
+}
+
+
 def is_fasta(fname):
     exts = "fa fasta fa.gz fasta.gz".split()
-    found = filter(lambda x:fname.endswith(x), exts)
+    found = filter(lambda x: fname.endswith(x), exts)
     return any(found)
+
 
 def is_genbank(fname):
     exts = "gb gb.gz genbank genbank.gz gpff gpff.gz".split()
-    found = filter(lambda x:fname.endswith(x), exts)
+    found = filter(lambda x: fname.endswith(x), exts)
     return any(found)
+
+
+def json_ready(value):
+    """
+    Recursively serializes values to types that can be turned into JSON.
+    """
+
+    # The type of of the incoming value.
+    curr_type = type(value)
+
+    # Reference types will be dictionaries.
+    if curr_type == Reference:
+        return dict(title=value.title, authors=value.authors, journal=value.journal, pubmed_id=value.pubmed_id)
+
+    # Serialize each element of the list.
+    if curr_type == list:
+        return [json_ready(x) for x in value]
+
+    # Serialize the values of an Ordered dictionary.
+    if curr_type == OrderedDict:
+        return dict((k, json_ready(v)) for (k, v) in value.items())
+
+    return value
+
+
+def first(data, key, default=""):
+    # First element of a list value that is stored in a dictionary by a key.
+    return data.get(key, [default])[0]
+
+
+counter = count(1)
+
+UNIQUE = defaultdict(int)
+
+
+def next_count(ftype):
+    UNIQUE[ftype] += 1
+    return f'{ftype}-{UNIQUE[ftype]}'
+
+
+def guess_name(ftype, annot, seqid=''):
+    """
+    Attempts to generate an unique id name for a BioPython feature
+    """
+    uid = desc = ''
+
+    if ftype == 'source':
+        name = seqid.split(".")[0]
+        uid = seqid
+    elif ftype == 'gene':
+        name = first(annot, "gene")
+        desc = first(annot, "locus_tag")
+    elif ftype == 'CDS':
+        name = first(annot, "protein_id")
+        desc = first(annot, "product")
+    elif ftype == 'mRNA':
+        name = first(annot, "transcript_id")
+        desc = ftype
+    elif ftype == "exon":
+        name = first(annot, "gene")
+        uid = next_count(ftype)
+    else:
+        name = next_count(ftype)
+        desc = first(annot, "product")
+
+    desc = f"{ftype} {desc}"
+    name = name or next_count(f"unknown-{ftype}")
+    uid = uid or name
+    return uid, name, desc
+
+
+class RecAttrs:
+    """
+    Attributes that describe a grouping of records.
+    """
+
+    def __init__(self, obj, **kwds):
+        self.obj = obj
+        self.id = obj.id
+        self.name = obj.name
+        self.seq = obj.seq
+        pairs = [(k, json_ready(v)) for (k, v) in self.obj.annotations.items()]
+        self.annot = dict(pairs)
+
+
+class Record:
+    """
+    Unified representation of BioPython SeqRecord
+    """
+    SOURCE = "source"
+
+    def __init__(self, rec, feat, ftype, start, end, strand, annot={}, attrs=None):
+        # The original object
+        self.obj = rec
+        self.feat = feat
+        self.attrs = attrs
+        self.type = SEQUENCE_ONTOLOGY.get(ftype, ftype)
+        self.id = rec.id
+        self.name = rec.name
+        self.title = rec.description
+        self.start, self.end, self.strand = start, end, strand
+
+        # Fill the annotations
+        self.annot = annot
+
+        # Store the locations.
+        self.locations = [(loc.start, loc.end, loc.strand) for loc in self.feat.location.parts]
+
+
+def get_records(recs):
+    """
+    Returns sequence features
+    """
+    for obj in recs:
+        attrs = RecAttrs(obj=obj)
+
+        for feat in obj.features:
+            # Normalize the feature type.
+            ftype = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
+
+            # Sequence for this feature
+            seq = feat.extract(attrs.seq)
+
+            # The start/end locations
+            start, end = int(feat.location.start), int(feat.location.end)
+
+            # Qualifiers are transformed into annotations.
+            annot = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
+            annot = dict(annot)
+
+            # Create an id, name and descriptions
+            uid, name, desc = guess_name(ftype=ftype, annot=annot, seqid=attrs.id)
+
+            # Create the new seqrecord.
+            new = SeqRecord(seq=seq, name=name, description=desc, id=uid)
+
+            # The Record that represent all information.
+            rec = Record(rec=new, feat=feat, annot=annot, ftype=ftype, strand=feat.strand, start=start, end=end, attrs=attrs)
+
+            yield rec
+
 
 def parse(fname):
     """
@@ -39,18 +193,23 @@ def parse(fname):
     stream = gzip.open(fname) if fname.endswith("gz") else open(fname)
     if is_fasta(fname):
         recs = SeqIO.parse(stream, format="fasta")
+        recs = get_records(recs)
     elif is_genbank(fname):
         recs = SeqIO.parse(stream, format="genbank")
+        recs = get_records(recs)
     else:
         logger.error(f"file extension not recognized: {fname}")
         sys.exit()
 
     return recs
 
+
 def make_record(text, seqid=1, locus="", desc=""):
     seq = Seq(text)
-    rec = SeqRecord(seq=seq, id=seqid, name=locus, description=desc)
-    return rec
+    recs = [SeqRecord(seq=seq, id=seqid, name=locus, description=desc)]
+    recs = get_records(recs)
+    return recs
+
 
 def read_input(fname, store=None, interactive=False):
     """
@@ -59,17 +218,73 @@ def read_input(fname, store=None, interactive=False):
 
     # Item is a valid file.
     if os.path.isfile(fname):
-        data = parse(fname)
-        return data
+        recs = parse(fname)
+        return recs
 
     # Generate an interactive data.
     if interactive:
-        data = make_record(text=fname)
-        return data
+        recs = make_record(text=fname)
+        return recs
 
     # Invalid data.
     logger.error(f"file not found: {fname}")
     sys.exit()
+
+
+def fasta_formatter(rec):
+    print(rec.obj.format("fasta"), end='')
+
+
+def remapper(rec):
+    rec.id = ALIAS.get(rec.id, rec.id)
+    return rec
+
+
+def sequence_slicer(start=0, end=None):
+    def func(rec):
+        if start or end:
+            seqlen = len(rec.obj.seq)
+
+            endx = seqlen if end is None else end
+            endx = seqlen + endx if endx < 0 else endx
+
+            # Zero based shift
+            if start < 0:
+                startx = seqlen + start + 1
+            else:
+                startx = start + 1
+
+            rec.obj.description = f"{rec.title} [{startx}:{endx}]"
+            rec.obj.seq = rec.obj.seq[start:end]
+        return rec
+
+    return func
+
+
+def type_selector(ftype):
+    def func(rec):
+        return rec.type == ftype if ftype else True
+
+    return func
+
+
+def translate_recs(flag):
+    def func(rec):
+        if flag:
+            endx = len(rec.obj.seq) // 3
+            rec.obj.seq = rec.obj.seq[0:endx * 3].translate()
+        return rec
+
+    return func
+
+
+def protein_filter(rec):
+    return "translation" in rec.annot
+
+
+def protein_extract(rec):
+    rec.obj.seq = Seq(rec.annot.get("translation")[0])
+    return rec
 
 
 @plac.pos("data", "input data")
@@ -82,9 +297,9 @@ def read_input(fname, store=None, interactive=False):
 @plac.opt("id_", "filter for a sequence id")
 @plac.opt("name", "filter for a sequence name")
 @plac.opt("gene", "filter for a gene name", abbrev='G')
-@plac.flg("proteins", "operate on the protein sequences", abbrev='P')
+@plac.flg("protein", "operate on the protein sequences", abbrev='P')
 @plac.flg("translate", "translate DNA sequences", abbrev='R')
-def run(features=False, proteins=False, translate=False, gff_=False, fasta_=False,
+def run(features=False, protein=False, translate=False, gff_=False, fasta_=False,
         start='1', end=None, type_='', id_='', name='', gene='', *fnames):
     """
     Convert data to various formats
@@ -92,6 +307,11 @@ def run(features=False, proteins=False, translate=False, gff_=False, fasta_=Fals
 
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)
+
+    # Positive coordinates moved to 0 based.
+    if start >= 0:
+        start = start - 1
+
     end = utils.parse_number(end)
     ftype = type_
     seqid = id_
@@ -104,50 +324,32 @@ def run(features=False, proteins=False, translate=False, gff_=False, fasta_=Fals
     # Default format is fasta if nothing is specified.
     fasta_ = False if (gff_ and not fasta_) else True
 
-    def fasta_formatter(rec, start=None, end=None):
-        print(rec.format("fasta"), end='')
-
-    def remapper(rec):
-        rec.id = ALIAS.get(rec.id, rec.id)
-        return rec
-
-    def slicer(rec):
-        if start or end:
-            startx = start - 1
-            endx = end if end else len(rec.seq)
-            rec.description = f"{rec.description} [{start+1}:{endx}]"
-            rec.seq = rec.seq[startx:end]
-        return rec
-
     formatter = fasta_formatter
+
+    # Slice the sequences
+    slicer = sequence_slicer(start=start, end=end)
+
+    # Type selector
+    typer = type_selector(type_)
+
+    # Translates the sequences
+    translator = translate_recs(translate)
 
     for fname in fnames:
         recs = read_input(fname, interactive=False)
+
+        if protein:
+            recs = filter(protein_filter, recs)
+            recs = map(protein_extract, recs)
+
+        recs = filter(typer, recs)
         recs = map(remapper, recs)
         recs = map(slicer, recs)
+        recs = map(translator, recs)
+
+
+
         for rec in recs:
             formatter(rec)
 
     sys.exit()
-
-    '''
-    for datreca in inputs:
-        if fasta_:
-            recs = jsonx.select_records(data, features=features, proteins=proteins, translate=translate,
-                                        start=start, end=end, ftype=ftype, seqid=seqid, name=name, gene=gene)
-            for rec in recs:
-
-
-        elif gff_:
-            feats = jsonx.select_features(data, start=start, end=end, ftype=ftype, seqid=seqid, name=name, gene=gene)
-
-            print("##gff-version 3")
-            for seqid, feat in feats:
-                for values in gff.feature2gff(feat, seqid=seqid):
-                    values = map(str, values)
-                    print("\t".join(values))
-
-        elif json_:
-            text = json.dumps(list(data), indent=4)
-            print(text)
-    '''
