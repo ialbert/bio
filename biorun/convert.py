@@ -321,7 +321,8 @@ def translate_recs(flag):
     return func
 
 
-def keep_source(flag):
+def source_only(flag):
+
     def func(rec):
         return rec.type == Record.SOURCE if flag else True
 
@@ -358,9 +359,6 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     # When to generate features
     features = features or (type_ or gene or translate or name)
 
-    # Turn type to CDS if gene is selected
-    type_ = 'CDS' if gene else type_
-
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)
 
@@ -372,14 +370,17 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     ftype = type_
     seqid = id_
 
+    # Turn type to CDS if gene is selected
+    ftype = 'CDS' if gene else ftype
+
     # Default format is fasta if nothing is specified.
     fasta = False if (gff_ and not fasta_) else True
 
-    # Produce genomes only when no other option is set.
-    keep = not(gene or name or type or translate or protein)
+    # Selects sources only when no other feature specific option is set.
+    source_flag = not(gene or name or type_ or translate or protein)
 
     # GFF mode produces all features
-    keep = False if gff_ else keep
+    source_flag = False if gff_ else source_flag
 
     # Select the formatter.
     if fasta:
@@ -401,7 +402,7 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
         recs = filter(name_selector(name), recs)
 
         # Should we keep the source
-        recs = filter(keep_source(keep), recs)
+        recs = filter(source_only(source_flag), recs)
 
         # Filters gene and CDS
         recs = filter(gene_selector(gene), recs)
