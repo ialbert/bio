@@ -152,6 +152,7 @@ class Record:
         # Store the locations.
         self.locations = [(loc.start, loc.end, loc.strand) for loc in self.feat.location.parts]
 
+
 def get_records(recs):
     """
     Returns sequence features
@@ -245,6 +246,9 @@ def fasta_formatter(rec):
     print(rec.obj.format("fasta"), end='')
 
 
+from biorun.gff import gff_formatter
+
+
 def remapper(rec):
     rec.id = ALIAS.get(rec.id, rec.id)
     return rec
@@ -273,6 +277,7 @@ def sequence_slicer(start=0, end=None):
 
 def type_selector(ftype):
     types = set(ftype.split(","))
+
     def func(rec):
         return rec.type in types if ftype else True
 
@@ -281,13 +286,16 @@ def type_selector(ftype):
 
 def gene_selector(name):
     genes = set(name.split(","))
+
     def func(rec):
         return first(rec.annot, "gene") in genes if name else True
 
     return func
 
+
 def name_selector(name):
     names = set(name.split(","))
+
     def func(rec):
         return rec.id in names if name else True
 
@@ -296,6 +304,7 @@ def name_selector(name):
 
 def seqid_selector(seqid):
     targets = set(seqid.split(","))
+
     def func(rec):
         return rec.seqid in targets if seqid else True
 
@@ -312,12 +321,9 @@ def translate_recs(flag):
     return func
 
 
-def feature_filter(flag):
+def keep_source(flag):
     def func(rec):
-        if flag:
-            return rec.type != Record.SOURCE
-        else:
-            return rec.type == Record.SOURCE
+        return rec.type == Record.SOURCE if flag else True
 
     return func
 
@@ -367,10 +373,20 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     seqid = id_
 
     # Default format is fasta if nothing is specified.
-    fasta_ = False if (gff_ and not fasta_) else True
+    fasta = False if (gff_ and not fasta_) else True
+
+    # Produce genomes only when no other option is set.
+    keep = not(gene or name or type or translate or protein)
+
+    # GFF mode produces all features
+    keep = False if gff_ else keep
 
     # Select the formatter.
-    formatter = fasta_formatter
+    if fasta:
+        formatter = fasta_formatter
+    else:
+        print("##gff-version 3")
+        formatter = gff_formatter
 
     # Handle each input separately.
     for fname in fnames:
@@ -385,7 +401,7 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
         recs = filter(name_selector(name), recs)
 
         # Should we keep the source
-        recs = filter(feature_filter(features), recs)
+        recs = filter(keep_source(keep), recs)
 
         # Filters gene and CDS
         recs = filter(gene_selector(gene), recs)
