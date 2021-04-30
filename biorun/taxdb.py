@@ -7,11 +7,10 @@ import sys
 import tarfile
 from itertools import islice
 
-from biorun import fetch
+from biorun import  convert
 from biorun import utils
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
-from biorun.models import jsonrec
 
 JSON_DB_NAME = "taxdb.json"
 SQLITE_DB_NAME = "taxdb.sqlite"
@@ -55,16 +54,53 @@ def download_prebuilt():
     utils.download(url=url_sqlite, dest_name=SQLITE_DB_NAME, cache=True)
     utils.download(url=url_json, dest_name=JSON_DB_NAME, cache=True)
 
-    # Download the updated taxonomy file from NCBI.
-    # update_taxdump()
-
-
 def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_NAME):
     """
     Downloads taxdump file.
     """
     utils.download(url=url, dest_name=dest_name)
 
+
+def build_database(archive=TAXDB_NAME, limit=None):
+    """
+    Downloads taxdump file.
+    """
+    print(f"*** building database from: {archive}")
+
+    # The location of the archive.
+    path = os.path.join(utils.DATADIR, archive)
+
+    # Download the latest taxdump file.
+    update_taxdump()
+
+    # Check the file.
+    if not os.path.isfile(path):
+        utils.error(f"no taxdump file found")
+
+    # Parse the names
+    tax2data = parse_names(archive, limit=limit)
+
+    # Parse the nodes and backpropagation.
+    graph = parse_nodes(archive, tax2data=tax2data, limit=limit)
+
+    # A shortcut to the function.
+    def save_table(name, obj):
+        utils.save_table(name=name, obj=obj, fname=SQLITE_DB)
+
+    # Save the taxid definitions.
+    save_table(TAXID, tax2data)
+
+    # Save the graph.
+    save_table(GRAPH, graph)
+
+    print("*** saving the JSON model")
+    json_path = os.path.join(utils.DATADIR, JSON_DB)
+
+    # Save the JSON file as well.
+    store = dict(TAXID=tax2data, GRAPH=graph)
+    fp = open(json_path, 'wt')
+    json.dump(store, fp, indent=4)
+    fp.close()
 
 def open_tarfile(archive, filename, limit=None, delimiter="\t"):
     """
@@ -176,44 +212,6 @@ def parse_nodes(archive, tax2data, filename="nodes.dmp", limit=None):
     return graph
 
 
-def build_database(archive=TAXDB_NAME, limit=None):
-    """
-    Downloads taxdump file.
-    """
-    print(f"*** building database from: {archive}")
-
-    # The location of the archive.
-    path = os.path.join(utils.DATADIR, archive)
-
-    # Check the file.
-    if not os.path.isfile(path):
-        utils.error(f"no taxdump file found, run the --download flag")
-
-    # Parse the names
-    tax2data = parse_names(archive, limit=limit)
-
-    # Parse the nodes and backpropagation.
-    graph = parse_nodes(archive, tax2data=tax2data, limit=limit)
-
-    # A shortcut to the function.
-    def save_table(name, obj):
-        utils.save_table(name=name, obj=obj, fname=SQLITE_DB)
-
-    # Save the taxid definitions.
-    save_table(TAXID, tax2data)
-
-    # Save the graph.
-    save_table(GRAPH, graph)
-
-    print("*** saving the JSON model")
-    json_path = os.path.join(utils.DATADIR, JSON_DB)
-
-    # Save the JSON file as well.
-    store = dict(TAXID=tax2data, GRAPH=graph)
-    fp = open(json_path, 'wt')
-    json.dump(store, fp, indent=4)
-    fp.close()
-
 
 def open_db(table, fname=SQLITE_DB, flag='c'):
     """
@@ -224,54 +222,6 @@ def open_db(table, fname=SQLITE_DB, flag='c'):
 
 
 queue = list()
-
-
-def print_metadata(terms):
-    def formatter(row):
-        print("\t".join(row))
-
-    for term in terms:
-        lines = get_metadata(term)
-        lines = filter(lambda x: x.split(), lines)
-        old_header = next(lines)
-        new_header = "host species accession date location isolate ".split()
-
-        print("\t".join(new_header))
-        for line in lines:
-            print(line)
-
-
-def get_metadata(taxid, limit=None):
-    """
-    Returns all accessions
-    """
-    import requests
-
-    # The dataset accession point.
-    url = f"https://api.ncbi.nlm.nih.gov/datasets/v1alpha/virus/taxon/{taxid}/genome/table"
-
-    params = {
-        'format': 'tsv',
-        'refseq_only': "false",
-        'complete_only': 'true',
-        'table_fields': [
-            'host_tax_id', 'species_tax_id',
-            'nucleotide_accession',
-            'collection_date', 'geo_location', 'isolate_name',
-        ]
-    }
-
-    conn = requests.get(url, stream=True, params=params)
-    lines = conn.iter_lines()
-    lines = islice(lines, limit)
-
-    if conn.status_code != 200:
-        msg = f"HTTP status code: {conn.status_code}"
-        utils.error(msg)
-
-    lines = map(decode, lines)
-
-    return lines
 
 
 def get_values(node, names):
@@ -522,7 +472,7 @@ def parse_stream(stream, field=1, delim="\t"):
 
 
 @plac.pos("terms", "taxids or search queries")
-@plac.flg('update', "updates and builds a local database")
+@plac.flg('build', "updates and builds a local database")
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('list_', "lists database content", abbrev='l')
 @plac.opt('scinames', "scientific or common names in each line. ", abbrev="S")
@@ -538,7 +488,7 @@ def parse_stream(stream, field=1, delim="\t"):
 @plac.opt('field', "which column to read when filtering")
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('accessions', "Print the accessions number for each ")
-def run(lineage=False, update=False, download=False, accessions=False, keep='', remove='', field=1,
+def run(lineage=False, build=False, download=False, accessions=False, keep='', remove='', field=1,
         scinames='', children=False, list_=False, depth=0, metadata=False, preload=False, indent=2, sep='',
         verbose=False, *terms):
     global SEP, INDENT, LIMIT
@@ -563,7 +513,7 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
         download_prebuilt()
 
     # Downloads a new taxdump and builds a new taxonomy database.
-    if update:
+    if build:
         build_database(limit=LIMIT)
 
     # Get the content of the database.
@@ -572,11 +522,6 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     # List the content of a database.
     if list_:
         print_database(names=names, graph=graph)
-        return
-
-    # Obtain metadata for the taxon
-    if metadata:
-        print_metadata(terms)
         return
 
     if scinames:
@@ -603,14 +548,17 @@ def run(lineage=False, update=False, download=False, accessions=False, keep='', 
     # Some terms may be valid data names.
     for term in terms:
         term = term.strip()
-        # Attempts to interpret the word as an existing dataset.
-        json = fetch.get_json(term)
 
-        # Extend the search temrs.
-        taxids = parse_taxids(json) if json else [term]
+        if os.path.isfile(term):
+            recs = convert.read_input(fname=term)
+            recs = filter(convert.source_only(True), recs)
+            for rec in recs:
+                print (rec)
+        # Attempts to extract the taxid from a genbank file.
 
         # Add to the terms.
-        words.extend(taxids)
+        words.append(term)
+
 
     # Produce lineages
     if lineage:

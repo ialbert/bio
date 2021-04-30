@@ -1,2 +1,0 @@
-ebola	BioProject	PRJNA257197
-ebola	BioSample	SAMN02952049

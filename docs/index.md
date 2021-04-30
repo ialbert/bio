@@ -40,9 +40,8 @@ Suppose you wanted to align the sequences of the S gene of SARS-COV-2 (`NC_04551
 
 First we download the data so that `bio` can operate on it. The step needs to be done only once:
 
-```{bash, child='code/index-demo.txt'}
+```{bash, child='code/index-start.txt'}
 ```
-
 
 ## Data conversion
 

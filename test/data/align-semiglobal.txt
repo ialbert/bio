@@ -1,7 +1,0 @@
-
-# Ident=4(50.0%)  Mis=2(25.0%)  Gaps=2(25.0%)  Target=(3, 8)  Query=(1, 8)  Length=8  Score=8.0  BLOSUM62(11,1)
-
-TARGET       ISLI--NE
-             ||..--|| 8
-QUERY        ISALIGNE
-

@@ -1,0 +1,3 @@
+"""
+Represents Record model.
+"""

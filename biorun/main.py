@@ -17,14 +17,13 @@ logger = utils.logger
 #
 SUB_COMMANDS = dict(
     fetch=("biorun.fetch.run", True, "downloads GenBank data from NCBI"),
-    convert=("biorun.convert.run", True, "performs data conversion"),
+    convert=("biorun.convert.run", True, "converts GenBank to FASTA or GFF"),
+    meta=("biorun.meta.run", False, "downloads metadata by taxonomy ID"),
+    taxon=("biorun.taxdb.run", False, "visualize taxonomies"),
 
-    # meta=("biorun.meta.run", False, "fetches metadata from NCBI"),
-
-    # view=("biorun.view.run", True, "converts data to various formats"),
-    # taxon=("biorun.models.taxdb.run", False, "displays NCBI taxonomies"),
     # define=("biorun.models.ontology.run", False, "explains biological terms"),
     # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
+
 )
 
 # Generates the nicely indented help for each subcommand
@@ -40,6 +39,12 @@ bio: making bioinformatics fun again
 Valid commands:
 
 {block}
+
+Examples:
+
+    bio fetch NC_045512 MN996532 > genomes.gb 
+    bio convert genomes.gb  > genomes.fa 
+    bio taxon  
 """
 
 

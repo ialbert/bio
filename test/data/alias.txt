@@ -1,0 +1,11 @@
+#
+# Alias file.
+#
+# Comments and empty lines are ignored.
+#
+# Link this file to ~/.bio/
+#
+# ln -s alias.txt ~/.bio/alias.txt
+#
+NC_045512.2   Wuhan
+KM233118    RaTG13

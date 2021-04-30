@@ -9,6 +9,10 @@ all: serve
 test:
 	pytest 
 
+# Update the data for the test script.
+data:
+	(cd test/data && bash ../all_tests.sh)
+
 # Generate test from the example script.
 generate:
 	(cd test && python generate.py)

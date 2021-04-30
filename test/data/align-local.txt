@@ -1,7 +1,0 @@
-
-# Ident=2(100.0%)  Mis=0(0.0%)  Gaps=0(0.0%)  Target=(7, 8)  Query=(7, 8)  Length=2  Score=11.0  BLOSUM62(11,1)
-
-TARGET       TH
-             || 2
-QUERY        NE
-
