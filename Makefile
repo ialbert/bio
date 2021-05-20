@@ -11,7 +11,7 @@ test:
 
 # Update the data for the test script.
 data:
-	(cd test/data && bash ../all_tests.sh)
+	(cd test/data && bash ../usage.sh)
 
 # Generate test from the example script.
 generate:

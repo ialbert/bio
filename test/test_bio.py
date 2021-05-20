@@ -1,3 +1,4 @@
+
 #
 # This file was generated automatically! Do not edit.
 #
@@ -12,6 +13,12 @@ init_dirs()
 def test_1(capsys):
     run("set -uex")
 
-
 def test_2(capsys):
-    run("bio fetch NC_045512 KM233118 > genome.gb")
+    run("bio fetch NC_045512 MN996532 > genomes.gb")
+
+def test_3(capsys):
+    run("bio convert genomes.gb  --fasta > genomes.fa")
+
+def test_4(capsys):
+    run("bio convert genomes.gb  --gff > genomes.gff")
+

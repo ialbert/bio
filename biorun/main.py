@@ -5,7 +5,7 @@ import importlib
 import sys
 
 import biorun.libs.placlib as plac
-from biorun import utils
+from biorun import utils, alias
 
 # Module level logger
 logger = utils.logger
@@ -43,8 +43,9 @@ Valid commands:
 Examples:
 
     bio fetch NC_045512 MN996532 > genomes.gb 
-    bio convert genomes.gb  > genomes.fa 
-    bio taxon  
+    bio convert genomes.gb  --fasta
+    bio convert genomes.gb  --type CDS --gff
+    bio taxon 2697049 --lineage  
 """
 
 

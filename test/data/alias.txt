@@ -7,5 +7,6 @@
 #
 # ln -s alias.txt ~/.bio/alias.txt
 #
-NC_045512.2   Wuhan
-KM233118    RaTG13
+NC_045512.2 Wuhan
+MN996532.2  RaTG13
+KM233118.1  Ebola2014

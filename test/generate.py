@@ -111,7 +111,7 @@ def generate_tests(infile, outfile="test_bio.py"):
 
 if __name__ == '__main__':
 
-    infile = os.path.join(CURR_DIR, "all_tests.sh")    
+    infile = os.path.join(CURR_DIR, "usage.sh")
     outfile = os.path.join(CURR_DIR, "test_bio.py")
 
     # Generate tests from a subset of

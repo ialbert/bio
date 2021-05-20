@@ -11,5 +11,3 @@ except ImportError as exc:
 
 # Global package version
 VERSION = "0.4.1"
-
-from . import alias

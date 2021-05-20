@@ -10,4 +10,10 @@
 set -uex
 
 # Fetch the accession, rename the data and change the sequence id.
-bio fetch NC_045512 KM233118 > genome.gb
+bio fetch NC_045512 MN996532 > genomes.gb
+
+# Convert genbank files to FASTA
+bio convert genomes.gb  --fasta > genomes.fa
+
+# Convert genbank files to GFF
+bio convert genomes.gb  --gff > genomes.gff

@@ -6,9 +6,9 @@ numbering:  "false"
 ---
 # Welcome to `bio`
 
-If you've ever done bioinformatics you know how even seemingly straightforward tasks require multiple steps, arcane incantations, reading documentation, and other preparations that slow down progress. Time and again, I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package was designed  to solve that tedium.
+If you've ever done bioinformatics you know how even seemingly straightforward tasks may require multiple steps, reading documentation, and additional preparations that can slow down progress.
 
-The `bio` software was written to make bioinformatics explorations more enjoyable. The software lets users quickly answer questions such as:
+Time and again, I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package was designed  to solve that tedium by making bioinformatics explorations more enjoyable. The software lets users quickly answer questions such as:
  
 - *How do I access a sequence for a viral genome?*
 - *How do I obtain the biological annotation of data?*
@@ -17,7 +17,7 @@ The `bio` software was written to make bioinformatics explorations more enjoyabl
 - *What are minisatellites and  microsatellites?*
 
 `bio` combines data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so],
-[NCBI Taxonomy][taxonomy] and provides an logical, unified interface. The utility described above makes the `bio` package exceedingly well suited for exploratory analysis of genomes.
+[NCBI Taxonomy][taxonomy] and provides an unified, logical interface.
 
 The software is also used to demonstrate and teach bioinformatics and is the companion software to the [Biostar Handbook][handbook].
  
@@ -36,26 +36,43 @@ The software is also used to demonstrate and teach bioinformatics and is the com
 
 ## Quickstart
 
-Suppose you wanted to align the sequences of the S gene of SARS-COV-2 (`NC_045512`) versus the same region of a bat coronavirus (`MN996532`). Even when we do have access to high performance alignment software, extracting and manipulating the data can be suprisingly tedious. Here is how `bio` would help with the process.
+Install `bio`:
+
+    pip install bio --upgrade
+
+### Obtain data
 
 First we download the data so that `bio` can operate on it. The step needs to be done only once:
 
-```{bash, child='code/index-start.txt'}
-```
+    bio fetch NC_045512 MN996532 > genomes.gb
 
-## Data conversion
+Bioinformatics workflows often requires you to present data in different formats.
 
-Bioinformatics workflows often requires you to present data in different formats. `bio` can convert it for you on the fly:
+### Convert Genbank to FASTA.
 
-### Convert to FASTA format
+    bio convert genomes.gb  --fasta | head
 
-```{bash, child='code/index-fasta.txt'}
-```
+
+prints:
+
+    >NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+    GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+    CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+    TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
 
 ### Convert to GFF format:
 
-```{bash, child='code/index-gff.txt'}
-```
+    bio convert genomes.gb  --gff | head
+
+prints:
+
+    ##gff-version 3
+    NC_045512.2	.	source	0	29903	.	+	.	ID=1;Name=NC_045512;Parent=NC_045512.2
+    NC_045512.2	.	five_prime_UTR	0	265	.	+	.	ID=2;Name=five_prime_UTR-1;Parent=five_prime_UTR-1;color=#cc0e74
+    NC_045512.2	.	gene	265	21555	.	+	.	ID=3;Name=ORF1ab;Parent=ORF1ab;color=#cb7a77
+    NC_045512.2	.	CDS	265	13468	.	+	.	ID=4;Name=YP_009724389.1;Parent=YP_009724389.1
+    NC_045512.2	.	CDS	13467	21555	.	+	.	ID=5;Name=YP_009724389.1;Parent=YP_009724389.1
 
 View the resulting files in IGV
 
@@ -63,25 +80,47 @@ View the resulting files in IGV
 knitr::include_graphics('images/igv-index.png', dpi = NA)
 ```
 
-Among the many useful features, `bio` is also able to generate beautiful data models from GenBank file.
-
-## Data integration
-
-`bio` understands taxonomies, NCBI bioprojects and metadata.
+Among the many useful features, `bio` is also able to generate informative gene models from a  GenBank file.
 
 ### Navigate the taxonomy
 
- Finding the lineage of the organism in a GenBank file is as simple as:
+`bio` understands taxonomies, NCBI bioprojects and metadata.
 
-```{bash, child='code/index-taxon.txt'}
-```
+Display the lineage of taxonomic id:
+
+    bio taxon 2697049 --lineage
+
+prints:
+
+    superkingdom, 10239, Viruses
+      clade, 2559587, Riboviria
+        kingdom, 2732396, Orthornavirae
+          phylum, 2732408, Pisuviricota
+            class, 2732506, Pisoniviricetes
+              order, 76804, Nidovirales
+                suborder, 2499399, Cornidovirineae
+                  family, 11118, Coronaviridae
+                    subfamily, 2501931, Orthocoronavirinae
+                      genus, 694002, Betacoronavirus
+                        subgenus, 2509511, Sarbecovirus
+                          species, 694009, Severe acute respiratory syndrome-related coronavirus
+                            no rank, 2697049, Severe acute respiratory syndrome coronavirus 2
 
 ### Getting sample metadata
 
 Get sample metadata for the viral genomes (taxid `2697049`):
 
-```{bash, child='code/index-meta.txt'}
-```
+    bio meta 2697049  | head
+
+prints:
+    
+    accession	species	host	date	location	isolate	species_name
+    NC_045512.2	2697049	9606	2019-12	Asia; China	Wuhan-Hu-1	Severe acute respiratory syndrome coronavirus 2
+    MT576563.1	2697049			North America; 	SARS-CoV-2/human/USA/USA-WA1/2020	Severe acute respiratory syndrome coronavirus 2
+    MT324684.1	2697049		2020-03-25	North America; USA	SARS-CoV-2/ENV/USA/UF-3/2020	Severe acute respiratory syndrome coronavirus 2
+    MT476384.1	2697049		2020-02-21	North America; USA: FL	SARS-CoV-2/ENV/USA/UF-11/2020	Severe acute respiratory syndrome coronavirus 2
+    MT952602.1	2697049					Severe acute respiratory syndrome coronavirus 2
+
 
 ## Where to go next
 
