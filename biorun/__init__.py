@@ -10,4 +10,4 @@ except ImportError as exc:
     pass
 
 # Global package version
-VERSION = "0.4.1"
+VERSION = "0.5.0"
