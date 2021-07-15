@@ -6,7 +6,7 @@ import importlib
 import sys
 
 import biorun.libs.placlib as plac
-from biorun import utils, alias
+from biorun import utils
 
 # Module level logger
 logger = utils.logger

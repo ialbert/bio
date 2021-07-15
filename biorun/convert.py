@@ -9,10 +9,12 @@ from itertools import count
 
 import biorun.libs.placlib as plac
 from biorun import utils
-from biorun.alias import ALIAS
 
 # Module level logger.
 logger = utils.logger
+
+# Global alias remapper
+ALIAS = {}
 
 try:
     from Bio import SeqIO
@@ -325,6 +327,29 @@ def protein_extract(rec):
     rec.obj.seq = Seq(rec.annot.get("translation")[0])
     return rec
 
+def parse_alias_file(fname):
+    """
+    Parses an alias file, returns a dictionary mapping: Accession -> Alias
+    """
+    stream = open(fname)
+    stream = map(lambda x: x.strip(), stream)
+    stream = filter(lambda x: not x.startswith("#"), stream)
+    stream = map(lambda x: x.strip().split(), stream)
+    stream = filter(lambda x: len(x) > 1, stream)
+    pairs = map(lambda x: x[:2], stream)
+    data = dict(pairs)
+    return data
+
+
+def parse_alias(fname):
+    """
+    Don't raise errors on invalid alias files.
+    """
+    try:
+        return parse_alias_file(fname)
+    except Exception as exc:
+        return {}
+
 
 @plac.pos("data", "input data")
 @plac.flg("features", "convert the features", abbrev='F')
@@ -338,11 +363,16 @@ def protein_extract(rec):
 @plac.opt("gene", "filter for a gene name", abbrev='G')
 @plac.flg("protein", "operate on the protein sequences", abbrev='P')
 @plac.flg("translate", "translate DNA sequences", abbrev='R')
+@plac.opt("alias", "remap sequence ids")
 def run(features=False, protein=False, translate=False, gff_=False, fasta_=False,
-        start='1', end=None, type_='', id_='', name='', gene='', *fnames):
+        start='1', end=None, type_='', id_='', name='', gene='', alias=None,  *fnames):
     """
     Convert data to various formats
     """
+    global ALIAS
+
+    # Generate the ALIAS file.
+    ALIAS = parse_alias(alias) if alias else {}
 
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)
@@ -375,6 +405,7 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
         # GFF formatter.
         print("##gff-version 3")
         formatter = gff_formatter
+
 
     # Handle each input separately.
     for fname in fnames:
