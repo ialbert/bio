@@ -7,16 +7,20 @@ all: serve
 
 # Run the tests.
 test:
-	pytest 
+	pytest -x
 
-# Update the data for the test script.
-data:
+# Update the usage data.
+testdata:
 	(cd test/data && bash ../usage.sh)
+
 
 # Generate test from the example script.
 generate:
 	(cd test && python generate.py)
 	pytest -x
+
+# Update the data for the test script.
+fulltest: testdata generate
 
 # Generate the docs.
 docs:
@@ -52,7 +56,7 @@ pypi: test build
 	python -m twine upload --repository pypi dist/*
 
 
-REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
+#REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
 
 # Upload prebuilt data to distribution site.
 upload:

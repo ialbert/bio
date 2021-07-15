@@ -2,8 +2,6 @@
 Utilites funcions.
 """
 import sys, os, re, tempfile, gzip, glob, shutil, json
-from ftplib import FTP
-from urllib.parse import urlparse
 import requests
 from itertools import count, islice
 from functools import wraps

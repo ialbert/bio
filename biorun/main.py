@@ -1,6 +1,7 @@
 """
-The main job runner. Register functions here.
+The main job runner. Register additional functions here.
 """
+
 import importlib
 import sys
 
@@ -11,23 +12,23 @@ from biorun import utils, alias
 logger = utils.logger
 
 #
-# Valid subcommands:
+# Subcommand registration:
 #
-# name = (module.function, auto_help, command_help)
+# name = (module.function, automatic_help_flag, command_help)
 #
 SUB_COMMANDS = dict(
     fetch=("biorun.fetch.run", True, "downloads GenBank data from NCBI"),
     convert=("biorun.convert.run", True, "converts GenBank to FASTA or GFF"),
     meta=("biorun.meta.run", False, "downloads metadata by taxonomy ID"),
-    taxon=("biorun.taxdb.run", False, "visualize taxonomies"),
+    taxon=("biorun.taxdb.run", False, "displays NCBI taxonomies"),
 
     # define=("biorun.models.ontology.run", False, "explains biological terms"),
     # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
 
 )
 
-# Generates the nicely indented help for each subcommand
-block = [f"   bio {key:7} : {value[2]}" for (key, value) in SUB_COMMANDS.items()]
+# Generates indented help for each subcommand.
+block = [f"    bio {key:7} : {value[2]}" for (key, value) in SUB_COMMANDS.items()]
 
 # Join help into a section.
 block = "\n".join(block)
@@ -36,7 +37,7 @@ block = "\n".join(block)
 USAGE = f"""
 bio: making bioinformatics fun again
 
-Valid commands:
+Commands:
 
 {block}
 
@@ -46,36 +47,40 @@ Examples:
     bio convert genomes.gb  --fasta
     bio convert genomes.gb  --type CDS --gff
     bio taxon 2697049 --lineage  
+
+See also: https://www.bioinfo.help
 """
 
 
-def proof_reader(value):
+def fix_parameter(value):
     """
-    Allows more error tolerant parameter input. Remaps -start to --start, --F to -F
+    Allows more error tolerant parameter input (mistakenly using shortform for longform and viceversa)
+
+    Remaps -start to --start, --F to -F
     """
 
-    # Longform parameter
+    # If it looks like a valid number we don't alter it.
+    try:
+        float(value)
+        return value
+    except ValueError as exc:
+        pass
+
+    # Detect longform parameters
     twodash = value.startswith("--")
 
-    # Shortform parameter.
+    # Detect shortform parameters.
     onedash = value.startswith("-") and not twodash
 
-    # Parameter is single letter
+    # Detect if value is single letter
     oneletter = len(value.strip("-")) == 1
 
-    try:
-        # Can the value be converted to a number
-        float(value)
-        isnum = True
-    except ValueError as exc:
-        isnum = False
-
     # Single letter but two dashes. Drop a leading dash.
-    if oneletter and twodash and not isnum:
+    if twodash and oneletter:
         value = value[1:]
 
     # One dash but more more than one letter. Add a dash.
-    if onedash and not oneletter and not isnum:
+    if onedash and not oneletter:
         value = f"-{value}"
 
     return value
@@ -125,7 +130,7 @@ def router():
     sys.argv.remove(cmd)
 
     # Allow multiple forms of parameters to be used.
-    sys.argv = list(map(proof_reader, sys.argv))
+    sys.argv = list(map(fix_parameter, sys.argv))
 
     # Delegate to the imported method
     modfunc, flag, help = SUB_COMMANDS[cmd]

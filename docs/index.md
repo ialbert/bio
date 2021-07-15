@@ -113,7 +113,7 @@ Get sample metadata for the viral genomes (taxid `2697049`):
     bio meta 2697049  | head
 
 prints:
-    
+
     accession	species	host	date	location	isolate	species_name
     NC_045512.2	2697049	9606	2019-12	Asia; China	Wuhan-Hu-1	Severe acute respiratory syndrome coronavirus 2
     MT576563.1	2697049			North America; 	SARS-CoV-2/human/USA/USA-WA1/2020	Severe acute respiratory syndrome coronavirus 2

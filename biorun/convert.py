@@ -215,31 +215,19 @@ def parse(fname):
     return recs
 
 
-def make_record(text, seqid=1, locus="", desc=""):
-    seq = Seq(text)
-    recs = [SeqRecord(seq=seq, id=seqid, name=locus, description=desc)]
-    recs = get_records(recs)
-    return recs
-
-
-def read_input(fname, store=None, interactive=False):
+def read_input(fname):
     """
-    Attempts load the correct input.
+    Parse the file into records
     """
 
-    # Item is a valid file.
+    # Attempt to open and parse the file.
     if os.path.isfile(fname):
         recs = parse(fname)
         return recs
-
-    # Generate an interactive data.
-    if interactive:
-        recs = make_record(text=fname)
-        return recs
-
-    # Invalid data.
-    logger.error(f"file not found: {fname}")
-    sys.exit()
+    else:
+        # File not found.
+        logger.error(f"file not found: {fname}")
+        sys.exit()
 
 
 def fasta_formatter(rec):
@@ -356,9 +344,6 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     Convert data to various formats
     """
 
-    # When to generate features
-    features = features or (type_ or gene or translate or name)
-
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)
 
@@ -377,25 +362,27 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     fasta = False if (gff_ and not fasta_) else True
 
     # Selects sources only when no other feature specific option is set.
-    source_flag = not(gene or name or type_ or translate or protein)
+    source_flag = not(gene or name or type_ or translate or protein or features)
 
     # GFF mode produces all features
     source_flag = False if gff_ else source_flag
 
     # Select the formatter.
     if fasta:
+        # Fasta formatter.
         formatter = fasta_formatter
     else:
+        # GFF formatter.
         print("##gff-version 3")
         formatter = gff_formatter
 
     # Handle each input separately.
     for fname in fnames:
 
-        # Produces the input as a record generator.
-        recs = read_input(fname, interactive=False)
+        # Parse the input into records.
+        recs = read_input(fname)
 
-        # Remap aliases/
+        # Remap aliases.
         recs = map(remapper, recs)
 
         # Filter by sequence name
@@ -407,15 +394,15 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
         # Filters gene and CDS
         recs = filter(gene_selector(gene), recs)
 
-        # Filter by seqid
+        # Filter by seqid.
         recs = filter(seqid_selector(seqid), recs)
 
-        # Extract proteins.
+        # Extract proteins if requested.
         if protein:
             recs = filter(protein_filter, recs)
             recs = map(protein_extract, recs)
 
-        # Apply additonal filters.
+        # Apply additional filters.
         recs = filter(type_selector(ftype), recs)
         recs = map(sequence_slicer(start=start, end=end), recs)
         recs = map(translate_recs(translate), recs)
@@ -423,5 +410,3 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
         # Display the results.
         for rec in recs:
             formatter(rec)
-
-    sys.exit()

@@ -39,7 +39,7 @@ def ncbi_efetch(ids, db, rettype='gbwithparths', retmode='text', quiet=False):
     idtext = ",".join(ids)
 
     try:
-        info(f"connecting to Entrez for {len(ids)} records", quiet=quiet)
+        info(f"connecting to Entrez, fetching {len(ids)} records", quiet=quiet)
         stream = Entrez.epost(db=db, id=idtext)
         results = Entrez.read(stream)
         webenv = results["WebEnv"]
@@ -50,10 +50,9 @@ def ncbi_efetch(ids, db, rettype='gbwithparths', retmode='text', quiet=False):
         msg2 = f"efetch acc={ids} db={db} rettype={rettype} retmode={retmode}"
         logger.error(msg1)
         logger.error(msg2)
-
         sys.exit()
 
-    recnum = 0
+    recnum = index = 0
     step = count(1)
     for index, line in zip(step, stream):
 
@@ -103,9 +102,11 @@ def validator(acc):
 @plac.opt('chunk', "chunk size (max records per connection)")
 @plac.opt('format_', "output format")
 @plac.flg('quiet', "quiet mode")
-def run(db='nuccore', format_="gb", quiet=False, chunk=1000, *data):
+def run(db='nuccore', format_="gb", quiet=False, chunk=100, *data):
     """
-    Fetches and manages data in storage.
+    Fetches data from GenBank.
+
+    Input data may also be a file where the first column will be read as accession numbers.
     """
 
     ids = []
@@ -119,10 +120,8 @@ def run(db='nuccore', format_="gb", quiet=False, chunk=1000, *data):
     ids = filter(validator, ids)
     ids = list(ids)
 
+    # Download records in chunks.
     chunks = [ids[x:x + chunk] for x in range(0, len(ids), chunk)]
-
-    if len(chunks) > 1:
-        info(f"input data contains {len(ids)} records", quiet=quiet)
 
     # A shortcut notation
     format_ = 'gbwithparts' if format_ == 'gb' else format_
