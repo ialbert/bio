@@ -1,15 +1,23 @@
 """
 Utilites funcions.
 """
-import sys, os, re, tempfile, gzip, glob, shutil, json
-import requests
-from itertools import count, islice
-from functools import wraps
-import time
+import glob
+import gzip
+import json
 import logging
+import os
+import re
+import requests
+import shutil
+import sys
+import tempfile
+import time
+from functools import wraps
+from itertools import count, islice
 from os.path import expanduser
-from biorun.libs.sqlitedict import SqliteDict
 from pprint import pprint
+
+from biorun.libs.sqlitedict import SqliteDict
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -19,9 +27,17 @@ __TMPL_DIR = os.path.join(__CURR_DIR, "templates")
 
 DATADIR = os.path.join(expanduser("~"), ".bio")
 
-
 # Create the cache directory
 os.makedirs(DATADIR, exist_ok=True)
+
+
+def read_lines(fname, index=0):
+    stream = open(fname)
+    lines = filter(lambda x: not x.startswith("#"), stream)
+    lines = map(lambda x: x.strip().split()[index], lines)
+    lines = filter(None, lines)
+    lines = list(lines)
+    return lines
 
 
 def time_it(func):
@@ -58,6 +74,7 @@ def alias_dict(fname):
     pairs = map(lambda x: (x[0].strip(), x[1].strip()), lines)
     remap = dict(pairs)
     return remap
+
 
 def is_int(text):
     try:
@@ -110,7 +127,9 @@ def open_db(table, fname, flag='c'):
     conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
     return conn
 
+
 CHUNK = 25000
+
 
 def save_table(name, obj, fname, flg='w'):
     size = len(obj)
@@ -138,7 +157,6 @@ def plural(target, val=0, end='ies'):
 
 
 def response(url, params={}):
-
     # Open request to file
     r = requests.get(url, stream=True, params=params)
     try:
@@ -226,6 +244,7 @@ def maybe_ncbi(text):
 
     return upper and size and is_int(rest)
 
+
 def no_dash(alist):
     """
 
@@ -234,6 +253,7 @@ def no_dash(alist):
     if elems:
         msg = f"Invalid accessions: {elems}"
         error(msg)
+
 
 def zero_based(start, end):
     """
@@ -269,6 +289,7 @@ def safe_int(text):
     except ValueError as exc:
         logger.error(f"not a valid integer value: {text}")
         sys.exit()
+
 
 def parse_number(text):
     """
@@ -410,4 +431,3 @@ def error(msg, logger=logger, stop=True):
     logger.error(f"{msg}")
     if stop:
         sys.exit(1)
-
