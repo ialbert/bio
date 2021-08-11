@@ -44,6 +44,7 @@ def init_dirs():
     # Link the test data
     os.system("ln -s ../data/alias.txt .")
 
+
 join = os.path.join
 
 def diff(cmd, expect, result):

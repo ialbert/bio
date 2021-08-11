@@ -78,6 +78,15 @@ pre > code2 {
     font-size: 16px;
 }
 
+code, kbd, pre, samp {
+    font-family: monospace,serif;
+    font-size: 1em;
+    background-color: #f5f2f0;
+    color: #DD4A68;
+    padding: 0.2em;
+
+}
+
 .book .book-summary ul.summary li a {
     cursor: pointer;
 }

@@ -1,6 +1,4 @@
-# (APPENDIX) Appendix {-} 
-
-# comm.py
+# `comm.py`: find common values
 
 The need to find identical elements within columns of different files is surprisingly common (pun intended).
 
@@ -25,12 +23,10 @@ then the command:
 
     comm.py file1 file2
 
-will print:
+will print the common elements present in the first column of both files:
 
     A
     C
-    
-The above are the elements in common in the first column of both files.
 
 This is the main usecase of the `comm.py` software.
 
@@ -43,7 +39,7 @@ This is the main usecase of the `comm.py` software.
 * `-3` will print the union of elements: `A`, `C`, `B`, `D`
 * `-x 1` reads a different column from file 1
 * `-y 1` reads a different column from file 2
-* `-t` treates the files as tab delimited rather than CSV
+* `-t` treats the files as tab delimited rather than CSV
 
 The content for either file may come from standard input. In that case the `-` symbol should be used instead of file name.
 
@@ -61,7 +57,7 @@ I don't usually advocate rewriting UNIX tools, in this case, writing a better `c
 
 With `comm.py` most operations will be quicker to do, simpler to perform and easier to understand. The primary limitation of `comm.py` vs `comm` is that `comm.py` loads all elements into memory.
 
-Once the number of elements passes many millions `comm.py` could end up being less performant than `comm`. For most use-cases `comm.py` will work exceedingly well.
+For most use-cases `comm.py` will work exceedingly well.
 
 ## Usage
 

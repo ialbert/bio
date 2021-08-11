@@ -1,4 +1,4 @@
-from biorun.methods import comm
+from biorun.scripts import comm
 import biorun.libs.placlib as plac
 import os
 

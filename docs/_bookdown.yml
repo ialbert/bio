@@ -11,6 +11,7 @@ rmd_files: [
   #"bio-tips.md",
   "bio-usage.md",
   #"bio-related.md",
+  "bio-appendix.md",
   "bio-comm.md",
   "bio-uniq.md",
 

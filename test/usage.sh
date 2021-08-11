@@ -39,3 +39,4 @@ bio gff genomes.gb --type CDS > CDS.gff
 # Slice the GFF file.
 bio gff -s 300 -e 10k > slice.gff
 
+cat

@@ -1,22 +1,16 @@
 """
 Utilites funcions.
 """
-import glob
 import gzip
 import json
 import logging
 import os
-import re
-import requests
 import shutil
 import sys
 import tempfile
-import time
-from functools import wraps
-from itertools import count, islice
 from os.path import expanduser
-from pprint import pprint
 
+import requests
 from biorun.libs.sqlitedict import SqliteDict
 
 # The path to the current file.
@@ -37,6 +31,20 @@ def read_lines(stream, index=0):
     lines = filter(None, lines)
     lines = list(lines)
     return lines
+
+
+def get_streams(fnames):
+    """
+    Returns open streams to files.
+    """
+    streams = []
+    for name in fnames:
+        streams.append(open(name))
+
+    if not sys.stdin.isatty():
+        streams.append(sys.stdin)
+
+    return streams
 
 
 def parse_alias(fname):
@@ -199,7 +207,6 @@ def download(url, dest_name, cache=False, params={}):
 
         # Progress notification.
         logger.info(f"saved to: {dest_name}")
-
 
 
 def no_dash(alist):
