@@ -28,7 +28,7 @@ docs:
 
 # Push out the docs to remote docs.
 sync:
-	rsync -avz docs/.book/* ${REMOTE}
+	rsync -avz  docs/.book/* ${REMOTE}
 
 # Serve the documentation as a webpage.
 serve:
