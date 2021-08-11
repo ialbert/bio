@@ -4,8 +4,6 @@
 
 ## What does this software do?
 
-This software was designed to teach bioinformatics concepts.
-
 If you've ever done bioinformatics, you know how even seemingly straightforward tasks require multiple steps, arcane incantations, and various other preparations that slow down progress. 
 
 Even well-defined, supposedly simple tasks can take a seemingly inordinate number of complicated steps. The `bio` package is meant to solve that tedium. 
@@ -75,7 +73,7 @@ The software was written to teach bioinformatics and is the companion software t
 The ideas and motivations fueling `bio` have been developed while educating the many cohorts of students who used the handbook in the classroom. `bio` is an opinionated take on how bioinformatics, particularly data representation and access, should be simplified and streamlined.
 
 [handbook]: https://www.biostarhandbook.com/
-
+[docs]: https://www.bioinfo.help/
 
 ## Development
 
