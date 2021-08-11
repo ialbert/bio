@@ -25,7 +25,7 @@ setup(
         # 'numpy < 1.20',
         'biopython >= 1.78',
         'requests',
-        'tqdm',
+        'tqdm>=4.62',
         'plac',
     ],
 
