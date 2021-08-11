@@ -1,88 +1,66 @@
-# Convert to FASTA {#bio-fasta}
+# GenBank to FASTA {#bio-fasta}
 
-A GenBank file represents sequence inforamtion in multiple ways:
+A GenBank file represents sequence information in multiple sections:
 
 1. Genomic sequences (the entire genomic sequence)
 1. Feature annotation (intervals relative to the genome)
 
-In `bio` we operate on:
-
-* `--fasta` to access the genome
-* `--fasta --features` to access the features annotated on the genome
-
-The `--features` flag often  not necessary as   `bio` will set it automatically if it is obvious that the command targets features. For example `--type CDS` will turn on feature rendering mode.
-
-## Shortcuts
-
-A a colon delimited term:
-
-    bio convert foo:bar --fasta
-
-is equivalent to: 
-
-    bio convert foo --type CDS --gene bar --fasta
     
-### Get a dataset
+### Get a GenBank file
 
-Get SARS-COV-2 data and rename it to `ncov`:
+    efetch -db nuccore -id NC_045512,MN996532 -format gbwithparts > genomes.gb
 
-```{bash, comment=NA}
-bio fetch NC_045512 --rename ncov
-```
+### Convert to FASTA
+
+The default behavior is to convert the genome (source) of the GenBank file to FASTA. The following commands print the genome sequence:
+
+    bio fasta genomes.gb
+
+or it also works as a stream
+    
+    cat genomes.gb | bio fasta
+
+### Selecting features
+
+If any feature selector is passed the FASTA conversion operates on the features in the GenBank:
+
+    bio fasta --type CDS genomes.gb
+
+will convert to fasta the coding sequences alone.
+
 
 ### Get the sequence for the genome
 
-```{bash, comment=NA}
-bio convert ncov --fasta | head -3
-```
+    bio fasta genomes.gb | head -3
 
 ### Manipulate a genomic subsequence
 
-```{bash, comment=NA}
-bio convert ncov --fasta --start 100 --end 130 --seqid foo 
-```
-
+    bio fasta genomes.gb --start 100 --end 10kb 
 
 ### Extract the sequences for annotations of a certain type
 
-```{bash, comment=NA}
-bio convert ncov --fasta --type CDS | head -3
-```
+    bio fasta genomes.gb --type CDS | head -3
 
 ### Extract CDS sequences by gene name
 
-```{bash, comment=NA}
-bio convert ncov --gene S --fasta --end 60 
-```
-
-a shortcut notation of the above:
-
-```{bash, comment=NA}
-bio convert ncov:S --fasta --start 100 --end 150 
-```
+    bio fasta --gene S--end 60 genomes.gb 
 
 ### Extract sequence by feature accession number
 
-```{bash, comment=NA}
-bio convert ncov -id YP_009724390.1 --fasta --start 100 --end 150 
-```
+    cat genomes.gb | bio fasta --end 10 --name QHR63308.1
 
 ### Translate the sequence
 
 This command translates the DNA sequence to peptides:
 
-```{bash, comment=NA}
-bio convert ncov:S --fasta --end 180 --translate
-```
+    bio fasta --end 30 --translate --gene S genomes.gb
 
-The slice to 180 is applied on the DNA sequence before the translation.
+The slice to 30 is applied on the DNA sequence before the translation.
 
 ### Extract the protein sequence
 
 This flag extracts the protein sequence embedded in the original GenBank file:
 
-```{bash, comment=NA}
-bio convert ncov:S --fasta --end 60 --protein
-```
+    bio fasta --end 10 --protein --gene S genomes.gb
 
-Note how in this case the slice to 60 is applied on the protein sequence.
+Note how in this case the slice to 10 is applied on the protein sequence.

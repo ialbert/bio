@@ -284,6 +284,7 @@ def name_selector(name):
 
 
 def seqid_selector(seqid):
+
     targets = set(seqid.split(","))
 
     def func(rec):
@@ -487,11 +488,11 @@ def run(features=False, protein=False, translate=False, fasta=False,
         # Remap aliases.
         recs = map(remapper, recs)
 
-        # Filter by sequence name
-        recs = filter(name_selector(name), recs)
-
         # Should we keep the source
         recs = filter(source_only(source_flag), recs)
+
+        # Filter by sequence name
+        recs = filter(name_selector(name), recs)
 
         # Filters gene and CDS
         recs = filter(gene_selector(gene), recs)

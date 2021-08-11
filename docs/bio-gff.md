@@ -1,15 +1,15 @@
-# Convert to GFF {#bio-gff}
+# GenBank to GFF {#bio-gff}
 
 ## Building a nicer gene model
 
 `bio` creates more meaningful  and nicer GFF visualizations:
 
     # Get chromosome 2L for Drosophila melanogaster (fruit-fly)
-    bio fetch NT_033779  --rename fly 
+    efetch -db nuccore -id NT_033779 -format gbwithparts > chrom2L.gb
 
 convert it to gff:
 
-    bio convert fly --gff > annotations.gff
+    bio gff chrom2L.gb > chrom2L.gff
     
 ## GFF created with `bio`
    
@@ -26,27 +26,19 @@ knitr::include_graphics('images/gff-model-bio.png', dpi = NA)
 
 ### Get a dataset
 
-Get SARS-COV-2 data and rename it to `ncov`:
+Get SARS-COV-2 data:
 
-```{bash, comment=NA}
-bio fetch NC_045512 --rename ncov
-```
+    efetch -db nuccore -id NC_045512,MN996532 -format gbwithparts > genomes.gb
 
-## Convert all features to GFF:
+### Convert all features to GFF:
 
-```{bash, comment=NA}
-bio convert ncov --gff | head -5
-```
+    cat genomes.gb | bio gff | head -5
 
-## Convert to GFF only the features with type `CDS`
+### Convert to GFF only the features with type `CDS`
 
-```{bash, comment=NA}
-bio convert ncov --gff --type transcript,exon,mRNA,CDS | head -5
-```
+    cat genomes.gb | bio gff --type gene,CDS | head -5 
 
-## Convert to GFF only the features tagged with gene `S`
+### Convert to GFF only the features tagged with gene `S`
 
-```{bash, comment=NA}
-bio convert ncov --gff --gene S | head -5
-```
+    bio gff --gene S  genomes.gb | head -5
 

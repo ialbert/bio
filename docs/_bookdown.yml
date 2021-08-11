@@ -1,18 +1,18 @@
 rmd_files: [
   "index.md",
-  #"bio-install.md",
-  #"bio-data.md",
-  #"bio-fasta.md",
-  #"bio-gff.md",
-  #"bio-json.md",
+  "bio-install.md",
+  "bio-fasta.md",
+  "bio-gff.md",
   #"bio-align.md",
   #"bio-taxonomy.md",
   #"bio-ontology.md",
   #"bio-runinfo.md",
-  "bio-comm.md",
   #"bio-tips.md",
   "bio-usage.md",
   #"bio-related.md",
+  "bio-comm.md",
+  "bio-uniq.md",
+
 ]
 
 book_filename: bio

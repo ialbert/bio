@@ -42,15 +42,15 @@ Install `bio`:
 
 ### Obtain data
 
-First we download the data so that `bio` can operate on it. The step needs to be done only once:
+First download data so that `bio` can operate on it. You can obtain GenBank files in various ways, here we download with Entrez Direct:
 
-    bio fetch NC_045512 MN996532 > genomes.gb
+    efetch -db nuccore -id NC_045512,MN996532 -format gbwithparts > genomes.gb
 
 Bioinformatics workflows often requires you to present data in different formats.
 
 ### Convert Genbank to FASTA.
 
-    bio convert genomes.gb  --fasta | head
+    bio fasta genomes.gb  | head
 
 
 prints:
@@ -63,7 +63,7 @@ prints:
 
 ### Convert to GFF format:
 
-    bio convert genomes.gb  --gff | head
+    bio gff genomes.gb  | head
 
 prints:
 
@@ -106,9 +106,9 @@ prints:
                           species, 694009, Severe acute respiratory syndrome-related coronavirus
                             no rank, 2697049, Severe acute respiratory syndrome coronavirus 2
 
-### Getting sample metadata
+### Getting biological metadata
 
-Get sample metadata for the viral genomes (taxid `2697049`):
+Get metadata for the viral genomes (taxid `2697049` that corresponds to `SARS-COV-2`):
 
     bio meta 2697049  | head
 

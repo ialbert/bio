@@ -4,38 +4,32 @@
 
 ## Installation
 
-While the following command should work:
-
-    pip install bio --upgrade
-
 We usually recommend installing prerequisites with conda like so:
 
     conda install -c bioconda biopython
 
-then proceed with `pip install bio --upgrade`.
+Then following up with:
 
-## Quick start
-
-Run a simple fetch command, set the verbose mode to see what is happening:
-
-    bio fetch NC_045512 -v
-
-now list the known data:
-
-    bio data
-
-try out a conversion:
-
-    bio convert NC_045512
+    pip install bio --upgrade
 
 ## Usage
 
-Type `bio` followed by one or more accession numbers or data names followed by one or more flags or options.
+Type `bio` followed by a task (`fasta`, `gff`, `taxon`) then followed by one or more flags or options.
+
+    bio fasta genome.gb
+    bio gff genome.gb --type CDS
+    bio taxon 2697049 --lineage
 
 ## Getting help
 
-    bio -h
-    
+You can get help on any command by just entering it
+
+    bio 
+    bio fasta
+    bio taxon
+
+each line above will print a help on the task usage.
+
 ## Tasks
 
 Tasks will have separate help pages that are shown when the command is run with no parameters (or using the `-h` flag)
