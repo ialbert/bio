@@ -116,7 +116,7 @@ def get_study(assc, size=5):
     most_annotated = sorted(assc.keys(), key=lambda i: len(assc[i]), reverse=True)
     study = most_annotated[:size]
     study = frozenset(study)
-    print(f"*** Using the {size} most annotated genes as study: {','.join(study)} ")
+    print(f"### Using the {size} most annotated genes as study: {','.join(study)} ")
     return study
 
 
@@ -133,7 +133,7 @@ def parse_data(fname, study_size=10):
     population = set()
 
     stream = utils.gz_read(fname, 'r')
-    print(f"*** parsing {fname}")
+    print(f"### parsing {fname}")
     # Get the gene from each row
     for line in stream:
         line = line.decode()
@@ -177,7 +177,7 @@ def download_terms():
     """
 
     if os.path.exists(GO_FILE):
-        print(f"*** File already found at {GO_FILE}")
+        print(f"### File already found at {GO_FILE}")
 
     return
 

@@ -6,7 +6,7 @@
 import sys
 
 # Global package version
-VERSION = "0.6.1"
+VERSION = "0.6.2"
 
 try:
     from signal import signal, SIGPIPE, SIG_DFL
@@ -18,9 +18,9 @@ except ImportError as exc:
 try:
     from Bio import Entrez
 except ImportError as exc:
-    print(f"*** Error: {exc}", file=sys.stderr)
-    print(f"*** This program requires biopython", file=sys.stderr)
-    print(f"*** Install: conda install -y biopython>=1.78", file=sys.stderr)
+    print(f"### Error: {exc}", file=sys.stderr)
+    print(f"### This program requires biopython", file=sys.stderr)
+    print(f"### Install: conda install -y biopython>=1.78", file=sys.stderr)
     sys.exit(-1)
 
 

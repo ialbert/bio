@@ -144,7 +144,7 @@ def parse_term(fname):
     back_prop = {}
 
     uid, parent, name, definition, edges = None, None, None, None, []
-    print(f"*** parsing: {fname}")
+    print(f"### parsing: {fname}")
     for elems in stream:
 
         if stop_term(elems):
@@ -185,7 +185,7 @@ def build_database(fname, flg='w'):
     """
     Build the ontology database.
     """
-    print(f"*** building database from: {fname}")
+    print(f"### building database from: {fname}")
 
     # Check the file.
     if not os.path.isfile(fname):
@@ -225,7 +225,7 @@ def build_db():
     names.update(sonames)
     back_prop.update(soback_prop)
 
-    print("*** saving the JSON model")
+    print("### saving the JSON model")
     store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop)
     fp = open(JSON_DB, "wt")
     json.dump(store, fp, indent=4)
@@ -333,7 +333,7 @@ def show_lineage(start, terms, nodes, back_prop):
 
     parents = back_prop.get(start, [])
     if len(parents) > 1:
-        print("*** More than on path detected, use -P to view all relationships.\n")
+        print("### More than on path detected, use -P to view all relationships.\n")
 
     return
 
@@ -459,7 +459,7 @@ def plot_term(query, names, terms, nodes, back_prop, outname=''):
     # Construct file name and write to pdf.
     grph.layout(prog='dot')
 
-    print(f"*** Writing plot to {outname}")
+    print(f"### Writing plot to {outname}")
     # Write DOT string to file and plot to .pdf
     if outname.endswith('.dot'):
         open(outname, 'w').write(grph.to_string())

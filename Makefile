@@ -60,5 +60,8 @@ pypi: test build
 
 # Upload prebuilt data to distribution site.
 upload:
+	rsync -avz --progress ~/.bio/taxdump.tar.gz ${REMOTE}
 	rsync -avz --progress ~/.bio/taxdb.json ${REMOTE}
 	rsync -avz --progress ~/.bio/taxdb.sqlite ${REMOTE}
+
+

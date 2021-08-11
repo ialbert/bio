@@ -5,7 +5,7 @@ rmd_files: [
   "bio-fasta.md",
   "bio-gff.md",
   #"bio-align.md",
-  #"bio-taxonomy.md",
+  "bio-taxonomy.md",
   #"bio-ontology.md",
   #"bio-runinfo.md",
   #"bio-tips.md",

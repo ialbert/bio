@@ -1,0 +1,26 @@
+superkingdom,10239,Viruses
+  clade,2559587,Riboviria
+    kingdom,2732396,Orthornavirae
+      phylum,2732408,Pisuviricota
+        class,2732506,Pisoniviricetes
+          order,76804,Nidovirales
+            suborder,2499399,Cornidovirineae
+              family,11118,Coronaviridae
+                subfamily,2501931,Orthocoronavirinae
+                  genus,694002,Betacoronavirus
+                    subgenus,2509511,Sarbecovirus
+                      species,694009,Severe acute respiratory syndrome-related coronavirus
+                        no rank,2697049,Severe acute respiratory syndrome coronavirus 2
+superkingdom,10239,Viruses
+  clade,2559587,Riboviria
+    kingdom,2732396,Orthornavirae
+      phylum,2732408,Pisuviricota
+        class,2732506,Pisoniviricetes
+          order,76804,Nidovirales
+            suborder,2499399,Cornidovirineae
+              family,11118,Coronaviridae
+                subfamily,2501931,Orthocoronavirinae
+                  genus,694002,Betacoronavirus
+                    subgenus,2509511,Sarbecovirus
+                      species,694009,Severe acute respiratory syndrome-related coronavirus
+                        no rank,2709072,Bat coronavirus RaTG13

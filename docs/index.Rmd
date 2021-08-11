@@ -84,9 +84,28 @@ Among the many useful features, `bio` is also able to generate informative gene 
 
 ### Navigate the taxonomy
 
-`bio` understands taxonomies, NCBI bioprojects and metadata.
+Obtain the taxonomy files.
 
-Display the lineage of taxonomic id:
+	bio taxon --download
+
+search for a taxonomical name:
+
+	bio taxon sars2
+
+produces:
+
+	# Searching taxonomy for: sars2
+	no rank, 2697049, Severe acute respiratory syndrome coronavirus 2
+
+We make note of the taxonomic id `2697049` that can be used to further investigate the taxonomy. Accessing it directly:
+
+	bio taxon 2697049
+
+prints:
+
+	no rank, 2697049, Severe acute respiratory syndrome coronavirus 2
+
+To see the lineage of taxonomic id:
 
     bio taxon 2697049 --lineage
 

@@ -39,4 +39,9 @@ bio gff genomes.gb --type CDS > CDS.gff
 # Slice the GFF file.
 bio gff -s 300 -e 10k > slice.gff
 
-cat
+# Taxonomy listing.
+bio taxon 117565 -d 5 > taxonomy.txt
+
+# Taxonomy lineage.
+bio taxon genomes.gb --lineage > lineage.txt
+

@@ -12,6 +12,7 @@ from os.path import expanduser
 
 import requests
 from biorun.libs.sqlitedict import SqliteDict
+from tqdm import tqdm
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -25,9 +26,9 @@ DATADIR = os.path.join(expanduser("~"), ".bio")
 os.makedirs(DATADIR, exist_ok=True)
 
 
-def read_lines(stream, index=0):
+def read_lines(stream, index=0, sep=''):
     lines = filter(lambda x: not x.startswith("#"), stream)
-    lines = map(lambda x: x.strip().split()[index], lines)
+    lines = map(lambda x: x.strip().split(sep=sep)[index], lines)
     lines = filter(None, lines)
     lines = list(lines)
     return lines
@@ -88,17 +89,11 @@ def lower_case_keys(adict):
     return dict((k.lower(), v) for (k, v) in adict.items())
 
 
-def safe_int_zero(text):
+def int_or_zero(text):
     try:
         return int(text)
     except ValueError as exc:
         return 0
-
-
-def progress_bar(frac, barlen=30, null=' ', marker='=', head=">"):
-    pos = int(frac * barlen)
-    bar = marker * pos + head + null * int(barlen - pos)
-    return bar
 
 
 def open_db(table, fname, flag='c'):
@@ -110,19 +105,16 @@ def open_db(table, fname, flag='c'):
     return conn
 
 
-CHUNK = 25000
-
-
-def save_table(name, obj, fname, flg='w'):
+def save_table(name, obj, fname, flg='w', chunk=20000):
     size = len(obj)
     table = open_db(table=name, fname=fname, flag=flg)
-    for index, (key, value) in enumerate(obj.items()):
+    stream = enumerate(obj.items())
+    stream = tqdm(stream, total=size, desc=f"### {name}")
+    for index, (key, value) in stream:
         table[key] = value
-        if index % CHUNK == 0:
-            perc = round(index / size * 100)
-            print(f"*** saving {name} with {size:,} elements ({perc:.0f}%)", end="\r")
+        if index % chunk == 0:
             table.commit()
-    print(f"*** saved {name} with {size:,} elements (100%)", end="\r")
+    print(f"### saved {name} with {size:,} elements", end="\r")
     print("")
     table.commit()
     table.close()
@@ -138,7 +130,7 @@ def plural(target, val=0, end='ies'):
     return output
 
 
-def response(url, params={}):
+def urlopen(url, params={}):
     # Open request to file
     r = requests.get(url, stream=True, params=params)
     try:
@@ -147,6 +139,9 @@ def response(url, params={}):
     except Exception as exc:
         error(f"{exc}")
     return r
+
+
+CHUNK_SIZE = 2500
 
 
 def download(url, dest_name, cache=False, params={}):
@@ -167,46 +162,36 @@ def download(url, dest_name, cache=False, params={}):
     # Open request
     url = url.replace('ftp:', 'http:') if url.startswith('ftp:') else url
 
-    r = response(url=url, params=params)
-    # Attempt to determine the download size.
+    # Open the request.
+    r = urlopen(url=url, params=params)
+
     headers = lower_case_keys(r.headers)
     size = headers.get("content-length", 0)
+    total = int_or_zero(size)
 
-    size = safe_int_zero(size)
-
-    # How much data to process at a time.
     chunk_size = 1 * 1024 * 1024
 
-    # The name of the file that will be stored
-    fname = os.path.split(dest_name)[-1]
-
     # Create file only if download completes successfully.
-    with tempfile.NamedTemporaryFile() as fp:
+    pbar = tqdm(desc=f"### {dest_name}", unit="B", unit_scale=True, unit_divisor=1024, total=total)
+
+    with tempfile.NamedTemporaryFile(delete=True) as fp:
 
         # Iterate over the content and write to temp file
         for chunk in r.iter_content(chunk_size=chunk_size):
             total += len(chunk)
-
-            if size:
-                frac = 1 if total >= size else total / size
-                perc = frac * 100
-                bar = progress_bar(frac)
-                print(f"*** downloading [{bar}] {fname} {human_size(size)} ({perc:.1f}%)", end="\r")
-            else:
-                print(f"*** downloading {fname} ({human_size(total)})     ", end="\r")
-
             fp.write(chunk)
-
-        print("")
+            pbar.update(len(chunk))
 
         # File creation completed.
-        fp.seek(0)
+        fp.flush()
 
         # Copy file to destination.
         shutil.copyfile(fp.name, path)
 
-        # Progress notification.
-        logger.info(f"saved to: {dest_name}")
+        # Logging.
+        logger.info(f"saved to: {path}")
+
+    pbar.close()
 
 
 def no_dash(alist):
@@ -311,7 +296,7 @@ def get_logger(name="bio", hnd=None, fmt=None, terminator='\n'):
     hnd.terminator = terminator
 
     # The logging formatter.
-    fmt = fmt or logging.Formatter('*** %(message)s')
+    fmt = fmt or logging.Formatter('### %(message)s')
 
     # Add formatter to handler
     hnd.setFormatter(fmt)

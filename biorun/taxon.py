@@ -7,22 +7,22 @@ import sys
 import tarfile
 from itertools import islice
 
-from biorun import  convert
+from biorun import convert
 from biorun import utils
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
 
-JSON_DB_NAME = "taxdb.json"
-SQLITE_DB_NAME = "taxdb.sqlite"
+JSON_FILE_NAME = "taxdb.json"
+SQLITE_FILE_NAME = "taxdb.sqlite"
 TAXDB_URL = "http://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz"
-TAXDB_NAME = "taxdump.tar.gz"
+TAXDB_FILE_NAME = "taxdump.tar.gz"
 
 join = os.path.join
 
 # Create the full paths
-TAXDB_NAME = join(utils.DATADIR, TAXDB_NAME)
-SQLITE_DB = join(utils.DATADIR, SQLITE_DB_NAME)
-JSON_DB = join(utils.DATADIR, JSON_DB_NAME)
+TAXDB_NAME = join(utils.DATADIR, TAXDB_FILE_NAME)
+SQLITE_DB = join(utils.DATADIR, SQLITE_FILE_NAME)
+JSON_DB = join(utils.DATADIR, JSON_FILE_NAME)
 
 # Keys into the database
 GRAPH, BACK, TAXID = "GRAPH", "BACK", "TAXIDS"
@@ -46,13 +46,18 @@ def download_prebuilt():
     """
     Downloads prebuild databases.
     """
-    url = "http://data.biostarhandbook.com/bio/"
+    url = "http://www.bioinfo.help/data/"
 
     url_sqlite = f"{url}/taxdb.sqlite"
     url_json = f"{url}/taxdb.json"
+    url_taxdump = f"{url}/taxdump.tar.gz"
 
-    utils.download(url=url_sqlite, dest_name=SQLITE_DB_NAME, cache=True)
-    utils.download(url=url_json, dest_name=JSON_DB_NAME, cache=True)
+    utils.download(url=url_taxdump, dest_name=TAXDB_FILE_NAME, cache=True)
+    utils.download(url=url_json, dest_name=JSON_FILE_NAME, cache=True)
+    utils.download(url=url_sqlite, dest_name=SQLITE_FILE_NAME, cache=True)
+
+    print("### downloads completed")
+
 
 def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_NAME):
     """
@@ -65,13 +70,14 @@ def build_database(archive=TAXDB_NAME, limit=None):
     """
     Downloads taxdump file.
     """
-    print(f"*** building database from: {archive}")
 
     # The location of the archive.
     path = os.path.join(utils.DATADIR, archive)
 
     # Download the latest taxdump file.
     update_taxdump()
+
+    print(f"\n### taxdump file: {archive}")
 
     # Check the file.
     if not os.path.isfile(path):
@@ -93,14 +99,15 @@ def build_database(archive=TAXDB_NAME, limit=None):
     # Save the graph.
     save_table(GRAPH, graph)
 
-    print("*** saving the JSON model")
+    print("### saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_DB)
 
     # Save the JSON file as well.
-    store = dict(TAXID=tax2data, GRAPH=graph)
+    store = {TAXID: tax2data, GRAPH: graph}
     fp = open(json_path, 'wt')
     json.dump(store, fp, indent=4)
     fp.close()
+
 
 def open_tarfile(archive, filename, limit=None, delimiter="\t"):
     """
@@ -155,7 +162,7 @@ def parse_names(archive, filename="names.dmp", limit=None):
     # Lookup tables.
     tax2data, name2tax = {}, {}
 
-    print(f"*** processing: {filename}")
+    print(f"### processing: {filename}")
 
     # Process the nodes.dmp file.
     for row in stream:
@@ -193,7 +200,7 @@ def parse_nodes(archive, tax2data, filename="nodes.dmp", limit=None):
     # Data structures to fill.
     graph = {}
 
-    print("*** processing: nodes.dmp")
+    print("### processing: nodes.dmp")
 
     # Process the nodes.dmp file.
     for row in stream:
@@ -210,7 +217,6 @@ def parse_nodes(archive, tax2data, filename="nodes.dmp", limit=None):
             tax2data[child][3] = parent
 
     return graph
-
 
 
 def open_db(table, fname=SQLITE_DB, flag='c'):
@@ -349,12 +355,14 @@ def donothing(*args, **kwds):
     """
     pass
 
+
 def valid_int(text):
     try:
         int(text)
         return True
     except ValueError as exc:
         return False
+
 
 def dfs_visitor(graph, node, visited, depth=0, func=donothing, maxdepth=0):
     """
@@ -371,7 +379,7 @@ def dfs_visitor(graph, node, visited, depth=0, func=donothing, maxdepth=0):
             dfs_visitor(graph=graph, node=nbr, depth=nextdepth, visited=visited, func=func, maxdepth=maxdepth)
 
 
-def filter_file(stream, terms, keep, remove, graph, colidx=0):
+def filter_file(stream, terms, keep, remove, graph, colidx=0, sep="\t"):
     """
     Filters a file to retain only the rows where a taxid is ina subtree.
     """
@@ -396,7 +404,7 @@ def filter_file(stream, terms, keep, remove, graph, colidx=0):
         dfs_visitor(graph=graph, node=term, visited=remove_dict)
 
     # Read the stream.
-    reader = csv.reader(stream, delimiter="\t")
+    reader = csv.reader(stream, delimiter=sep)
 
     # Selection condition.
     def keep_func(row):
@@ -416,19 +424,9 @@ def filter_file(stream, terms, keep, remove, graph, colidx=0):
         reader = filter(remove_func, reader)
 
     # Generate the output.
-    writer = csv.writer(sys.stdout, delimiter="\t")
+    writer = csv.writer(sys.stdout, delimiter=sep)
     writer.writerows(reader)
 
-
-def parse_taxids(json):
-    """
-    Attempts to parse taxids from a json data
-    """
-    # Parses the taxids
-    doubles = [jsonrec.find_taxid(rec) for rec in json] if json else [[]]
-    # Flatten the list
-    taxids = [elem for sublist in doubles for elem in sublist]
-    return taxids
 
 
 def decode(text):
@@ -475,29 +473,35 @@ def parse_stream(stream, field=1, delim="\t"):
 @plac.flg('build', "updates and builds a local database")
 @plac.flg('preload', "loads entire database in memory")
 @plac.flg('list_', "lists database content", abbrev='l')
-@plac.opt('scinames', "scientific or common names in each line. ", abbrev="S")
-@plac.flg('children', "include children when returning when parsing latin names", abbrev='C')
+# @plac.opt('scinames', "scientific or common names in each line. ", abbrev="S")
+# @plac.flg('children', "include children when returning when parsing latin names", abbrev='C')
 @plac.flg('lineage', "show the lineage for a taxon term", abbrev="L")
 @plac.opt('indent', "the indentation depth (set to zero for flat)")
 @plac.opt('sep', "separator (default is ', ')", abbrev='s')
-@plac.flg('metadata', "downloads metadata for the taxon", abbrev='m')
-@plac.flg('download', "downloads the database from the remote site", abbrev='G')
+@plac.flg('download', "downloads the database from the remote site", abbrev='D')
 @plac.opt('depth', "how deep to visit a clade ", abbrev='d', type=int)
 @plac.opt('keep', "clade to keep", abbrev='K')
 @plac.opt('remove', "clade to remove", abbrev='R')
 @plac.opt('field', "which column to read when filtering")
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('accessions', "Print the accessions number for each ")
-def run(lineage=False, build=False, download=False, accessions=False, keep='', remove='', field=1,
-        scinames='', children=False, list_=False, depth=0, metadata=False, preload=False, indent=2, sep='',
+def run(lineage=False, build=False, download=False, accessions=False,
+        keep='', remove='', field=1,
+        list_=False, depth=0, preload=False, indent=2, sep=',',
         verbose=False, *terms):
     global SEP, INDENT, LIMIT
 
+    terms = list(terms)
+
+    # Do not consume stdin when filtering input
+    filter_mode = keep or remove
+
     # Input may come as a stream.
-    if not terms and not sys.stdin.isatty():
-        stream = sys.stdin
-    else:
-        stream = None
+    if not sys.stdin.isatty() and not filter_mode:
+        ids = utils.read_lines(sys.stdin, sep=sep)
+        # Dictionaries maintain the order.
+        store = dict((map(lambda x: (x, x), ids)))
+        terms.extend(store.keys())
 
     # Indentation level
     INDENT = ' ' * indent
@@ -511,10 +515,12 @@ def run(lineage=False, build=False, download=False, accessions=False, keep='', r
     # Download the prebuilt database.
     if download:
         download_prebuilt()
+        return
 
     # Downloads a new taxdump and builds a new taxonomy database.
     if build:
         build_database(limit=LIMIT)
+        return
 
     # Get the content of the database.
     names, graph = get_data(preload=preload, acc=accessions)
@@ -524,18 +530,16 @@ def run(lineage=False, build=False, download=False, accessions=False, keep='', r
         print_database(names=names, graph=graph)
         return
 
-    if scinames:
-        search_file(scinames, names=names, latin=latin, graph=graph, include=children)
-        return
+
+
+    # if scinames:
+    #    search_file(scinames, names=names, latin=latin, graph=graph, include=children)
+    #    return
 
     # Filters a file by a column.
     if keep or remove:
-        filter_file(stream=stream, terms=terms, keep=keep, remove=remove, graph=graph, colidx=field - 1)
+        filter_file(stream=sys.stdin, terms=terms, keep=keep, remove=remove, graph=graph, colidx=field-1, sep=sep)
         return
-
-    # Input may come from a file or command line.
-    if stream:
-        terms = parse_stream(stream, field=1)
 
     # No valid terms found. Print database stats.
     if not terms:
@@ -550,15 +554,18 @@ def run(lineage=False, build=False, download=False, accessions=False, keep='', r
         term = term.strip()
 
         if os.path.isfile(term):
-            recs = convert.read_input(fname=term)
+            # Attempts to parse taxonomical information from GenBank
+            recs = convert.parse_stream(fname=term)
             recs = filter(convert.source_only(True), recs)
             for rec in recs:
-                print (rec)
-        # Attempts to extract the taxid from a genbank file.
-
-        # Add to the terms.
-        words.append(term)
-
+                db_xref = rec.annot.get('db_xref', [])
+                db_xref = filter(lambda x: x.startswith("taxon:"), db_xref)
+                db_xref = map(lambda x: x.split(":")[1], db_xref)
+                db_xref = list(db_xref)
+                words.extend(db_xref)
+        else:
+            # Add to the terms.
+            words.append(term)
 
     # Produce lineages
     if lineage:

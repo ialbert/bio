@@ -1,0 +1,16 @@
+class,117565,Myxini
+  order,7761,Myxiniformes
+    family,7762,Myxinidae
+      subfamily,30309,Eptatretinae
+        genus,7763,Eptatretus
+      subfamily,110551,Myxininae
+        genus,110555,Myxine
+        genus,458587,Notomyxine
+        genus,1314860,Neomyxine
+      subfamily,1315018,Rubicundinae
+        genus,1315019,Rubicundus
+    no rank,727487,unclassified Myxiniformes
+      species,851741,Myxiniformes sp. BOLD:AAB8618
+      species,851742,Myxiniformes sp. BOLD:AAB8619
+      species,851743,Myxiniformes sp. BOLD:AAB8620
+      species,851744,Myxiniformes sp. BOLD:AAD8813

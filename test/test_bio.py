@@ -43,3 +43,9 @@ def test_10(capsys):
 def test_11(capsys):
     run("bio gff -s 300 -e 10k > slice.gff")
 
+def test_12(capsys):
+    run("bio taxon 117565 -d 5 > taxonomy.txt")
+
+def test_13(capsys):
+    run("bio taxon genomes.gb --lineage > lineage.txt")
+

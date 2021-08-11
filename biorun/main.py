@@ -18,10 +18,10 @@ logger = utils.logger
 #
 SUB_COMMANDS = dict(
     fetch=("biorun.fetch.run", True, "fetch GenBank data"),
-    fasta=("biorun.fasta.run", True, "converts GenBank to FASTA"),
-    gff=("biorun.gff.run", True, "converts GenBank to GFF"),
+    fasta=("biorun.fasta.run", True, "convert GenBank to FASTA"),
+    gff=("biorun.gff.run", True, "convert GenBank to GFF"),
     #meta=("biorun.meta.run", False, "downloads metadata by taxonomy ID"),
-    #taxon=("biorun.taxdb.run", False, "displays NCBI taxonomies"),
+    taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
 
     # define=("biorun.models.ontology.run", False, "explains biological terms"),
     # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
@@ -44,6 +44,7 @@ Commands:
 
 Examples:
 
+    bio fetch NC_045512 > genome.gb
     bio fasta genome.gb
     bio gff genome.gb --type CDS
     bio taxon 2697049 --lineage  
