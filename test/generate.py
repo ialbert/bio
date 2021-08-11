@@ -8,7 +8,7 @@ Each line in the shell script will be a line in the
 """
 from itertools import count
 from textwrap import dedent
-import os, sys, difflib
+import os, sys, difflib, shutil
 
 # Test naming index.
 COUNTER = count(1)
@@ -40,6 +40,10 @@ def init_dirs():
 
     # Switch to run directory
     os.chdir(RUN_DIR)
+
+    # Link the test data
+    os.system("ln -s ../data/genomes.gb .")
+    os.system("ln -s ../data/alias.txt .")
 
 join = os.path.join
 

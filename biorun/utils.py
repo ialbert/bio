@@ -93,15 +93,6 @@ def trim(text, size=3):
     return subs
 
 
-def download_from_bucket(bucket_name, file_name, dest_name=None, cache=False):
-    """
-    Download a file from a GS bucket
-    """
-    url = f"https://storage.googleapis.com/storage/v1/b/{bucket_name}/o/{file_name}"
-    dest_name = dest_name or file_name
-    download(url=url, dest_name=dest_name, cache=cache, params=dict(alt="media"))
-
-
 def lower_case_keys(adict):
     return dict((k.lower(), v) for (k, v) in adict.items())
 
@@ -227,23 +218,6 @@ def download(url, dest_name, cache=False, params={}):
         logger.info(f"saved to: {dest_name}")
 
 
-def maybe_ncbi(text):
-    """
-    Guesses that a text is a valid NCBI accession
-    """
-    code = text[:2]
-
-    # Upper case letters
-    upper = code == code.upper()
-
-    # Get rid of underscores and version number
-    rest = text[2:].replace("_", "").split(".")[0]
-
-    # Sizes between 5 and 9
-    size = 5 <= len(rest) <= 9
-
-    return upper and size and is_int(rest)
-
 
 def no_dash(alist):
     """
@@ -295,8 +269,9 @@ def parse_number(text):
     """
     Parses a number from alternative representations: 100000, 100,000 or 100Kb or 100k all have the same representation.
     """
-    if text is None:
+    if text in ('', None):
         return None
+
     text = str(text)
     text = text.lower()
 
@@ -312,45 +287,6 @@ def parse_number(text):
         text = f"{value * 1000 * 1000}"
 
     return safe_int(text)
-
-
-def save_stream(stream, fname, trigger=10000, file=sys.stderr, flag='wt'):
-    """
-    Write a input 'stream' as the fname filename
-    """
-    # Save a stream into file and print progess.
-    # Use a temporary file in case the process fails.
-    # We don't want a failed cache file.
-
-    tmp = tempfile.NamedTemporaryFile(mode="w+t")
-
-    index = 0
-
-    sequence = count(1)
-
-    for index, line in zip(sequence, stream):
-        if (index % trigger) == 0:
-            print(f"*** downloaded {index:,d} lines\r", file=file, end='')
-        tmp.write(line)
-
-    print(f"*** downloaded  {index:,d} lines", file=file)
-
-    # Not sure if this is needed. Can't hurt.
-    tmp.flush()
-
-    # Rewind temporary file to beginning
-    tmp.seek(0)
-
-    # Copy over the content from the temporary file to the final gzipped file destination.
-    out = gz_write(fname)
-    for line in tmp:
-        out.write(line)
-    out.close()
-    tmp.close()
-
-    logger.info(f"saved {fname}")
-
-    return
 
 
 def gz_write(fname, flag='wt'):
@@ -402,22 +338,6 @@ def set_verbosity(logger, level=1):
     """
     level = logging.DEBUG if level > 0 else logging.WARNING
     logger.setLevel(level)
-
-
-def symlink(src, dst):
-    """
-    Creates a symlink.
-    """
-
-    # Allow link replacement.
-    if os.path.islink(dst):
-        os.remove(dst)
-
-    # Don't link to files.
-    if os.path.isfile(dst):
-        logger.error(f"invalid link destination {dst}")
-
-    os.symlink(src, dst)
 
 
 # Initialize the logger.

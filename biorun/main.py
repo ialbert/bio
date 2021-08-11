@@ -17,10 +17,10 @@ logger = utils.logger
 # name = (module.function, automatic_help_flag, command_help)
 #
 SUB_COMMANDS = dict(
-    fetch=("biorun.fetch.run", True, "downloads GenBank data from NCBI"),
-    convert=("biorun.convert.run", True, "converts GenBank to FASTA or GFF"),
-    meta=("biorun.meta.run", False, "downloads metadata by taxonomy ID"),
-    taxon=("biorun.taxdb.run", False, "displays NCBI taxonomies"),
+    fasta=("biorun.fasta.run", True, "converts GenBank to FASTA"),
+    gff=("biorun.gff.run", True, "converts GenBank to GFF"),
+    #meta=("biorun.meta.run", False, "downloads metadata by taxonomy ID"),
+    #taxon=("biorun.taxdb.run", False, "displays NCBI taxonomies"),
 
     # define=("biorun.models.ontology.run", False, "explains biological terms"),
     # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
@@ -43,9 +43,8 @@ Commands:
 
 Examples:
 
-    bio fetch NC_045512 MN996532 > genomes.gb 
-    bio convert genomes.gb  --fasta
-    bio convert genomes.gb  --type CDS --gff
+    bio fasta genome.gb
+    bio gff genome.gb --type CDS
     bio taxon 2697049 --lineage  
 
 See also: https://www.bioinfo.help
@@ -136,7 +135,7 @@ def router():
     modfunc, flag, help = SUB_COMMANDS[cmd]
 
     # Add the help flag if no other information is present beyond command.
-    if flag and len(sys.argv) == 1:
+    if sys.stdin.isatty() and flag and len(sys.argv) == 1:
         sys.argv.append("-h")
 
     # Format: module.function

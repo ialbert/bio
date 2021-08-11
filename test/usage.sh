@@ -9,26 +9,30 @@
 # Stop on errors.
 set -uex
 
-# Fetch the accession, rename the data and change the sequence id.
-bio fetch NC_045512 MN996532 --quiet > genomes.gb
-
-# Convert genbank files to FASTA
-bio convert genomes.gb  --fasta > genomes.fa
+# Slice the genomes
+bio fasta genomes.gb --end  100 > genomes.fa
 
 # Slice the genomes
-bio convert genomes.gb --end  10 > slice.fa
+bio fasta genomes.gb --end  100  --alias alias.txt > genomes.alias.fa
 
 # Generate features only.
-bio convert genomes.gb --end 10 --features > features.fa
-
-# Generate features only.
-bio convert genomes.gb --end 10 --type CDS > cds.fa
+bio fasta genomes.gb --end 10 --type CDS > cds.fa
 
 # Translate the features.
-bio convert genomes.gb --type CDS --translate > translate.fa
+bio fasta genomes.gb --type CDS --translate > translate.fa
 
 # Extract the proteins.
-bio convert genomes.gb  --protein > protein.fa
+bio fasta genomes.gb  --protein > protein.fa
+
+# Stop codons
+bio fasta -s -3 > stop.fa
 
 # Convert genbank files to GFF
-bio convert genomes.gb  --gff > genomes.gff
+bio gff genomes.gb > genomes.gff
+
+# Convert genbank files to GFF
+bio gff genomes.gb --type CDS > CDS.gff
+
+# Slice the GFF file.
+bio gff -s 300 -e 10k > slice.gff
+

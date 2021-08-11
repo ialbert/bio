@@ -7,7 +7,6 @@ import sys
 from collections import OrderedDict, defaultdict
 from itertools import count
 
-import biorun.libs.placlib as plac
 from biorun import utils
 
 # Module level logger.
@@ -199,49 +198,41 @@ def get_records(recs):
             yield out
 
 
-def parse(fname):
+def parse_stream(fname):
     """
     Parses a filename with the appropriate readers.
     """
-    stream = gzip.open(fname) if fname.endswith("gz") else open(fname)
-    if is_fasta(fname):
-        recs = SeqIO.parse(stream, format="fasta")
-        recs = get_records(recs)
-    elif is_genbank(fname):
-        recs = SeqIO.parse(stream, format="genbank")
-        recs = get_records(recs)
+
+    if hasattr(fname, 'read'):
+        stream = fname
     else:
-        logger.error(f"file extension not recognized: {fname}")
-        sys.exit()
+        if not os.path.isfile(fname):
+            logger.error(f"file not found: {fname}")
+            sys.exit()
+        stream = gzip.open(fname) if fname.endswith("gz") else open(fname)
+
+    recs = SeqIO.parse(stream, format="genbank")
+    recs = get_records(recs)
 
     return recs
-
-
-def read_input(fname):
-    """
-    Parse the file into records
-    """
-
-    # Attempt to open and parse the file.
-    if os.path.isfile(fname):
-        recs = parse(fname)
-        return recs
-    else:
-        # File not found.
-        logger.error(f"file not found: {fname}")
-        sys.exit()
-
 
 def fasta_formatter(rec):
     print(rec.obj.format("fasta"), end='')
 
 
-from biorun.gff import gff_formatter
-
-
 def remapper(rec):
     rec.id = ALIAS.get(rec.id, rec.id)
     return rec
+
+def interval_selector(start=0, end=None):
+    def func(rec):
+        if start and rec.start < start:
+            return False
+        if end and rec.end > end:
+            return False
+        return True
+
+    return func
 
 
 def sequence_slicer(start=0, end=None):
@@ -350,28 +341,112 @@ def parse_alias(fname):
     except Exception as exc:
         return {}
 
+#
+# The GFF attributes generated for a source type.
+#
+SOURCE_ATTRIBUTES = [
+    "mol_type", "isolate", "db_xref", "organism", "country", "collection_date"
+]
 
-@plac.pos("data", "input data")
-@plac.flg("features", "convert the features", abbrev='F')
-@plac.flg("fasta_", "convert to fasta")
-@plac.flg("gff_", "convert to gff")
-@plac.opt("start", "start coordinate")
-@plac.opt("end", "end coordinate")
-@plac.opt("type_", "filter for a feature type")
-@plac.opt("id_", "filter for a sequence id")
-@plac.opt("name", "filter for a sequence name")
-@plac.opt("gene", "filter for a gene name", abbrev='G')
-@plac.flg("protein", "operate on the protein sequences", abbrev='P')
-@plac.flg("translate", "translate DNA sequences", abbrev='R')
-@plac.opt("alias", "remap sequence ids")
-def run(features=False, protein=False, translate=False, gff_=False, fasta_=False,
-        start='1', end=None, type_='', id_='', name='', gene='', alias=None,  *fnames):
+# GFF attributes filled for each feature other than "source"
+GFF_ATTRIBUTES = [
+    "gene", "protein_id", "product", "db_xref", "function",
+]
+
+# Attributes that should not be added
+SKIP_GFF_ATTR = {"id", "parent_id", "name", "type", "start", "comment", "references", "structured_comment",
+                 "end", "location", "translation", "strand", "operator"}
+
+
+# Associate a color to a feature type.
+COLOR_FOR_TYPE = {
+    "five_prime_UTR": "#cc0e74",
+    "three_prime_UTR": "#cc0e74",
+    "stem_loop": "#fa7f72",
+    "mature_protein_region": "#CBAEBB",
+    "region": "#CECECE",
+    "mRNA": "#799351",
+    "gene": "#cb7a77",
+    "transcript": "#79a3b1",
+    "tRNA": "#a685e2",
+    "ncRNA": "#fca3cc",
+    "mobile_element": "#efd9d1",
+    "mRNA_region":"#7a77cb",
+}
+
+def feature2gff(seqid, ftype, start, end, strand, uid, name, pid=None):
     """
-    Convert data to various formats
+    Returns a Record as an 11 element  GFF3 list .
+    """
+    # Reformat the strand
+    strand = "+" if strand > 0 else "-"
+
+    # TODO: is this the phase?
+    #phase = feat.get("codon_start", [1])[0] - 1
+    phase = "."
+
+    # The color for the feature.
+    color = COLOR_FOR_TYPE.get(ftype)
+
+    # Attribute data
+    attr = [ f"ID={uid}", f"Name={name}" ]
+    if pid:
+        attr.append( f"Parent={pid}")
+    if color:
+        attr.append(f"color={color}")
+
+    # Build the attribute string
+    attr = ";".join(attr)
+
+    # Create the GFF record.
+    data = [ seqid, ".", ftype, start, end, ".", strand, phase, attr]
+
+    return data
+
+
+def gff_formatter(rec):
+    """
+    Formats a record as GFF.
+    """
+    # Parent feature
+    data = feature2gff(start=rec.start, end=rec.end, ftype=rec.type, uid=rec.id, name=rec.name, strand=rec.strand, seqid=rec.seqid, pid=None)
+    line = "\t".join(map(str, data))
+
+    # Parent id.
+    pid = rec.id
+
+    if rec.type == "mRNA":
+        print (line)
+        ftype = "exon"
+    else:
+        ftype = rec.type
+
+    # Generate the locations
+    for start, end, strand in rec.locations:
+        name = rec.name
+        uid = next(counter)
+
+        data = feature2gff(start=start, end=end, ftype=ftype, uid=uid, name=name,
+                           strand=strand, seqid=rec.seqid, pid=rec.id)
+        line = "\t".join(map(str, data))
+        print(line)
+
+
+def run(features=False, protein=False, translate=False, fasta=False,
+        start='1', end=None, type_='', id_='', name='', gene='', alias=None,  fnames=[]):
+    """
+    Converts data to different formats.
     """
     global ALIAS
 
-    # Generate the ALIAS file.
+    # Comes as tuple
+    fnames = list(fnames)
+
+    # Adding standard input as a stream
+    if not sys.stdin.isatty():
+        fnames.append(sys.stdin)
+
+    # Generate the ALIAS remapping.
     ALIAS = parse_alias(alias) if alias else {}
 
     # Parse start and end into user friendly numbers.
@@ -388,14 +463,11 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
     # Turn type to CDS if gene is selected
     ftype = 'CDS' if gene else ftype
 
-    # Default format is fasta if nothing is specified.
-    fasta = False if (gff_ and not fasta_) else True
-
     # Selects sources only when no other feature specific option is set.
     source_flag = not(gene or name or type_ or translate or protein or features)
 
-    # GFF mode produces all features
-    source_flag = False if gff_ else source_flag
+    # Use the source only in fasta mode.
+    source_flag = source_flag and fasta
 
     # Select the formatter.
     if fasta:
@@ -406,12 +478,11 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
         print("##gff-version 3")
         formatter = gff_formatter
 
-
     # Handle each input separately.
     for fname in fnames:
 
         # Parse the input into records.
-        recs = read_input(fname)
+        recs = parse_stream(fname)
 
         # Remap aliases.
         recs = map(remapper, recs)
@@ -435,7 +506,12 @@ def run(features=False, protein=False, translate=False, gff_=False, fasta_=False
 
         # Apply additional filters.
         recs = filter(type_selector(ftype), recs)
-        recs = map(sequence_slicer(start=start, end=end), recs)
+
+        if fasta:
+            recs = map(sequence_slicer(start=start, end=end), recs)
+        else:
+            recs = filter(interval_selector(start=start, end=end), recs)
+
         recs = map(translate_recs(translate), recs)
 
         # Display the results.
