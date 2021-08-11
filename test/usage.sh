@@ -45,3 +45,5 @@ bio taxon 117565 -d 5 > taxonomy.txt
 # Taxonomy lineage.
 bio taxon genomes.gb --lineage > lineage.txt
 
+# Getting some metadata
+bio meta 11138 -H > meta.txt

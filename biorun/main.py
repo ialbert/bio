@@ -20,8 +20,8 @@ SUB_COMMANDS = dict(
     fetch=("biorun.fetch.run", True, "fetch GenBank data"),
     fasta=("biorun.fasta.run", True, "convert GenBank to FASTA"),
     gff=("biorun.gff.run", True, "convert GenBank to GFF"),
-    #meta=("biorun.meta.run", False, "downloads metadata by taxonomy ID"),
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
+    meta=("biorun.meta.run", False, "download metadata by taxonomy ID"),
 
     # define=("biorun.models.ontology.run", False, "explains biological terms"),
     # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),

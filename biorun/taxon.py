@@ -466,7 +466,13 @@ def parse_stream(stream, field=1, delim="\t"):
     # Keep only rows that have data for the column
     reader = filter(lambda row: len(row) >= colidx, reader)
 
-    return [row[colidx] for row in reader]
+    # Exract the correct column
+    reader = (row[colidx] for row in reader)
+
+    # Keep only nonzero entries.
+    reader = filter(lambda x: x.strip(), reader)
+
+    return list(reader)
 
 
 @plac.pos("terms", "taxids or search queries")
@@ -498,7 +504,7 @@ def run(lineage=False, build=False, download=False, accessions=False,
 
     # Input may come as a stream.
     if not sys.stdin.isatty() and not filter_mode:
-        ids = utils.read_lines(sys.stdin, sep=sep)
+        ids = parse_stream(sys.stdin, field=field, delim=sep)
         # Dictionaries maintain the order.
         store = dict((map(lambda x: (x, x), ids)))
         terms.extend(store.keys())

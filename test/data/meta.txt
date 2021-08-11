@@ -1,0 +1,27 @@
+accession,species,host,date,location,isolate,species_name
+NC_048217.1,11138,,,,,Murine hepatitis virus
+NC_001846.1,11138,,,,,Murine hepatitis virus
+AC_000192.1,11144,,,,,Murine hepatitis virus strain JHM
+JQ173883.1,1163669,,,,,Murine hepatitis virus strain S/3239-17
+AY700211.1,11138,,,,,Murine hepatitis virus
+AF208067.1,11138,,,,,Murine hepatitis virus
+AF208066.1,11138,,,,,Murine hepatitis virus
+AF201929.1,76344,,,,,Murine hepatitis virus strain 2
+AF029248.1,11138,,,,,Murine hepatitis virus
+MW620427.1,502104,10090,2020,South America; Brazil: Campinas-SP,UNICAMP,Murine coronavirus MHV-3
+MF618253.1,11138,10090,2014-01-16,North America; USA,MHV-ExoN(-) P250,Murine hepatitis virus
+MF618252.1,11138,10090,2014-01-16,North America; USA,WT-MHV P250,Murine hepatitis virus
+GU593319.1,11138,10090,,North America; USA,,Murine hepatitis virus
+FJ884687.1,11142,10090,,North America; USA: Pennsylvania,,Murine hepatitis virus strain A59
+FJ884686.1,11142,10090,,North America; USA: Pennsylvania,,Murine hepatitis virus strain A59
+FJ647227.1,429330,10090,,North America; USA: Pennsylvania,,Murine coronavirus repJHM/RA59
+FJ647226.1,591068,10090,,North America; USA: Pennsylvania,,Murine coronavirus MHV-JHM.IA
+FJ647225.1,591071,10090,,North America; USA: Pennsylvania,,Murine coronavirus inf-MHV-A59
+FJ647224.1,502104,10090,,North America; USA: Pennsylvania,,Murine coronavirus MHV-3
+FJ647223.1,502106,10090,,North America; USA: Pennsylvania,,Murine coronavirus MHV-1
+FJ647222.1,430472,10090,,North America; USA: Pennsylvania,,Murine coronavirus SA59/RJHM
+FJ647221.1,429331,10090,,North America; USA: Pennsylvania,,Murine coronavirus repA59/RJHM
+FJ647220.1,502107,10090,,North America; USA: Pennsylvania,,Murine coronavirus RA59/SJHM
+FJ647219.1,591070,10090,,North America; USA: Pennsylvania,,Murine coronavirus RJHM/A
+FJ647218.1,591069,10090,2006-01-01,North America; USA: Pennsylvania,,Murine coronavirus RA59/R13
+AB551247.1,11138,10090,1994,Oceania; Australia:Melbourne,,Murine hepatitis virus

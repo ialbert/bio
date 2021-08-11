@@ -133,12 +133,17 @@ Get metadata for the viral genomes (taxid `2697049` that corresponds to `SARS-CO
 
 prints:
 
-    accession     species    host   date       location              isolate     species_name
-    NC_045512.2   2697049    9606  2019-12    Asia; China          Wuhan-Hu-1  Severe acute respiratory syndrome coronavirus 2
-    MT576563.1    2697049    .        .       North America;           .       SARS-CoV-2/human/USA/USA-WA1/2020    Severe acute respiratory syndrome coronavirus 2
-    MT324684.1    2697049    .    2020-03-25  North America; USA       .       SARS-CoV-2/ENV/USA/UF-3/2020    Severe acute respiratory syndrome coronavirus 2
-    MT476384.1    2697049    .    2020-02-21  North America; USA: FL   .       SARS-CoV-2/ENV/USA/UF-11/2020    Severe acute respiratory syndrome coronavirus 2
-    MT952602.1    2697049    .         .            .                  .       Severe acute respiratory syndrome coronavirus 2
+	NC_045512.2,2697049,9606,2019-12,Asia; China,Wuhan-Hu-1,Severe acute respiratory syndrome coronavirus 2
+	MZ664556.1,2697049,,2021-03-16,Asia; China,SARS-CoV-2/huamn/CHN/CD-27553/2021,Severe acute respiratory syndrome coronavirus 2
+	MT576563.1,2697049,,,North America; ,SARS-CoV-2/human/USA/USA-WA1/2020,Severe acute respiratory syndrome coronavirus 2
+	MT324684.1,2697049,,2020-03-25,North America; USA,SARS-CoV-2/ENV/USA/UF-3/2020,Severe acute respiratory syndrome coronavirus 2
+	MT476384.1,2697049,,2020-02-21,North America; USA: FL,SARS-CoV-2/ENV/USA/UF-11/2020,Severe acute respiratory syndrome coronavirus 2
+	MT952602.1,2697049,,,,,Severe acute respiratory syndrome coronavirus 2
+	MT844089.1,2697049,,,,,Severe acute respiratory syndrome coronavirus 2
+	MT844088.1,2697049,,,,,Severe acute respiratory syndrome coronavirus 2
+	MT396241.1,2697049,,2020-03-06,Asia; China,SARS-CoV-2/human/CHN/YN-0306-466/2020,Severe acute respiratory syndrome coronavirus 2
+
+What are the hosts that the virus infects?
 
 
 ## Where to go next

@@ -49,3 +49,6 @@ def test_12(capsys):
 def test_13(capsys):
     run("bio taxon genomes.gb --lineage > lineage.txt")
 
+def test_14(capsys):
+    run("bio meta 11138 -H > meta.txt")
+
