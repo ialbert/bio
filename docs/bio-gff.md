@@ -1,4 +1,4 @@
-# GenBank to GFF {#bio-gff}
+# `gff`: convert GenBank to GFF {#bio-gff}
 
 ## Building a nicer gene model
 

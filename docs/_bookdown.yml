@@ -1,5 +1,5 @@
 rmd_files: [
-  "index.md",
+  "index.Rmd",
   "bio-install.md",
   "bio-fetch.md",
   "bio-fasta.md",

@@ -1,4 +1,4 @@
-# Usage examples {#bio-examples}
+# `bio`: additional examples {#bio-examples}
 
 The following script is a test file that we use to verify the various functionalities of `bio`.
 

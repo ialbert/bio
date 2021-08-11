@@ -42,9 +42,9 @@ Install `bio`:
 
 ### Obtain data
 
-First download data so that `bio` can operate on it. You can obtain GenBank files in various ways, here we download with Entrez Direct:
+First download data so that `bio` can operate on it. You can obtain GenBank files in various ways, here we download from Entrez:
 
-    efetch -db nuccore -id NC_045512,MN996532 -format gbwithparts > genomes.gb
+    bio fetch NC_045512 MN996532 > genomes.gb
 
 Bioinformatics workflows often requires you to present data in different formats.
 
@@ -114,12 +114,12 @@ Get metadata for the viral genomes (taxid `2697049` that corresponds to `SARS-CO
 
 prints:
 
-    accession	species	host	date	location	isolate	species_name
-    NC_045512.2	2697049	9606	2019-12	Asia; China	Wuhan-Hu-1	Severe acute respiratory syndrome coronavirus 2
-    MT576563.1	2697049			North America; 	SARS-CoV-2/human/USA/USA-WA1/2020	Severe acute respiratory syndrome coronavirus 2
-    MT324684.1	2697049		2020-03-25	North America; USA	SARS-CoV-2/ENV/USA/UF-3/2020	Severe acute respiratory syndrome coronavirus 2
-    MT476384.1	2697049		2020-02-21	North America; USA: FL	SARS-CoV-2/ENV/USA/UF-11/2020	Severe acute respiratory syndrome coronavirus 2
-    MT952602.1	2697049					Severe acute respiratory syndrome coronavirus 2
+    accession     species    host   date       location              isolate     species_name
+    NC_045512.2   2697049    9606  2019-12    Asia; China          Wuhan-Hu-1  Severe acute respiratory syndrome coronavirus 2
+    MT576563.1    2697049    .        .       North America;           .       SARS-CoV-2/human/USA/USA-WA1/2020    Severe acute respiratory syndrome coronavirus 2
+    MT324684.1    2697049    .    2020-03-25  North America; USA       .       SARS-CoV-2/ENV/USA/UF-3/2020    Severe acute respiratory syndrome coronavirus 2
+    MT476384.1    2697049    .    2020-02-21  North America; USA: FL   .       SARS-CoV-2/ENV/USA/UF-11/2020    Severe acute respiratory syndrome coronavirus 2
+    MT952602.1    2697049    .         .            .                  .       Severe acute respiratory syndrome coronavirus 2
 
 
 ## Where to go next

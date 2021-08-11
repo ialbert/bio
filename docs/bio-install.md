@@ -1,4 +1,4 @@
-# Installation {#bio-install}
+# How to install `bio` {#bio-install}
 
 `bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
 
