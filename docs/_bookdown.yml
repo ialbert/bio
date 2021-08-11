@@ -1,6 +1,7 @@
 rmd_files: [
   "index.md",
   "bio-install.md",
+  "bio-fetch.md",
   "bio-fasta.md",
   "bio-gff.md",
   #"bio-align.md",

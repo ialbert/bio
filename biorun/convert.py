@@ -319,28 +319,6 @@ def protein_extract(rec):
     rec.obj.seq = Seq(rec.annot.get("translation")[0])
     return rec
 
-def parse_alias_file(fname):
-    """
-    Parses an alias file, returns a dictionary mapping: Accession -> Alias
-    """
-    stream = open(fname)
-    stream = map(lambda x: x.strip(), stream)
-    stream = filter(lambda x: not x.startswith("#"), stream)
-    stream = map(lambda x: x.strip().split(), stream)
-    stream = filter(lambda x: len(x) > 1, stream)
-    pairs = map(lambda x: x[:2], stream)
-    data = dict(pairs)
-    return data
-
-
-def parse_alias(fname):
-    """
-    Don't raise errors on invalid alias files.
-    """
-    try:
-        return parse_alias_file(fname)
-    except Exception as exc:
-        return {}
 
 #
 # The GFF attributes generated for a source type.
@@ -448,7 +426,7 @@ def run(features=False, protein=False, translate=False, fasta=False,
         fnames.append(sys.stdin)
 
     # Generate the ALIAS remapping.
-    ALIAS = parse_alias(alias) if alias else {}
+    ALIAS = utils.parse_alias(alias) if alias else {}
 
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)

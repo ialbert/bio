@@ -9,6 +9,9 @@
 # Stop on errors.
 set -uex
 
+# Get data from NCBI
+bio fetch NC_045512,MN996532 > genomes.gb
+
 # Slice the genomes
 bio fasta genomes.gb --end  100 > genomes.fa
 

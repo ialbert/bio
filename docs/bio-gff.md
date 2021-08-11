@@ -2,12 +2,11 @@
 
 ## Building a nicer gene model
 
-`bio` creates more meaningful  and nicer GFF visualizations:
+`bio` creates more meaningful  and nicer GFF visualizations. Get data for chromosome 2L for Drosophila melanogaster (fruit-fly)
 
-    # Get chromosome 2L for Drosophila melanogaster (fruit-fly)
-    efetch -db nuccore -id NT_033779 -format gbwithparts > chrom2L.gb
+    bio fetch NT_033779 > chrom2L.gb
 
-convert it to gff:
+Convert it to gff:
 
     bio gff chrom2L.gb > chrom2L.gff
     
@@ -28,7 +27,7 @@ knitr::include_graphics('images/gff-model-bio.png', dpi = NA)
 
 Get SARS-COV-2 data:
 
-    efetch -db nuccore -id NC_045512,MN996532 -format gbwithparts > genomes.gb
+    bio fetch NC_045512 MN996532 > genomes.gb
 
 ### Convert all features to GFF:
 

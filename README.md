@@ -6,9 +6,9 @@
 
 Typical usage:
 
-    bio task data --parameter
+    bio task --param data
 
-where task can be: `fetch`, `convert`, `align` and many others.
+where task can be: `fetch`, `fasta`, `align` and many others.
 
 ## Quick links
 
@@ -26,7 +26,7 @@ If you've ever done bioinformatics, you know how even seemingly straightforward 
 
 Even well-defined, supposedly simple tasks can take a seemingly inordinate number of complicated steps. The `bio` package is meant to solve that tedium. Suppose we fetch multiple accession numbers from NCBI into a genbank file.
 
-    efetch -db nuccore -id NC_045512,MN996532 -format gbwithparts > genomes.gb
+    bio fetch NC_045512,MN996532 > genomes.gb
 
 Now that we have GenBank file with multiple genomes, but how do we extract the information from them? This is where we use `bio`
 
@@ -48,6 +48,25 @@ prints:
     ##gff-version 3
     NC_045512.2     .       CDS     21562   25384   .       +       .       ID=1;Name=YP_009724390.1;Parent=YP_009724390.1
     MN996532.2      .       CDS     21559   25369   .       +       .       ID=2;Name=QHR63300.2;Parent=QHR63300.2
+
+## `bio` is stream oriented
+
+`bio` supports stream oriented programming where the output of one task may be chained into the second. Take the example above
+but now start with a file `acc.txt` that contains just the accession numbers:
+
+    NC_045512
+    MN996532
+
+we can run `bio` to find the first three codons for each coding sequence for gene `S`:
+
+     cat acc.txt | bio fetch | bio fasta --gene S --end 9
+
+to print:
+
+    >YP_009724390.1 CDS surface glycoprotein [1:9]
+    ATGTTTGTT
+    >QHR63300.2 CDS spike glycoprotein [1:9]
+    ATGTTTGTT
 
 ## Who is `bio` designed for?
 

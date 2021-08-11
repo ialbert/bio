@@ -42,7 +42,6 @@ def init_dirs():
     os.chdir(RUN_DIR)
 
     # Link the test data
-    os.system("ln -s ../data/genomes.gb .")
     os.system("ln -s ../data/alias.txt .")
 
 join = os.path.join

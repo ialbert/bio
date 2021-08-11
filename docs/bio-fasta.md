@@ -8,7 +8,7 @@ A GenBank file represents sequence information in multiple sections:
     
 ### Get a GenBank file
 
-    efetch -db nuccore -id NC_045512,MN996532 -format gbwithparts > genomes.gb
+    bio fetch NC_045512,MN996532 > genomes.gb
 
 ### Convert to FASTA
 

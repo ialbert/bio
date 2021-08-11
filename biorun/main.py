@@ -17,6 +17,7 @@ logger = utils.logger
 # name = (module.function, automatic_help_flag, command_help)
 #
 SUB_COMMANDS = dict(
+    fetch=("biorun.fetch.run", True, "fetch GenBank data"),
     fasta=("biorun.fasta.run", True, "converts GenBank to FASTA"),
     gff=("biorun.gff.run", True, "converts GenBank to GFF"),
     #meta=("biorun.meta.run", False, "downloads metadata by taxonomy ID"),

@@ -31,8 +31,7 @@ DATADIR = os.path.join(expanduser("~"), ".bio")
 os.makedirs(DATADIR, exist_ok=True)
 
 
-def read_lines(fname, index=0):
-    stream = open(fname)
+def read_lines(stream, index=0):
     lines = filter(lambda x: not x.startswith("#"), stream)
     lines = map(lambda x: x.strip().split()[index], lines)
     lines = filter(None, lines)
@@ -40,24 +39,7 @@ def read_lines(fname, index=0):
     return lines
 
 
-def time_it(func):
-    @wraps(func)
-    def timer(*args, **kwargs):
-        units = "seconds"
-        start = time.time()
-        try:
-            return func(*args, **kwargs)
-        finally:
-            end = time.time()
-            diff = int(round((end - start), 1)) or 0.1
-            if diff > 120:
-                diff, units = diff / 60, "minutes"
-            print(f"{func.__name__} runtime: {diff} {units}")
-
-    return timer
-
-
-def alias_dict(fname):
+def parse_alias(fname):
     """
     Aliases hard to read accessions to easier to read names:
     NC_045512  wuhan-hu-1
@@ -65,6 +47,7 @@ def alias_dict(fname):
     """
     if not fname or not os.path.isfile(fname):
         return dict()
+
     stream = open(fname)
     lines = map(lambda x: x.strip(), stream)
     lines = filter(lambda x: not x.startswith("#"), lines)
