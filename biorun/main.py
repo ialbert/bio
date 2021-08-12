@@ -23,8 +23,7 @@ SUB_COMMANDS = dict(
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
     meta=("biorun.meta.run", False, "download metadata by taxonomy ID"),
     define=("biorun.ontology.run", False, "explains biological terms"),
-    # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
-
+    align=("biorun.align.run", True, "aligns fasta sequences"),
 )
 
 # Generates indented help for each subcommand.
