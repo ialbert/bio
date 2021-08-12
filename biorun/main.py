@@ -22,8 +22,7 @@ SUB_COMMANDS = dict(
     gff=("biorun.gff.run", True, "convert GenBank to GFF"),
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
     meta=("biorun.meta.run", False, "download metadata by taxonomy ID"),
-
-    # define=("biorun.models.ontology.run", False, "explains biological terms"),
+    define=("biorun.ontology.run", False, "explains biological terms"),
     # runinfo=("biorun.runinfo.run", True, "prints sequencing run information"),
 
 )

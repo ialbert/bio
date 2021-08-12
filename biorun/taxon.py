@@ -12,17 +12,18 @@ from biorun import utils
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
 
+# Database filenames.
 JSON_FILE_NAME = "taxdb.json"
 SQLITE_FILE_NAME = "taxdb.sqlite"
+
+# NCBI taxonomy files.
 TAXDB_URL = "http://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz"
 TAXDB_FILE_NAME = "taxdump.tar.gz"
 
-join = os.path.join
-
 # Create the full paths
-TAXDB_NAME = join(utils.DATADIR, TAXDB_FILE_NAME)
-SQLITE_DB = join(utils.DATADIR, SQLITE_FILE_NAME)
-JSON_DB = join(utils.DATADIR, JSON_FILE_NAME)
+TAXDB_PATH = utils.cache_path(TAXDB_FILE_NAME)
+SQLITE_DB = utils.cache_path( SQLITE_FILE_NAME)
+JSON_DB = utils.cache_path( JSON_FILE_NAME)
 
 # Keys into the database
 GRAPH, BACK, TAXID = "GRAPH", "BACK", "TAXIDS"
@@ -52,21 +53,21 @@ def download_prebuilt():
     url_json = f"{url}/taxdb.json"
     url_taxdump = f"{url}/taxdump.tar.gz"
 
-    utils.download(url=url_taxdump, dest_name=TAXDB_FILE_NAME, cache=True)
-    utils.download(url=url_json, dest_name=JSON_FILE_NAME, cache=True)
-    utils.download(url=url_sqlite, dest_name=SQLITE_FILE_NAME, cache=True)
+    utils.download(url=url_taxdump, fname=TAXDB_FILE_NAME, cache=True)
+    utils.download(url=url_json, fname=JSON_FILE_NAME, cache=True)
+    utils.download(url=url_sqlite, fname=SQLITE_FILE_NAME, cache=True)
 
     print("### downloads completed")
 
 
-def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_NAME):
+def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_PATH):
     """
     Downloads taxdump file.
     """
-    utils.download(url=url, dest_name=dest_name)
+    utils.download(url=url, fname=dest_name)
 
 
-def build_database(archive=TAXDB_NAME, limit=None):
+def build_database(archive=TAXDB_PATH, limit=None):
     """
     Downloads taxdump file.
     """
@@ -122,7 +123,7 @@ def open_tarfile(archive, filename, limit=None, delimiter="\t"):
     return stream
 
 
-def search_names(word, archive=TAXDB_NAME, name="names.dmp", limit=None):
+def search_names(word, archive=TAXDB_PATH, name="names.dmp", limit=None):
     """
     Processes the names.dmp component of the taxdump.
     """

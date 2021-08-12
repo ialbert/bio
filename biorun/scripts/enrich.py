@@ -166,7 +166,7 @@ def download_gaf(name):
     dest = get_fname(name)
     url = const.ASSOCIATION_MAP.get(name)
 
-    utils.download(url=url, dest_name=dest)
+    utils.download(url=url, fname=dest)
 
     return
 

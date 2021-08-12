@@ -105,9 +105,13 @@ def open_db(table, fname, flag='c'):
     return conn
 
 
-def save_table(name, obj, fname, flg='w', chunk=20000):
+def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
+
+    path = cache_path(fname) if cache else fname
+
     size = len(obj)
-    table = open_db(table=name, fname=fname, flag=flg)
+
+    table = open_db(table=name, fname=path, flag=flg)
     stream = enumerate(obj.items())
     stream = tqdm(stream, total=size, desc=f"### {name}")
     for index, (key, value) in stream:
@@ -143,21 +147,17 @@ def urlopen(url, params={}):
 
 CHUNK_SIZE = 2500
 
+def cache_path(fname):
+    return  os.path.join(DATADIR, fname)
 
-def download(url, dest_name, cache=False, params={}):
+def download(url, fname, cache=False, params={}):
     """
     Downloads a URL into a destination
     """
     logger.info(f"downloading: {url}")
 
-    # The file destination.
-    if cache:
-        path = os.path.join(DATADIR, dest_name)
-    else:
-        path = dest_name
-
-    # Keep track of total size.
-    total = 0
+    # When to use cache name.
+    path = cache_path(fname) if cache else fname
 
     # Open request
     url = url.replace('ftp:', 'http:') if url.startswith('ftp:') else url
@@ -172,7 +172,7 @@ def download(url, dest_name, cache=False, params={}):
     chunk_size = 1 * 1024 * 1024
 
     # Create file only if download completes successfully.
-    pbar = tqdm(desc=f"### {dest_name}", unit="B", unit_scale=True, unit_divisor=1024, total=total)
+    pbar = tqdm(desc=f"### {fname}", unit="B", unit_scale=True, unit_divisor=1024, total=total)
 
     with tempfile.NamedTemporaryFile(delete=True) as fp:
 

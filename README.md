@@ -28,6 +28,12 @@ Even well-defined, supposedly simple tasks can take a seemingly inordinate numbe
     # Get metadata on a viral sample
     bio meta 11138 -H | head
 
+    # Define a sequence ontology terms
+    bio define exon
+
+    # Define a gene ontology terms
+    bio define food vacuole
+
 ## Documentation
 
 Detailed documentation is maintained at
