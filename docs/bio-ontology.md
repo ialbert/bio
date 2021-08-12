@@ -1,4 +1,4 @@
-# Ontology operations {#bio-ontology}
+# `define`: explains terms {#bio-ontology}
 
 The `bio` package provides utility to search gene and sequence ontology.
 
@@ -42,7 +42,7 @@ prints:
     - exon_region (part_of)
     - exon_of_single_exon_gene
 
-# Define term by SO id
+## Define term by SO
 
     bio define SO:0000147
 

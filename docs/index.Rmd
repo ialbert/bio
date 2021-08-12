@@ -10,11 +10,12 @@ If you've ever done bioinformatics you know how even seemingly straightforward t
 
 Time and again, I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package was designed  to solve that tedium by making bioinformatics explorations more enjoyable. The software lets users quickly answer questions such as:
  
-- *How do I access a sequence for a viral genome?*
-- *How do I obtain the biological annotation of data?*
-- *How do I get the coding sequence for a specific gene?*
-- *What is the lineage of SARS-COV-2?*
-- *What are minisatellites and  microsatellites?*
+- How do I access a sequence for a viral genome? -> `bio fetch NC_045512 > genome.gb`
+- How do I view the sequence annotation of data? `cat genome.gb | bio gff `
+- How do I get the coding sequence for a specific gene? -> `cat genome.gb | bio fasta --gene S`
+- What is the lineage of SARS-COV-2? -> `bio taxon 2697049 --lineage`
+- At what date were viral samples collected? -> `bio meta 2697049 | head`
+- What are minisatellites and  microsatellites? -> `bio define microsatellite`
 
 `bio` combines data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so],
 [NCBI Taxonomy][taxonomy] and provides an unified, logical interface.
@@ -34,24 +35,25 @@ The software is also used to demonstrate and teach bioinformatics and is the com
 
 [usage]: https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
 
-## Quickstart
+## Quick start
 
 Install `bio`:
 
     pip install bio --upgrade
 
-### Obtain data
+Source code: https://github.com/ialbert/bio
+
+### Fetch data
 
 First download data so that `bio` can operate on it. You can obtain GenBank files in various ways, here we download from Entrez:
 
     bio fetch NC_045512 MN996532 > genomes.gb
 
-Bioinformatics workflows often requires you to present data in different formats.
+Bioinformatics workflows often require presenting data in different formats.
 
 ### Convert Genbank to FASTA.
 
     bio fasta genomes.gb  | head
-
 
 prints:
 

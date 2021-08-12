@@ -1,4 +1,4 @@
-# `meta`: getting viral metadata
+# `meta`: obtains viral metadata
 
 Display metadata on a taxonomical id (with a header):
 
