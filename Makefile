@@ -1,7 +1,7 @@
 .PHONY: dist build test docs
 
 # Location of the documentation branch.
-REMOTE=www@bioinfo.help:~/sites/bioinfo.help/data/
+REMOTE = www@bioinfo.help:~/sites/bioinfo.help/
 
 all: serve
 
@@ -24,11 +24,11 @@ fulltest: testdata generate
 
 # Generate the docs.
 docs:
-	(cd docs && Rscript -e "bookdown::render_book(input='index.txt', output_dir='.book', output_format='bookdown::gitbook')")
+	(cd docs && Rscript -e "bookdown::render_book(input='index.Rmd', output_dir='.book', output_format='bookdown::gitbook')")
 
 # Push out the docs to remote docs.
 sync:
-	rsync -avz  docs/.book/* ${REMOTE}
+	rsync -avz  docs/.book/ ${REMOTE}
 
 # Serve the documentation as a webpage.
 serve:
@@ -60,10 +60,10 @@ pypi: test build
 
 # Upload prebuilt data to distribution site.
 upload:
-	rsync -avz --progress ~/.bio/taxdump.tar.gz ${REMOTE}
-	rsync -avz --progress ~/.bio/taxonomy.json ${REMOTE}
-	rsync -avz --progress ~/.bio/taxonomy.sqlite ${REMOTE}
-	rsync -avz --progress ~/.bio/ontology.sqlite ${REMOTE}
-	rsync -avz --progress ~/.bio/ontology.json ${REMOTE}
+	rsync -avz --progress ~/.bio/taxdump.tar.gz ${REMOTE}data
+	rsync -avz --progress ~/.bio/taxonomy.json ${REMOTE}data
+	rsync -avz --progress ~/.bio/taxonomy.sqlite ${REMOTE}data
+	rsync -avz --progress ~/.bio/ontology.sqlite ${REMOTE}data
+	rsync -avz --progress ~/.bio/ontology.json ${REMOTE}data
 
 
