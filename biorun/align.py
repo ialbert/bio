@@ -1,11 +1,11 @@
-import os, sys
-from itertools import count, islice
-import plac
+import os
+from itertools import *
+
+import plac, string
 from Bio import SeqIO, Seq, SeqRecord
-from Bio.Data import IUPACData
+from Bio.Align import PairwiseAligner
 from Bio.Align import substitution_matrices
 from biorun import utils
-from Bio.Align import PairwiseAligner
 
 LOCAL_ALIGN, GLOBAL_ALIGN, SEMIGLOBAL_ALIGN = 1, 2, 3
 
@@ -14,7 +14,6 @@ NUCLEOTIDE, PEPTIDE = "nucleotide", "peptide"
 NUCS = set("ATGC")
 PEPS = set("ACDEFGHIKLMNPQRSTVWY")
 RNAS = set("AUGC")
-
 
 def is_nuc(c):
     return c in NUCS
@@ -42,23 +41,27 @@ def maybe_sequence(text):
     else:
         return None
 
+
 def parse(text, idx=0):
     if os.path.isfile(text):
         stream = open(text)
         recs = list(SeqIO.parse(stream, format='fasta'))
     elif maybe_sequence(text):
         seq = Seq.Seq(text)
-        rec = SeqRecord.SeqRecord(seq=seq, id=str(idx), name=f"s{idx}", description='')
-        recs = [ rec ]
+        sid = f"Seq{idx}"
+        rec = SeqRecord.SeqRecord(seq=seq, id=sid, name=sid, description='')
+        recs = [rec]
     else:
         utils.error(f"Invalid file/sequence: {text}")
         recs = []
 
     return recs
 
+
 class Param():
     """Placeholder for parameters"""
     pass
+
 
 def print_trace(seqA, seqB, trace, width=80):
     """
@@ -77,6 +80,7 @@ def print_trace(seqA, seqB, trace, width=80):
         print(seq2)
         print()
 
+
 def trace_counter(trace, mchr='.', ichr='|', dchr='-'):
     count_mis = trace.count(mchr)
     count_ident = trace.count(ichr)
@@ -84,25 +88,26 @@ def trace_counter(trace, mchr='.', ichr='|', dchr='-'):
 
 
 def print_aln(target, query, aln):
-
     seqA, trace, seqB = aln.format().splitlines()
 
+    #trace = trace.replace("-", " ")
 
     alen = len(trace)
-
+    blen = len(seqB)
     count_ident, count_mis = trace_counter(trace)
     count_delete = seqB.count("-")
     count_insert = seqA.count("-")
+    count_gap = count_delete + count_insert
+    perc_idn = count_ident / len(seqB) * 100
 
-    perc_idn = count_ident/len(seqB)
-
-    print(f"### {target.id} vs {query.id}")
-    print(f"### Length={alen} Perc={perc_idn} Match={count_ident} Mis={count_mis} Del={count_delete} Ins={count_insert}")
+    print(f"### {target.id} ({len(target):,}) vs {query.id} ({len(query):,})")
+    print(
+        f"### Length={alen} Ident={count_ident}/{blen}({perc_idn:0.1f}%) Mis={count_mis} Del={count_delete} Ins={count_insert} Gap={count_gap}")
     print()
     print_trace(seqA, seqB, trace)
 
-def align(target, query, param):
 
+def align(target, query, param):
     # Query and target sequences.
     t = str(target.seq).upper()
     q = str(query.seq).upper()
@@ -142,8 +147,6 @@ def align(target, query, param):
 
     return alns
 
-
-
     # Reformat alignments as a more detailed class.
     def builder(aln):
         rec = Alignment(qseq=qseq, tseq=tseq, aln=aln, param=param)
@@ -163,8 +166,6 @@ def align(target, query, param):
         print_func(aln, param=param, index=index)
 
 
-
-
 @plac.pos("sequence", "sequences")
 @plac.opt("gap_open", "gap_open", type=int, abbrev='o')
 @plac.opt("gap_extend", "gap_extend", type=int, abbrev='e')
@@ -173,7 +174,6 @@ def align(target, query, param):
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.opt("type_", "sequence type (nuc, pep)", choices=["nuc", "pep"])
 def run(type_="nuc", gap_open=11, gap_extend=1, local_=False, global_=False, semiglobal=False, *sequences):
-
     param = Param()
     param.matrix = None
     param.gap_open = gap_open
@@ -189,12 +189,12 @@ def run(type_="nuc", gap_open=11, gap_extend=1, local_=False, global_=False, sem
 
     lines = []
 
-    #if not sys.stdin.isatty():
+    # if not sys.stdin.isatty():
     #    lines.extend(sys.stdin)
 
     lines.extend(sequences)
 
-    counter = count(1)
+    counter = cycle(string.ascii_uppercase)
 
     recs = []
     for idx, text in zip(counter, lines):
@@ -206,7 +206,7 @@ def run(type_="nuc", gap_open=11, gap_extend=1, local_=False, global_=False, sem
     # Keeping people from accidentally running alignments that are too large.
     MAXLEN = 30000
     for rec in recs:
-        if len(rec)> MAXLEN:
+        if len(rec) > MAXLEN:
             utils.error("We recommend that you use a different software.", stop=False)
             utils.error(f"Sequence {rec.id} is too long for this aligner: {len(rec)} > MAXLEN={MAXLEN:,}")
 
