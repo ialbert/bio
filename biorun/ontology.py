@@ -10,22 +10,30 @@ from biorun import utils
 
 LIMIT = None
 
+# Gene Ontology file.
 GO_FILE = "go.obo"
-SO_FILE = "so.obo"
-
-JSON_DB = "ontology.json"
-SQLITE_DB = "ontology.sqlite"
-
-# Create the full paths
-GO_FILE_PATH = utils.cache_path(GO_FILE)
-SO_FILE_PATH = utils.cache_path(SO_FILE)
-SQLITE_DB_PATH = utils.cache_path(SQLITE_DB)
-JSON_DB_PATH = utils.cache_path(JSON_DB)
-
+GO_PATH = utils.cache_path(GO_FILE)
 GO_URL = "http://purl.obolibrary.org/obo/go.obo"
+
+# De
+# Sequence Ontology file
+SO_FILE = "so.obo"
+SO_PATH = utils.cache_path(SO_FILE)
 SO_URL = "https://raw.githubusercontent.com/The-Sequence-Ontology/SO-Ontologies/master/Ontology_Files/so-simple.obo"
 
-# Delimiter in ontology files, separating one term from another.
+ROOT_URL = "http://www.bioinfo.help/data/"
+
+# Stores the Sqlite database.
+SQLITE_FILE = "ontology.sqlite"
+SQLITE_PATH = utils.cache_path(SQLITE_FILE)
+SQLITE_URL  = f"{ROOT_URL}{SQLITE_FILE}"
+
+# Stores the JSON representation.
+JSON_FILE = "ontology.json"
+JSON_PATH = utils.cache_path(JSON_FILE)
+JSON_URL  = f"{ROOT_URL}{JSON_FILE}"
+
+# Used in parsing ontologies
 DELIM = '[Term]'
 
 # GO or SO id patterns.
@@ -57,6 +65,17 @@ logger = utils.logger
 
 CHUNK = 25000
 
+def download_prebuilt():
+    """
+    Downloads prebuild databases.
+    """
+
+    utils.download(url=JSON_URL, fname=JSON_PATH, cache=True)
+    utils.download(url=SQLITE_URL, fname=SQLITE_PATH, cache=True)
+
+    print("### downloads completed")
+
+
 def download_terms():
 
     utils.download(url=GO_URL, fname=GO_FILE, cache=True)
@@ -67,18 +86,18 @@ def download_terms():
 
 def get_data(preload=False):
     if preload:
-        if not os.path.isfile(JSON_DB_PATH):
-            utils.error(f"file not found (download or build it first): {JSON_DB_PATH}")
-        store = json.load(open(JSON_DB_PATH))
+        if not os.path.isfile(JSON_PATH):
+            utils.error(f"file not found (download or build it first): {JSON_PATH}")
+        store = json.load(open(JSON_PATH))
         terms = store[TERM]
         nodes = store[GRAPH]
         names = store[NAMES]
         back = store[RELATED]
     else:
-        terms = utils.open_db(TERM, fname=SQLITE_DB_PATH)
-        nodes = utils.open_db(GRAPH, fname=SQLITE_DB_PATH)
-        names = utils.open_db(NAMES, fname=SQLITE_DB_PATH)
-        back = utils.open_db(RELATED, fname=SQLITE_DB_PATH)
+        terms = utils.open_db(TERM, fname=SQLITE_PATH)
+        nodes = utils.open_db(GRAPH, fname=SQLITE_PATH)
+        names = utils.open_db(NAMES, fname=SQLITE_PATH)
+        back = utils.open_db(RELATED, fname=SQLITE_PATH)
 
     return terms, nodes, names, back
 
@@ -193,8 +212,9 @@ def build_database(fname, flg='w'):
     # Parse the terms from file
     terms, nodes, names, back_prop = parse_term(fname=fname)
 
+
     def save(table, vals):
-        utils.save_table(table, vals, fname=SQLITE_DB_PATH, flg=flg)
+        utils.save_table(table, vals, fname=SQLITE_PATH, flg=flg)
 
     # Save terms into the database
     save(TERM, terms)
@@ -216,10 +236,10 @@ def build_db():
     Wrapper to build both GO and SO.
     """
 
-    terms, nodes, names, back_prop = build_database(GO_FILE_PATH)
+    terms, nodes, names, back_prop = build_database(GO_PATH)
 
     # Add to the JSON model, instead of rewrtiting it.
-    soterms, sonodes, sonames, soback_prop = build_database(SO_FILE_PATH, flg='c')
+    soterms, sonodes, sonames, soback_prop = build_database(SO_PATH, flg='c')
 
     terms.update(soterms)
     nodes.update(sonodes)
@@ -228,7 +248,7 @@ def build_db():
 
     print("### saving the JSON model")
     store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop)
-    fp = open(JSON_DB_PATH, "wt")
+    fp = open(JSON_PATH, "wt")
     json.dump(store, fp, indent=4)
     fp.close()
 
@@ -493,7 +513,7 @@ def run(build=False, download=False, preload=False, so=False, go=False,
 
 
     if build:
-        #download_terms()
+        download_terms()
         build_db()
 
     terms, nodes, names, back_prop = get_data(preload=preload)

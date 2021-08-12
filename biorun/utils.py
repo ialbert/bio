@@ -96,11 +96,12 @@ def int_or_zero(text):
         return 0
 
 
-def open_db(table, fname, flag='c'):
+def open_db(table, fname, flag='c', strict=True):
     """
     Opens a connection to a data table.
     """
-
+    if strict and not os.path.isfile(fname):
+        error(f"Database not found. Download or build it: {fname}")
     conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
     return conn
 
@@ -111,7 +112,7 @@ def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
 
     size = len(obj)
 
-    table = open_db(table=name, fname=path, flag=flg)
+    table = open_db(table=name, fname=path, flag=flg, strict=False)
     stream = enumerate(obj.items())
     stream = tqdm(stream, total=size, desc=f"### {name}")
     for index, (key, value) in stream:

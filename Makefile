@@ -1,7 +1,7 @@
 .PHONY: dist build test docs
 
 # Location of the documentation branch.
-REMOTE=www@bioinfo.help:~/sites/bioinfo.help/
+REMOTE=www@bioinfo.help:~/sites/bioinfo.help/data/
 
 all: serve
 
@@ -61,8 +61,8 @@ pypi: test build
 # Upload prebuilt data to distribution site.
 upload:
 	rsync -avz --progress ~/.bio/taxdump.tar.gz ${REMOTE}
-	rsync -avz --progress ~/.bio/taxdb.json ${REMOTE}
-	rsync -avz --progress ~/.bio/taxdb.sqlite ${REMOTE}
+	rsync -avz --progress ~/.bio/taxonomy.json ${REMOTE}
+	rsync -avz --progress ~/.bio/taxonomy.sqlite ${REMOTE}
 	rsync -avz --progress ~/.bio/ontology.sqlite ${REMOTE}
 	rsync -avz --progress ~/.bio/ontology.json ${REMOTE}
 

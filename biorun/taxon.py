@@ -12,18 +12,21 @@ from biorun import utils
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
 
+ROOT_URL = "http://www.bioinfo.help/data/"
+
 # Database filenames.
-JSON_FILE_NAME = "taxdb.json"
-SQLITE_FILE_NAME = "taxdb.sqlite"
+SQLITE_FILE = "taxonomy.sqlite"
+SQLITE_PATH = utils.cache_path(SQLITE_FILE)
+SQLITE_URL  = f"{ROOT_URL}{SQLITE_FILE}"
+
+JSON_FILE = "taxonomy.json"
+JSON_PATH = utils.cache_path(JSON_FILE)
+JSON_URL  = f"{ROOT_URL}{JSON_FILE}"
 
 # NCBI taxonomy files.
+TAXDB_FILE = "taxdump.tar.gz"
+TAXDB_PATH = utils.cache_path(TAXDB_FILE)
 TAXDB_URL = "http://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz"
-TAXDB_FILE_NAME = "taxdump.tar.gz"
-
-# Create the full paths
-TAXDB_PATH = utils.cache_path(TAXDB_FILE_NAME)
-SQLITE_DB = utils.cache_path( SQLITE_FILE_NAME)
-JSON_DB = utils.cache_path( JSON_FILE_NAME)
 
 # Keys into the database
 GRAPH, BACK, TAXID = "GRAPH", "BACK", "TAXIDS"
@@ -47,52 +50,37 @@ def download_prebuilt():
     """
     Downloads prebuild databases.
     """
-    url = "http://www.bioinfo.help/data/"
-
-    url_sqlite = f"{url}/taxdb.sqlite"
-    url_json = f"{url}/taxdb.json"
-    url_taxdump = f"{url}/taxdump.tar.gz"
-
-    utils.download(url=url_taxdump, fname=TAXDB_FILE_NAME, cache=True)
-    utils.download(url=url_json, fname=JSON_FILE_NAME, cache=True)
-    utils.download(url=url_sqlite, fname=SQLITE_FILE_NAME, cache=True)
+    # This is also store as prebuilt to match the database.
+    url_taxdump = f"{ROOT_URL}taxdump.tar.gz"
+    utils.download(url=url_taxdump, fname=TAXDB_PATH)
+    utils.download(url=JSON_URL, fname=JSON_PATH)
+    utils.download(url=SQLITE_URL, fname=SQLITE_PATH)
 
     print("### downloads completed")
 
 
-def update_taxdump(url=TAXDB_URL, dest_name=TAXDB_PATH):
-    """
-    Downloads taxdump file.
-    """
-    utils.download(url=url, fname=dest_name)
-
-
-def build_database(archive=TAXDB_PATH, limit=None):
+def build_database(limit=None):
     """
     Downloads taxdump file.
     """
 
-    # The location of the archive.
-    path = os.path.join(utils.DATADIR, archive)
+    # The location of the taxdump file.
+    path = TAXDB_PATH
 
     # Download the latest taxdump file.
-    update_taxdump()
+    utils.download(url=TAXDB_URL, fname=path)
 
-    print(f"\n### taxdump file: {archive}")
-
-    # Check the file.
-    if not os.path.isfile(path):
-        utils.error(f"no taxdump file found")
+    print(f"\n### taxdump file: {path}")
 
     # Parse the names
-    tax2data = parse_names(archive, limit=limit)
+    tax2data = parse_names(path, limit=limit)
 
     # Parse the nodes and backpropagation.
-    graph = parse_nodes(archive, tax2data=tax2data, limit=limit)
+    graph = parse_nodes(path, tax2data=tax2data, limit=limit)
 
     # A shortcut to the function.
     def save_table(name, obj):
-        utils.save_table(name=name, obj=obj, fname=SQLITE_DB)
+        utils.save_table(name=name, obj=obj, fname=SQLITE_PATH)
 
     # Save the taxid definitions.
     save_table(TAXID, tax2data)
@@ -101,7 +89,7 @@ def build_database(archive=TAXDB_PATH, limit=None):
     save_table(GRAPH, graph)
 
     print("### saving the JSON model")
-    json_path = os.path.join(utils.DATADIR, JSON_DB)
+    json_path = os.path.join(utils.DATADIR, JSON_PATH)
 
     # Save the JSON file as well.
     store = {TAXID: tax2data, GRAPH: graph}
@@ -220,14 +208,6 @@ def parse_nodes(archive, tax2data, filename="nodes.dmp", limit=None):
     return graph
 
 
-def open_db(table, fname=SQLITE_DB, flag='c'):
-    """
-    Opens a connection to a data table.
-    """
-    conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
-    return conn
-
-
 queue = list()
 
 
@@ -296,14 +276,14 @@ def get_data(preload=False, acc=False):
     Returns the graph structure for the database.
     """
     if preload:
-        if not os.path.isfile(JSON_DB):
-            utils.error(f"taxonomy file not found (you must build it first): {JSON_DB}")
-        store = json.load(open(JSON_DB))
+        if not os.path.isfile(JSON_PATH):
+            utils.error(f"taxonomy file not found (you must build it first): {JSON_PATH}")
+        store = json.load(open(JSON_PATH))
         names = store[TAXID]
         graph = store[GRAPH]
     else:
-        names = open_db(TAXID)
-        graph = open_db(GRAPH)
+        names = utils.open_db(TAXID, fname=SQLITE_PATH)
+        graph = utils.open_db(GRAPH, fname=SQLITE_PATH)
 
     return names, graph
 
