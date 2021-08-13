@@ -26,6 +26,9 @@ SUB_COMMANDS = dict(
     align=("biorun.align.run", True, "aligns fasta sequences"),
 )
 
+
+DOWNLOAD_CMD = '--download'
+
 # Generates indented help for each subcommand.
 block = [f"    bio {key:7} : {value[2]}" for (key, value) in SUB_COMMANDS.items()]
 
@@ -109,6 +112,11 @@ def router():
     if len(sys.argv) == 1:
         print(USAGE)
         sys.exit(1)
+
+    # Trigger the download if needed
+    if DOWNLOAD_CMD in sys.argv:
+        utils.download_prebuilt()
+        sys.exit()
 
     # Lowercase the subcommand.
     sys.argv[1] = sys.argv[1].lower()

@@ -26,12 +26,10 @@ ROOT_URL = "http://www.bioinfo.help/data/"
 # Stores the Sqlite database.
 SQLITE_FILE = "ontology.sqlite"
 SQLITE_PATH = utils.cache_path(SQLITE_FILE)
-SQLITE_URL  = f"{ROOT_URL}{SQLITE_FILE}"
 
 # Stores the JSON representation.
 JSON_FILE = "ontology.json"
 JSON_PATH = utils.cache_path(JSON_FILE)
-JSON_URL  = f"{ROOT_URL}{JSON_FILE}"
 
 # Used in parsing ontologies
 DELIM = '[Term]'
@@ -64,16 +62,6 @@ logger = utils.logger
 
 
 CHUNK = 25000
-
-def download_prebuilt():
-    """
-    Downloads prebuild databases.
-    """
-
-    utils.download(url=JSON_URL, fname=JSON_PATH, cache=True)
-    utils.download(url=SQLITE_URL, fname=SQLITE_PATH, cache=True)
-
-    print("### downloads completed")
 
 
 def download_terms():
@@ -495,11 +483,10 @@ def plot_term(query, names, terms, nodes, back_prop, outname=''):
 @plac.flg('preload', "loads entire database in memory", abbrev="P")
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('lineage', "show the ontological lineage")
-@plac.flg('download', "download prebuilt database")
 @plac.flg('so', "Filter query for sequence ontology terms.")
 @plac.flg('go', "Filter query for gene ontology terms.")
 @plac.opt('plot', "Plot the network graph of the given GO term into the given file name.", abbrev="p")
-def run(build=False, download=False, preload=False, so=False, go=False,
+def run(build=False, preload=False, so=False, go=False,
         lineage=False, plot='', verbose=False, *query):
 
     # Join up all words.
@@ -507,10 +494,6 @@ def run(build=False, download=False, preload=False, so=False, go=False,
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
-
-    if download:
-        download_prebuilt()
-
 
     if build:
         download_terms()
