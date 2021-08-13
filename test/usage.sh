@@ -30,6 +30,27 @@ bio fasta genomes.gb  --protein > protein.fa
 # Stop codons
 bio fasta -s -3 > stop.fa
 
+# Default alignment.
+bio align GATTACA GATCA > gattaca1.txt
+
+# Default alignment.
+bio align GATTACA GATCA --global > gattaca2.txt
+
+# Default alignment.
+bio align GATTACA GATCA --local > gattaca3.txt
+
+# Select S proteins
+bio fasta --gene S --protein  genomes.gb > s.fa
+
+# Align proteins.
+bio align s.fa > align-default.txt
+
+# Alignment as a table.
+bio align s.fa --table > align-table.txt
+
+# Align as variants.
+bio align s.fa --variant > align-variant.txt
+
 # Convert genbank files to GFF
 bio gff genomes.gb > genomes.gff
 

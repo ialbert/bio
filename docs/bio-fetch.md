@@ -1,5 +1,3 @@
-# (PART) Tasks {-}
-
 # `fetch`: download GenBank data {#bio-fetch}
 
 `bio` can fetch data in GeneBank format based on accession numbers

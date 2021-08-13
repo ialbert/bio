@@ -63,6 +63,7 @@ def run(cmd):
     """
     Runs a command and checks the output if it has one.
     """
+
     # Run the command
     os.system(cmd)
 

@@ -1,0 +1,9 @@
+
+# DNA: SeqA (7) vs SeqB (5) score=13.0
+# Alignment: length=7 ident=5/7(71.4%) mis=0 del=2 ins=0 gap=2
+# Parameters: match=5 mismatch=4 gap-open=11 gap-extend=1
+
+GATTACA
+|||  || 7
+GAT--CA
+

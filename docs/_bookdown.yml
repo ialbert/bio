@@ -1,18 +1,23 @@
 rmd_files: [
   "index.Rmd",
   "bio-install.md",
+  
+  "bio-part-tasks.md",
   "bio-fetch.md",
   "bio-fasta.md",
   "bio-gff.md",
-  #"bio-align.md",
+  "bio-align.md",
   "bio-taxonomy.md",
   "bio-ontology.md",
   "bio-meta.md",
+
+  "bio-part-info.md",
   "bio-tips.md",
   "bio-usage.md",
   #"bio-related.md",
   #"bio-runinfo.md",
-  "bio-appendix.md",
+
+  "bio-part-utilities.md",
   "bio-comm.md",
   "bio-uniq.md",
 

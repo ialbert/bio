@@ -1,5 +1,3 @@
-# (PART) Information {-}
-
 # `bio`: general tips {#bio-tips}
 
 Substantial effort has been devoted to making the command line more error-tolerant and user friendly.

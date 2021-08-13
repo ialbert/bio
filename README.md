@@ -15,7 +15,10 @@ Even well-defined, supposedly simple tasks can take a seemingly inordinate numbe
 
     # Convert the first then bases of the genomes to FASTA.
     bio fasta genomes.gb --end 10
-    
+
+    # Align the coding sequences for the S protein
+    bio fasta genomes.gb --gene S --protein | bio align | head
+
     # Print the GFF record that corresponds to the coding sequence for gene S
     bio gff genomes.gb --gene S 
 

@@ -35,20 +35,41 @@ def test_8(capsys):
     run("bio fasta -s -3 > stop.fa")
 
 def test_9(capsys):
-    run("bio gff genomes.gb > genomes.gff")
+    run("bio align GATTACA GATCA > gattaca1.txt")
 
 def test_10(capsys):
-    run("bio gff genomes.gb --type CDS > CDS.gff")
+    run("bio align GATTACA GATCA --global > gattaca2.txt")
 
 def test_11(capsys):
-    run("bio gff -s 300 -e 10k > slice.gff")
+    run("bio align GATTACA GATCA --local > gattaca3.txt")
 
 def test_12(capsys):
-    run("bio taxon 117565 -d 5 > taxonomy.txt")
+    run("bio fasta --gene S --protein  genomes.gb > s.fa")
 
 def test_13(capsys):
-    run("bio taxon genomes.gb --lineage > lineage.txt")
+    run("bio align s.fa > align-default.txt")
 
 def test_14(capsys):
+    run("bio align s.fa --table > align-table.txt")
+
+def test_15(capsys):
+    run("bio align s.fa --variant > align-variant.txt")
+
+def test_16(capsys):
+    run("bio gff genomes.gb > genomes.gff")
+
+def test_17(capsys):
+    run("bio gff genomes.gb --type CDS > CDS.gff")
+
+def test_18(capsys):
+    run("bio gff -s 300 -e 10k > slice.gff")
+
+def test_19(capsys):
+    run("bio taxon 117565 -d 5 > taxonomy.txt")
+
+def test_20(capsys):
+    run("bio taxon genomes.gb --lineage > lineage.txt")
+
+def test_21(capsys):
     run("bio meta 11138 -H > meta.txt")
 

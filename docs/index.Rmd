@@ -49,9 +49,26 @@ First download data so that `bio` can operate on it. You can obtain GenBank file
 
     bio fetch NC_045512 MN996532 > genomes.gb
 
-Bioinformatics workflows often require presenting data in different formats.
+### Align sequences
+
+Let's align the protein sequences for the S gene
+
+	cat genomes.gb | bio fasta --gene S --protein | bio align | head
+
+prints:
+
+	# PEP: YP_009724390.1 (1,273) vs QHR63300.2 (1,269) score=6541.0
+	# Alignment: length=1273 ident=1240/1273(97.4%) mis=29 del=4 ins=0 gap=4
+	# Parameters: matrix=BLOSUM62 gap-open=11 gap-extend=1
+
+	MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDN
+	|||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
+	MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
+
 
 ### Convert Genbank to FASTA.
+
+We often need to covert data to different formats:
 
     bio fasta genomes.gb  | head
 
