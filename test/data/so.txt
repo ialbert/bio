@@ -1,0 +1,18 @@
+
+## exon (SO:0000147)
+
+A region of the transcript sequence within a gene which is not removed from the
+primary RNA transcript by RNA splicing.
+
+Parents:
+- transcript_region 
+
+Children:
+- coding_exon 
+- noncoding_exon 
+- interior_exon 
+- decayed_exon (non_functional_homolog_of)
+- pseudogenic_exon (non_functional_homolog_of)
+- exon_region (part_of)
+- exon_of_single_exon_gene 
+ 

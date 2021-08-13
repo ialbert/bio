@@ -73,3 +73,12 @@ def test_20(capsys):
 def test_21(capsys):
     run("bio meta 11138 -H > meta.txt")
 
+def test_22(capsys):
+    run("bio define exon > so.txt")
+
+def test_23(capsys):
+    run("bio define food vacuole > go.txt")
+
+def test_24(capsys):
+    run("bio define neutral > search.txt")
+
