@@ -11,9 +11,9 @@ LOCAL_ALIGN, GLOBAL_ALIGN, SEMIGLOBAL_ALIGN = 1, 2, 3
 
 NUCLEOTIDE, PEPTIDE = "nucleotide", "peptide"
 
-NUCS = set("ATGC")
+NUCS = set("ATGC" + 'atgc')
 PEPS = set("ACDEFGHIKLMNPQRSTVWY")
-RNAS = set("AUGC")
+RNAS = set("AUGC" + 'augc')
 
 def is_nuc(c):
     return c in NUCS
@@ -88,9 +88,18 @@ def trace_counter(trace, mchr='.', ichr='|', dchr='-'):
 
 
 def print_aln(target, query, aln):
-    seqA, trace, seqB = aln.format().splitlines()
+    seqA, trace, seqB = format(aln).splitlines()
 
-    #trace = trace.replace("-", " ")
+    # Find non empty indices in the trace
+    indices = list(filter(lambda x: x[1] != ' ', enumerate(trace)))
+    start, end = indices[0][0], indices[-1][0] + 1
+
+    seqA = seqA[start:end]
+    trace = trace[start:end]
+    seqB = seqB[start:end]
+
+    # Alter the trace
+    trace = trace.replace("-", " ")
 
     alen = len(trace)
     blen = len(seqB)
@@ -100,9 +109,10 @@ def print_aln(target, query, aln):
     count_gap = count_delete + count_insert
     perc_idn = count_ident / len(seqB) * 100
 
-    print(f"### {target.id} ({len(target):,}) vs {query.id} ({len(query):,})")
-    print(
-        f"### Length={alen} Ident={count_ident}/{blen}({perc_idn:0.1f}%) Mis={count_mis} Del={count_delete} Ins={count_insert} Gap={count_gap}")
+
+    print()
+    print(f"# {target.id} ({len(target):,}) vs {query.id} ({len(query):,})")
+    print(f"# Length={alen} Ident={count_ident}/{blen}({perc_idn:0.1f}%) Mis={count_mis} Del={count_delete} Ins={count_insert} Gap={count_gap}")
     print()
     print_trace(seqA, seqB, trace)
 
