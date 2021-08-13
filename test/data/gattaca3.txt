@@ -1,7 +1,7 @@
 
 # DNA: SeqA (7) vs SeqB (5) score=24.0
-# Alignment: length=5 ident=4/5(80.0%) mis=1 del=0 ins=0 gap=0
-# Parameters: match=5 mismatch=4 gap-open=11 gap-extend=1
+# Alignment: length=5 ident=4/5(80.0%) mis=1/5 del=0 ins=0
+# Parameters: match=+5 penalty=-4 gap-open=-11 gap-extend=-1
 
 GATTA
 |||.| 5

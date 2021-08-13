@@ -222,7 +222,6 @@ def download_prebuilt(fname='biodata.tar.gz'):
     # Extracte the contents of the
     fp.extractall(dirpath)
 
-    print ("### Completed")
     fp.close()
 
 def no_dash(alist):

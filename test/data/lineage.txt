@@ -1,3 +1,5 @@
+/home/ialbert/.bio/taxonomy.sqlite
+/home/ialbert/.bio/taxonomy.sqlite
 superkingdom,10239,Viruses
   clade,2559587,Riboviria
     kingdom,2732396,Orthornavirae
