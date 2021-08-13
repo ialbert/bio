@@ -48,7 +48,8 @@ def run(db="nuccore", format_="gbwithparts", alias='', *acc):
         ids.extend(num.split(","))
 
     if not sys.stdin.isatty():
-        ids.extend(utils.read_lines(sys.stdin))
+        lines = utils.read_lines(sys.stdin, sep='')
+        ids.extend(lines)
 
     ids = map(detect_format, ids)
     ids = ",".join(ids)

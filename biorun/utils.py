@@ -26,9 +26,13 @@ DATADIR = os.path.join(expanduser("~"), ".bio")
 os.makedirs(DATADIR, exist_ok=True)
 
 
-def read_lines(stream, index=0, sep=''):
+def read_lines(stream, index=0, sep=None):
     lines = filter(lambda x: not x.startswith("#"), stream)
-    lines = map(lambda x: x.strip().split(sep=sep)[index], lines)
+    if sep != None:
+        try:
+            lines = map(lambda x: x.strip().split(sep=sep)[index], lines)
+        except IndexError as exc:
+            error(f"column index out of bounds: {index}")
     lines = filter(None, lines)
     lines = list(lines)
     return lines
