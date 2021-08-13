@@ -14,13 +14,4 @@ try:
 except ImportError as exc:
     pass
 
-# Import here to detect missing installation early on.
-try:
-    from Bio import Entrez
-except ImportError as exc:
-    print(f"### Error: {exc}", file=sys.stderr)
-    print(f"### This program requires biopython", file=sys.stderr)
-    print(f"### Install: conda install -y biopython>=1.78", file=sys.stderr)
-    sys.exit(-1)
-
 

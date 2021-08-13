@@ -4,9 +4,17 @@ import sys
 from itertools import *
 
 import plac
-from Bio import SeqIO, Seq, SeqRecord
-from Bio.Align import PairwiseAligner
-from Bio.Align import substitution_matrices
+
+try:
+    from Bio import SeqIO, Seq, SeqRecord
+    from Bio.Align import PairwiseAligner
+    from Bio.Align import substitution_matrices
+except ImportError as exc:
+    print(f"### Error: {exc}", file=sys.stderr)
+    print(f"### This program requires biopython", file=sys.stderr)
+    print(f"### Install: conda install -y biopython>=1.79", file=sys.stderr)
+    sys.exit(-1)
+
 from biorun import utils
 
 DNA, PEP = "DNA", "PEP"

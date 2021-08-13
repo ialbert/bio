@@ -1,6 +1,13 @@
 import sys, re
 
-from Bio import Entrez
+try:
+    from Bio import Entrez
+except ImportError as exc:
+    print(f"### Error: {exc}", file=sys.stderr)
+    print(f"### This program requires biopython", file=sys.stderr)
+    print(f"### Install: conda install -y biopython>=1.79", file=sys.stderr)
+    sys.exit(-1)
+
 from biorun.libs import placlib as plac
 from tqdm import tqdm
 from biorun import utils

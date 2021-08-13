@@ -24,7 +24,7 @@ except ImportError as exc:
     logger.error(f"{__name__}", stop=False)
     logger.error(f"{exc}", stop=False)
     logger.error(f"This software requires biopython.")
-    logger.error(f"Try: conda install biopython>=1.78")
+    logger.error(f"Try: conda install biopython>=1.79")
     sys.exit()
 
 # GenBank terms to remap according to sequence ontology.

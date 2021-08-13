@@ -1,7 +1,7 @@
 rmd_files: [
   "index.Rmd",
   "bio-install.md",
-  
+
   "bio-part-tasks.md",
   "bio-fetch.md",
   "bio-fasta.md",

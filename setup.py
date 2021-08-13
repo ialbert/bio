@@ -21,9 +21,7 @@ setup(
     ],
 
     install_requires=[
-        # numpy < 1.20 for Python 3.6 compatibility?
-        # 'numpy < 1.20',
-        'biopython >= 1.78',
+        'biopython >= 1.79',
         'requests',
         'tqdm>=4.62',
         'plac',
