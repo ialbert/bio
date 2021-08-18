@@ -1,0 +1,3 @@
+pos	type	len	target	query
+4	mis	1	T	C
+6	del	2	CA	--

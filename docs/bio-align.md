@@ -21,8 +21,17 @@ prints:
     |||.|   7
     GATCA--
 
+output may be formatted in tabular fashion or as variants
 
-the default alignment is semiglobal (no end gap penalies). To perform an global alignment write:
+    bio align GATTACA GATCA --variant
+
+prints:
+
+    pos type   len target  query
+    4    mis    1    T       C
+    6    del    2    CA      --
+
+the default alignment is semi-global (global alignment with no end gap penalies). To perform a global alignment write:
 
     bio align GATTACA GATCA --global
 
@@ -36,13 +45,13 @@ the output is:
     |||  || 7
     GAT--CA
 
-## Fetch some data
+## Align realistic data
+
+Fetches two files
 
     bio fetch NC_045512,MN996532 > genomes.gb
 
-## Align the genomes
-
-Input may come from files:
+Aligning two genomes:
 
     cat genomes.gb | bio fasta | bio align | head
 
@@ -56,6 +65,7 @@ the command aligns two 30KB sequences and takes about 15 seconds on my system, i
     ||||||||||||||||||.|||||||||||||||||.||||.||||||||||||||||||||||||||||||||||||||| 81
     ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAA
 
+The `bio align` method takes the first file that it sees as target and aligns all other sequences to it as queries.
 
 ## Proteins alignments
 

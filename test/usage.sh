@@ -39,6 +39,9 @@ bio align GATTACA GATCA --global > gattaca2.txt
 # Default alignment.
 bio align GATTACA GATCA --local > gattaca3.txt
 
+# Running variants.
+bio align GATTACA GATCA --variant > variant.txt
+
 # Select S proteins
 bio fasta --gene S --protein  genomes.gb > s.fa
 

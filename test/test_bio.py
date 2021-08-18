@@ -44,41 +44,44 @@ def test_11(capsys):
     run("bio align GATTACA GATCA --local > gattaca3.txt")
 
 def test_12(capsys):
-    run("bio fasta --gene S --protein  genomes.gb > s.fa")
+    run("bio align GATTACA GATCA --variant > variant.txt")
 
 def test_13(capsys):
-    run("bio align s.fa > align-default.txt")
+    run("bio fasta --gene S --protein  genomes.gb > s.fa")
 
 def test_14(capsys):
-    run("bio align s.fa --table > align-table.txt")
+    run("bio align s.fa > align-default.txt")
 
 def test_15(capsys):
-    run("bio align s.fa --variant > align-variant.txt")
+    run("bio align s.fa --table > align-table.txt")
 
 def test_16(capsys):
-    run("bio gff genomes.gb > genomes.gff")
+    run("bio align s.fa --variant > align-variant.txt")
 
 def test_17(capsys):
-    run("bio gff genomes.gb --type CDS > CDS.gff")
+    run("bio gff genomes.gb > genomes.gff")
 
 def test_18(capsys):
-    run("bio gff -s 300 -e 10k > slice.gff")
+    run("bio gff genomes.gb --type CDS > CDS.gff")
 
 def test_19(capsys):
-    run("bio taxon 117565 -d 5 > taxonomy.txt")
+    run("bio gff -s 300 -e 10k > slice.gff")
 
 def test_20(capsys):
-    run("bio taxon genomes.gb --lineage > lineage.txt")
+    run("bio taxon 117565 -d 5 > taxonomy.txt")
 
 def test_21(capsys):
-    run("bio meta 11138 -H > meta.txt")
+    run("bio taxon genomes.gb --lineage > lineage.txt")
 
 def test_22(capsys):
-    run("bio define exon > so.txt")
+    run("bio meta 11138 -H > meta.txt")
 
 def test_23(capsys):
-    run("bio define food vacuole > go.txt")
+    run("bio define exon > so.txt")
 
 def test_24(capsys):
+    run("bio define food vacuole > go.txt")
+
+def test_25(capsys):
     run("bio define neutral > search.txt")
 
