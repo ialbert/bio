@@ -105,7 +105,9 @@ def open_db(table, fname, flag='c', strict=True):
     Opens a connection to a data table.
     """
     if strict and not os.path.isfile(fname):
-        error(f"Database not found. Download or build it: {fname}")
+        error(f"Database not found: {fname}", stop=False)
+        error(f"Use --download to get it.")
+
     conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
     return conn
 

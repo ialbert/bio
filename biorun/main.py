@@ -45,7 +45,8 @@ Examples:
     bio fetch NC_045512 > genome.gb
     bio fasta genome.gb
     bio gff genome.gb --type CDS
-    bio taxon 2697049 --lineage  
+    bio taxon 2697049 --lineage
+    bio align GATTACA GATCA  
 
 See also: https://www.bioinfo.help
 """
