@@ -106,8 +106,7 @@ def open_db(table, fname, flag='c', strict=True):
     """
     if strict and not os.path.isfile(fname):
         error(f"Database not found: {fname}", stop=False)
-        error(f"Use --download to get it.")
-
+        error(f"Run: bio --download")
     conn = SqliteDict(fname, tablename=table, flag=flag, encode=json.dumps, decode=json.loads)
     return conn
 
@@ -200,6 +199,30 @@ def download(url, fname, cache=False, params={}):
 
     pbar.close()
 
+
+ROOT_URL = "http://www.bioinfo.help/data/"
+
+def download_prebuilt(fname='biodata.tar.gz'):
+    """
+    Downloads prebuild databases.
+    """
+    import tarfile
+
+    # This is also store as prebuilt to match the database.
+    url = f"{ROOT_URL}{fname}"
+    path = cache_path(fname)
+
+    download(url=url, fname=path)
+
+    fp = tarfile.open(path)
+
+    dirpath = os.path.dirname(path)
+
+    print ("### Extracting the files")
+    # Extracte the contents of the
+    fp.extractall(dirpath)
+
+    fp.close()
 
 def no_dash(alist):
     """

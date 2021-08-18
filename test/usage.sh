@@ -68,3 +68,12 @@ bio taxon genomes.gb --lineage > lineage.txt
 
 # Getting some metadata
 bio meta 11138 -H > meta.txt
+
+# Define exact SO term
+bio define exon > so.txt
+
+# Define exact SO term
+bio define food vacuole > go.txt
+
+# Search for terms
+bio define neutral > search.txt

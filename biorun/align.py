@@ -112,8 +112,12 @@ def format_aln(target, query, aln, par):
     indices = list(filter(lambda x: x[1] != ' ', enumerate(trace)))
     start, end = indices[0][0], indices[-1][0] + 1
 
+    # BioPython 1.78 bug? Extra spaces at the end in local alignment
+    trace = trace.strip(" ")
+
     # Alter the trace to make it look nicer
     trace = trace.replace("-", " ")
+
 
     # Populate alignment results
     fmt = Param(**par.__dict__)
@@ -133,7 +137,7 @@ def format_aln(target, query, aln, par):
     fmt.dels = seqB.count("-")
     fmt.ins = seqA.count("-")
     fmt.gap = fmt.dels + fmt.ins
-    fmt.pident = fmt.ident / fmt.blen * 100
+    fmt.pident = fmt.ident / fmt.tlen * 100
 
     return fmt
 
@@ -147,14 +151,14 @@ def print_default(fmt):
 
     print(f"# {label}: {fmt.target.id} ({len(fmt.target):,}) vs {fmt.query.id} ({len(fmt.query):,}) score={fmt.score}")
     print(
-        f"# Alignment: length={fmt.tlen} ident={fmt.ident}/{fmt.blen}({fmt.pident:0.1f}%) mis={fmt.mis} del={fmt.dels} ins={fmt.ins} gap={fmt.gap}")
+        f"# Alignment: length={fmt.tlen} ident={fmt.ident}/{fmt.tlen}({fmt.pident:0.1f}%) mis={fmt.mis}/{fmt.tlen} del={fmt.dels} ins={fmt.ins}")
 
     if fmt.matrix:
         print(f"# Parameters: matrix={fmt.matrix}", end=' ')
     else:
-        print(f"# Parameters: match={fmt.match} mismatch={fmt.mismatch}", end=' ')
+        print(f"# Parameters: match=+{fmt.match} penalty=-{fmt.mismatch}", end=' ')
 
-    print(f"gap-open={fmt.gap_open} gap-extend={fmt.gap_extend}")
+    print(f"gap-open=-{fmt.gap_open} gap-extend=-{fmt.gap_extend}")
     print()
 
     print_trace(fmt)
@@ -212,6 +216,10 @@ def variant_fmt(fmt):
         data2.append((i, b))
 
         last = oper
+
+    # Trailing variants.
+    display(data1, data2, last)
+
 
 def align(target, query, par):
     # Query and target sequences.
@@ -315,12 +323,12 @@ def run(gap_open=11, gap_extend=1, matrix='', match=5, mismatch=4, local_=False,
     # Keeps track of the alignment parameters.
     par = Param()
     par.matrix = None
-    par.gap_open = gap_open
-    par.gap_extend = gap_extend
+    par.gap_open = abs(gap_open)
+    par.gap_extend = abs(gap_extend)
     par.mode = SEMIGLOBAL_ALIGN
     par.matrix = matrix
-    par.match = match
-    par.mismatch = mismatch
+    par.match = abs(match)
+    par.mismatch = abs(mismatch)
     par.type = type_
     par.format = ''
     par.showall = False

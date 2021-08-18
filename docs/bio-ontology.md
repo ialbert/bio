@@ -4,9 +4,9 @@ The `bio` package provides utility to search gene and sequence ontology.
 
 ## Download the databases
 
-Before the first use the databases need to be downloaded:
+Before the first use the databases need to be build or downloaded. If you haven't done so before run this once.
 
-    bio define --download
+    bio --download
 
 ## Database information
  

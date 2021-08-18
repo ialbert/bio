@@ -12,16 +12,12 @@ from biorun import utils
 from biorun.libs import placlib as plac
 from biorun.libs.sqlitedict import SqliteDict
 
-ROOT_URL = "http://www.bioinfo.help/data/"
-
 # Database filenames.
 SQLITE_FILE = "taxonomy.sqlite"
 SQLITE_PATH = utils.cache_path(SQLITE_FILE)
-SQLITE_URL  = f"{ROOT_URL}{SQLITE_FILE}"
 
 JSON_FILE = "taxonomy.json"
 JSON_PATH = utils.cache_path(JSON_FILE)
-JSON_URL  = f"{ROOT_URL}{JSON_FILE}"
 
 # NCBI taxonomy files.
 TAXDB_FILE = "taxdump.tar.gz"
@@ -44,20 +40,6 @@ LIMIT = None
 CHUNK = 25000
 
 logger = utils.logger
-
-
-def download_prebuilt():
-    """
-    Downloads prebuild databases.
-    """
-    # This is also store as prebuilt to match the database.
-    url_taxdump = f"{ROOT_URL}taxdump.tar.gz"
-    utils.download(url=url_taxdump, fname=TAXDB_PATH)
-    utils.download(url=JSON_URL, fname=JSON_PATH)
-    utils.download(url=SQLITE_URL, fname=SQLITE_PATH)
-
-    print("### downloads completed")
-
 
 def build_database(limit=None):
     """
@@ -465,14 +447,13 @@ def parse_stream(stream, field=1, delim="\t"):
 @plac.flg('lineage', "show the lineage for a taxon term", abbrev="L")
 @plac.opt('indent', "the indentation depth (set to zero for flat)")
 @plac.opt('sep', "separator (default is ', ')", abbrev='s')
-@plac.flg('download', "downloads the database from the remote site", abbrev='D')
 @plac.opt('depth', "how deep to visit a clade ", abbrev='d', type=int)
 @plac.opt('keep', "clade to keep", abbrev='K')
 @plac.opt('remove', "clade to remove", abbrev='R')
 @plac.opt('field', "which column to read when filtering")
 @plac.flg('verbose', "verbose mode, prints more messages")
 @plac.flg('accessions', "Print the accessions number for each ")
-def run(lineage=False, build=False, download=False, accessions=False,
+def run(lineage=False, build=False, accessions=False,
         keep='', remove='', field=1,
         list_=False, depth=0, preload=False, indent=2, sep=',',
         verbose=False, *terms):
@@ -498,11 +479,6 @@ def run(lineage=False, build=False, download=False, accessions=False,
 
     # Set the verbosity
     utils.set_verbosity(logger, level=int(verbose))
-
-    # Download the prebuilt database.
-    if download:
-        download_prebuilt()
-        return
 
     # Downloads a new taxdump and builds a new taxonomy database.
     if build:

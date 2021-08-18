@@ -8,7 +8,7 @@ The `bio` package provides utilities to visualize NCBI taxonomies. See the help 
 
 Before using the taxonomy related database needs to downloaded with:
 
-    bio taxon --download 
+    bio --download 
 
 The above command takes about 6 minutes to obtain the remote databases and store them locally. You may build the newest version locally:
 

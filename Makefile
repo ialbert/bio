@@ -60,10 +60,7 @@ pypi: test build
 
 # Upload prebuilt data to distribution site.
 upload:
-	rsync -avz --progress ~/.bio/taxdump.tar.gz ${REMOTE}data
-	rsync -avz --progress ~/.bio/taxonomy.json ${REMOTE}data
-	rsync -avz --progress ~/.bio/taxonomy.sqlite ${REMOTE}data
-	rsync -avz --progress ~/.bio/ontology.sqlite ${REMOTE}data
-	rsync -avz --progress ~/.bio/ontology.json ${REMOTE}data
+	(cd ~/.bio && GZIP=-9 && tar czvf biodata.tar.gz taxdump.tar.gz *.json *.sqlite)
+	rsync -avz --progress ~/.bio/biodata.tar.gz ${REMOTE}data
 
 

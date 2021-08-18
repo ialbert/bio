@@ -1,0 +1,19 @@
+GO:0005294  neutral l-amino acid secondary active transmembrane transporter activity
+GO:0005295  neutral amino acid
+GO:0006638  neutral lipid metabolic process
+GO:0015175  neutral amino acid transmembrane transporter activity
+GO:0015374  neutral, basic amino acid
+GO:0015804  neutral amino acid transport
+GO:0034489  neutral amino acid transmembrane export from vacuole
+GO:0034491  neutral amino acid transmembrane import into vacuole
+GO:0036176  response to neutral ph
+GO:0036178  filamentous growth of a population of unicellular organisms in response to neutral ph
+GO:0036244  cellular response to neutral ph
+GO:0044655  phagosome reneutralization
+GO:0046460  neutral lipid biosynthetic process
+GO:0046461  neutral lipid catabolic process
+GO:0061751  neutral sphingomyelin phosphodiesterase activity
+GO:0097282  immunoglobulin-mediated neutralization
+GO:1900440  regulation of filamentous growth of a population of unicellular organisms in response to neutral ph
+GO:1900441  negative regulation of filamentous growth of a population of unicellular organisms in response to neutral ph
+GO:1900442  positive regulation of filamentous growth of a population of unicellular organisms in response to neutral ph
