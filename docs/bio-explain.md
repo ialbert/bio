@@ -1,6 +1,6 @@
 # `explain`: displays ontology {#bio-ontology}
 
-The `bio` package provides utility to search gene and sequence ontology. For more information on ontologies consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]
+The `bio` package provides utility to search gene and sequence ontology. For more information on ontologies, consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]
 
 [ontology]: https://www.biostarhandbook.com/what-do-the-words-mean.html
 [book]: https://www.biostarhandbook.com
@@ -11,14 +11,14 @@ Reminder to install `bio` run:
 
     pip install bio --upgrade
 
-Then, before the first use the databases need to be build or downloaded. If you haven't done so before run this once.
+Then, before the first use, the databases need to be built or downloaded. If you haven't done so before, run this once.
 
     bio --download
 
-All commands above need to be performed only once.
+All commands above need to run only once.
 
 ## Database information
- 
+
 Run:
 
     bio explain
@@ -27,7 +27,7 @@ to print the contents of the database:
 
     # Content: 43,878 gene ontology terms; 2,354 sequence ontology terms
 
-The database the tool can currently access contains `43,878` gene ontology and `2,354 `  sequence ontology terms.
+The tool's database currently contains `43,878` gene ontology and `2,354 `  sequence ontology terms.
 
 ## Explain a term
 
@@ -36,13 +36,13 @@ The database the tool can currently access contains `43,878` gene ontology and `
 prints that the term is part of the Sequence Ontology (SO) with number `SO:0000147` and is defined as:
 
     ## exon (SO:0000147)
-    
+
     A region of the transcript sequence within a gene which is not removed from the
     primary RNA transcript by RNA splicing.
-    
+
     Parents:
     - transcript_region
-    
+
     Children:
     - coding_exon
     - noncoding_exon
@@ -62,11 +62,11 @@ or
 
 ## Explain term by identifier
 
-If you know a identifier like `bio explain SO:0000147` or `bio explain GO:2000147`
+If you know the identifier then you may use it directly `bio explain SO:0000147` or `bio explain GO:2000147`
 
 ## Explain more complex terms
 
-All words  has match exactly thus try simpler terms, before going full length
+All words have to match exactly; thus, try simpler terms before going full length.
 
     bio explain regulation
 
@@ -99,13 +99,13 @@ prints:
       SO:0000001  region
         SO:0001411  biological_region
           SO:0000833  transcript_region
-    
+
             ## exon (SO:0000147)
-    
+
             A region of the transcript sequence within a gene which is not removed from the
             primary RNA transcript by RNA splicing.
-    
-    
+
+
             Children:
             - coding_exon
             - noncoding_exon
@@ -118,7 +118,7 @@ prints:
 
 ## Searching the database
 
-Any query that is not matched will be searched for, 
+Any query that is not matched will be searched for,
 The `-go` flag filters for gene ontology while  `-so` filters for sequence ontology.
 
 Without the `-so` or `-go` flags, it will print out both.
@@ -143,4 +143,4 @@ You may build a database with the newest data:
 
     bio explain --build
 
-The command will download the most up to date data and build a new database. The process mighjt take about half an hour - though the completion speed depends on the hard drive write speed, solid state drives finish much faster.
+The command will download the most up-to-date data and build a new database. The process might take about half an hour - through the completion speed depends on the hard drive write speed, solid-state drives finish much faster.
