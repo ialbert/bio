@@ -1,4 +1,4 @@
-# `explain`: explains concepts {#bio-ontology}
+# `explain`: displays ontology {#bio-ontology}
 
 The `bio` package provides utility to search gene and sequence ontology. For more information on ontologies consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]
 
@@ -19,7 +19,7 @@ All commands above need to be performed only once.
 
 ## Database information
  
-Run the following
+Run:
 
     bio explain
 
@@ -62,26 +62,32 @@ or
 
 ## Explain term by identifier
 
-If you know a code like `SO:0000147` or `
-    bio explain SO:0000147
+If you know a identifier like `bio explain SO:0000147` or `bio explain GO:2000147`
 
 ## Explain more complex terms
 
-Th3
+All words  has match exactly thus try simpler terms, before going full length
 
-    bio explain positive regulation of cell motility
+    bio explain regulation
 
-    bio explain cellular response to tumor cell
+    bio explain positive regulation
 
-    bio explain intergenic mrna trans splicing
+    bio explain positive regulation of x
 
-## Building the database
+    bio explain positive regulation of xanthophore differentiation
 
-To generate an up to date database use:
+What is xantophore?
 
-    bio explain --build
+    bio explain xanthophore
 
-The command above has to be run once (perhaps on a monthly basis) to download the latest data. The efficiency of the process depends on the speed of the hard drive and takes around 30 seconds.
+prints:
+
+    ## xanthophore (GO:0031633)
+
+    A chromatophore containing yellow pigment.
+
+    Parents:
+    - plasma membrane-derived chromatophore
 
 ## Showing the term lineage
 
@@ -133,7 +139,8 @@ To search for sequence ontology:
 
 ## Build the newest version locally
 
-You may build the newest version locally, will take about an hour:
+You may build a database with the newest data:
 
     bio explain --build
 
+The command will download the most up to date data and build a new database. The process mighjt take about half an hour - though the completion speed depends on the hard drive write speed, solid state drives finish much faster.

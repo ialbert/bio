@@ -11,18 +11,20 @@ from biorun import utils
 # Module level logger
 logger = utils.logger
 
+from biorun import VERSION
+
 #
 # Subcommand registration:
 #
 # name = (module.function, automatic_help_flag, command_help)
 #
 SUB_COMMANDS = dict(
+    explain=("biorun.ontology.run", False, "explains biological terms"),
     fetch=("biorun.fetch.run", True, "fetch GenBank data"),
     fasta=("biorun.fasta.run", True, "convert GenBank to FASTA"),
     gff=("biorun.gff.run", True, "convert GenBank to GFF"),
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
     data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
-    explain=("biorun.ontology.run", False, "explains biological terms"),
     align=("biorun.align.run", True, "aligns fasta sequences"),
 )
 
@@ -37,9 +39,7 @@ block = "\n".join(block)
 
 # Fill help section into the usage.
 USAGE = f"""
-bio: making bioinformatics fun again
-
-Commands:
+bio: making bioinformatics fun again 
 
 {block}
 
@@ -52,6 +52,8 @@ Examples:
     bio align GATTACA GATCA  
     
 See also: https://www.bioinfo.help
+
+Version: {VERSION}
 """
 
 

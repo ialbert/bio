@@ -73,6 +73,7 @@ def download_terms():
 
 
 def get_data(preload=False):
+
     if preload:
         if not os.path.isfile(JSON_PATH):
             utils.error(f"file not found (download or build it first): {JSON_PATH}")
@@ -235,7 +236,7 @@ def build_db():
     back_prop.update(soback_prop)
 
     print("# saving the JSON model")
-    store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop)
+    store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop, RELATED=back_prop)
     fp = open(JSON_PATH, "wt")
     json.dump(store, fp, indent=4)
     fp.close()
@@ -292,8 +293,11 @@ def wrap_text(text, pre=''):
 
 
 def formatted_printer(name, uid, definition,  nodes, terms, parents=[], prefix=""):
+
     definition = wrap_text(definition, pre=prefix)
+
     print(f"\n{prefix}## {name} ({uid})\n\n{prefix}{definition}\n")
+
     if parents:
         print(f'{prefix}Parents:')
         printer(uids=parents, terms=terms, prefix=prefix)
@@ -303,7 +307,9 @@ def formatted_printer(name, uid, definition,  nodes, terms, parents=[], prefix="
         print(f"\n{prefix}Children:")
         # Print children
         printer(uids=children, terms=terms, prefix=prefix)
+
     print(" ")
+
     return
 
 
@@ -341,8 +347,9 @@ def show_lineage(start, terms, nodes, back_prop):
                        nodes=nodes, terms=terms)
 
     parents = back_prop.get(start, [])
+
     if len(parents) > 1:
-        print("*** More than on path detected, use -P to view all relationships.\n")
+        print("# Note: term has multiple parents. Lineage shows the is_a relationship.")
 
     return
 
@@ -501,6 +508,7 @@ def run(build=False, preload=False, so=False, go=False,
         build_db()
 
     terms, nodes, names, back_prop = get_data(preload=preload)
+
 
     query = query.strip()
 
