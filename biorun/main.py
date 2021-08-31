@@ -19,13 +19,14 @@ from biorun import VERSION
 # name = (module.function, automatic_help_flag, command_help)
 #
 SUB_COMMANDS = dict(
-    explain=("biorun.ontology.run", False, "explains biological terms"),
-    fetch=("biorun.fetch.run", True, "fetch GenBank data"),
+    explain=("biorun.ontology.run", False, "explain biological terms"),
+    search=("biorun.search.run", False, "search biological data"),
+    fetch=("biorun.fetch.run", True, "download GenBank data"),
     fasta=("biorun.fasta.run", True, "convert GenBank to FASTA"),
     gff=("biorun.gff.run", True, "convert GenBank to GFF"),
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
     data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
-    align=("biorun.align.run", True, "aligns fasta sequences"),
+    align=("biorun.align.run", True, "align sequences"),
 )
 
 

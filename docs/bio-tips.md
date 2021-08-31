@@ -7,10 +7,19 @@ Substantial effort has been devoted to making the command line more error-tolera
 Each command, when invoked with no parameters, will produce help:
 
     bio
-    
-## Print more information
 
-Use the `-v` flag to produce verbose outputs for each command.
+## Many commands take standard input
+
+    bio fetch AF086833  KJ660346 > genome.gb
+
+or if the file `ids.txt` contains:
+
+    AF086833
+    KJ660346
+
+you can run:
+
+    cat ids.txt | bio fetch > genome.gb
 
 ## Parameter order does not matter
 
