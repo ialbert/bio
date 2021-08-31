@@ -1,33 +1,32 @@
-# `explain`: displays ontology {#bio-ontology}
+# `bio explain`: show definitions {#bio-ontology}
+
+Rationale: we found the graphical and web based user interfaces to be quite tedious to navigate and interpret. We implemented the `bio explain` command to facilitate the quick explorations of the Gene and Sequence ontologies.
 
 The `bio` package provides utility to search gene and sequence ontology. For more information on ontologies, consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]
+The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 [ontology]: https://www.biostarhandbook.com/what-do-the-words-mean.html
 [book]: https://www.biostarhandbook.com
 
 ## Download the databases
 
-Reminder to install `bio` run:
+As a reminder to install `bio` run:
 
     pip install bio --upgrade
 
-Then, before the first use, the databases need to be built or downloaded. If you haven't done so before, run this once.
+Then, before the first use, the database needs to downloaded.
 
     bio --download
 
-All commands above need to run only once.
-
 ## Database information
-
-Run:
 
     bio explain
 
-to print the contents of the database:
+Prints the contents of the database:
 
     # Content: 43,878 gene ontology terms; 2,354 sequence ontology terms
 
-The tool's database currently contains `43,878` gene ontology and `2,354 `  sequence ontology terms.
+As we can see the database currently contains `43,878` gene ontology and `2,354 `  sequence ontology terms.
 
 ## Explain a term
 
@@ -118,24 +117,16 @@ prints:
 
 ## Searching the database
 
-Any query that is not matched will be searched for,
-The `-go` flag filters for gene ontology while  `-so` filters for sequence ontology.
+Any query that is not matched will be searched for. The `-go` flag restricts tje search for gene ontology while  `-so` restricts the search for sequence ontology. To search for both sequence and gene ontology:
 
-Without the `-so` or `-go` flags, it will print out both.
-
-To search for both sequence and gene ontology:
-
+    # Searces both ontologies
     bio explain histone | head
 
-## Search gene ontology only
-
+    # Search gene ontology only
     bio explain histone --go | head
 
-
-To search for sequence ontology:
-
+    # Search gene ontology only
     bio explain histone --so |head
-
 
 ## Build the newest version locally
 

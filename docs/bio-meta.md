@@ -1,4 +1,4 @@
-# `data`: obtains viral metadata
+# `bio data`: obtain viral metadata
 
 TODO: Work in progress.
 

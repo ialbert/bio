@@ -29,6 +29,7 @@ docs:
 # Push out the docs to remote docs.
 sync:
 	rsync -avz  docs/.book/ ${REMOTE}
+	rsync -avz docs/bio-explain.md ~/book/biostar-handbook-2/books/main/doc/ontology/
 
 # Serve the documentation as a webpage.
 serve:

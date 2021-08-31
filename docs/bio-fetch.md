@@ -1,4 +1,4 @@
-# `fetch`: downloads GenBank data {#bio-fetch}
+# `bio fetch`: get GenBank data {#bio-fetch}
 
 `bio` can fetch data in GeneBank format based on accession numbers
 
