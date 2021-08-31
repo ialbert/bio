@@ -10,9 +10,6 @@ Before using the taxonomy related database needs to downloaded with:
 
     bio --download 
 
-The above command takes about 6 minutes to obtain the remote databases and store them locally. You may build the newest version locally:
-
-    bio taxon --build
 
 ## Check database
 
@@ -20,7 +17,7 @@ The above command takes about 6 minutes to obtain the remote databases and store
     
 prints:
 
-    TaxDB: nodes=2,353,384 parents=207,447
+    Content: 2,359,690 taxon names; 209,096 parent ranks
 
 There are a total of `2,353,384 ` nodes (taxonomical entries) out of which `207,447` are nodes that are non-terminal (non-leaf) nodes. For these numbers we see that the vast majority of the taxonomy annotations are for terminal, leaf nodes.
 
@@ -237,3 +234,9 @@ The software can operate in a different mode to speed up the process by preloadi
 When run with the `--preload` flag the command takes a total of just 11 seconds to generate the same large tree of the entire NCBI taxonomical tree. We don't apply this mode by default because all queries would then take at least 6 seconds, even those that currently finish very quickly.
 
 For queries that take more than 10 seconds to complete (have more than 10,000 descendant nodes) we recommend applying the `--preload` flag.
+
+## Build the newest version locally
+
+You may build the newest version locally, will take about an hour:
+
+    bio taxon --build

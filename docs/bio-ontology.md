@@ -1,29 +1,39 @@
-# `define`: explains terms {#bio-ontology}
+# `explain`: explains concepts {#bio-ontology}
 
-The `bio` package provides utility to search gene and sequence ontology.
+The `bio` package provides utility to search gene and sequence ontology. For more information on ontologies consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]
+
+[ontology]: https://www.biostarhandbook.com/what-do-the-words-mean.html
+[book]: https://www.biostarhandbook.com
 
 ## Download the databases
 
-Before the first use the databases need to be build or downloaded. If you haven't done so before run this once.
+Reminder to install `bio` run:
+
+    pip install bio --upgrade
+
+Then, before the first use the databases need to be build or downloaded. If you haven't done so before run this once.
 
     bio --download
 
+All commands above need to be performed only once.
+
 ## Database information
  
-run
-    bio define
+Run the following
 
-prints:
+    bio explain
 
-    OntologyDB: total=46,271 gene=43,917 sequence=2,354
+to print the contents of the database:
 
-There are a total of `47,271` ontology terms out of which `43,917` are gene ontology and `2,529` are sequence ontology terms.
+    # Content: 43,878 gene ontology terms; 2,354 sequence ontology terms
 
-## Define a term 
+The database the tool can currently access contains `43,878` gene ontology and `2,354 `  sequence ontology terms.
 
-    bio define exon
+## Explain a term
 
-prints:
+    bio explain exon
+
+prints that the term is part of the Sequence Ontology (SO) with number `SO:0000147` and is defined as:
 
     ## exon (SO:0000147)
     
@@ -42,29 +52,40 @@ prints:
     - exon_region (part_of)
     - exon_of_single_exon_gene
 
-## Define term by SO
+You can now query the parent or child relationships:
 
-    bio define SO:0000147
+    bio explain transcript_region
 
-## Define more complex terms
+or
 
-    bio define positive regulation of cell motility
+    bio explain coding_exon
 
-    bio define cellular response to tumor cell
+## Explain term by identifier
 
-    bio --define intergenic mrna trans splicing
+If you know a code like `SO:0000147` or `
+    bio explain SO:0000147
+
+## Explain more complex terms
+
+Th3
+
+    bio explain positive regulation of cell motility
+
+    bio explain cellular response to tumor cell
+
+    bio explain intergenic mrna trans splicing
 
 ## Building the database
 
 To generate an up to date database use:
 
-    bio define --build
+    bio explain --build
 
 The command above has to be run once (perhaps on a monthly basis) to download the latest data. The efficiency of the process depends on the speed of the hard drive and takes around 30 seconds.
 
 ## Showing the term lineage
 
-    bio define exon --lineage
+    bio explain exon --lineage
 
 prints:
 
@@ -98,17 +119,21 @@ Without the `-so` or `-go` flags, it will print out both.
 
 To search for both sequence and gene ontology:
 
-    bio define histone | head 
+    bio explain histone | head
 
 ## Search gene ontology only
 
-    bio define histone --go | head 
+    bio explain histone --go | head
 
 
 To search for sequence ontology:
 
-    bio define histone --so |head
+    bio explain histone --so |head
 
 
+## Build the newest version locally
 
+You may build the newest version locally, will take about an hour:
+
+    bio explain --build
 

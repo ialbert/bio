@@ -1,0 +1,11 @@
+# ids that we want to use
+
+AF086833
+KJ660346
+
+# empty lines and commented lines are allowed
+
+
+
+
+

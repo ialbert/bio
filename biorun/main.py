@@ -21,8 +21,8 @@ SUB_COMMANDS = dict(
     fasta=("biorun.fasta.run", True, "convert GenBank to FASTA"),
     gff=("biorun.gff.run", True, "convert GenBank to GFF"),
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
-    meta=("biorun.meta.run", False, "download metadata by taxonomy ID"),
-    define=("biorun.ontology.run", False, "explains biological terms"),
+    data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
+    explain=("biorun.ontology.run", False, "explains biological terms"),
     align=("biorun.align.run", True, "aligns fasta sequences"),
 )
 

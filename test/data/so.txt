@@ -1,8 +1,8 @@
 
 ## exon (SO:0000147)
 
-A region of the transcript sequence within a gene which is not removed from the
-primary RNA transcript by RNA splicing.
+A region of the transcript sequence within a gene which is
+not removed from the primary RNA transcript by RNA splicing.
 
 Parents:
 - transcript_region 

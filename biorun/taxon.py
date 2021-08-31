@@ -52,7 +52,7 @@ def build_database(limit=None):
     # Download the latest taxdump file.
     utils.download(url=TAXDB_URL, fname=path)
 
-    print(f"\n### taxdump file: {path}")
+    print(f"\n# taxdump file: {path}")
 
     # Parse the names
     tax2data = parse_names(path, limit=limit)
@@ -70,7 +70,7 @@ def build_database(limit=None):
     # Save the graph.
     save_table(GRAPH, graph)
 
-    print("### saving the JSON model")
+    print("# saving the JSON model")
     json_path = os.path.join(utils.DATADIR, JSON_PATH)
 
     # Save the JSON file as well.
@@ -133,7 +133,7 @@ def parse_names(archive, filename="names.dmp", limit=None):
     # Lookup tables.
     tax2data, name2tax = {}, {}
 
-    print(f"### processing: {filename}")
+    print(f"# processing: {filename}")
 
     # Process the nodes.dmp file.
     for row in stream:
@@ -171,7 +171,7 @@ def parse_nodes(archive, tax2data, filename="nodes.dmp", limit=None):
     # Data structures to fill.
     graph = {}
 
-    print("### processing: nodes.dmp")
+    print("# processing: nodes.dmp")
 
     # Process the nodes.dmp file.
     for row in stream:
@@ -272,7 +272,7 @@ def get_data(preload=False, acc=False):
 
 def print_stats(names, graph):
     node_size, graph_size = len(names), len(graph)
-    print(f"TaxDB: nodes={node_size:,d} parents={graph_size:,d}")
+    print(f"Content: {node_size:,d} taxon names; {graph_size:,d} parent ranks")
 
 
 def search_taxa(word, preload=False):

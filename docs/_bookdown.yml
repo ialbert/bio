@@ -3,6 +3,7 @@ rmd_files: [
   "bio-install.md",
 
   "bio-part-tasks.md",
+
   "bio-fetch.md",
   "bio-fasta.md",
   "bio-gff.md",
@@ -12,6 +13,7 @@ rmd_files: [
   "bio-meta.md",
 
   "bio-part-info.md",
+
   "bio-tips.md",
   "bio-usage.md",
   #"bio-related.md",

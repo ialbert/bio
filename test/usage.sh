@@ -10,10 +10,16 @@
 set -uex
 
 # Get data from NCBI
-bio fetch NC_045512,MN996532 > genomes.gb
+bio fetch NC_045512 MN996532 > genomes.gb
+
+# Parse the standard input.
+echo NC_045512 | bio fetch > sars2.gb
 
 # Slice the genomes
 bio fasta genomes.gb --end  100 > genomes.fa
+
+# Should produce the same output
+cat genomes.gb | bio fasta --end  100 > genomes.fa
 
 # Slice the genomes
 bio fasta genomes.gb --end  100  --alias alias.txt > genomes.alias.fa
@@ -69,14 +75,14 @@ bio taxon 117565 -d 5 > taxonomy.txt
 # Taxonomy lineage.
 bio taxon genomes.gb --lineage > lineage.txt
 
-# Getting some metadata
-bio meta 11138 -H > meta.txt
+# Getting some metadata for taxon 11138 (Murine hepatitis virus)
+bio data 11138 -H > meta.txt
 
 # Define exact SO term
-bio define exon > so.txt
+bio explain exon > so.txt
 
 # Define exact SO term
-bio define food vacuole > go.txt
+bio explain food vacuole > go.txt
 
 # Search for terms
-bio define neutral > search.txt
+bio explain neutral > search.txt

@@ -3,9 +3,9 @@ import sys, re
 try:
     from Bio import Entrez
 except ImportError as exc:
-    print(f"### Error: {exc}", file=sys.stderr)
-    print(f"### This program requires biopython", file=sys.stderr)
-    print(f"### Install: conda install -y biopython>=1.79", file=sys.stderr)
+    print(f"# Error: {exc}", file=sys.stderr)
+    print(f"# This program requires biopython", file=sys.stderr)
+    print(f"# Install: conda install -y biopython>=1.79", file=sys.stderr)
     sys.exit(-1)
 
 from biorun.libs import placlib as plac
@@ -55,7 +55,7 @@ def run(db="nuccore", format_="gbwithparts", alias='', *acc):
         ids.extend(num.split(","))
 
     if not sys.stdin.isatty():
-        lines = utils.read_lines(sys.stdin, sep='')
+        lines = utils.read_lines(sys.stdin, sep=None)
         ids.extend(lines)
 
     ids = map(detect_format, ids)

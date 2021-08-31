@@ -2,40 +2,26 @@ Demo accession numbers:
 
 Viral, SARS-COV-2: NC_045512 (1 second)
 
-    time bio NC_045512 --fetch
+    time bio fetch NC_045512
 
-Viral, Ebola: AF086833 (1 second)
+Viral, Ebola: AF086833 (1972), KJ660346 (2014)
 
-    time bio AF086833  --fetch
-
-Another Ebola (2014):
-
-    time bio KJ660346 --fetch --rename ebola14
+    time bio fetch AF086833  KJ660346  > genome.gb
 
 # Transcript 
-/transcript_id="NM_164349.3"
-/db_xref="FLYBASE:FBtr0078171"
-/db_xref="GeneID:33156"
-/db_xref="FLYBASE:FBgn0002121"
 
-# Protein
-/protein_id="NP_722583.1"
-/db_xref="FLYBASE:FBpp0077824"
-/db_xref="GeneID:33156"
-/db_xref="FLYBASE:FBgn0002121"
 
 Bacteria, Escherichia coli: NC_002695 (2 minutes, 10MB)
 
-    time bio NC_002695 --fetch -v 
+    time bio fetch  NC_002695
 
 Insect, fruit fly (chromosome 2L): NT_033779 (2 minutes, 44MB)
 
-    time bio NT_033779 --fetch 
+    time bio fetch NT_033779
 
 Mammal, human genome (chromosome 1): NC_000001 (2 minutes, 300MB)
 
-    time bio NC_000001  --fetch
-    
+    time bio fetch NC_000001
 
 A weird join operator:
 
@@ -66,4 +52,3 @@ Complicated GO term:
     bio --define intergenic mrna trans splicing
     
 
-   

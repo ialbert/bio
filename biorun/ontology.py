@@ -136,7 +136,7 @@ def parse_term(fname):
     Parses the ontology file into a terms dictionary.
     """
 
-    print(f"### parsing: {fname}")
+    print(f"# parsing: {fname}")
 
     # The ontology file, with both sequence and gene info.
     stream = open(fname, mode="r", encoding="utf-8")
@@ -234,7 +234,7 @@ def build_db():
     names.update(sonames)
     back_prop.update(soback_prop)
 
-    print("### saving the JSON model")
+    print("# saving the JSON model")
     store = dict(TERMS=terms, GRAPH=nodes, NAMES=names, CHILDREN=back_prop)
     fp = open(JSON_PATH, "wt")
     json.dump(store, fp, indent=4)
@@ -287,7 +287,7 @@ def wrap_text(text, pre=''):
     patt = r'"([^"]*)"'
     m = re.match(patt, text)
     text = m.groups()[0] if m else text
-    text = f"\n{pre}".join(wrap(text, 80))
+    text = f"\n{pre}".join(wrap(text, 60))
     return text
 
 
@@ -404,7 +404,8 @@ def print_stats(terms):
     sos = [k for k in terms.keys() if k.startswith('SO')]
     ngos, nsos = len(gos), len(sos)
     total = ngos + nsos
-    print(f"OntologyDB: total={total:,d} gene={ngos:,d} sequence={nsos:,d}")
+    print(f"# Content: {ngos:,d} gene ontology terms; {nsos:,d} sequence ontology terms")
+
 
     return
 

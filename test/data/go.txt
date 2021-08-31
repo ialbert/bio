@@ -1,8 +1,9 @@
 
 ## food vacuole (GO:0020020)
 
-Vacuole within a parasite used for digestion of the host cell cytoplasm. An
-example of this component is found in the Apicomplexa.
+Vacuole within a parasite used for digestion of the host
+cell cytoplasm. An example of this component is found in the
+Apicomplexa.
 
 Parents:
 - phagolysosome 

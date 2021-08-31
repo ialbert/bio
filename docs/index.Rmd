@@ -6,16 +6,17 @@ numbering:  "false"
 ---
 # Welcome to `bio`
 
-If you've ever done bioinformatics you know how even seemingly straightforward tasks may require multiple steps, reading documentation, and additional preparations that can slow down progress.
+If you've ever done bioinformatics you know how even seemingly straightforward tasks often require multiple steps, reading documentation, and performing additional preparations that can slow down progress.
 
-Time and again, I found myself not pursuing an idea because getting to the fun part was too tedious. The `bio` package was designed  to solve that tedium by making bioinformatics explorations more enjoyable. The software lets users quickly answer questions such as:
+Time and again, I found myself not pursuing ideas because getting to the fun part was too tedious. The `bio` package was designed  to solve that tedium by making bioinformatics explorations more enjoyable. The software lets users quickly answer questions such as:
  
-- How do I access a sequence for a viral genome? -> `bio fetch NC_045512 > genome.gb`
+- How do I access a sequence for a viral genome? `bio fetch NC_045512 > genome.gb`
 - How do I view the sequence annotation of data? `cat genome.gb | bio gff `
-- How do I get the coding sequence for a specific gene? -> `cat genome.gb | bio fasta --gene S`
-- What is the lineage of SARS-COV-2? -> `bio taxon 2697049 --lineage`
-- At what date were viral samples collected? -> `bio meta 2697049 | head`
-- What are minisatellites and  microsatellites? -> `bio define microsatellite`
+- How do I get the coding sequence for a specific gene? `cat genome.gb | bio fasta --gene S`
+- What is the taxid for SARS-COV-2?  `bio taxon sars2`
+- What is the lineage of SARS-COV-2? `bio taxon 2697049 --lineage`
+- At what date were viral samples collected? `bio data 2697049 | head`
+- What is a  microsatellites? `bio explain microsatellite`
 
 `bio` combines data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so],
 [NCBI Taxonomy][taxonomy] and provides an unified, logical interface.

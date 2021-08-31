@@ -27,12 +27,20 @@ os.makedirs(DATADIR, exist_ok=True)
 
 
 def read_lines(stream, index=0, sep=None):
-    lines = filter(lambda x: not x.startswith("#"), stream)
-    if sep != None:
-        try:
-            lines = map(lambda x: x.strip().split(sep=sep)[index], lines)
-        except IndexError as exc:
-            error(f"column index out of bounds: {index}")
+    """
+    Reads lines from a streamn.
+    """
+    # Skip commented lines
+    lines = filter(lambda x: not x.strip().startswith("#"), stream)
+
+    # Skip empty lines
+    lines = filter(lambda x: x.strip(), lines)
+
+    try:
+        lines = map(lambda x: x.strip().split(sep=sep)[index], lines)
+    except IndexError as exc:
+        error(f"column index out of bounds: {index}")
+
     lines = filter(None, lines)
     lines = list(lines)
     return lines
@@ -119,12 +127,12 @@ def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
 
     table = open_db(table=name, fname=path, flag=flg, strict=False)
     stream = enumerate(obj.items())
-    stream = tqdm(stream, total=size, desc=f"### {name}")
+    stream = tqdm(stream, total=size, desc=f"# {name}")
     for index, (key, value) in stream:
         table[key] = value
         if index % chunk == 0:
             table.commit()
-    print(f"### saved {name} with {size:,} elements", end="\r")
+    print(f"# saved {name} with {size:,} elements", end="\r")
     print("")
     table.commit()
     table.close()
@@ -156,7 +164,7 @@ CHUNK_SIZE = 2500
 def cache_path(fname):
     return  os.path.join(DATADIR, fname)
 
-def download(url, fname, cache=False, params={}):
+def download(url, fname, cache=False, params={}, overwrite=False):
     """
     Downloads a URL into a destination
     """
@@ -178,7 +186,7 @@ def download(url, fname, cache=False, params={}):
     chunk_size = 1 * 1024 * 1024
 
     # Create file only if download completes successfully.
-    pbar = tqdm(desc=f"### {fname}", unit="B", unit_scale=True, unit_divisor=1024, total=total)
+    pbar = tqdm(desc=f"# {fname}", unit="B", unit_scale=True, unit_divisor=1024, total=total)
 
     with tempfile.NamedTemporaryFile(delete=True) as fp:
 
@@ -218,11 +226,12 @@ def download_prebuilt(fname='biodata.tar.gz'):
 
     dirpath = os.path.dirname(path)
 
-    print ("### Extracting the files")
+    print ("# extracting files")
     # Extracte the contents of the
     fp.extractall(dirpath)
 
     fp.close()
+    print("# download completed.")
 
 def no_dash(alist):
     """
@@ -326,7 +335,7 @@ def get_logger(name="bio", hnd=None, fmt=None, terminator='\n'):
     hnd.terminator = terminator
 
     # The logging formatter.
-    fmt = fmt or logging.Formatter('### %(message)s')
+    fmt = fmt or logging.Formatter('# %(message)s')
 
     # Add formatter to handler
     hnd.setFormatter(fmt)
