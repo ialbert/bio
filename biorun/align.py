@@ -151,14 +151,14 @@ def print_default(fmt):
 
     print(f"# {label}: {fmt.target.id} ({len(fmt.target):,}) vs {fmt.query.id} ({len(fmt.query):,}) score={fmt.score}")
     print(
-        f"# Alignment: length={fmt.tlen} ident={fmt.ident}/{fmt.tlen}({fmt.pident:0.1f}%) mis={fmt.mis}/{fmt.tlen} del={fmt.dels} ins={fmt.ins}")
+        f"# Alignment: pident={fmt.pident:0.1f}% len={fmt.tlen} ident={fmt.ident} mis={fmt.mis} del={fmt.dels} ins={fmt.ins}")
 
     if fmt.matrix:
         print(f"# Parameters: matrix={fmt.matrix}", end=' ')
     else:
-        print(f"# Parameters: match=+{fmt.match} penalty=-{fmt.mismatch}", end=' ')
+        print(f"# Parameters: match={fmt.match} penalty={fmt.mismatch}", end=' ')
 
-    print(f"gap-open=-{fmt.gap_open} gap-extend=-{fmt.gap_extend}")
+    print(f"gapopen={fmt.gap_open} gapextend={fmt.gap_extend}")
     print()
 
     print_trace(fmt)
@@ -166,8 +166,9 @@ def print_default(fmt):
 
 def table_fmt(fmt, sep="\t"):
     data = [
-        f"{fmt.target.id}", f"{fmt.query.id}", f"{fmt.tlen}",
-        f"{fmt.pident:0.1f}", f"{fmt.mis}", f"{fmt.dels}", f"{fmt.ins}"
+        f"{fmt.target.id}", f"{fmt.query.id}",
+        f"{fmt.score}", f"{fmt.pident:0.1f}", f"{fmt.tlen}",
+        f"{fmt.ident}", f"{fmt.mis}", f"{fmt.dels}", f"{fmt.ins}"
     ]
     line = sep.join(data)
     print(line)
@@ -309,8 +310,8 @@ def get_matrix(matrix, show=False):
 @plac.pos("sequence", "sequences")
 @plac.opt("match", "match", type=int, abbrev='m')
 @plac.opt("mismatch", "mismatch", type=int, abbrev='s')
-@plac.opt("gap_open", "gap_open", type=int, abbrev='o')
-@plac.opt("gap_extend", "gap_extend", type=int, abbrev='x')
+@plac.opt("open_", "gap open penalty", type=int, abbrev='o')
+@plac.opt("extend", "gap extend penalty", type=int, abbrev='x')
 @plac.opt("matrix", "matrix", abbrev='M')
 @plac.flg("variant", "output variants only", abbrev='V')
 @plac.flg("table", "format output as a table", abbrev="T")
@@ -318,13 +319,13 @@ def get_matrix(matrix, show=False):
 @plac.flg("global_", "local alignment", abbrev='G')
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.opt("type_", "sequence type (nuc, pep)", choices=[DNA, PEP])
-def run(gap_open=11, gap_extend=1, matrix='', match=5, mismatch=4, local_=False, global_=False,
+def run(open_=11, extend=1, matrix='', match=5, mismatch=4, local_=False, global_=False,
         semiglobal=False, type_='', variant=False, table=False, *sequences):
     # Keeps track of the alignment parameters.
     par = Param()
     par.matrix = None
-    par.gap_open = abs(gap_open)
-    par.gap_extend = abs(gap_extend)
+    par.gap_open = abs(open_)
+    par.gap_extend = abs(extend)
     par.mode = SEMIGLOBAL_ALIGN
     par.matrix = matrix
     par.match = abs(match)

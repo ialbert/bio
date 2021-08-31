@@ -1,7 +1,7 @@
 
 # PEP: YP_009724390.1 (1,273) vs QHR63300.2 (1,269) score=6541.0
-# Alignment: length=1273 ident=1240/1273(97.4%) mis=29/1273 del=4 ins=0
-# Parameters: matrix=BLOSUM62 gap-open=-11 gap-extend=-1
+# Alignment: pident=97.4% len=1273 ident=1240 mis=29 del=4 ins=0
+# Parameters: matrix=BLOSUM62 gapopen=11 gapextend=1
 
 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDN
 |||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
