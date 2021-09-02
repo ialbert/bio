@@ -25,6 +25,7 @@ setup(
         'requests',
         'tqdm>=4.62',
         'plac',
+        'mygene',
     ],
 
     entry_points={

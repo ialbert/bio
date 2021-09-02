@@ -30,6 +30,7 @@ docs:
 sync:
 	rsync -avz  docs/.book/ ${REMOTE}
 	rsync -avz docs/bio-explain.md ~/book/biostar-handbook-2/books/main/doc/ontology/
+	rsync -avz docs/bio-search.md ~/book/biostar-handbook-2/books/main/doc/data/
 
 # Serve the documentation as a webpage.
 serve:

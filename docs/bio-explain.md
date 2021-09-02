@@ -1,6 +1,6 @@
 # `bio explain`: show definitions {#bio-ontology}
 
-Rationale: we found the graphical and web based user interfaces to be quite tedious to navigate and interpret. We implemented the `bio explain` command to facilitate the quick explorations of the Gene and Sequence ontologies.
+We found the graphical and web based user interfaces to be quite tedious to navigate and interpret. We implemented the `bio explain` command to facilitate the quick explorations of the Gene and Sequence ontologies.
 
 The `bio` package provides utility to search gene and sequence ontology. For more information on ontologies, consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]
 The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.

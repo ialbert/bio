@@ -2,6 +2,8 @@ import json
 
 import plac
 
+import mygene
+
 
 #
 # Available fields
@@ -17,10 +19,8 @@ import plac
 # cat out.json | jq -r '.hits[].refseq.translation[]|[.protein, .rna] | @tsv'
 #
 def runme(query, fields, species='', scopes='', size=3):
-    import mygene
 
     mg = mygene.MyGeneInfo()
-    # res = mg.querymany(names, scopes='symbol', fields='symbol,name')
 
     data = mg.query(query, fields=fields, scopes=scopes, species=species, size=size)
 

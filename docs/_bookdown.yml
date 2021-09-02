@@ -4,7 +4,7 @@ rmd_files: [
 
   "bio-part-tasks.md",
   "bio-explain.md",
-
+  "bio-search.md",
   "bio-fetch.md",
   "bio-fasta.md",
   "bio-gff.md",

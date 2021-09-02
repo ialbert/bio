@@ -17,6 +17,7 @@ Time and again, I found myself not pursuing ideas because getting to the fun par
 - What is the lineage of SARS-COV-2? `bio taxon 2697049 --lineage`
 - At what date were viral samples collected? `bio data 2697049 | head`
 - What is a  microsatellites? `bio explain microsatellite`
+- What genes match the word `HBB`? `bio search HBB --species human`
 
 `bio` combines data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so],
 [NCBI Taxonomy][taxonomy] and provides an unified, logical interface.
@@ -41,17 +42,34 @@ Install `bio`:
 
     pip install bio --upgrade
 
-Source code: https://github.com/ialbert/bio
+## Code and info
 
-### Fetch data
+* Source code: https://github.com/ialbert/bio
+* Documentation: https://www.bioinfo.help
+* Feedback/Comments/Issues: https://github.com/ialbert/bio/issues
 
-First download data so that `bio` can operate on it. You can obtain GenBank files in various ways, here we download from Entrez:
+
+## Usage examples
+
+**Fetch data**
 
     bio fetch NC_045512 MN996532 > genomes.gb
 
-### Align sequences
+**Convert to FASTA**
 
-Let's align the protein sequences for the S gene
+    bio fasta genomes.gb  | head
+
+prints:
+
+    >NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+    GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+    CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
+    TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
+
+**Align sequences**
+
+From the `genomes.gb` obtained above align the protein sequences for the S gene
 
 	cat genomes.gb | bio fasta --gene S --protein | bio align | head
 
@@ -66,21 +84,7 @@ prints:
 	MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
 
 
-### Convert Genbank to FASTA.
-
-We often need to covert data to different formats:
-
-    bio fasta genomes.gb  | head
-
-prints:
-
-    >NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
-    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
-    GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
-    CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
-    TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
-
-### Convert to GFF format:
+**Convert to GFF**
 
     bio gff genomes.gb  | head
 
@@ -101,75 +105,6 @@ knitr::include_graphics('images/igv-index.png', dpi = NA)
 
 Among the many useful features, `bio` is also able to generate informative gene models from a  GenBank file.
 
-### Navigate the taxonomy
-
-Obtain the taxonomy files.
-
-	bio taxon --download
-
-search for a taxonomical name:
-
-	bio taxon sars2
-
-produces:
-
-	# Searching taxonomy for: sars2
-	no rank, 2697049, Severe acute respiratory syndrome coronavirus 2
-
-We make note of the taxonomic id `2697049` that can be used to further investigate the taxonomy. Accessing it directly:
-
-	bio taxon 2697049
-
-prints:
-
-	no rank, 2697049, Severe acute respiratory syndrome coronavirus 2
-
-To see the lineage of taxonomic id:
-
-    bio taxon 2697049 --lineage
-
-prints:
-
-    superkingdom, 10239, Viruses
-      clade, 2559587, Riboviria
-        kingdom, 2732396, Orthornavirae
-          phylum, 2732408, Pisuviricota
-            class, 2732506, Pisoniviricetes
-              order, 76804, Nidovirales
-                suborder, 2499399, Cornidovirineae
-                  family, 11118, Coronaviridae
-                    subfamily, 2501931, Orthocoronavirinae
-                      genus, 694002, Betacoronavirus
-                        subgenus, 2509511, Sarbecovirus
-                          species, 694009, Severe acute respiratory syndrome-related coronavirus
-                            no rank, 2697049, Severe acute respiratory syndrome coronavirus 2
-
-### Getting biological metadata
-
-Get metadata for the viral genomes (taxid `2697049` that corresponds to `SARS-COV-2`):
-
-    bio meta 2697049  | head
-
-prints:
-
-	NC_045512.2,2697049,9606,2019-12,Asia; China,Wuhan-Hu-1,Severe acute respiratory syndrome coronavirus 2
-	MZ664556.1,2697049,,2021-03-16,Asia; China,SARS-CoV-2/huamn/CHN/CD-27553/2021,Severe acute respiratory syndrome coronavirus 2
-	MT576563.1,2697049,,,North America; ,SARS-CoV-2/human/USA/USA-WA1/2020,Severe acute respiratory syndrome coronavirus 2
-	MT324684.1,2697049,,2020-03-25,North America; USA,SARS-CoV-2/ENV/USA/UF-3/2020,Severe acute respiratory syndrome coronavirus 2
-	MT476384.1,2697049,,2020-02-21,North America; USA: FL,SARS-CoV-2/ENV/USA/UF-11/2020,Severe acute respiratory syndrome coronavirus 2
-	MT952602.1,2697049,,,,,Severe acute respiratory syndrome coronavirus 2
-	MT844089.1,2697049,,,,,Severe acute respiratory syndrome coronavirus 2
-	MT844088.1,2697049,,,,,Severe acute respiratory syndrome coronavirus 2
-	MT396241.1,2697049,,2020-03-06,Asia; China,SARS-CoV-2/human/CHN/YN-0306-466/2020,Severe acute respiratory syndrome coronavirus 2
-
-What are the hosts that the virus infects?
-
-
 ## Where to go next
 
-Look at the sidebar for detailed documentation on how `bio` operates.
-
-## Other links
-
-* Source code: https://github.com/ialbert/bio
-* Documentation: https://www.bioinfo.help
+Look at the sidebar for detailed documentation on additional commands that `bio` supports.
