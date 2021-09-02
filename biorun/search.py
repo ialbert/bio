@@ -1,4 +1,5 @@
-import json
+import json, sys
+from pprint import pprint
 
 import plac
 
@@ -19,11 +20,14 @@ import mygene
 #
 from biorun import taxon
 
+
 def execute(query, fields, species='', scopes='', size=3):
 
     client = mygene.MyGeneInfo()
 
     data = client.query(query, fields=fields, scopes=scopes, species=species, size=size)
+
+    total = data.get('total', 0)
 
     # Get rid of data we don't need
     hits = data.get('hits', [])
@@ -41,6 +45,8 @@ def execute(query, fields, species='', scopes='', size=3):
 
     print(text)
 
+    if len(hits) < total:
+        print(f'#  showing {len(hits)} out of {total} results.', file=sys.stderr)
 
 @plac.opt('limit', "download limit", abbrev='l')
 @plac.opt('fields', "fields", abbrev='f')
