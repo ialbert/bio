@@ -253,7 +253,7 @@ def print_lineage(taxid, names, flat=0):
         print(text)
 
 
-def get_data(preload=False, acc=False):
+def get_data(preload=False, strict=True):
     """
     Returns the graph structure for the database.
     """
@@ -264,8 +264,8 @@ def get_data(preload=False, acc=False):
         names = store[TAXID]
         graph = store[GRAPH]
     else:
-        names = utils.open_db(TAXID, fname=SQLITE_PATH)
-        graph = utils.open_db(GRAPH, fname=SQLITE_PATH)
+        names = utils.open_db(TAXID, fname=SQLITE_PATH, strict=strict)
+        graph = utils.open_db(GRAPH, fname=SQLITE_PATH, strict=strict)
 
     return names, graph
 
@@ -486,7 +486,7 @@ def run(lineage=False, build=False, accessions=False,
         return
 
     # Get the content of the database.
-    names, graph = get_data(preload=preload, acc=accessions)
+    names, graph = get_data(preload=preload)
 
     # List the content of a database.
     if list_:

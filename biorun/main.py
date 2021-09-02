@@ -46,12 +46,14 @@ bio: making bioinformatics fun again
 
 Examples:
 
+    bio explain exon 
+    bio search HAD3 -fields refseq
     bio fetch NC_045512 > genome.gb
-    bio fasta genome.gb
+    bio fasta genome.gb --gene S
     bio gff genome.gb --type CDS
     bio taxon 2697049 --lineage
     bio align GATTACA GATCA  
-    
+
 See also: https://www.bioinfo.help
 
 Version: {VERSION}

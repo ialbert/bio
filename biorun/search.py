@@ -4,7 +4,6 @@ import plac
 
 import mygene
 
-
 #
 # Available fields
 #
@@ -18,32 +17,37 @@ import mygene
 #
 # cat out.json | jq -r '.hits[].refseq.translation[]|[.protein, .rna] | @tsv'
 #
-def runme(query, fields, species='', scopes='', size=3):
+from biorun import taxon
 
-    mg = mygene.MyGeneInfo()
+def execute(query, fields, species='', scopes='', size=3):
 
-    data = mg.query(query, fields=fields, scopes=scopes, species=species, size=size)
+    client = mygene.MyGeneInfo()
 
+    data = client.query(query, fields=fields, scopes=scopes, species=species, size=size)
+
+    # Fill in taxonomy name to the database
+    names, graph = taxon.get_data(strict=False)
+
+    for hit in data.get('hits', []):
+        hit['taxname'] = names.get(hit.get('taxid'), [''])[0]
     text = json.dumps(data, indent=4)
 
     print(text)
 
 
-@plac.flg('header', "print header", abbrev='H')
 @plac.opt('limit', "download limit", abbrev='l')
 @plac.opt('fields', "fields", abbrev='f')
 @plac.opt('species', "species", abbrev='s')
 @plac.opt('scopes', "scopes", abbrev='S')
 @plac.pos('query', "download limit")
-def run(header=False, limit=5, species='', fields='', scopes='symbol', *query):
+def run(limit=5, species='', fields='', scopes='symbol', *query):
     limit = int(limit) if limit else None
-
 
     fields = ",".join(['symbol', 'name', 'taxid', fields])
 
     query = ' '.join(query)
 
-    runme(query, fields=fields, species=species, scopes=scopes, size=limit)
+    execute(query, fields=fields, species=species, scopes=scopes, size=limit)
 
 
 if __name__ == '__main__':
