@@ -25,12 +25,19 @@ def execute(query, fields, species='', scopes='', size=3):
 
     data = client.query(query, fields=fields, scopes=scopes, species=species, size=size)
 
+    # Get rid of data we don't need
+    hits = data.get('hits', [])
+
     # Fill in taxonomy name to the database
     names, graph = taxon.get_data(strict=False)
 
-    for hit in data.get('hits', []):
+    # Fill the taxonmy name, get rid of fields we don't want.
+    for hit in hits:
+        del hit['_id']
+        del hit['_score']
         hit['taxname'] = names.get(hit.get('taxid'), [''])[0]
-    text = json.dumps(data, indent=4)
+
+    text = json.dumps(hits, indent=4)
 
     print(text)
 
