@@ -49,7 +49,7 @@ the output is:
 
 Fetches two files
 
-    bio fetch NC_045512,MN996532 > genomes.gb
+    bio fetch NC_045512 MN996532 > genomes.gb
 
 Aligning two genomes:
 

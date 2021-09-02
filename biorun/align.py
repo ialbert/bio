@@ -102,7 +102,7 @@ def print_trace(par, width=81):
         print()
 
 
-def format_aln(target, query, aln, par):
+def format_alignment(target, query, aln, par):
     """
     Returns an object with alignment information all set.
     """
@@ -163,8 +163,8 @@ def print_default(fmt):
 
     print_trace(fmt)
 
-
 def table_fmt(fmt, sep="\t"):
+
     data = [
         f"{fmt.target.id}", f"{fmt.query.id}",
         f"{fmt.score}", f"{fmt.pident:0.1f}", f"{fmt.tlen}",
@@ -180,8 +180,7 @@ def variant_fmt(fmt):
     def stream():
         return zip(counter, fmt.seqA, fmt.trace, fmt.seqB)
 
-    header = "pos type len target query".split()
-    print("\t".join(header))
+
 
     def display(data1, data2, oper):
         if not (data1 or data2):
@@ -271,19 +270,6 @@ def align(target, query, par):
 
     return alns
 
-    alns = map(builder, alns)
-
-    # Format the aligners
-    if par.table:
-        print_func = print_tabular
-    elif par.mutations:
-        print_func = print_mutations
-    else:
-        print_func = print_pairwise
-
-    for index, aln in enumerate(alns):
-        print_func(aln, param=par, index=index)
-
 
 def get_matrix(matrix, show=False):
     try:
@@ -305,6 +291,11 @@ def get_matrix(matrix, show=False):
         utils.error(f"valid values: {', '.join(valid)}")
 
     return mat
+
+def print_header(text):
+    if text:
+        elems = text.split()
+        print ("\t".join(elems))
 
 
 @plac.pos("sequence", "sequences")
@@ -380,22 +371,31 @@ def run(open_=11, extend=1, matrix='', match=5, mismatch=4, local_=False, global
 
     target = recs[0]
 
-    # Maps formatting functions to keys
-    format_mapper = {
-        TABLE_FMT: table_fmt,
-        VARIANT_FMT: variant_fmt
-    }
+
+    # Select result formatter
+    if par.format == TABLE_FMT:
+        header = "target query score len pident match mism ins del"
+        formatter = table_fmt
+    elif par.format == VARIANT_FMT:
+        header = "pos type len target query"
+        formatter = variant_fmt
+    else:
+        header = ''
+        formatter = print_default
+
+    print_header(header)
 
     for query in recs[1:]:
 
         alns = align(target, query, par=par)
 
         for aln in alns:
-            fmt = format_aln(target=target, query=query, aln=aln, par=par)
 
-            format_func = format_mapper.get(par.format, print_default)
+            # Format the alignment into a class that carries a multitude of parameters.
+            res = format_alignment(target=target, query=query, aln=aln, par=par)
 
-            format_func(fmt)
+            # Apply the formatter.
+            formatter(res)
 
             if not par.showall:
                 break

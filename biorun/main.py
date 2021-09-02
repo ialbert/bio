@@ -48,9 +48,10 @@ Examples:
 
     bio explain exon 
     bio search HAD3 -fields refseq
-    bio fetch NC_045512 > genome.gb
-    bio fasta genome.gb --gene S
-    bio gff genome.gb --type CDS
+    bio fetch NC_045512 MN996532 > genomes.gb
+    bio fasta genomes.gb --gene S 
+    bio fasta genomes.gb --gene S | bio align
+    bio gff genomes.gb --type CDS
     bio taxon 2697049 --lineage
     bio align GATTACA GATCA  
 
