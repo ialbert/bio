@@ -19,13 +19,26 @@ Entrez.email = 'foo@foo.com'
 NCBI_PATT = r'(?P<letters>[a-zA-Z]+)(?P<under>_?)(?P<digits>\d+)(\.(?P<version>\d+))?'
 NCBI_PATT = re.compile(NCBI_PATT)
 
-
+ENSEMBL_PATT = r'(?P<letters>[a-zA-Z]+)(?P<digits>\d+)(\.(?P<version>\d+))?'
+ENSEMBL_PATT = re.compile(ENSEMBL_PATT)
 #
 # Genbank and Refseq accession numbers
 #
 # https://www.ncbi.nlm.nih.gov/genbank/acc_prefix/
 # https://www.ncbi.nlm.nih.gov/books/NBK21091/table/ch18.T.refseq_accession_numbers_and_mole/?report=objectonly/
 #
+
+
+#
+# https://rest.ensembl.org/sequence/id/ENST00000288602?content-type=text/x-fasta;type=cdna
+
+def parse_ensmbl(text):
+    m = NCBI_PATT.search(text)
+    code = m.group("letters") if m else ''
+    digits = m.group("digits") if m else ''
+    version = m.group("version") if m else ''
+    return code, digits, version
+
 
 def parse_ncbi(text):
     m = NCBI_PATT.search(text)
@@ -34,6 +47,12 @@ def parse_ncbi(text):
     refseq = m.group("under") if m else ''
     version = m.group("version") if m else ''
     return code, digits, refseq
+
+def is_ensembl(text):
+    code, digits, version = parse_ensmbl(text)
+    cond = code in ( "ENST", "ENSG", "ENSP", "ENSE")
+    cond = cond and len(digits)>8 and digits.startswith('0')
+    return cond
 
 def is_ncbi_nucleotide(text):
     """
@@ -74,11 +93,31 @@ def efetch(ids, db, rettype='gbwithparts', retmode='text'):
     stream.close()
 
 
+def fetch_ensembl(ids, ftype='genomic'):
+    import requests
+
+    ftype = 'genomic' if not ftype else ftype
+
+    server = "https://rest.ensembl.org"
+
+    for acc in ids:
+
+        ext = f"/sequence/id/{acc}?type={ftype}"
+
+        r = requests.get(server + ext, headers={"Content-Type": "text/x-fasta"})
+
+        if not r.ok:
+            r.raise_for_status()
+            sys.exit()
+
+        print(r.text)
+
+
 @plac.pos("acc", "accession numbers")
 @plac.opt("db", "database", choices=["nuccore", "protein"])
 @plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb"])
-@plac.opt("alias", "remap sequence ids")
-def run(db="nuccore", format_="gbwithparts", alias='', *acc):
+@plac.opt("type_", "get CDS/CDNA (Ensembl only)")
+def run(db="nuccore", format_="gbwithparts", type_='',  *acc):
     ids = []
     for num in acc:
         ids.extend(num.split(","))
@@ -86,6 +125,12 @@ def run(db="nuccore", format_="gbwithparts", alias='', *acc):
     if not sys.stdin.isatty():
         lines = utils.read_lines(sys.stdin, sep=None)
         ids.extend(lines)
+
+    # Dealing with Ensembl
+    ensmbl = list(map(is_ensembl, ids))
+    if all(ensmbl):
+        fetch_ensembl(ids=ids, ftype=type_)
+        return
 
     # Detects nucleotides
     nucs = list(map(is_ncbi_nucleotide, ids))

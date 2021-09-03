@@ -112,12 +112,8 @@ def format_alignment(target, query, aln, par):
     indices = list(filter(lambda x: x[1] != ' ', enumerate(trace)))
     start, end = indices[0][0], indices[-1][0] + 1
 
-    # BioPython 1.78 bug? Extra spaces at the end in local alignment
-    trace = trace.strip(" ")
-
-    # Alter the trace to make it look nicer
+    # Make the trace nicer
     trace = trace.replace("-", " ")
-
 
     # Populate alignment results
     fmt = Param(**par.__dict__)
@@ -241,7 +237,7 @@ def align(target, query, par):
         par.is_dna = par.type == DNA
 
     aligner.match_score = par.match
-    aligner.mismatch_score = par.mismatch
+    aligner.mismatch_score = -par.mismatch
 
     # Default alignment matrix for peptides.
     if not par.is_dna and not par.matrix:
@@ -261,7 +257,7 @@ def align(target, query, par):
         aligner.target_end_extend_gap_score = -par.gap_extend
 
     # Semiglobal alignment.
-    if par.mode == SEMIGLOBAL_ALIGN:
+    elif par.mode == SEMIGLOBAL_ALIGN:
         aligner.target_end_gap_score = 0.0
         aligner.query_end_gap_score = 0.0
 
@@ -310,7 +306,7 @@ def print_header(text):
 @plac.flg("global_", "local alignment", abbrev='G')
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.opt("type_", "sequence type (nuc, pep)", choices=[DNA, PEP])
-def run(open_=11, extend=1, matrix='', match=5, mismatch=4, local_=False, global_=False,
+def run(open_=6, extend=1, matrix='', match=1, mismatch=2, local_=False, global_=False,
         semiglobal=False, type_='', variant=False, table=False, *sequences):
     # Keeps track of the alignment parameters.
     par = Param()
@@ -363,7 +359,7 @@ def run(open_=11, extend=1, matrix='', match=5, mismatch=4, local_=False, global
         utils.error("Need at least two sequences to align")
 
     # Keeping people from accidentally running alignments that are too large.
-    MAXLEN = 30000
+    MAXLEN = 50000
     for rec in recs:
         if len(rec) > MAXLEN:
             utils.error("We recommend that you use a different software.", stop=False)

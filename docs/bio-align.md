@@ -138,6 +138,24 @@ prints:
     |||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
     MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
 
+
+## Alignments
+
+Align genomic DNA to CDNA
+
+    bio fetch ENST00000288602 | head > genomic.fa
+
+    bio fetch ENST00000288602 --type cdna | head > cdna.fa
+
+Is this a good alignment?
+
+    bio align genomic.fa cdna.fa
+
+Try local alignment
+
+    bio align genomic.fa cdna.fa --local
+
+
 ## Scoring matrices
 
 The scoring matrix may be a builtin name or a file with a scoring matrix format. See the scoring with:

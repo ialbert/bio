@@ -19,3 +19,15 @@ the `fetch` task is not a replacement for other means of accessing NCBI, notably
 Instead think of it as a convenience function that simplifies the most common usecase.
 
 
+## Fetch data from Ensembl
+
+`bio fetch` recognzies Ensemble gene and transcript names (ENSG, ENST) and will automatically connect to the Ensembl REST API:
+
+    bio fetch ENSG00000157764 | head
+
+    bio fetch ENST00000288602.11 | head
+
+
+Ensembl REST API:
+
+* https://rest.ensembl.org/

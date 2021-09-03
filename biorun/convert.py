@@ -36,12 +36,14 @@ SEQUENCE_ONTOLOGY = {
 
 
 def is_fasta(fname):
+    fname = fname.lower()
     exts = "fa fasta fa.gz fasta.gz".split()
     found = filter(lambda x: fname.endswith(x), exts)
     return any(found)
 
 
 def is_genbank(fname):
+    fname = fname.lower()
     exts = "gb gb.gz genbank genbank.gz gpff gpff.gz".split()
     found = filter(lambda x: fname.endswith(x), exts)
     return any(found)
@@ -151,15 +153,26 @@ class Record:
         self.annot = annot
 
         # Store the locations.
-        self.locations = [(loc.start, loc.end, loc.strand) for loc in self.feat.location.parts]
+        self.locations = [(loc.start, loc.end, loc.strand) for loc in
+                          self.feat.location.parts] if feat is not None else []
 
 
-def get_records(recs):
+def get_records(recs, format):
     """
     Returns sequence features
     """
+
     for obj in recs:
 
+        # Handles Fasta input. TODO: This here needs to be rewritten
+        if format == 'fasta':
+            rec = SeqRecord(seq=obj.seq, name=obj.name, description=obj.description, id=obj.id)
+            out = Record(rec=rec, feat=None, seqid=obj.id, annot={}, ftype=Record.SOURCE, strand=1, start=1,
+                         end=len(obj.seq))
+            yield out
+            continue
+
+        # Handles regular GenBank
         for feat in obj.features:
             # Normalize the feature type.
             ftype = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
@@ -198,7 +211,7 @@ def get_records(recs):
             yield out
 
 
-def parse_stream(fname):
+def parse_stream(fname, format='genbank'):
     """
     Parses a filename with the appropriate readers.
     """
@@ -210,11 +223,14 @@ def parse_stream(fname):
             logger.error(f"file not found: {fname}")
             sys.exit()
         stream = gzip.open(fname) if fname.endswith("gz") else open(fname)
+        format = 'fasta' if is_fasta(fname) else format
 
-    recs = SeqIO.parse(stream, format="genbank")
-    recs = get_records(recs)
+    recs = SeqIO.parse(stream, format=format)
+
+    recs = get_records(recs, format=format)
 
     return recs
+
 
 def fasta_formatter(rec):
     print(rec.obj.format("fasta"), end='')
@@ -223,6 +239,7 @@ def fasta_formatter(rec):
 def remapper(rec):
     rec.id = ALIAS.get(rec.id, rec.id)
     return rec
+
 
 def interval_selector(start=0, end=None):
     def func(rec):
@@ -284,7 +301,6 @@ def name_selector(name):
 
 
 def seqid_selector(seqid):
-
     targets = set(seqid.split(","))
 
     def func(rec):
@@ -303,8 +319,20 @@ def translate_recs(flag):
     return func
 
 
-def source_only(flag):
+def reverse_complement(flag):
+    """
+    Reverse complement
+    """
 
+    def func(rec):
+        if flag:
+            rec.obj.seq = rec.obj.seq.reverse_complement()
+        return rec
+
+    return func
+
+
+def source_only(flag):
     def func(rec):
         return rec.type == Record.SOURCE if flag else True
 
@@ -336,7 +364,6 @@ GFF_ATTRIBUTES = [
 SKIP_GFF_ATTR = {"id", "parent_id", "name", "type", "start", "comment", "references", "structured_comment",
                  "end", "location", "translation", "strand", "operator"}
 
-
 # Associate a color to a feature type.
 COLOR_FOR_TYPE = {
     "five_prime_UTR": "#cc0e74",
@@ -350,8 +377,9 @@ COLOR_FOR_TYPE = {
     "tRNA": "#a685e2",
     "ncRNA": "#fca3cc",
     "mobile_element": "#efd9d1",
-    "mRNA_region":"#7a77cb",
+    "mRNA_region": "#7a77cb",
 }
+
 
 def feature2gff(seqid, ftype, start, end, strand, uid, name, pid=None):
     """
@@ -361,16 +389,16 @@ def feature2gff(seqid, ftype, start, end, strand, uid, name, pid=None):
     strand = "+" if strand > 0 else "-"
 
     # TODO: is this the phase?
-    #phase = feat.get("codon_start", [1])[0] - 1
+    # phase = feat.get("codon_start", [1])[0] - 1
     phase = "."
 
     # The color for the feature.
     color = COLOR_FOR_TYPE.get(ftype)
 
     # Attribute data
-    attr = [ f"ID={uid}", f"Name={name}" ]
+    attr = [f"ID={uid}", f"Name={name}"]
     if pid:
-        attr.append( f"Parent={pid}")
+        attr.append(f"Parent={pid}")
     if color:
         attr.append(f"color={color}")
 
@@ -378,7 +406,7 @@ def feature2gff(seqid, ftype, start, end, strand, uid, name, pid=None):
     attr = ";".join(attr)
 
     # Create the GFF record.
-    data = [ seqid, ".", ftype, start, end, ".", strand, phase, attr]
+    data = [seqid, ".", ftype, start, end, ".", strand, phase, attr]
 
     return data
 
@@ -388,14 +416,15 @@ def gff_formatter(rec):
     Formats a record as GFF.
     """
     # Parent feature
-    data = feature2gff(start=rec.start, end=rec.end, ftype=rec.type, uid=rec.id, name=rec.name, strand=rec.strand, seqid=rec.seqid, pid=None)
+    data = feature2gff(start=rec.start, end=rec.end, ftype=rec.type, uid=rec.id, name=rec.name, strand=rec.strand,
+                       seqid=rec.seqid, pid=None)
     line = "\t".join(map(str, data))
 
     # Parent id.
     pid = rec.id
 
     if rec.type == "mRNA":
-        print (line)
+        print(line)
         ftype = "exon"
     else:
         ftype = rec.type
@@ -411,8 +440,8 @@ def gff_formatter(rec):
         print(line)
 
 
-def run(features=False, protein=False, translate=False, fasta=False,
-        start='1', end=None, type_='', id_='', name='', gene='', alias=None,  fnames=[]):
+def run(features=False, protein=False, translate=False, fasta=False, revcomp=False,
+        start='1', end=None, type_='', id_='', name='', gene='', alias=None, fnames=[]):
     """
     Converts data to different formats.
     """
@@ -443,7 +472,7 @@ def run(features=False, protein=False, translate=False, fasta=False,
     ftype = 'CDS' if gene else ftype
 
     # Selects sources only when no other feature specific option is set.
-    source_flag = not(gene or name or type_ or translate or protein or features)
+    source_flag = not (gene or name or type_ or translate or protein or features)
 
     # Use the source only in fasta mode.
     source_flag = source_flag and fasta
@@ -490,6 +519,9 @@ def run(features=False, protein=False, translate=False, fasta=False,
             recs = map(sequence_slicer(start=start, end=end), recs)
         else:
             recs = filter(interval_selector(start=start, end=end), recs)
+
+        # Reverse complement the sequence
+        recs = map(reverse_complement(revcomp), recs)
 
         recs = map(translate_recs(translate), recs)
 

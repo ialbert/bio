@@ -1,7 +1,7 @@
 
-# DNA: SeqA (7) vs SeqB (5) score=24.0
+# DNA: SeqA (7) vs SeqB (5) score=2.0
 # Alignment: pident=57.1% len=7 ident=4 mis=1 del=2 ins=0
-# Parameters: match=5 penalty=4 gapopen=11 gapextend=1
+# Parameters: match=1 penalty=2 gapopen=6 gapextend=1
 
 GATTACA
 |||.|   7
