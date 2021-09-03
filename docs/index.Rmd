@@ -6,7 +6,7 @@ numbering:  "false"
 ---
 # Welcome to `bio`
 
-If you've ever done bioinformatics you know how even seemingly straightforward tasks often require multiple steps, reading documentation, and performing additional preparations that can slow down progress.
+If you've ever done bioinformatics you know how even seemingly straightforward tasks often require multiple steps, searching the web, reading documentation, clicking around various websites that all together can slow down your progress.
 
 Time and again, I found myself not pursuing ideas because getting to the fun part was too tedious. The `bio` package was designed  to solve that tedium by making bioinformatics explorations more enjoyable. The software lets users quickly answer questions such as:
  
@@ -19,8 +19,8 @@ Time and again, I found myself not pursuing ideas because getting to the fun par
 - What is a  microsatellites? `bio explain microsatellite`
 - What genes match the word `HBB`? `bio search HBB --species human`
 
-`bio` combines data from different sources: [GenBank][genbank], [Gene Ontology][go], [Sequence Ontology][so],
-[NCBI Taxonomy][taxonomy] and provides an unified, logical interface.
+`bio` combines data from different sources: [GenBank][genbank],[Ensembl][ensembl],[Gene Ontology][go],[Sequence Ontology][so],
+[NCBI Taxonomy][taxonomy] and provides an unified, consistent interface.
 
 The software is also used to demonstrate and teach bioinformatics and is the companion software to the [Biostar Handbook][handbook].
  
@@ -33,6 +33,7 @@ The software is also used to demonstrate and teach bioinformatics and is the com
 [taxonomy]: https://www.ncbi.nlm.nih.gov/taxonomy
 [so]: http://www.sequenceontology.org/
 [go]: http://geneontology.org/
+[ensembl]: https://www.ensembl.org
 
 [usage]: https://github.com/ialbert/bio/blob/master/test/bio_examples.sh
 
@@ -50,6 +51,9 @@ Install `bio`:
 
 
 ## Usage examples
+
+Suppose we found the accession number to data of interest: `NC_045512` representing the Wuhan-Hu-1 isolate of the coronavirus and
+the  `MN996532` that stores information on the most similar bat coronavirus. We would like to investigate the differences in the S protein.
 
 **Fetch data**
 
@@ -69,7 +73,7 @@ prints:
 
 **Align sequences**
 
-From the `genomes.gb` obtained above align the protein sequences for the S gene
+From the `genomes.gb` obtained above align the protein sequences for the `S` gene
 
 	cat genomes.gb | bio fasta --gene S --protein | bio align | head
 
@@ -83,8 +87,26 @@ prints:
 	|||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
 	MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
 
+**Show alignment as variants**
 
-**Convert to GFF**
+	cat genomes.gb | bio fasta --gene S --protein | bio align --variant | head
+
+prints the type and variant at each location:
+
+	pos	type	len	target	query
+	32	mis	1	F	S
+	50	mis	1	S	L
+	76	mis	1	T	I
+	218	mis	1	Q	P
+	324	mis	1	E	D
+	346	mis	1	R	T
+	372	mis	1	A	T
+	403	mis	1	R	T
+	439	mis	3	NNL	KHI
+
+**Visualize the genome data**
+
+Convert to GFF
 
     bio gff genomes.gb  | head
 
@@ -97,7 +119,7 @@ prints:
     NC_045512.2	.	CDS	265	13468	.	+	.	ID=4;Name=YP_009724389.1;Parent=YP_009724389.1
     NC_045512.2	.	CDS	13467	21555	.	+	.	ID=5;Name=YP_009724389.1;Parent=YP_009724389.1
 
-View the resulting files in IGV
+Load and view the resulting files in IGV
 
 ```{r fig.align='center', echo=FALSE}
 knitr::include_graphics('images/igv-index.png', dpi = NA)
