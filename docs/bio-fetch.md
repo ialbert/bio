@@ -1,12 +1,10 @@
-# `bio fetch`: get GenBank data {#bio-fetch}
+# `bio fetch`: get data {#bio-fetch}
 
-`bio` can fetch data in GeneBank format based on accession numbers
+`bio` can fetch data from GenBank or from Ensembl.
 
-You may separate accession numbers with commas
+## Fetch data from GenBank
 
-    bio fetch NC_045512,MN996532 > genomes.gb
-
-You may separate accession numbers with spaces
+You may use multiple accession numbers:
 
     bio fetch NC_045512 MN996532 > genomes.gb
 
@@ -14,10 +12,11 @@ You may pipe accession numbers into the tool
 
     echo NC_045512 | bio fetch > genomes.gb
 
-the `fetch` task is not a replacement for other means of accessing NCBI, notably `entrez-direct`.
+the `fetch` task is not a replacement for other means of accessing NCBI, notably `entrez-direct`. Instead, think of it as a convenience function that simplifies a few common use cases.
 
-Instead think of it as a convenience function that simplifies the most common usecase.
+For more advance command line data access options see Entrez Direct:
 
+* https://www.ncbi.nlm.nih.gov/books/NBK179288/
 
 ## Fetch data from Ensembl
 
@@ -25,9 +24,19 @@ Instead think of it as a convenience function that simplifies the most common us
 
     bio fetch ENSG00000157764 | head
 
-    bio fetch ENST00000288602.11 | head
+    # Transcript data un genomic context
+    bio fetch ENST00000288602  | head
+
+    # Transcript data as CDNA
+    bio fetch ENST00000288602 --type cdna | head
+
+    # Transcript data as CDS
+    bio fetch ENST00000288602 --type cds | head
+
+    # Transcript data as protein
+    bio fetch ENST00000288602 --type cds | head
 
 
-Ensembl REST API:
+For more information see the Ensembl REST API:
 
 * https://rest.ensembl.org/

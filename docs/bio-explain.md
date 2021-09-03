@@ -1,22 +1,16 @@
 # `bio explain`: show definitions {#bio-ontology}
 
-We found the graphical and web based user interfaces to be quite tedious to navigate and interpret. We implemented the `bio explain` command to facilitate the quick explorations of the Gene and Sequence ontologies.
+We implemented the `bio explain` command to facilitate the quick explorations of the Gene and Sequence Ontologies.
 
-The `bio` package provides utility to search gene and sequence ontology. For more information on ontologies, consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]
-The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
+For more information on ontologies, consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]. Installation:
 
 [ontology]: https://www.biostarhandbook.com/what-do-the-words-mean.html
 [book]: https://www.biostarhandbook.com
 
-## Download the databases
-
-As a reminder to install `bio` run:
-
     pip install bio --upgrade
-
-Then, before the first use, the database needs to downloaded.
-
     bio --download
+
+The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 ## Database information
 
@@ -134,4 +128,4 @@ You may build a database with the newest data:
 
     bio explain --build
 
-The command will download the most up-to-date data and build a new database. The process might take about half an hour - through the completion speed depends on the hard drive write speed, solid-state drives finish much faster.
+The command will download the most up-to-date ontology data and build a new database. The process might take about half an hour - through the completion speed depends on the hard drive write speed, solid-state drives finish much faster.

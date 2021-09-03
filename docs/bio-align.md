@@ -67,7 +67,7 @@ the command aligns two 30KB sequences and takes about 15 seconds on my system, i
 
 The `bio align` method takes the first file that it sees as target and aligns all other sequences to it as queries.
 
-## Proteins alignments
+## Protein alignments
 
 Align the DNA corresponding to protein `S`
 
@@ -103,7 +103,8 @@ that prints:
 
 prints (check the default output to identify which number corresonds to what):
 
-    YP_009724390.1	QHR63300.2	1274	97.4	29	4	0
+    target	query	score	len	pident	match	mism	ins	del
+    YP_009724390.1	QHR63300.2	6547.0	97.4	1274	1241	29	4	0
 
 ## Alignment with variant output
 
@@ -154,7 +155,6 @@ Is this a good alignment?
 Try local alignment
 
     bio align genomic.fa cdna.fa --local
-
 
 ## Scoring matrices
 
