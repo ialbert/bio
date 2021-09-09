@@ -46,7 +46,10 @@ bio align GATTACA GATCA --global > gattaca2.txt
 bio align GATTACA GATCA --local > gattaca3.txt
 
 # Running variants.
-bio align GATTACA GATCA --variant > variant.txt
+bio align GATTACA GATCA --vcf > gattaca.vcf
+
+# Running on FASTA files.
+bio align align_input.fa --vcf > align_input.vcf
 
 # Select S proteins
 bio fasta --gene S --protein  genomes.gb > s.fa
@@ -55,10 +58,10 @@ bio fasta --gene S --protein  genomes.gb > s.fa
 bio align s.fa > align-default.txt
 
 # Alignment as a table.
-bio align s.fa --table > align-table.txt
+bio align s.fa --table > align-s.txt
 
 # Align as variants.
-bio align s.fa --variant > align-variant.txt
+bio align s.fa --vcf > align-ss.vcf
 
 # Convert genbank files to GFF
 bio gff genomes.gb > genomes.gff
@@ -72,8 +75,8 @@ bio gff -s 300 -e 10k > slice.gff
 # Taxonomy listing.
 bio taxon 117565 -d 5 > taxonomy.txt
 
-# Taxonomy lineage.
-bio taxon genomes.gb --lineage > lineage.txt
+# Taxonomy lineage. from file TODO
+# bio taxon genomes.gb --lineage > lineage.txt
 
 # Getting some metadata for taxon 11138 (Murine hepatitis virus)
 bio data 11138 -H > meta.txt

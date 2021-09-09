@@ -5,7 +5,8 @@ import gzip
 import os
 import sys
 from collections import OrderedDict, defaultdict
-from itertools import count
+from itertools import count, tee
+from Bio.SeqIO.FastaIO import FastaIterator
 
 from biorun import utils
 
@@ -157,80 +158,80 @@ class Record:
                           self.feat.location.parts] if feat is not None else []
 
 
+
 def get_records(recs, format):
     """
     Returns sequence features
     """
 
-    for obj in recs:
-
-        # Handles Fasta input. TODO: This here needs to be rewritten
-        if format == 'fasta':
+    if type(recs) == FastaIterator:
+        # Handles Fasta input.
+        for obj in recs:
             rec = SeqRecord(seq=obj.seq, name=obj.name, description=obj.description, id=obj.id)
-            out = Record(rec=rec, feat=None, seqid=obj.id, annot={}, ftype=Record.SOURCE, strand=1, start=1,
+            res = Record(rec=rec, feat=None, seqid=obj.id, annot={}, ftype=Record.SOURCE, strand=1, start=1,
                          end=len(obj.seq))
-            yield out
-            continue
+            yield res
 
-        # Handles regular GenBank
-        for feat in obj.features:
-            # Normalize the feature type.
-            ftype = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
+    else:
+        for obj in recs:
+            # Handles regular GenBank
+            for feat in obj.features:
+                # Normalize the feature type.
+                ftype = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
 
-            # Sequence for this feature
-            seq = feat.extract(obj.seq)
+                # Sequence for this feature
+                seq = feat.extract(obj.seq)
 
-            # The start/end locations
-            start, end = int(feat.location.start), int(feat.location.end)
+                # The start/end locations
+                start, end = int(feat.location.start), int(feat.location.end)
 
-            # Qualifiers are transformed into annotations.
-            pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
-            annot = dict(pairs)
+                # Qualifiers are transformed into annotations.
+                pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
+                annot = dict(pairs)
 
-            # Create an id, name and descriptions
-            uid, name, desc = guess_name(ftype=ftype, annot=annot)
+                # Create an id, name and descriptions
+                uid, name, desc = guess_name(ftype=ftype, annot=annot)
 
-            # Source objects need to be matched to top level annotations
-            if ftype == Record.SOURCE:
-                uid = obj.id
-                name = obj.name
-                desc = obj.description
-                pairs = [(k, json_ready(v)) for (k, v) in obj.annotations.items()]
-                annot.update(pairs)
+                # Source objects need to be matched to top level annotations
+                if ftype == Record.SOURCE:
+                    uid = obj.id
+                    name = obj.name
+                    desc = obj.description
+                    pairs = [(k, json_ready(v)) for (k, v) in obj.annotations.items()]
+                    annot.update(pairs)
 
-            # Remap the uid
-            uid = ALIAS.get(uid, uid)
+                # Remap the uid
+                uid = ALIAS.get(uid, uid)
 
-            # Create the sequence record.
-            rec = SeqRecord(seq=seq, name=name, description=desc, id=uid)
+                # Create the sequence record.
+                rec = SeqRecord(seq=seq, name=name, description=desc, id=uid)
 
-            # A Wrapper object that mixes Seqrecord and Features
-            out = Record(rec=rec, feat=feat, seqid=obj.id, annot=annot, ftype=ftype, strand=feat.strand, start=start,
-                         end=end)
+                # A Wrapper object that mixes Seqrecord and Features
+                res = Record(rec=rec, feat=feat, seqid=obj.id, annot=annot, ftype=ftype, strand=feat.strand, start=start,
+                             end=end)
 
-            yield out
+                yield res
 
 
-def parse_stream(fname, format='genbank'):
+
+def parse_stream(stream, format='genbank'):
     """
     Parses a filename with the appropriate readers.
     """
 
-    if hasattr(fname, 'read'):
-        stream = fname
-    else:
-        if not os.path.isfile(fname):
-            logger.error(f"file not found: {fname}")
-            sys.exit()
-        stream = gzip.open(fname) if fname.endswith("gz") else open(fname)
-        format = 'fasta' if is_fasta(fname) else format
-
+    # Assumes genbank format to start with.
     recs = SeqIO.parse(stream, format=format)
+
+    recs = list(recs)
+
+    if len(recs) == 0:
+        # Rewind stream, try in FASTA.
+        stream.seek(0)
+        recs = SeqIO.parse(stream, format='fasta')
 
     recs = get_records(recs, format=format)
 
     return recs
-
 
 def fasta_formatter(rec):
     print(rec.obj.format("fasta"), end='')
@@ -447,12 +448,8 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     """
     global ALIAS
 
-    # Comes as tuple
-    fnames = list(fnames)
-
-    # Adding standard input as a stream
-    if not sys.stdin.isatty():
-        fnames.append(sys.stdin)
+    # Returns the input streams.
+    streams = utils.open_streams(fnames=fnames)
 
     # Generate the ALIAS remapping.
     ALIAS = utils.parse_alias(alias) if alias else {}
@@ -487,10 +484,10 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
         formatter = gff_formatter
 
     # Handle each input separately.
-    for fname in fnames:
+    for stream in streams:
 
         # Parse the input into records.
-        recs = parse_stream(fname)
+        recs = parse_stream(stream)
 
         # Remap aliases.
         recs = map(remapper, recs)

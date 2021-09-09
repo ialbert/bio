@@ -1,18 +1,14 @@
 """
 Utilites funcions.
 """
-import gzip
-import json
-import logging
-import os
-import shutil
-import sys
-import tempfile
+import sys, os, gzip, json, logging, tempfile, os, shutil
 from os.path import expanduser
+from io import StringIO
 
 import requests
-from biorun.libs.sqlitedict import SqliteDict
 from tqdm import tqdm
+
+from biorun.libs.sqlitedict import SqliteDict
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -119,8 +115,23 @@ def open_db(table, fname, flag='c', strict=True):
     return conn
 
 
-def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
+def open_streams(fnames=[]):
+    """
+    Returns data streams, reading stdin first
+    """
 
+    # Need to read stdin so it can be rewound when detecting file formats.
+    if not sys.stdin.isatty():
+        stream = StringIO(sys.stdin.read())
+        yield stream
+
+    for fname in fnames:
+        if not os.path.isfile(fname):
+            error(f" file not found: {fname}")
+        stream = gzip.open(fname) if fname.endswith("gz") else open(fname)
+        yield stream
+
+def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
     path = cache_path(fname) if cache else fname
 
     size = len(obj)
@@ -137,6 +148,37 @@ def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
     table.commit()
     table.close()
 
+class Fasta:
+    def __init__(self, name, lines=[], seq=''):
+        self.name = name.rstrip()
+        if lines:
+            self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
+        else:
+            self.seq = seq.replace(" ", "").replace("\r", "").upper()
+
+def fasta_parser(stream):
+    """
+    Inspired by Bio.SeqIO.FastaIO.SimpleFastaParser
+    """
+    # Skip any text before the first record (e.g. blank lines, comments)
+    for line in stream:
+        if line[0] == ">":
+            title = line[1:]
+            break
+    else:
+        return
+
+    lines = []
+    for line in stream:
+        if line[0] == ">":
+            yield Fasta(name=title, lines=lines)
+            lines = []
+            title = line[1:]
+            continue
+        lines.append(line.rstrip())
+
+    fasta = Fasta(name=title, lines=lines)
+    yield fasta
 
 def plural(target, val=0, end='ies'):
     """
@@ -161,8 +203,10 @@ def urlopen(url, params={}):
 
 CHUNK_SIZE = 2500
 
+
 def cache_path(fname):
-    return  os.path.join(DATADIR, fname)
+    return os.path.join(DATADIR, fname)
+
 
 def download(url, fname, cache=False, params={}, overwrite=False):
     """
@@ -189,7 +233,6 @@ def download(url, fname, cache=False, params={}, overwrite=False):
     pbar = tqdm(desc=f"# {fname}", unit="B", unit_scale=True, unit_divisor=1024, total=total)
 
     with tempfile.NamedTemporaryFile(delete=True) as fp:
-
         # Iterate over the content and write to temp file
         for chunk in r.iter_content(chunk_size=chunk_size):
             total += len(chunk)
@@ -210,6 +253,7 @@ def download(url, fname, cache=False, params={}, overwrite=False):
 
 ROOT_URL = "http://www.bioinfo.help/data/"
 
+
 def download_prebuilt(fname='biodata.tar.gz'):
     """
     Downloads prebuild databases.
@@ -226,12 +270,13 @@ def download_prebuilt(fname='biodata.tar.gz'):
 
     dirpath = os.path.dirname(path)
 
-    print ("# extracting files")
+    print("# extracting files")
     # Extracte the contents of the
     fp.extractall(dirpath)
 
     fp.close()
     print("# download completed.")
+
 
 def no_dash(alist):
     """

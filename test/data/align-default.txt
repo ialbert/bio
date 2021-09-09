@@ -1,69 +1,70 @@
 
-# PEP: YP_009724390.1 (1,273) vs QHR63300.2 (1,269) score=6546.0
+# PEP: YP_009724390.1 CDS surface glycoprotein (1,273) vs QHR63300.2 CDS spike glycoprotein (1,269) score = 6546.0
 # Alignment: pident=97.4% len=1273 ident=1240 mis=29 del=4 ins=0
 # Parameters: matrix=BLOSUM62 gapopen=6 gapextend=1
+# Coordinates: [1, 1273]
 
 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDN
-|||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
+|||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.|||||
 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
 
 PVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVYSS
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 162
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 PVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVYSS
 
 ANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGYFKIYSKHTPINLVRDLPQGFSALEPLVDLPIGINITRFQTLLA
-|||||||||||||||||||||||||||||||||||||||||||||||||||||||.||||||||||||||||||||||||| 243
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||.|||||||||||||||||||||||||
 ANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGYFKIYSKHTPINLVRDLPPGFSALEPLVDLPIGINITRFQTLLA
 
 LHRSYLTPGDSSSGWTAGAAAYYVGYLQPRTFLLKYNENGTITDAVDCALDPLSETKCTLKSFTVEKGIYQTSNFRVQPTE
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||. 324
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||.
 LHRSYLTPGDSSSGWTAGAAAYYVGYLQPRTFLLKYNENGTITDAVDCALDPLSETKCTLKSFTVEKGIYQTSNFRVQPTD
 
 SIVRFPNITNLCPFGEVFNATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSFVIRGD
-|||||||||||||||||||||.|||||||||||||||||||||||||.||||||||||||||||||||||||||||||.|| 405
+|||||||||||||||||||||.|||||||||||||||||||||||||.||||||||||||||||||||||||||||||.||
 SIVRFPNITNLCPFGEVFNATTFASVYAWNRKRISNCVADYSVLYNSTSFSTFKCYGVSPTKLNDLCFTNVYADSFVITGD
 
 EVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPCNGVEGF
-|||||||||||||||||||||||||||||||||...|.|.|||.|||||||||.||||||||||||||||||.||||..|. 486
+|||||||||||||||||||||||||||||||||...|.|.|||.|||||||||.||||||||||||||||||.||||..|.
 EVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSKHIDAKEGGNFNYLYRLFRKANLKPFERDISTEIYQAGSKPCNGQTGL
 
 NCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNFNFNGLTGTGVLTESNKKFLPFQQFGR
-|||.||..|||.||.|||.|||||||||||||.|||||||||||||||||||||||||||||||||||||||||||||||| 567
+|||.||..|||.||.|||.|||||||||||||.||||||||||||||||||||||||||||||||||||||||||||||||
 NCYYPLYRYGFYPTDGVGHQPYRVVVLSFELLNAPATVCGPKKSTNLVKNKCVNFNFNGLTGTGVLTESNKKFLPFQQFGR
 
 DIADTTDAVRDPQTLEILDITPCSFGGVSVITPGTNTSNQVAVLYQDVNCTEVPVAIHADQLTPTWRVYSTGSNVFQTRAG
-||||||||||||||||||||||||||||||||||||.|||||||||||||||||||||||||||||||||||||||||||| 648
+||||||||||||||||||||||||||||||||||||.||||||||||||||||||||||||||||||||||||||||||||
 DIADTTDAVRDPQTLEILDITPCSFGGVSVITPGTNASNQVAVLYQDVNCTEVPVAIHADQLTPTWRVYSTGSNVFQTRAG
 
 CLIGAEHVNNSYECDIPIGAGICASYQTQTNSPRRARSVASQSIIAYTMSLGAENSVAYSNNSIAIPTNFTISVTTEILPV
-||||||||||||||||||||||||||||||||    ||||||||||||||||||||||||||||||||||||||||||||| 729
+||||||||||||||||||||||||||||||||    |||||||||||||||||||||||||||||||||||||||||||||
 CLIGAEHVNNSYECDIPIGAGICASYQTQTNS----RSVASQSIIAYTMSLGAENSVAYSNNSIAIPTNFTISVTTEILPV
 
 SMTKTSVDCTMYICGDSTECSNLLLQYGSFCTQLNRALTGIAVEQDKNTQEVFAQVKQIYKTPPIKDFGGFNFSQILPDPS
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 810
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 SMTKTSVDCTMYICGDSTECSNLLLQYGSFCTQLNRALTGIAVEQDKNTQEVFAQVKQIYKTPPIKDFGGFNFSQILPDPS
 
 KPSKRSFIEDLLFNKVTLADAGFIKQYGDCLGDIAARDLICAQKFNGLTVLPPLLTDEMIAQYTSALLAGTITSGWTFGAG
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 891
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 KPSKRSFIEDLLFNKVTLADAGFIKQYGDCLGDIAARDLICAQKFNGLTVLPPLLTDEMIAQYTSALLAGTITSGWTFGAG
 
 AALQIPFAMQMAYRFNGIGVTQNVLYENQKLIANQFNSAIGKIQDSLSSTASALGKLQDVVNQNAQALNTLVKQLSSNFGA
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 972
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 AALQIPFAMQMAYRFNGIGVTQNVLYENQKLIANQFNSAIGKIQDSLSSTASALGKLQDVVNQNAQALNTLVKQLSSNFGA
 
 ISSVLNDILSRLDKVEAEVQIDRLITGRLQSLQTYVTQQLIRAAEIRASANLAATKMSECVLGQSKRVDFCGKGYHLMSFP
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 1,053
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ISSVLNDILSRLDKVEAEVQIDRLITGRLQSLQTYVTQQLIRAAEIRASANLAATKMSECVLGQSKRVDFCGKGYHLMSFP
 
 QSAPHGVVFLHVTYVPAQEKNFTTAPAICHDGKAHFPREGVFVSNGTHWFVTQRNFYEPQIITTDNTFVSGNCDVVIGIVN
-|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||.||||||||| 1,134
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||.|||||||||
 QSAPHGVVFLHVTYVPAQEKNFTTAPAICHDGKAHFPREGVFVSNGTHWFVTQRNFYEPQIITTDNTFVSGSCDVVIGIVN
 
 NTVYDPLQPELDSFKEELDKYFKNHTSPDVDLGDISGINASVVNIQKEIDRLNEVAKNLNESLIDLQELGKYEQYIKWPWY
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 1,215
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 NTVYDPLQPELDSFKEELDKYFKNHTSPDVDLGDISGINASVVNIQKEIDRLNEVAKNLNESLIDLQELGKYEQYIKWPWY
 
 IWLGFIAGLIAIVMVTIMLCCMTSCCSCLKGCCSCGSCCKFDEDDSEPVLKGVKLHYT
-||||||||||||.||||||||||||||||||||||||||||||||||||||||||||| 1,273
+||||||||||||.|||||||||||||||||||||||||||||||||||||||||||||
 IWLGFIAGLIAIIMVTIMLCCMTSCCSCLKGCCSCGSCCKFDEDDSEPVLKGVKLHYT
 

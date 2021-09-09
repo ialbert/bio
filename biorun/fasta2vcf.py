@@ -1,9 +1,7 @@
 import plac
-from operator import itemgetter
 from itertools import *
 
 MATCH, SNP, INS, DEL = 'M', 'X', 'INS', 'DEL'
-
 
 class Record:
     def __init__(self, name, lines):
@@ -11,7 +9,7 @@ class Record:
         self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
 
 
-def fast_parser(stream):
+def fasta_parser(stream):
     """
     Inspired by Bio.SeqIO.FastaIO.SimpleFastaParser
     """
@@ -47,12 +45,12 @@ def find_variants(ref, tgt):
     lastop = None
     for a, b in stream:
 
-        # Not a valid pairwise alignment
+        # Multiple sequence alignment
         if a == '-' and b == '-':
-            raise Exception(f"Input not a pairwise alignment: {a} vs {b}")
+            continue
 
-        # Matching bases.
         if a == b:
+            # Matches
             pos += 1
             op = MATCH
         elif b == '-':
@@ -113,6 +111,8 @@ def format_variants(ref, tgt, variants):
 
     return vardict
 
+def run_mafft(ref, tgt):
+    pass
 
 def print_variants(ref, tgt, vardict):
     print('##fileformat=VCFv4.2')
@@ -130,7 +130,7 @@ def run(*fname):
     fname = '../test/data/mafft.fa'
     stream = open(fname)
 
-    recs = fast_parser(stream)
+    recs = fasta_parser(stream)
 
     ref = next(recs)
     tgt = next(recs)

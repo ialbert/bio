@@ -1,2 +1,0 @@
-target	query	score	len	pident	match	mism	ins	del
-YP_009724390.1	QHR63300.2	6546.0	97.4	1273	1240	29	4	0

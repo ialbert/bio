@@ -19,7 +19,7 @@ from biorun import utils
 
 DNA, PEP = "DNA", "PEP"
 
-TABLE_FMT, VARIANT_FMT = "table", "variant"
+TABLE_FMT, VCF_FMT = "table", "vcf"
 
 LOCAL_ALIGN, GLOBAL_ALIGN, SEMIGLOBAL_ALIGN = 1, 2, 3
 
@@ -57,21 +57,21 @@ def maybe_sequence(text):
         return None
 
 
-def parse(text, counter):
-    # Perhaps it is already a stream.
-    if hasattr(text, "read", ):
-        recs = list(SeqIO.parse(text, format='fasta'))
-    elif os.path.isfile(text):
-        stream = open(text)
-        recs = list(SeqIO.parse(stream, format='fasta'))
-    elif maybe_sequence(text):
+def parse_input(obj, counter):
+    if hasattr(obj, "read", ):
+        # Object may already be a stream
+        recs = list(utils.fasta_parser(obj))
+    elif os.path.isfile(obj):
+        # Perhaps it is a filename
+        stream = open(obj)
+        recs = list(utils.fasta_parser(stream))
+    elif maybe_sequence(obj):
+        # Perhaps the sequence comes from command line
         idx = next(counter)
-        seq = Seq.Seq(text)
-        sid = f"Seq{idx}"
-        rec = SeqRecord.SeqRecord(seq=seq, id=sid, name=sid, description='')
-        recs = [rec]
+        name = f"Seq{idx}"
+        recs = [utils.Fasta(name=name, lines=[obj])]
     else:
-        utils.error(f"Invalid file/sequence: {text}")
+        utils.error(f"Invalid file/sequence: {obj}")
         recs = []
 
     return recs
@@ -82,24 +82,6 @@ class Param():
 
     def __init__(self, **kwds):
         self.__dict__.update(kwds)
-
-
-def print_trace(par, width=81):
-    """
-    Prints an alignment trace
-    """
-
-    for start in range(0, len(par.trace), width):
-        end = min(start + width, par.tlen)
-        seq1 = par.seqA[start:end]
-        trcX = par.trace[start:end]
-        seq2 = par.seqB[start:end]
-
-        print(seq1)
-        print(trcX, end=' ')
-        print(f"{end:,}")
-        print(seq2)
-        print()
 
 
 def format_alignment(target, query, aln, par):
@@ -122,9 +104,9 @@ def format_alignment(target, query, aln, par):
     fmt.aln = aln
     fmt.score = aln.score
     fmt.par = par
-    fmt.seqA = seqA[start:end]
+    fmt.seqA = utils.Fasta(name=target.name, seq=seqA[start:end])
     fmt.trace = trace[start:end]
-    fmt.seqB = seqB[start:end]
+    fmt.seqB = utils.Fasta(name=query.name, seq=seqB[start:end])
     fmt.tlen = len(trace)
     fmt.alen = len(seqA)
     fmt.blen = len(seqB)
@@ -132,22 +114,23 @@ def format_alignment(target, query, aln, par):
     fmt.mis = trace.count('.')
     fmt.dels = seqB.count("-")
     fmt.ins = seqA.count("-")
+    fmt.start = start
+    fmt.end = end
     fmt.gap = fmt.dels + fmt.ins
     fmt.pident = fmt.ident / fmt.tlen * 100
 
     return fmt
 
 
-def print_default(fmt):
+def pairwise_fmt(fmt, width=81):
     print()
     if fmt.is_dna:
         label = "DNA"
     else:
         label = "PEP"
 
-    print(f"# {label}: {fmt.target.id} ({len(fmt.target):,}) vs {fmt.query.id} ({len(fmt.query):,}) score={fmt.score}")
-    print(
-        f"# Alignment: pident={fmt.pident:0.1f}% len={fmt.tlen} ident={fmt.ident} mis={fmt.mis} del={fmt.dels} ins={fmt.ins}")
+    print(f"# {label}: {fmt.target.name} ({len(fmt.target.seq):,}) vs {fmt.query.name} ({len(fmt.query.seq):,}) score = {fmt.score}")
+    print(f"# Alignment: pident={fmt.pident:0.1f}% len={fmt.tlen} ident={fmt.ident} mis={fmt.mis} del={fmt.dels} ins={fmt.ins}")
 
     if fmt.matrix:
         print(f"# Parameters: matrix={fmt.matrix}", end=' ')
@@ -155,14 +138,26 @@ def print_default(fmt):
         print(f"# Parameters: match={fmt.match} penalty={fmt.mismatch}", end=' ')
 
     print(f"gapopen={fmt.gap_open} gapextend={fmt.gap_extend}")
+    print(f"# Coordinates: [{fmt.start+1}, {fmt.end}]")
     print()
 
-    print_trace(fmt)
+    # Generate the traces
+    for start in range(0, len(fmt.trace), width):
+        end = min(start + width, fmt.tlen)
+
+        seq1 = fmt.seqA.seq[start:end]
+        trcX = fmt.trace[start:end]
+        seq2 = fmt.seqB.seq[start:end]
+
+        print(seq1)
+        print(trcX)
+        print(seq2)
+        print()
+
 
 def table_fmt(fmt, sep="\t"):
-
     data = [
-        f"{fmt.target.id}", f"{fmt.query.id}",
+        f"{fmt.target.name}", f"{fmt.query.name}",
         f"{fmt.score}", f"{fmt.pident:0.1f}", f"{fmt.tlen}",
         f"{fmt.ident}", f"{fmt.mis}", f"{fmt.dels}", f"{fmt.ins}"
     ]
@@ -170,57 +165,139 @@ def table_fmt(fmt, sep="\t"):
     print(line)
 
 
-def variant_fmt(fmt):
-    counter = count(1)
-
-    def stream():
-        return zip(counter, fmt.seqA, fmt.trace, fmt.seqB)
+MATCH, SNP, INS, DEL = 'M', 'SNP', 'INS', 'DEL'
 
 
+def find_variants(ref, tgt):
+    """
+    Takes two aligned sequences and tabulates what variants can be found at a given position.
+    This is the trickiest to get right ... mostly works but may still have bugs.
 
-    def display(data1, data2, oper):
-        if not (data1 or data2):
-            return
-        pos = data1[0][0]
-        seq1 = ''.join(x[1] for x in data1)
-        seq2 = ''.join(x[1] for x in data2)
-        if oper != 'match':
-            print(f"{pos}\t{oper}\t{len(seq1)}\t{seq1}\t{seq2}")
+    Returns a dictionary keyed by position where each position describes the  variant as a tuple.
+    """
+    stream = zip(count(), ref.seq, tgt.seq)
 
+    # stream = islice(stream, 50000)
 
-    # List the variants one per line
-    data1, data2, last = [], [], ''
-    for i, a, t, b in stream():
+    collect = []
+    variants = []
+    lastop = None
+    pos = 0
+    for idx, a, b in stream:
 
-        if t == '.':
-            oper = 'mis'
-        elif t == '|':
-            oper = 'match'
+        # Multiple sequence alignment
+        if a == '-' and b == '-':
+            continue
+
+        if a == b:
+            # Matches
+            pos += 1
+            op = MATCH
+
         elif b == '-':
-            oper = 'del'
+            # Deletion from query.
+            pos += 1
+            op = DEL
+
         elif a == '-':
-            oper = 'ins'
+            # Insertion into query
+            op = INS
+
+        elif a != b:
+            # Mismatching bases.
+            pos += 1
+            op = SNP
+
         else:
-            raise Exception()
+            raise Exception(f"Should never hit this (sanity check): {a} vs {b}")
 
-        if oper != last:
-            #print (oper, data1)
-            display(data1, data2, last)
-            data1, data2, last = [], [], ''
+        # Collect variants when the operator changes.
+        if lastop != op:
+            if collect:
+                if lastop != MATCH:
+                    variants.append((lastop, collect))
+            # Reset the collector
+            collect = []
 
-        data1.append((i, a))
-        data2.append((i, b))
+        # Collect the positions that have been visited
+        collect.append((idx, pos, a, b))
 
-        last = oper
+        # Keep track of the last previous operation
+        lastop = op
 
-    # Trailing variants.
-    display(data1, data2, last)
+    # Collect last element
+    if collect:
+        variants.append((lastop, collect))
+
+    # This is necessary because consecutive variants may overlap SNP + INSERT for example
+    vcfdict = dict()
+
+    for key, elems in variants:
+
+        if key == MATCH:
+            continue
+
+        # Lenght of variant
+        size = len(elems)
+
+        idx, pos = elems[0][0], elems[0][1]
+
+        base = ref.seq[idx:idx + size].strip('-')
+        alt = tgt.seq[idx:idx + size].strip('-')
+
+        info = f"TYPE={key}"
+
+        if key == SNP:
+            # Mismatches printed consecutively
+            for idx, pos, base, alt in elems:
+                name = f"{pos}_{base}_{alt}"
+                value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
+                vcfdict[pos] = value
+
+
+        elif key == INS or key == DEL:
+            # Handle insertions and deletions.
+
+            # Push back on POS if it is not 1.
+            if idx > 0:
+
+                # For insertions the pos does not advance
+                if key == DEL:
+                    pos = pos - 1
+                base = ref.seq[idx - 1] + base
+                alt = tgt.seq[idx - 1] + alt
+
+            alt = alt or '*'
+            base = base or '*'
+
+            name = f"{pos}_{base}_{alt}"
+
+            value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
+            vcfdict[pos] = value
+
+    return vcfdict
+
+
+def vcf_fmt(fmt):
+    vcfdict = find_variants(fmt.seqA, fmt.seqB)
+
+    ref, query = fmt.seqA, fmt.seqB
+
+    print('##fileformat=VCFv4.2')
+    print('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
+    print('##FILTER=<ID=PASS,Description="All filters passed">')
+    print('##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">')
+    print(f'##contig=<ID={ref.name},length={len(ref.seq.strip("-"))},assembly={ref.name}>')
+    print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{query.name}")
+
+    for value in vcfdict.values():
+        print("\t".join(value))
 
 
 def align(target, query, par):
     # Query and target sequences.
-    t = str(target.seq).upper()
-    q = str(query.seq).upper()
+    t = str(target.seq)
+    q = str(query.seq)
 
     aligner = PairwiseAligner()
 
@@ -288,10 +365,11 @@ def get_matrix(matrix, show=False):
 
     return mat
 
+
 def print_header(text):
     if text:
         elems = text.split()
-        print ("\t".join(elems))
+        print("\t".join(elems))
 
 
 @plac.pos("sequence", "sequences")
@@ -300,14 +378,14 @@ def print_header(text):
 @plac.opt("open_", "gap open penalty", type=int, abbrev='o')
 @plac.opt("extend", "gap extend penalty", type=int, abbrev='x')
 @plac.opt("matrix", "matrix", abbrev='M')
-@plac.flg("variant", "output variants only", abbrev='V')
+@plac.flg("vcf", "output vcf file", abbrev='V')
 @plac.flg("table", "format output as a table", abbrev="T")
 @plac.flg("local_", "local alignment", abbrev='L')
 @plac.flg("global_", "local alignment", abbrev='G')
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.opt("type_", "sequence type (nuc, pep)", choices=[DNA, PEP])
 def run(open_=6, extend=1, matrix='', match=1, mismatch=2, local_=False, global_=False,
-        semiglobal=False, type_='', variant=False, table=False, *sequences):
+        semiglobal=False, type_='', vcf=False, table=False, *sequences):
     # Keeps track of the alignment parameters.
     par = Param()
     par.matrix = None
@@ -321,10 +399,12 @@ def run(open_=6, extend=1, matrix='', match=1, mismatch=2, local_=False, global_
     par.format = ''
     par.showall = False
 
-    if variant:
-        par.format = VARIANT_FMT
+    if vcf:
+        par.format = VCF_FMT
     elif table:
         par.format = TABLE_FMT
+    else:
+        par.format = pairwise_fmt
 
     # Select alignment mode.
     if local_:
@@ -343,11 +423,14 @@ def run(open_=6, extend=1, matrix='', match=1, mismatch=2, local_=False, global_
     # Command line will be second in line.
     lines.extend(sequences)
 
+    # This names sequences that come from command line
     counter = cycle(string.ascii_uppercase)
+
+    # Records to be aligned
     recs = []
     for text in lines:
-        recs.extend(parse(text, counter=counter))
-
+        elems = parse_input(text, counter=counter)
+        recs.extend(elems)
 
     # If only matrix is specified print it to the screen.
     if matrix and len(recs) == 0:
@@ -361,23 +444,23 @@ def run(open_=6, extend=1, matrix='', match=1, mismatch=2, local_=False, global_
     # Keeping people from accidentally running alignments that are too large.
     MAXLEN = 50000
     for rec in recs:
-        if len(rec) > MAXLEN:
+        if len(rec.seq) > MAXLEN:
             utils.error("We recommend that you use a different software.", stop=False)
             utils.error(f"Sequence {rec.id} is too long for this aligner: {len(rec)} > MAXLEN={MAXLEN:,}")
 
     target = recs[0]
 
-
     # Select result formatter
     if par.format == TABLE_FMT:
         header = "target query score len pident match mism ins del"
         formatter = table_fmt
-    elif par.format == VARIANT_FMT:
-        header = "pos type len target query"
-        formatter = variant_fmt
+    elif par.format == VCF_FMT:
+        header = ''
+        # header = "pos type len target query"
+        formatter = vcf_fmt
     else:
         header = ''
-        formatter = print_default
+        formatter = pairwise_fmt
 
     print_header(header)
 

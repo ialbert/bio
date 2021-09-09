@@ -43,6 +43,7 @@ def init_dirs():
 
     # Link the test data
     os.system("ln -s ../data/alias.txt .")
+    os.system("ln -s ../data/align_input.fa .")
 
 
 join = os.path.join
