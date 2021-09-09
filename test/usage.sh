@@ -9,6 +9,9 @@
 # Stop on errors.
 set -uex
 
+# Run fasta2vcf
+#bio fa2vcf mafft.fa > mafft.vcf
+
 # Get data from NCBI
 bio fetch NC_045512 MN996532 > genomes.gb
 
@@ -62,6 +65,8 @@ bio align s.fa --table > align-s.txt
 
 # Align as variants.
 bio align s.fa --vcf > align-ss.vcf
+
+
 
 # Convert genbank files to GFF
 bio gff genomes.gb > genomes.gff
