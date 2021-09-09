@@ -4,10 +4,12 @@ from itertools import *
 
 MATCH, SNP, INS, DEL = 'M', 'X', 'INS', 'DEL'
 
+
 class Record:
     def __init__(self, name, lines):
         self.name = name.rstrip()
         self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
+
 
 def fast_parser(stream):
     """
@@ -35,10 +37,9 @@ def fast_parser(stream):
 
 
 def find_variants(ref, tgt):
-
     stream = zip(ref.seq, tgt.seq)
 
-    #stream = islice(stream, 50000)
+    # stream = islice(stream, 50000)
 
     collect = []
     variants = []
@@ -80,32 +81,48 @@ def find_variants(ref, tgt):
 
     if collect:
         variants.append((lastop, collect))
+
     return variants
 
-def print_variants(ref, tgt, variants):
-    print('##fileformat=VCFv4.2')
-    print('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
-    print('##FILTER=<ID=PASS,Description="All filters passed">')
-    print(f'##contig=<ID={ref.name},length={len(ref.seq)},assembly={ref.name}>')
-    print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{tgt.name}")
+
+def format_variants(ref, tgt, variants):
+    # This is necessary because consecutive variants may overlap SNP + INSERT for example
+    # The later variant wins
+    vardict = dict()
 
     for key, elems in variants:
 
         if key == SNP:
             for pos, base, alt in elems:
                 uid = f"{pos}_{base}_{alt}"
-                print(f"{ref.name}\t{pos}\t{uid}\t{base}\t{alt}\t.\tPASS\t.\tGT\t1")
+                value = [ref.name, str(pos), uid, base, alt, ".", "PASS", ".", "GT", "1"]
+                vardict[pos] = value
+
         elif key == DEL or key == INS:
             pos = elems[0][0]
             base = ''.join(e[1] for e in elems).strip("-")
             alt = ''.join(e[2] for e in elems).strip("-")
 
             if pos > 1:
-                pos = pos - 1
-                base = ref.seq[pos] + base
-                alt = ref.seq[pos] + alt
-            uid = f"{pos}_{key}_{len(base+alt)}"
-            print(f"{ref.name}\t{pos}\t{uid}\t{base}\t{alt}\t.\tPASS\t.\tGT\t1")
+                pos = pos
+                base = ref.seq[pos - 1] + base
+                alt = tgt.seq[pos - 1] + alt
+            uid = f"{pos}_{key}_{len(base + alt)}"
+            value = [ref.name, str(pos), uid, base, alt, ".", "PASS", ".", "GT", "1"]
+            vardict[pos] = value
+
+    return vardict
+
+
+def print_variants(ref, tgt, vardict):
+    print('##fileformat=VCFv4.2')
+    print('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
+    print('##FILTER=<ID=PASS,Description="All filters passed">')
+    print(f'##contig=<ID={ref.name},length={len(ref.seq)},assembly={ref.name}>')
+    print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{tgt.name}")
+
+    for value in vardict.values():
+        print("\t".join(value))
 
 
 @plac.pos("fasta")
@@ -120,7 +137,9 @@ def run(*fname):
 
     variants = find_variants(ref, tgt)
 
-    print_variants(ref=ref, tgt=tgt, variants=variants)
+    vardict = format_variants(ref=ref, tgt=tgt, variants=variants)
+    
+    print_variants(ref=ref, tgt=tgt, vardict=vardict)
 
 
 if __name__ == '__main__':
