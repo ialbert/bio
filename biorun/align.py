@@ -107,7 +107,8 @@ def format_alignment(target, query, aln, par):
     fmt.seqA = utils.Fasta(name=target.name, seq=seqA[start:end])
     fmt.trace = trace[start:end]
     fmt.seqB = utils.Fasta(name=query.name, seq=seqB[start:end])
-    fmt.tlen = len(trace)
+
+    fmt.tlen = len(fmt.trace)
     fmt.alen = len(seqA)
     fmt.blen = len(seqB)
     fmt.ident = trace.count('|')
@@ -138,7 +139,6 @@ def pairwise_fmt(fmt, width=81):
         print(f"# Parameters: match={fmt.match} penalty={fmt.mismatch}", end=' ')
 
     print(f"gapopen={fmt.gap_open} gapextend={fmt.gap_extend}")
-    print(f"# Coordinates: [{fmt.start+1}, {fmt.end}]")
     print()
 
     # Generate the traces
