@@ -242,6 +242,9 @@ def find_variants(ref, tgt):
 
         idx, pos = elems[0][0], elems[0][1]
 
+        # Query starts with insertion
+        pos = 1 if pos < 1 else pos
+
         base = ref.seq[idx:idx + size].strip('-')
         alt = tgt.seq[idx:idx + size].strip('-')
 
