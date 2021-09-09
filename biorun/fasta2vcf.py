@@ -1,146 +1,33 @@
 import plac
 from itertools import *
-
-MATCH, SNP, INS, DEL = 'M', 'X', 'INS', 'DEL'
-
-class Record:
-    def __init__(self, name, lines):
-        self.name = name.rstrip()
-        self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
+from biorun import utils
+from biorun import align
 
 
-def fasta_parser(stream):
-    """
-    Inspired by Bio.SeqIO.FastaIO.SimpleFastaParser
-    """
-    # Skip any text before the first record (e.g. blank lines, comments)
-    for line in stream:
-        if line[0] == ">":
-            title = line[1:]
-            break
-    else:
-        return
+@plac.pos("fnames")
+def run(*fnames):
 
-    lines = []
-    for line in stream:
-        if line[0] == ">":
-            yield Record(name=title, lines=lines)
-            lines = []
-            title = line[1:]
-            continue
-        lines.append(line.rstrip())
+    #fname = '../test/data/mafft.fa'
+    stream = utils.open_streams(fnames=fnames)
 
-    fasta = Record(name=title, lines=lines)
-    yield fasta
+    stream = next(stream)
 
+    recs = utils.fasta_parser(stream)
 
-def find_variants(ref, tgt):
-    stream = zip(ref.seq, tgt.seq)
+    ref = next(recs)
+    query = next(recs)
 
-    # stream = islice(stream, 50000)
+    vcfdict = align.find_variants(ref, query)
 
-    collect = []
-    variants = []
-    pos = 0
-    lastop = None
-    for a, b in stream:
-
-        # Multiple sequence alignment
-        if a == '-' and b == '-':
-            continue
-
-        if a == b:
-            # Matches
-            pos += 1
-            op = MATCH
-        elif b == '-':
-            # Deletion from query.
-            pos += 1
-            op = DEL
-        elif a == '-':
-            op = INS
-        elif a != b:
-            # Mismatching bases.
-            pos += 1
-            op = SNP
-        else:
-            raise Exception(f"Input not a pairwise alignment: {a} vs {b}")
-
-        if lastop != op:
-            if collect:
-                if lastop != MATCH:
-                    variants.append((lastop, collect))
-            # Reset the collector
-            collect = []
-
-        collect.append((pos, a, b))
-
-        lastop = op
-
-    if collect:
-        variants.append((lastop, collect))
-
-    return variants
-
-
-def format_variants(ref, tgt, variants):
-    # This is necessary because consecutive variants may overlap SNP + INSERT for example
-    # The later variant wins
-    vardict = dict()
-
-    for key, elems in variants:
-
-        if key == SNP:
-            for pos, base, alt in elems:
-                uid = f"{pos}_{base}_{alt}"
-                value = [ref.name, str(pos), uid, base, alt, ".", "PASS", ".", "GT", "1"]
-                vardict[pos] = value
-
-        elif key == DEL or key == INS:
-            pos = elems[0][0]
-            base = ''.join(e[1] for e in elems).strip("-")
-            alt = ''.join(e[2] for e in elems).strip("-")
-
-            if pos > 1:
-                pos = pos
-                base = ref.seq[pos - 1] + base
-                alt = tgt.seq[pos - 1] + alt
-            uid = f"{pos}_{key}_{len(base + alt)}"
-            value = [ref.name, str(pos), uid, base, alt, ".", "PASS", ".", "GT", "1"]
-            vardict[pos] = value
-
-    return vardict
-
-def run_mafft(ref, tgt):
-    pass
-
-def print_variants(ref, tgt, vardict):
     print('##fileformat=VCFv4.2')
     print('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
     print('##FILTER=<ID=PASS,Description="All filters passed">')
+    print('##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">')
     print(f'##contig=<ID={ref.name},length={len(ref.seq.strip("-"))},assembly={ref.name}>')
-    print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{tgt.name}")
+    print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{query.name}")
 
-    for value in vardict.values():
+    for value in vcfdict.values():
         print("\t".join(value))
-
-
-@plac.pos("fasta")
-def run(*fname):
-    fname = '../test/data/mafft.fa'
-    stream = open(fname)
-
-    recs = fasta_parser(stream)
-
-    ref = next(recs)
-    tgt = next(recs)
-
-    variants = find_variants(ref, tgt)
-
-    vardict = format_variants(ref=ref, tgt=tgt, variants=variants)
-
-    print_variants(ref=ref, tgt=tgt, vardict=vardict)
-
 
 if __name__ == '__main__':
     plac.call(run)

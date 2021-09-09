@@ -282,6 +282,7 @@ def find_variants(ref, tgt):
 
 
 def vcf_fmt(fmt):
+
     vcfdict = find_variants(fmt.seqA, fmt.seqB)
 
     ref, query = fmt.seqA, fmt.seqB

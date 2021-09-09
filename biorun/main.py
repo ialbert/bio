@@ -27,6 +27,7 @@ SUB_COMMANDS = dict(
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
     data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
     align=("biorun.align.run", True, "align sequences"),
+    fa2vcf=("biorun.fasta2vcf.run", True, "converts aligned fasta to VCF"),
 )
 
 
