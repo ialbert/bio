@@ -150,7 +150,7 @@ def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
 
 class Fasta:
     def __init__(self, name, lines=[], seq=''):
-        self.name = name.rstrip()
+        self.name = name.rstrip().split()[0]
         if lines:
             self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
         else:
