@@ -118,7 +118,7 @@ def print_variants(ref, tgt, vardict):
     print('##fileformat=VCFv4.2')
     print('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
     print('##FILTER=<ID=PASS,Description="All filters passed">')
-    print(f'##contig=<ID={ref.name},length={len(ref.seq)},assembly={ref.name}>')
+    print(f'##contig=<ID={ref.name},length={len(ref.seq.strip("-"))},assembly={ref.name}>')
     print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{tgt.name}")
 
     for value in vardict.values():
@@ -138,7 +138,7 @@ def run(*fname):
     variants = find_variants(ref, tgt)
 
     vardict = format_variants(ref=ref, tgt=tgt, variants=variants)
-    
+
     print_variants(ref=ref, tgt=tgt, vardict=vardict)
 
 
