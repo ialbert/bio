@@ -253,7 +253,7 @@ def find_variants(ref, tgt):
         if key == SNP:
             # Mismatches printed consecutively
             for idx, pos, base, alt in elems:
-                name = f"{pos}_{base}_{alt}"
+                name = f"{pos}{base}/{alt}"
                 value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
                 vcfdict[pos] = value
 
@@ -273,7 +273,10 @@ def find_variants(ref, tgt):
             alt = alt or '*'
             base = base or '*'
 
-            name = f"{pos}_{base}_{alt}"
+            if key == DEL:
+                name = f"{pos}>{base[1:]}"
+            else:
+                name = f"{pos}<{alt[1:]}"
 
             value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
             vcfdict[pos] = value

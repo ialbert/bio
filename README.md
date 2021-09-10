@@ -71,10 +71,10 @@ to print:
     ##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
     ##contig=<ID=YP_009724390.1,length=3822,assembly=YP_009724390.1>
     #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  QHR63300.2
-    YP_009724390.1  33      33_C_T  C       T       .       PASS    TYPE=SNP        GT      1
-    YP_009724390.1  54      54_T_A  T       A       .       PASS    TYPE=SNP        GT      1
-    YP_009724390.1  60      60_C_T  C       T       .       PASS    TYPE=SNP        GT      1
-    YP_009724390.1  69      69_A_G  A       G       .       PASS    TYPE=SNP        GT      1
+    YP_009724390.1  33      33C/T   C       T       .       PASS    TYPE=SNP        GT      1
+    YP_009724390.1  54      54T/A   T       A       .       PASS    TYPE=SNP        GT      1
+    YP_009724390.1  60      60C/T   C       T       .       PASS    TYPE=SNP        GT      1
+    YP_009724390.1  69      69A/G   A       G       .       PASS    TYPE=SNP        GT      1
 
 
 ## Who is `bio` designed for?

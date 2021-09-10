@@ -14,13 +14,8 @@ testdata:
 	(cd test/data && bash ../usage.sh)
 
 
-# Generate test from the example script.
-generate:
-	(cd test && python generate.py)
-	pytest -x
-
 # Update the data for the test script.
-fulltest: testdata generate
+fulltest: testdata test
 
 # Generate the docs.
 docs:

@@ -4,5 +4,5 @@
 ##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
 ##contig=<ID=SeqA,length=7,assembly=SeqA>
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SeqB
-SeqA	4	4_T_C	T	C	.	PASS	TYPE=SNP	GT	1
-SeqA	5	5_ACA_A	ACA	A	.	PASS	TYPE=DEL	GT	1
+SeqA	4	4T/C	T	C	.	PASS	TYPE=SNP	GT	1
+SeqA	5	5>CA	ACA	A	.	PASS	TYPE=DEL	GT	1
