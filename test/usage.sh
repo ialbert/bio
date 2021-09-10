@@ -9,7 +9,6 @@
 # Stop on errors.
 set -uex
 
-
 # Get data from NCBI
 bio fetch NC_045512 MN996532 > genomes.gb
 

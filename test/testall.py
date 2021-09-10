@@ -1,6 +1,7 @@
 import os, sys
 import plac
 import subprocess, difflib
+from subprocess import PIPE
 from tqdm import tqdm
 
 join = os.path.join
@@ -29,9 +30,16 @@ def parse_commands(text, flag=False):
 
 
 def run(cmd):
-    out = subprocess.check_output(cmd, shell=True)
-    out = out.decode("UTF-8")
-    return out
+    proc = subprocess.run(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+
+    if proc.returncode != 0:
+        print (proc.stdout.decode("UTF-8"))
+        print(proc.stderr.decode("UTF-8"))
+        print("-" * 10)
+        print(cmd)
+
+        sys.exit(1)
+    return proc
 
 
 INIT = f"""    
