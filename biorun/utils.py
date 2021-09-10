@@ -122,10 +122,12 @@ def open_streams(fnames=[]):
 
     # Need to read stdin so it can be rewound when detecting file formats.
     if not sys.stdin.isatty():
+        print("*** opening stdin", file=sys.stderr)
         stream = StringIO(sys.stdin.read())
         yield stream
 
     for fname in fnames:
+        print(f"*** opening {fname}", file=sys.stderr)
         if not os.path.isfile(fname):
             error(f" file not found: {fname}")
         stream = gzip.open(fname) if fname.endswith("gz") else open(fname)

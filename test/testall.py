@@ -43,9 +43,9 @@ def run(cmd):
 
 
 INIT = f"""    
-    ln -sf ../data/alias.txt .
-    ln -sf ../data/align_input.fa
-    ln -sf ../data/mafft.fa
+    ln -s ../data/alias.txt
+    ln -s ../data/align_input.fa
+    ln -s ../data/mafft.fa
 """
 
 
