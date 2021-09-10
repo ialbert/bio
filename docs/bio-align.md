@@ -21,17 +21,44 @@ prints:
     |||.|   7
     GATCA--
 
-output may be formatted in tabular fashion or as variants
+output may be formatted in as table:
 
-    bio align GATTACA GATCA --variant
+    bio align GATTACA GATCA --table
+
+prints:
+
+    target	query	score	len	pident	match	mism	ins	del
+    SeqA	SeqB	2.0	57.1	7	4	1	2	0
+
+output may be formatted in as VCF:
+
+    bio align GATTACA GATCA --vcf
+
+prints:
+
+
+    ##fileformat=VCFv4.2
+    ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+    ##FILTER=<ID=PASS,Description="All filters passed">
+    ##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
+    ##contig=<ID=SeqA,length=7,assembly=SeqA>
+    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SeqB
+    SeqA	4	T4C	T	C	.	PASS	TYPE=SNP	GT	1
+    SeqA	5	5delCA	ACA	A	.	PASS	TYPE=DEL	GT	1
+
+output may be formatted in as variants:
+
+    bio align GATTACA GATCA --variants
 
 prints:
 
     pos type   len target  query
-    4    mis    1    T       C
+    4    snp    1    T       C
     6    del    2    CA      --
 
-the default alignment is semi-global (global alignment with no end gap penalies). To perform a global alignment write:
+## Alignment types
+
+The default alignment is semi-global (global alignment with no end gap penalies). To perform a global alignment write:
 
     bio align GATTACA GATCA --global
 
@@ -44,6 +71,8 @@ the output is:
     GATTACA
     |||  || 7
     GAT--CA
+
+Available ptions are : `--global`, `-local`, `-semi-global`
 
 ## Align realistic data
 
@@ -108,7 +137,7 @@ prints (check the default output to identify which number corresonds to what):
 
 ## Alignment with variant output
 
-    cat genomes.gb | bio fasta --gene S --translate | bio align --variant
+    cat genomes.gb | bio fasta --gene S --translate | bio align --variants
 
 prints the variation (some lines not show):
 
@@ -125,6 +154,7 @@ prints the variation (some lines not show):
     1228   mis     1       V         I
     ...
 
+
 ## Different scoring matrices
 
     cat genomes.gb | bio fasta --gene S --translate | bio align --matrix PAM30 | head
@@ -140,23 +170,7 @@ prints:
     MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
 
 
-## Alignments
-
-Align genomic DNA to CDNA
-
-    bio fetch ENST00000288602 | head > genomic.fa
-
-    bio fetch ENST00000288602 --type cdna | head > cdna.fa
-
-Is this a good alignment?
-
-    bio align genomic.fa cdna.fa
-
-Try local alignment
-
-    bio align genomic.fa cdna.fa --local
-
-## Scoring matrices
+### Scoring matrices
 
 The scoring matrix may be a builtin name or a file with a scoring matrix format. See the scoring with:
 
@@ -180,4 +194,18 @@ prints:
     D  -3 -10   2   8 -14  -2   2  -3  -4  -7 -12  -4 -11 -15  -8  -4  -5 -15 -11  -8   6   1  -5 -17
     ...
 
+## Exercises
 
+### Align genomic DNA to CDNA
+
+    bio fetch ENST00000288602 | head > genomic.fa
+
+    bio fetch ENST00000288602 --type cdna | head > cdna.fa
+
+Is this a good alignment?
+
+    bio align genomic.fa cdna.fa
+
+Try local alignment
+
+    bio align genomic.fa cdna.fa --local

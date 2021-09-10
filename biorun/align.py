@@ -19,7 +19,7 @@ from biorun import utils
 
 DNA, PEP = "DNA", "PEP"
 
-TABLE_FMT, VCF_FMT = "table", "vcf"
+TABLE_FMT, VCF_FMT, VARIANTS_FMT = "table", "vcf", 'variants'
 
 LOCAL_ALIGN, GLOBAL_ALIGN, SEMIGLOBAL_ALIGN = 1, 2, 3
 
@@ -292,6 +292,32 @@ def find_variants(ref, tgt):
 
     return vcfdict
 
+def variants_fmt(fmt):
+    vcfdict = find_variants(fmt.seqA, fmt.seqB)
+    for value in vcfdict.values():
+        name = value[2]
+        pos = value[1]
+        base = value[3]
+        alt = value[4]
+        size = '0'
+        info = value[7]
+        if "SNP" in info:
+            info = 'snp'
+            size = 1
+        elif 'DEL' in info:
+            info = 'del'
+            base = base[1:] if pos != '1' else base[:1]
+            alt = '-' * len(base)
+            size = len(base)
+
+        elif 'INS' in info:
+            info = 'ins'
+            alt = alt[1:] if pos != '1' else alt[:1]
+            base = '-' * len(alt)
+            size = len(alt)
+
+        data = [ pos, info,  base, alt, str(size) ]
+        print("\t".join(data))
 
 def vcf_fmt(fmt):
 
@@ -395,13 +421,14 @@ def print_header(text):
 @plac.opt("extend", "gap extend penalty", type=int, abbrev='x')
 @plac.opt("matrix", "matrix", abbrev='M')
 @plac.flg("vcf", "output vcf file", abbrev='V')
-@plac.flg("table", "format output as a table", abbrev="T")
+@plac.flg("table", "output as a table", abbrev="T")
+@plac.flg("variants", "output as variants", abbrev="A")
 @plac.flg("local_", "local alignment", abbrev='L')
 @plac.flg("global_", "local alignment", abbrev='G')
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.opt("type_", "sequence type (nuc, pep)", choices=[DNA, PEP])
 def run(open_=6, extend=1, matrix='', match=1, mismatch=2, local_=False, global_=False,
-        semiglobal=False, type_='', vcf=False, table=False, *sequences):
+        semiglobal=False, type_='', vcf=False, table=False, variants=False, *sequences):
     # Keeps track of the alignment parameters.
     par = Param()
     par.matrix = None
@@ -419,6 +446,8 @@ def run(open_=6, extend=1, matrix='', match=1, mismatch=2, local_=False, global_
         par.format = VCF_FMT
     elif table:
         par.format = TABLE_FMT
+    elif variants:
+        par.format = VARIANTS_FMT
     else:
         par.format = pairwise_fmt
 
@@ -472,8 +501,11 @@ def run(open_=6, extend=1, matrix='', match=1, mismatch=2, local_=False, global_
         formatter = table_fmt
     elif par.format == VCF_FMT:
         header = ''
-        # header = "pos type len target query"
         formatter = vcf_fmt
+    elif par.format == VARIANTS_FMT:
+        header = "pos type target query len"
+        formatter = variants_fmt
+
     else:
         header = ''
         formatter = pairwise_fmt
