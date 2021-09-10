@@ -9,6 +9,7 @@ import shutil
 import sys
 import tempfile
 from io import StringIO
+from itertools import *
 from os.path import expanduser
 
 import requests
@@ -139,6 +140,13 @@ def open_streams(fnames=[]):
         yield stream
 
 
+def concat_stream(streams):
+    """
+    Concatenate streams into a single input stream
+    """
+    return chain.from_iterable(streams)
+
+
 def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
     path = cache_path(fname) if cache else fname
 
@@ -159,12 +167,15 @@ def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
 
 class Fasta:
     def __init__(self, name, lines=[], seq=''):
-        self.name = name.rstrip().split()[0]
-        if lines:
-            self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
-        else:
-            self.seq = seq.replace(" ", "").replace("\r", "").upper()
 
+        try:
+            self.name = name.rstrip().split()[0]
+            if lines:
+                self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
+            else:
+                self.seq = seq.replace(" ", "").replace("\r", "").upper()
+        except Exception as exc:
+            error(f"Invalid FASTA format: {exc}")
 
 def fasta_parser(stream):
     """

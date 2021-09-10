@@ -167,7 +167,8 @@ def get_records(recs, format):
     if type(recs) == FastaIterator:
         # Handles Fasta input.
         for obj in recs:
-            rec = SeqRecord(seq=obj.seq, name=obj.name, description=obj.description, id=obj.id)
+            seqid = ALIAS.get(obj.id, obj.id)
+            rec = SeqRecord(seq=obj.seq, name=obj.name, description=obj.description, id=seqid)
             res = Record(rec=rec, feat=None, seqid=obj.id, annot={}, ftype=Record.SOURCE, strand=1, start=1,
                          end=len(obj.seq))
             yield res
@@ -219,16 +220,19 @@ def parse_stream(stream, format='genbank'):
     Parses a filename with the appropriate readers.
     """
 
+    # Guess the format from the first line.
+    is_gbk = stream.readline().strip().startswith("LOCUS")
+
+    # Override format
+    format = 'genbank' if is_gbk else 'fasta'
+
+    # Rewind stream
+    stream.seek(0)
+
     # Assumes genbank format to start with.
     recs = SeqIO.parse(stream, format=format)
 
-    recs = list(recs)
-
-    if len(recs) == 0:
-        # Rewind stream, try in FASTA.
-        stream.seek(0)
-        recs = SeqIO.parse(stream, format='fasta')
-
+    # Get records from the file.
     recs = get_records(recs, format=format)
 
     return recs

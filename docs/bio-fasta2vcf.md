@@ -55,7 +55,7 @@ prints:
 
 You can do the above in a single command:
 
-    bio fetch NC_045512 MN996532 | bio fasta | mafft --auto --quiet - | bio fasta2vcf > variants.vcf
+    bio fetch NC_045512 MN996532 | bio fasta | mafft - | bio fasta2vcf > variants.vcf
 
 
 
