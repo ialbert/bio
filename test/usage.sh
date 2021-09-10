@@ -9,8 +9,6 @@
 # Stop on errors.
 set -uex
 
-# Run fasta2vcf
-bio fasta2vcf mafft.fa > mafft.vcf
 
 # Get data from NCBI
 bio fetch NC_045512 MN996532 > genomes.gb
@@ -53,6 +51,9 @@ bio align GATTACA GATCA --vcf > gattaca.vcf
 
 # Running on FASTA files.
 bio align align_input.fa --vcf > align_input.vcf
+
+# Run fasta2vcf
+bio fasta2vcf mafft.fa > mafft.vcf
 
 # Select S proteins
 bio fasta --gene S --protein  genomes.gb > s.fa
