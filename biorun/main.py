@@ -27,14 +27,14 @@ SUB_COMMANDS = dict(
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
     data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
     align=("biorun.align.run", True, "align sequences"),
-    fa2vcf=("biorun.fasta2vcf.run", True, "converts aligned fasta to VCF"),
+    fasta2vcf=("biorun.fasta2vcf.run", True, "convert aligned fasta to VCF"),
 )
 
 
 DOWNLOAD_CMD = '--download'
 
 # Generates indented help for each subcommand.
-block = [f"    bio {key:7} : {value[2]}" for (key, value) in SUB_COMMANDS.items()]
+block = [f"  bio {key:9} : {value[2]}" for (key, value) in SUB_COMMANDS.items()]
 
 # Join help into a section.
 block = "\n".join(block)
@@ -47,14 +47,14 @@ bio: making bioinformatics fun again
 
 Examples:
 
-    bio explain exon 
-    bio search HAD3 -fields refseq
-    bio fetch NC_045512 MN996532 > genomes.gb
-    bio fasta genomes.gb --gene S 
-    bio fasta genomes.gb --gene S | bio align
-    bio gff genomes.gb --type CDS
-    bio taxon 2697049 --lineage
-    bio align GATTACA GATCA  
+  bio explain exon 
+  bio search HAD3 -fields refseq
+  bio fetch NC_045512 MN996532 > genomes.gb
+  bio fasta genomes.gb --gene S 
+  bio fasta genomes.gb --gene S | bio align
+  bio gff genomes.gb --type CDS
+  bio taxon 2697049 --lineage
+  bio align GATTACA GATCA  
 
 See also: https://www.bioinfo.help
 

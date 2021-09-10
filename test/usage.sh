@@ -10,7 +10,7 @@
 set -uex
 
 # Run fasta2vcf
-#bio fa2vcf mafft.fa > mafft.vcf
+bio fasta2vcf mafft.fa > mafft.vcf
 
 # Get data from NCBI
 bio fetch NC_045512 MN996532 > genomes.gb
@@ -58,15 +58,13 @@ bio align align_input.fa --vcf > align_input.vcf
 bio fasta --gene S --protein  genomes.gb > s.fa
 
 # Align proteins.
-bio align s.fa > align-default.txt
+bio align s.fa > align-s-pairwise.txt
 
 # Alignment as a table.
-bio align s.fa --table > align-s.txt
+bio align s.fa --table > align-s-table.txt
 
 # Align as variants.
-bio align s.fa --vcf > align-ss.vcf
-
-
+bio align s.fa --vcf > align-s.vcf
 
 # Convert genbank files to GFF
 bio gff genomes.gb > genomes.gff

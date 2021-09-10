@@ -7,7 +7,7 @@ all: serve
 
 # Run the tests.
 test:
-	pytest -x
+	@python test/testall.py
 
 # Update the usage data.
 testdata:

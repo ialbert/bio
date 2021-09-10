@@ -1,5 +1,5 @@
 
-# PEP: YP_009724390.1 CDS surface glycoprotein (1,273) vs QHR63300.2 CDS spike glycoprotein (1,269) score = 6546.0
+# PEP: YP_009724390.1 (1,273) vs QHR63300.2 (1,269) score = 6546.0
 # Alignment: pident=97.4% len=1273 ident=1240 mis=29 del=4 ins=0
 # Parameters: matrix=BLOSUM62 gapopen=6 gapextend=1
 
