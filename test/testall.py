@@ -46,6 +46,8 @@ INIT = f"""
     ln -s ../data/alias.txt
     ln -s ../data/align_input.fa
     ln -s ../data/mafft.fa
+    ln -s ../data/file1.txt
+    ln -s ../data/file2.txt
 """
 
 
@@ -88,7 +90,7 @@ def main():
         expect = open(join(DATA_DIR, fname)).read()
         if expect != result:
             print_diff(expect=expect, result=result)
-            print (f"\n(cd data && {cmd})\n")
+            print (f"\n\n(cd test/data && {cmd})\n")
             sys.exit(1)
 
     print (f"# All tests completed")

@@ -48,7 +48,7 @@ def all_nuc(text, limit=1000):
     return all(map(is_nuc, subs))
 
 
-def maybe_sequence(text):
+def guess_type(text):
     if all_nuc(text):
         return NUCLEOTIDE
     elif all_pep(text):
@@ -65,7 +65,7 @@ def parse_input(obj, counter):
         # Perhaps it is a filename
         stream = open(obj)
         recs = list(utils.fasta_parser(stream))
-    elif maybe_sequence(obj):
+    elif guess_type(obj):
         # Perhaps the sequence comes from command line
         idx = next(counter)
         name = f"Seq{idx}"
@@ -175,6 +175,11 @@ def find_variants(ref, tgt):
 
     Returns a dictionary keyed by position where each position describes the  variant as a tuple.
     """
+
+    # Peptides are named differently
+    is_pep = guess_type(ref.seq) == PEPTIDE
+
+
     stream = zip(count(), ref.seq, tgt.seq)
 
     # stream = islice(stream, 50000)
@@ -253,7 +258,7 @@ def find_variants(ref, tgt):
         if key == SNP:
             # Mismatches printed consecutively
             for idx, pos, base, alt in elems:
-                name = f"{pos}{base}/{alt}"
+                name = f"{base}{pos}{alt}"
                 value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
                 vcfdict[pos] = value
 
@@ -263,20 +268,24 @@ def find_variants(ref, tgt):
 
             # Push back on POS if it is not 1.
             if idx > 0:
-
                 # For insertions the pos does not advance
                 if key == DEL:
                     pos = pos - 1
                 base = ref.seq[idx - 1] + base
                 alt = tgt.seq[idx - 1] + alt
+            else:
+                # When there is no preceding base the last base must be used
+                lastidx = elems[-1][0] + 1
+                base = base + ref.seq[lastidx]
+                alt = alt + tgt.seq[lastidx]
 
-            alt = alt or '*'
-            base = base or '*'
+            alt = alt or '.'
+            base = base or '.'
 
             if key == DEL:
-                name = f"{pos}>{base[1:]}"
+                name = f"{pos}del{base[1:]}"
             else:
-                name = f"{pos}<{alt[1:]}"
+                name = f"{pos}ins{alt[1:]}"
 
             value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
             vcfdict[pos] = value

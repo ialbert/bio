@@ -9,6 +9,7 @@ rmd_files: [
   "bio-fasta.md",
   "bio-gff.md",
   "bio-align.md",
+  "bio-fasta2vcf.md",
   "bio-taxonomy.md",
   "bio-meta.md",
 

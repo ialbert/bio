@@ -92,3 +92,13 @@ bio explain food vacuole > go.txt
 
 # Search for terms
 bio explain neutral > search.txt
+
+# Running comm.py
+comm.py file1.txt file2.txt > comm0.txt
+comm.py -1 file1.txt file2.txt > comm1.txt
+comm.py -2 file1.txt file2.txt > comm2.txt
+
+# Running uniq.py
+cat file1.txt file2.txt | uniq.py -d ',' > uniq0.txt
+cat file1.txt file2.txt | uniq.py -f 2 -d ',' > uniq1.txt
+cat file1.txt file2.txt | uniq.py -c -f 2 -d ',' > uniq3.txt

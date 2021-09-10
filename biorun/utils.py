@@ -1,14 +1,19 @@
 """
 Utilites funcions.
 """
-import sys, os, gzip, json, logging, tempfile, os, shutil
-from os.path import expanduser
+import gzip
+import json
+import logging
+import os
+import shutil
+import sys
+import tempfile
 from io import StringIO
+from os.path import expanduser
 
 import requests
-from tqdm import tqdm
-
 from biorun.libs.sqlitedict import SqliteDict
+from tqdm import tqdm
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -122,16 +127,17 @@ def open_streams(fnames=[]):
 
     # Need to read stdin so it can be rewound when detecting file formats.
     if not sys.stdin.isatty():
-        #print("*** opening stdin", file=sys.stderr)
+        # print("*** opening stdin", file=sys.stderr)
         stream = StringIO(sys.stdin.read())
         yield stream
 
     for fname in fnames:
-        #print(f"*** opening {fname}", file=sys.stderr)
+        # print(f"*** opening {fname}", file=sys.stderr)
         if not os.path.isfile(fname):
             error(f" file not found: {fname}")
         stream = gzip.open(fname) if fname.endswith("gz") else open(fname)
         yield stream
+
 
 def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
     path = cache_path(fname) if cache else fname
@@ -150,6 +156,7 @@ def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
     table.commit()
     table.close()
 
+
 class Fasta:
     def __init__(self, name, lines=[], seq=''):
         self.name = name.rstrip().split()[0]
@@ -157,6 +164,7 @@ class Fasta:
             self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
         else:
             self.seq = seq.replace(" ", "").replace("\r", "").upper()
+
 
 def fasta_parser(stream):
     """
@@ -181,6 +189,7 @@ def fasta_parser(stream):
 
     fasta = Fasta(name=title, lines=lines)
     yield fasta
+
 
 def plural(target, val=0, end='ies'):
     """
