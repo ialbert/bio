@@ -11,7 +11,7 @@ Even well-defined, supposedly simple tasks can take a seemingly inordinate numbe
 ## Usage examples
 
     # Fetch genbank data
-    bio fetch NC_045512,MN996532 > genomes.gb
+    bio fetch NC_045512 MN996532 > genomes.gb
 
     # Convert the first then bases of the genomes to FASTA.
     bio fasta genomes.gb --end 10
@@ -59,16 +59,23 @@ but now start with a file `acc.txt` that contains just the accession numbers:
     NC_045512
     MN996532
 
-we can run `bio` to find the first three codons for each coding sequence for gene `S`:
+we can run `bio` to generate a VCF file with the variants of the S nucleotides forming the S protein like so:
 
-     cat acc.txt | bio fetch | bio fasta --gene S --end 9
+    cat acc.txt | bio fetch | bio fasta --gene S | bio align --vcf | head
 
 to print:
 
-    >YP_009724390.1 CDS surface glycoprotein [1:9]
-    ATGTTTGTT
-    >QHR63300.2 CDS spike glycoprotein [1:9]
-    ATGTTTGTT
+    ##fileformat=VCFv4.2
+    ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+    ##FILTER=<ID=PASS,Description="All filters passed">
+    ##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
+    ##contig=<ID=YP_009724390.1,length=3822,assembly=YP_009724390.1>
+    #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  QHR63300.2
+    YP_009724390.1  33      33_C_T  C       T       .       PASS    TYPE=SNP        GT      1
+    YP_009724390.1  54      54_T_A  T       A       .       PASS    TYPE=SNP        GT      1
+    YP_009724390.1  60      60_C_T  C       T       .       PASS    TYPE=SNP        GT      1
+    YP_009724390.1  69      69_A_G  A       G       .       PASS    TYPE=SNP        GT      1
+
 
 ## Who is `bio` designed for?
 
