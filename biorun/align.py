@@ -283,9 +283,9 @@ def find_variants(ref, tgt):
             base = base or '.'
 
             if key == DEL:
-                name = f"{pos}del{base[1:]}"
+                name = f"{pos}del{len(base[1:])}"
             else:
-                name = f"{pos}ins{alt[1:]}"
+                name = f"{pos}ins{len(alt[1:])}"
 
             value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
             vcfdict[pos] = value
