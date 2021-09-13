@@ -2,6 +2,7 @@ import os
 import string
 import sys
 from itertools import *
+from . import models
 
 import plac
 
@@ -89,6 +90,15 @@ def format_alignment(target, query, aln, par):
     Returns an object with alignment information all set.
     """
     seqA, trace, seqB = format(aln).splitlines()
+
+    t = models.Sequence(title='A', seq=seqA)
+    q = models.Sequence(title='B', seq=seqB)
+
+    # Work in progress
+    a = models.Alignment(target=t, query=q, trace=trace)
+
+    #print (a.target.seq)
+    #print (a.query.seq)
 
     # Find non empty indices in the trace
     indices = list(filter(lambda x: x[1] != ' ', enumerate(trace)))

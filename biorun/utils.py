@@ -173,7 +173,7 @@ class Fasta:
             if lines:
                 self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
             else:
-                self.seq = seq.replace(" ", "").replace("\r", "").upper()
+                self.seq = seq.upper()
         except Exception as exc:
             error(f"Invalid FASTA format: {exc}")
 
