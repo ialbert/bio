@@ -13,7 +13,7 @@ class Sequence:
         if len(elems) == 2:
             self.name, self.desc = elems
         else:
-            self.name, self.desc = elems, ''
+            self.name, self.desc = elems[0], ''
         self.type = type
         self.ann = ann
         self.seq = seq.upper()
@@ -24,7 +24,7 @@ class Alignment:
     Represents a pairwise alignment.
     """
 
-    def __init__(self, target: Sequence, query: Sequence, trace='', **kwds):
+    def __init__(self, target: Sequence, query: Sequence, score, par, trace='', **kwds):
 
         # Setting overrideable defaults
         self.is_dna = True
@@ -34,7 +34,10 @@ class Alignment:
         self.target = target
 
         # Alignment parameters
-        self.ident = self.ins = self.dels = self.mism = 0
+        self.ident = self.ins = self.dels = self.mis = 0
+        self.score = score
+        self.tlen = par.tlen
+        self.qlen = par.qlen
 
         if trace:
             # Figuring out start/end padding from a BioPython trace
@@ -50,7 +53,6 @@ class Alignment:
                 self.target.seq = self.target.seq[start:end]
                 self.query.seq = self.query.seq[start:end]
 
-
         # Compute alignment information.
         for idx, a, b in zip(count(), self.query.seq, self.target.seq):
             if a == b:
@@ -60,19 +62,38 @@ class Alignment:
             elif b == '-':
                 self.dels += 1
             elif a != b:
-                self.mism += 1
+                self.mis += 1
+
+        # Percent identity (BLAST identity)
+        # Target sequence representes a gapped alignment.
+        # Alternative ways to compute it: https://lh3.github.io/2018/11/25/on-the-definition-of-sequence-identity
+        self.pident = self.ident / (self.ident + self.mis + self.dels + self.ins) * 100
+        self.alen = len(self.target.seq.strip("-"))
 
         # Override defaults
+        self.par = par
         self.__dict__.update(kwds)
 
 
-def pairwise_format(aln):
-
+def format_pairwise(aln):
+    """
+    Format an alignment in pairwise mode
+    """
     label = 'DNA' if aln.is_dna else 'PEP'
     out = [
 
-        f"# {label}: {aln.target.name} ({len(aln.target.seq):,}) vs {aln.query.name} ({len(aln.query.seq):,}) score = {aln.score}",
-
-        f"# Alignment: pident={aln.pident:0.1f}% len={aln.tlen} ident={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
+        f"# {label}: {aln.target.name} ({aln.tlen:,}) vs {aln.query.name} ({aln.qlen:,}) score={aln.score}",
+        f"# Alignment: pident={aln.pident:0.1f}% len={aln.alen} ident={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
 
     ]
+
+    if aln.par.matrix:
+        start = f"# Parameters: matrix={aln.par.matrix}"
+    else:
+        start = f"# Parameters: match={aln.par.match} penalty={aln.par.mismatch}"
+
+    elem = f"{start} gapopen={aln.par.gap_open} gapextend={aln.par.gap_extend}"
+
+    out.append(elem)
+
+    print("\n".join(out))

@@ -91,14 +91,19 @@ def format_alignment(target, query, aln, par):
     """
     seqA, trace, seqB = format(aln).splitlines()
 
-    t = models.Sequence(title='A', seq=seqA)
-    q = models.Sequence(title='B', seq=seqB)
+    t = models.Sequence(title=target.name, seq=seqA)
+    q = models.Sequence(title=query.name, seq=seqB)
 
     # Work in progress
-    a = models.Alignment(target=t, query=q, trace=trace)
 
-    #print (a.target.seq)
-    #print (a.query.seq)
+    par.tlen = len(target.seq)
+    par.qlen = len(query.seq)
+
+    a = models.Alignment(target=t, query=q, score=aln.score, trace=trace, par=par)
+
+
+    #models.format_pairwise(a)
+
 
     # Find non empty indices in the trace
     indices = list(filter(lambda x: x[1] != ' ', enumerate(trace)))
