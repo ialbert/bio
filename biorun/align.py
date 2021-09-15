@@ -77,102 +77,6 @@ def parse_input(obj, counter):
 
     return recs
 
-
-class Param():
-    """Placeholder for parameters"""
-
-    def __init__(self, **kwds):
-        self.__dict__.update(kwds)
-
-
-def format_alignment(target, query, aln, par):
-    """
-    Returns an object with alignment information all set.
-    """
-    seqA, trace, seqB = format(aln).splitlines()
-
-    t = models.Sequence(title=target.name, seq=seqA)
-    q = models.Sequence(title=query.name, seq=seqB)
-
-    # Work in progress
-
-    par.tlen = len(target.seq)
-    par.qlen = len(query.seq)
-
-    al = models.Alignment(target=t, query=q, score=aln.score, trace=trace, par=par)
-
-    models.format_pairwise(al)
-
-    # Find non empty indices in the trace
-    indices = list(filter(lambda x: x[1] != ' ', enumerate(trace)))
-    start, end = indices[0][0], indices[-1][0] + 1
-
-    # Make the trace nicer
-    trace = trace.replace("-", " ")
-
-    # Populate alignment results
-    fmt = Param(**par.__dict__)
-    fmt.target = target
-    fmt.query = query
-    fmt.aln = aln
-    fmt.score = aln.score
-    fmt.par = par
-    fmt.seqA = utils.Fasta(name=target.name, seq=seqA[start:end])
-    fmt.trace = trace[start:end]
-    fmt.seqB = utils.Fasta(name=query.name, seq=seqB[start:end])
-
-    fmt.tlen = len(fmt.trace)
-    fmt.alen = len(seqA)
-    fmt.blen = len(seqB)
-    fmt.ident = trace.count('|')
-    fmt.mis = trace.count('.')
-    fmt.dels = seqB.count("-")
-    fmt.ins = seqA.count("-")
-    fmt.start = start
-    fmt.end = end
-    fmt.gap = fmt.dels + fmt.ins
-    fmt.pident = fmt.ident / fmt.tlen * 100
-
-    return fmt
-
-
-def pairwise_fmt(fmt, width=81):
-    print()
-    if fmt.is_dna:
-        label = "DNA"
-    else:
-        label = "PEP"
-
-    print(
-        f"# {label}: {fmt.target.name} ({len(fmt.target.seq):,}) vs {fmt.query.name} ({len(fmt.query.seq):,}) score = {fmt.score}")
-    print(
-        f"# Alignment: pident={fmt.pident:0.1f}% len={fmt.tlen} ident={fmt.ident} mis={fmt.mis} del={fmt.dels} ins={fmt.ins}")
-
-    if fmt.matrix:
-        print(f"# Parameters: matrix={fmt.matrix}", end=' ')
-    else:
-        print(f"# Parameters: match={fmt.match} penalty={fmt.mismatch}", end=' ')
-
-    print(f"gapopen={fmt.gap_open} gapextend={fmt.gap_extend}")
-    print()
-
-    # Generate the traces
-    for start in range(0, len(fmt.trace), width):
-        end = min(start + width, fmt.tlen)
-
-        seq1 = fmt.seqA.seq[start:end]
-        trcX = fmt.trace[start:end]
-        seq2 = fmt.seqB.seq[start:end]
-
-        print(seq1)
-        print(trcX)
-        print(seq2)
-        print()
-
-
-
-
-
 def safe_abs(value):
     try:
         return abs(float(value))
@@ -340,6 +244,9 @@ def run(match='', mismatch='', open_='', extend='', matrix='', local_=False, glo
     # The first sequence is the target.
     target = recs[0]
 
+    # Here just to silence warning.
+    par = models.Param()
+
     collect = []
     # Generate an alignment for each record
     for query in recs[1:]:
@@ -361,15 +268,23 @@ def run(match='', mismatch='', open_='', extend='', matrix='', local_=False, glo
 
         for aln in alns:
 
+
             # This is how you unpack a BioPython pairwise result.
             seq1, trace, seq2 = format(aln).splitlines()
+
+            if par.mode == LOCAL_ALIGN:
+                # Local alignment have traces with white space padding
+                start = len(trace) - len(trace.lstrip())
+                end = start + len(trace.strip())
+                seq1 = seq1[start:end]
+                seq2 = seq2[start:end]
 
             # Wrap the resulting alignment into a sequence.
             target_aln = models.Sequence(title=target.name, seq=seq1)
             query_aln = models.Sequence(title=query.name, seq=seq2)
 
             # Pack all content into the representation.
-            obj = models.Alignment(target=target_aln, query=query_aln, trace=trace, aln=aln, score=aln.score, par=par)
+            obj = models.Alignment(target=target_aln, query=query_aln, score=aln.score, par=par)
 
             # Collect all alignments into a datastructure
             collect.append(obj)

@@ -30,7 +30,7 @@ class Alignment:
     Represents a pairwise alignment.
     """
 
-    def __init__(self, target: Sequence, query: Sequence, score, par, trace='', **kwds):
+    def __init__(self, target: Sequence, query: Sequence, score, par, **kwds):
 
         # Make the trace nicer.
 
@@ -46,21 +46,6 @@ class Alignment:
         self.score = score
         self.tlen = par.tlen
         self.qlen = par.qlen
-        self.trace = trace
-
-        if trace:
-            # Used only for figuring out start/end padding from a BioPython local alignment
-            pad_func = lambda x: x == ' '
-            pad_count = lambda x: sum(1 for _ in takewhile(pad_func, x))
-
-            start = pad_count(trace)
-            chop = pad_count(reversed(trace))
-            end = len(self.target.seq) - chop
-
-            # Slice only if needed
-            if start or chop:
-                self.target.seq = self.target.seq[start:end]
-                self.query.seq = self.query.seq[start:end]
 
         # Compute alignment information.
         for idx, a, b in zip(count(), self.query.seq, self.target.seq):
