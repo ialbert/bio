@@ -52,7 +52,7 @@ bio align GATTACA GATCA --vcf > gattaca.vcf
 bio align align_input.fa --vcf > align_input.vcf
 
 # Run fasta2vcf
-bio fasta2vcf mafft.fa > mafft.vcf
+#bio fasta2vcf mafft.fa > mafft.vcf
 
 # Select S proteins
 bio fasta --gene S --protein  genomes.gb > s.fa
