@@ -1,5 +1,5 @@
 
-# DNA: SeqA (7) vs SeqB (5) score = 2.0
+# DNA: SeqA (7) vs SeqB (5) score=2.0
 # Alignment: pident=57.1% len=7 ident=4 mis=1 del=0 ins=2
 # Parameters: match=1 penalty=2 gapopen=6 gapextend=1
 
