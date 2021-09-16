@@ -1,5 +1,5 @@
 
-# DNA: YP_009724390.1 (1,273) vs QHR63300.2 (1,269) score=6541.0
+# DNA: YP_009724390.1(1,273) vs QHR63300.2(1,269) score=6541.0
 # Alignment: pident=97.4% len=1273 ident=1240 mis=29 del=0 ins=4
 # Parameters: matrix=BLOSUM62 gapopen=11 gapextend=1
 

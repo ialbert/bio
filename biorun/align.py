@@ -68,8 +68,8 @@ def parse_input(obj, counter):
         recs = list(utils.fasta_parser(stream))
     elif guess_type(obj):
         # Perhaps the sequence comes from command line
-        idx = next(counter)
-        name = f"Seq{idx}"
+        name = next(counter)
+        name = f"{name}"
         recs = [utils.Fasta(name=name, lines=[obj])]
     else:
         utils.error(f"Invalid file/sequence: {obj}")
@@ -217,7 +217,7 @@ def run(match='', mismatch='', open_='', extend='', matrix='', local_=False, glo
     lines.extend(sequences)
 
     # Names sequences that come from command line
-    counter = cycle(string.ascii_uppercase)
+    counter = cycle(string.ascii_lowercase)
 
     # Records to be aligned
     recs = []

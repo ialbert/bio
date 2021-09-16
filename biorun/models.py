@@ -102,7 +102,7 @@ def format_pairwise(alns, width=81):
         label = 'DNA' if aln.is_dna else 'PEP'
         out = [
             "",
-            f"# {label}: {aln.target.name} ({aln.tlen:,}) vs {aln.query.name} ({aln.qlen:,}) score={aln.score}",
+            f"# {label}: {aln.target.name}({aln.tlen:,}) vs {aln.query.name}({aln.qlen:,}) score={aln.score}",
             f"# Alignment: pident={aln.pident:0.1f}% len={aln.alen} ident={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
 
         ]

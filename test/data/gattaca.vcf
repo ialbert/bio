@@ -2,7 +2,7 @@
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
-##contig=<ID=SeqA,length=7,assembly=SeqA>
-#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SeqB
-SeqA	4	4T/C	T	C	.	PASS	TYPE=SNP	GT	1
-SeqA	5	5del2	ACA	A	.	PASS	TYPE=DEL	GT	1
+##contig=<ID=a,length=7,assembly=a>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	b
+a	4	4T/C	T	C	.	PASS	TYPE=SNP	GT	1
+a	5	5del2	ACA	A	.	PASS	TYPE=DEL	GT	1
