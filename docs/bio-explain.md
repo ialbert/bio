@@ -1,8 +1,8 @@
-# `bio explain`: show definitions {#bio-ontology}
+# bio explain: show definitions {#bio-explain}
 
 We implemented the `bio explain` command to facilitate the quick explorations of the Gene and Sequence Ontologies.
 
-For more information on ontologies, consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]. Installation:
+For more information on ontologies, consult [The Biostar Handbook][book] chapter [Sequence and Gene Ontology: What do the words mean?][ontology]. To install `bio` use:
 
 [ontology]: https://www.biostarhandbook.com/what-do-the-words-mean.html
 [book]: https://www.biostarhandbook.com

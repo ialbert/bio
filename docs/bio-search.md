@@ -1,8 +1,8 @@
-# `bio search`: search genes {#bio-search}
+# bio search: get gene information {#bio-search}
 
 We have implemented the `bio search` command to facilitate quick explorations of gene information.
 
-For more information on data sources and representations, consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. Installation:
+For more information on data sources and representations, consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. To install `bio` use:
 
 [datasource]: https://www.biostarhandbook.com/biological-data-sources.html
 [book]: https://www.biostarhandbook.com

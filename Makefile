@@ -24,9 +24,7 @@ docs:
 # Push out the docs to remote docs.
 sync:
 	rsync -avz  docs/.book/ ${REMOTE}
-	rsync -avz docs/bio-explain.md ~/book/biostar-handbook-2/books/main/doc/ontology/
-	rsync -avz docs/bio-search.md ~/book/biostar-handbook-2/books/main/doc/data/
-	rsync -avz docs/bio-intro.md ~/book/biostar-handbook-2/books/main/doc/tools/bio-intro.md
+	rsync -avz docs/*.md ~/book/biostar-handbook-2/books/main/doc/bio/
 	rsync -avz docs/images/igv-index.png ~/book/biostar-handbook-2/books/main/images
 
 # Serve the documentation as a webpage.
