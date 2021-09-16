@@ -38,7 +38,7 @@ clean:
 
 # Quick push for small changes.
 push:
-	git commit -am "docs updated by `whoami`"
+	git commit -am "commit by `whoami`"
 	git push
 
 # Build Python package.
