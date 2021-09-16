@@ -1,36 +1,16 @@
-from . import utils
 from itertools import *
-from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio import SeqIO
+from io import StringIO
 
-
-class Sequence:
-    """
-    Represents a sequence with a name.
-    """
-
-    def __init__(self, title='', seq=''):
-
-        elems = title.strip().split(maxsplit=2)
-
-        self.name = self.desc = self.seq = ''
-
-        if len(elems) == 2:
-            self.name, self.desc = elems
-        elif elems:
-            self.name = elems[0]
-
-        self.seq = seq.upper()
-
-    def __str__(self):
-        return f">{self.name} {self.seq[:10]}..."
-
+import sys
 
 class Alignment:
     """
     Represents a pairwise alignment.
     """
 
-    def __init__(self, target: Sequence, query: Sequence, score, par, **kwds):
+    def __init__(self, target: SeqRecord, query: SeqRecord, score, par, **kwds):
 
         # Make the trace nicer.
 
@@ -79,8 +59,8 @@ class Param:
     def __init__(self, **kwds):
         self.is_dna = False
         self.matrix = None
-        self.query = Sequence()
-        self.target = Sequence()
+        self.query = SeqRecord(seq='')
+        self.target = SeqRecord(seq='')
         self.gap_open = 11
         self.gap_extend = 1
         self.match = 5
@@ -94,53 +74,7 @@ class Param:
         self.qlen = len(self.query.seq)
 
 
-def format_pairwise(alns, width=81):
-    """
-    Formats an alignment in pairwise mode
-    """
-    for aln in alns:
-        label = 'DNA' if aln.is_dna else 'PEP'
-        out = [
-            "",
-            f"# {label}: {aln.target.name}({aln.tlen:,}) vs {aln.query.name}({aln.qlen:,}) score={aln.score}",
-            f"# Alignment: pident={aln.pident:0.1f}% len={aln.alen} ident={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
-
-        ]
-
-        if aln.par.matrix:
-            start = f"# Parameters: matrix={aln.par.matrix}"
-        else:
-            start = f"# Parameters: match={aln.par.match} penalty={aln.par.mismatch}"
-
-        elem = f"{start} gapopen={aln.par.gap_open} gapextend={aln.par.gap_extend}"
-
-        out.extend([elem, ""])
-
-        # Generate the traces
-        for start in range(0, len(aln.target.seq), width):
-            end = min(start + width, aln.tlen)
-
-            seq1 = aln.target.seq[start:end]
-            seq2 = aln.query.seq[start:end]
-            trace = ""
-            for a, b in zip(seq1, seq2):
-                if a == b:
-                    trace += '|'
-                elif a == '-' or b == '-':
-                    trace += '-'
-                else:
-                    trace += '.'
-
-            out.append(seq1)
-            out.append(trace)
-            out.append(seq2)
-
-        out.append("")
-
-        print("\n".join(out))
-
-
-MATCH, SNP, INS, DEL = 'M', 'SNP', 'INS', 'DEL'
+MATCH, SNP, INS, DEL = 'M', 'SUB', 'INS', 'DEL'
 
 
 def find_variants(ref, tgt):
@@ -229,7 +163,7 @@ def find_variants(ref, tgt):
         if key == SNP:
             # Mismatches printed consecutively
             for idx, pos, base, alt in elems:
-                name = f"{pos}{base}/{alt}"
+                name = f"{pos}_{base}/{alt}"
                 value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
                 vcfdict[pos] = value
 
@@ -254,9 +188,11 @@ def find_variants(ref, tgt):
             base = base or '.'
 
             if key == DEL:
-                name = f"{pos}del{len(base[1:])}"
+                suff = base[1:] if len(base) < 10 else len(base[1:])
+                name = f"{pos}_del_{suff}"
             else:
-                name = f"{pos}ins{len(alt[1:])}"
+                suff = alt[1:] if len(alt) < 10 else len(alt[1:])
+                name = f"{pos}_ins_{suff}"
 
             value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
             vcfdict[pos] = value
@@ -282,21 +218,31 @@ def format_vcf(alns):
 
 
 def format_table(alns, sep="\t"):
-    header = "target query score len pident match mism ins del"
+    header = "query target pident ident mis ins del score"
     print("\t".join(header.split()))
 
     for aln in alns:
         data = [
-            f"{aln.target.name}", f"{aln.query.name}",
-            f"{aln.score}", f"{aln.pident:0.1f}", f"{aln.tlen}",
-            f"{aln.ident}", f"{aln.mis}", f"{aln.dels}", f"{aln.ins}"
+            f"{aln.query.name}", f"{aln.target.name}",
+            f"{aln.pident:0.1f}",
+            f"{aln.ident}", f"{aln.mis}", f"{aln.dels}", f"{aln.ins}", f"{aln.score}",
         ]
         line = sep.join(data)
         print(line)
 
+
+def format_fasta(alns, sep="\t"):
+
+
+    for aln in alns:
+        SeqIO.write([aln.target, aln.query], sys.stdout, "fasta")
+
+
+
 def format_variants(alns):
-    header = "target query pos len type ref alt"
+    header = "target query name pos len type ref alt"
     print("\t".join(header.split()))
+
     for aln in alns:
         vcfdict = find_variants(aln.target, aln.query)
         for value in vcfdict.values():
@@ -321,5 +267,62 @@ def format_variants(alns):
                 base = '-' * len(alt)
                 size = len(alt)
 
-            data = [aln.target.name, aln.query.name, pos, str(size), info, base, alt, ]
+            data = [aln.target.name, aln.query.name, name, pos, str(size), info, base, alt, ]
             print("\t".join(data))
+
+
+def format_pairwise(data, par=None, width=81):
+    """
+    Formats an alignment in pairwise mode
+    """
+
+    stream = StringIO(data)
+
+    recs = SeqIO.parse(stream, format='fasta')
+
+    for query, target in zip(recs, recs):
+
+        out = []
+        if par:
+            label = 'DNA' if par.is_dna else 'PEP'
+            out = [
+                "",
+                f"# {par.mode} {label}: {query.name} vs {target.name} score={par.score}",
+                f"# Alignment: pident={aln.pident:0.1f}% len={aln.alen} ident={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
+
+            ]
+
+        if aln.par.matrix:
+            start = f"# Parameters: matrix={aln.par.matrix}"
+        else:
+            start = f"# Scoring: match={aln.par.match} penalty={aln.par.mismatch}"
+
+        elem = f"{start} gapopen={aln.par.gap_open} gapextend={aln.par.gap_extend}"
+
+        out.extend([elem, ""])
+        '''
+
+        # Generate the traces
+        for start in range(0, len(target.seq), width):
+
+            end = start + width
+
+            seq1 = target.seq[start:end]
+            seq2 = query.seq[start:end]
+            trace = ""
+
+            for a, b in zip(seq1, seq2):
+                if a == b:
+                    trace += '|'
+                elif a == '-' or b == '-':
+                    trace += '-'
+                else:
+                    trace += '.'
+
+            out.append(str(seq1))
+            out.append(trace)
+            out.append(str(seq2))
+
+        out.append("")
+
+        print("\n".join(out))

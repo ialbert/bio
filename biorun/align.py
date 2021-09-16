@@ -1,14 +1,19 @@
 import os
 import string
+import subprocess
 import sys
+import tempfile
 from itertools import *
-from . import models
+from subprocess import PIPE
 
 import plac
 
+from biorun import models
+
 try:
-    from Bio import SeqIO, Seq, SeqRecord
-    from Bio.Align import PairwiseAligner
+    from Bio import SeqIO
+    from Bio.Seq import Seq
+    from Bio.SeqRecord import SeqRecord
     from Bio.Align import substitution_matrices
 except ImportError as exc:
     print(f"# Error: {exc}", file=sys.stderr)
@@ -20,9 +25,9 @@ from biorun import utils
 
 DNA, PEP = "DNA", "PEP"
 
-TABLE_FMT, VCF_FMT, VARIANTS_FMT, PAIRWISE_FMT = "table", "vcf", 'variants', 'pariwise'
+TABLE_FMT, VCF_FMT, VARIANTS_FMT, PAIRWISE_FMT, FASTA_FMT = "table", "vcf", 'variants', 'pariwise', 'fasta'
 
-LOCAL_ALIGN, GLOBAL_ALIGN, SEMIGLOBAL_ALIGN = 1, 2, 3
+LOCAL_ALIGN, GLOBAL_ALIGN, SEMIGLOBAL_ALIGN = "Local", "Global", "Semiglobal"
 
 NUCLEOTIDE, PEPTIDE = "nucleotide", "peptide"
 
@@ -58,24 +63,24 @@ def guess_type(text):
         return None
 
 
-def parse_input(obj, counter):
-    if hasattr(obj, "read", ):
+def parse_input(handle, counter):
+    if hasattr(handle, "read", ):
         # Object may already be a stream
-        recs = list(utils.fasta_parser(obj))
-    elif os.path.isfile(obj):
+        recs = SeqIO.parse(handle, "fasta")
+    elif os.path.isfile(handle):
         # Perhaps it is a filename
-        stream = open(obj)
-        recs = list(utils.fasta_parser(stream))
-    elif guess_type(obj):
+        recs = SeqIO.parse(handle, "fasta")
+    elif guess_type(handle):
         # Perhaps the sequence comes from command line
         name = next(counter)
         name = f"{name}"
-        recs = [utils.Fasta(name=name, lines=[obj])]
+        recs = [SeqRecord(id=name, name=name, description='', seq=Seq(handle))]
     else:
-        utils.error(f"Invalid file/sequence: {obj}")
+        utils.error(f"Invalid file/sequence: {handle}")
         recs = []
 
-    return recs
+    return list(recs)
+
 
 def safe_abs(value):
     try:
@@ -84,67 +89,53 @@ def safe_abs(value):
         utils.error(f"{exc} {value}")
 
 
-def align(target, query, par: models.Param):
-    # Query and target sequences.
-    t = str(target.seq)
-    q = str(query.seq)
+def run_cmd(cmd):
+    proc = subprocess.run(cmd, shell=True, stdout=PIPE, stderr=PIPE)
 
-    aligner = PairwiseAligner()
+    if proc.returncode != 0:
+        print(proc.stdout.decode("UTF-8"))
+        print(proc.stderr.decode("UTF-8"))
+        print("-" * 10)
+        print(cmd)
+        sys.exit(1)
+    return proc
 
-    # Select local mode. Global, semiglobal are about scoring.
-    if par.mode == LOCAL_ALIGN:
-        aligner.mode = 'local'
-    else:
-        aligner.mode = 'global'
 
-    # Attempts to detect DNA vs peptide sequences.
-    if not par.type:
-        par.is_dna = all_nuc(t) and all_nuc(q)
-    else:
-        par.is_dna = par.type == DNA
+
+def run_aligner(query, targets, par: models.Param):
+
+    num1, fname1 = tempfile.mkstemp()
+    num2, fname2 = tempfile.mkstemp()
 
     # Set alignment defaults
-    if par.gap_open == '':
-        par.gap_open = 6 if par.is_dna else 11
+    par.gap_open = abs(par.gap_open)
+    par.gap_extend = abs(par.gap_extend)
 
-    if par.gap_extend == '':
-        par.gap_extend = 1
+    mapper = {
+        LOCAL_ALIGN: 'matcher',
+        GLOBAL_ALIGN: 'stretcher',
+        SEMIGLOBAL_ALIGN: 'needle',
 
-    if par.match == '':
-        par.match = 1
+    }
 
-    if par.mismatch == '':
-        par.mismatch = 2
+    program = mapper[par.mode]
 
-    aligner.match_score = safe_abs(par.match)
-    aligner.mismatch_score = -safe_abs(par.mismatch)
+    results = []
+    try:
+        SeqIO.write(query, fname1, format='fasta')
+        for target in targets:
+            SeqIO.write(target, fname2, format='fasta')
 
-    # Default alignment matrix for peptides.
-    if not par.is_dna and not par.matrix:
-        par.matrix = 'BLOSUM62'
+            cmd = f'{program} {fname1} {fname2} --filter -aformat3 fasta --endopen {par.gap_open} '
+            proc = run_cmd(cmd)
+            text_out = proc.stdout.decode("UTF-8").strip()
+            text_err = proc.stderr.decode("UTF-8")
+            results.append(text_out)
+    finally:
+        os.remove(fname1)
+        os.remove(fname2)
 
-    # Attempt to load the matrix if specified.
-    if par.matrix:
-        aligner.substitution_matrix = get_matrix(par.matrix)
-
-    # Internal gap scoring.
-    aligner.open_gap_score = -safe_abs(par.gap_open)
-    aligner.extend_gap_score = -safe_abs(par.gap_extend)
-
-    # Global alignment.
-    if par.mode == GLOBAL_ALIGN:
-        aligner.target_end_open_gap_score = aligner.open_gap_score
-        aligner.target_end_extend_gap_score = aligner.extend_gap_score
-
-    # Semiglobal alignment.
-    elif par.mode == SEMIGLOBAL_ALIGN:
-        aligner.target_end_gap_score = 0.0
-        aligner.query_end_gap_score = 0.0
-
-    # Performs the alignment
-    alns = aligner.align(t, q)
-
-    return alns
+    return "\n".join(results)
 
 
 def get_matrix(matrix, show=False):
@@ -168,25 +159,20 @@ def get_matrix(matrix, show=False):
 
     return mat
 
-#
-# NUC=(1,2,6,1)
-# PEP=(BLOSUM62, 11,1)
-#
+
+
 @plac.pos("sequence", "sequences")
-@plac.opt("match", "match (default: 1 for DNA, BLOSUM62 for PEP)", abbrev='m')
-@plac.opt("mismatch", "mismatch (default: 1 for DNA, BLOSUM62 for PEP)", abbrev='s')
-@plac.opt("open_", "gap open penalty (default: 6 for DNA, 11 for PEP)", abbrev='o')
-@plac.opt("extend", "gap extend penalty (default: 1 for DNA, 1 for PEP)", abbrev='x')
-@plac.opt("matrix", "matrix (BLOSUM62 for peptides)", abbrev='M')
-@plac.flg("vcf", "output vcf file", abbrev='V')
-@plac.flg("table", "output in tabular format", abbrev="T")
-@plac.flg("vars", "output variant columns", abbrev="A")
+@plac.opt("open_", "gap open penalty", abbrev='o')
+@plac.opt("extend", "gap extend penalty", abbrev='x')
+@plac.opt("matrix", "matrix (default: NUC.4.4 for DNA, BLOSUM62 for PEP)", abbrev='M')
+@plac.opt("output", "output vcf file", abbrev='O', choices=["pairwise", "vcf", "table", "vars", "fasta"])
 @plac.flg("local_", "local alignment", abbrev='L')
 @plac.flg("global_", "local alignment", abbrev='G')
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.opt("type_", "sequence type (nuc, pep)", choices=[DNA, PEP])
-def run(match='', mismatch='', open_='', extend='', matrix='', local_=False, global_=False,
-        semiglobal=False, type_='', vcf=False, table=False, vars=False, *sequences):
+def run(open_=11, extend=1, matrix='', local_=False, global_=False,
+        semiglobal=False, type_='', output='pairwise', *sequences):
+
     # Select alignment mode
     if global_:
         mode = GLOBAL_ALIGN
@@ -198,11 +184,13 @@ def run(match='', mismatch='', open_='', extend='', matrix='', local_=False, glo
         mode = SEMIGLOBAL_ALIGN
 
     # Select formatting mode
-    if vcf:
+    if output == 'vcf':
         fmt = VCF_FMT
-    elif table:
+    elif output == 'vcf':
         fmt = TABLE_FMT
-    elif vars:
+    elif output == 'fasta':
+        fmt = FASTA_FMT
+    elif output == 'vars':
         fmt = VARIANTS_FMT
     else:
         fmt = PAIRWISE_FMT
@@ -241,67 +229,32 @@ def run(match='', mismatch='', open_='', extend='', matrix='', local_=False, glo
             utils.error(f"Sequence {rec.id} is too long for this aligner: {len(rec)} > MAXLEN={MAXLEN:,}", stop=False)
             utils.error("We recommend that you use a different software.")
 
-    # The first sequence is the target.
-    target = recs[0]
+    # The first sequence is rest are the queries
+    query = recs[0]
+    targets = recs[1:]
 
-    # Here just to silence warning.
-    par = models.Param()
+    par = models.Param(
+        gap_open=open_,
+        gap_extend=extend,
+        matrix=matrix,
+        type=type_,
+        mode=mode,
+        fmt=fmt,
+    )
 
-    collect = []
-    # Generate an alignment for each record
-    for query in recs[1:]:
-
-        par = models.Param(
-            gap_open=open_,
-            gap_extend=extend,
-            matrix=matrix,
-            match=match,
-            mismatch=mismatch,
-            type=type_,
-            mode=mode,
-            fmt=fmt,
-            target=target,
-            query=query
-        )
-
-        alns = align(target, query, par=par)
-
-        for aln in alns:
-
-
-            # This is how you unpack a BioPython pairwise result.
-            seq1, trace, seq2 = format(aln).splitlines()
-
-            if par.mode == LOCAL_ALIGN:
-                # Local alignment have traces with white space padding
-                start = len(trace) - len(trace.lstrip())
-                end = start + len(trace.strip())
-                seq1 = seq1[start:end]
-                seq2 = seq2[start:end]
-
-            # Wrap the resulting alignment into a sequence.
-            target_aln = models.Sequence(title=target.name, seq=seq1)
-            query_aln = models.Sequence(title=query.name, seq=seq2)
-
-            # Pack all content into the representation.
-            obj = models.Alignment(target=target_aln, query=query_aln, score=aln.score, par=par)
-
-            # Collect all alignments into a datastructure
-            collect.append(obj)
-
-            # Keep the first alignment only
-            break
+    results = run_aligner(query=query, targets=targets, par=par)
 
     if par.fmt == VCF_FMT:
-        models.format_vcf(collect)
+        models.format_vcf(results)
     elif par.fmt == TABLE_FMT:
-        models.format_table(collect)
+        models.format_table(results)
     elif par.fmt == VARIANTS_FMT:
-        models.format_variants(collect)
+        models.format_variants(results)
+    elif par.fmt == FASTA_FMT:
+        models.format_fasta(results)
     else:
-        models.format_pairwise(collect)
-
+        models.format_pairwise(results, par=par)
 
 if __name__ == '__main__':
     # bio align AGATTACA GATCA
-    run()
+    plac.call(run)
