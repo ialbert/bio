@@ -1,7 +1,7 @@
 
 # a (7) vs b (5)
 # pident=71.4% len=7 ident=5 mis=0 del=2 ins=0
-# global: gap open=11 extend=1  matrix=NUC.4.4
+# global: score=13.0 gap open=11 extend=1  matrix=NUC.4.4
 
 GATTACA
 |||--||

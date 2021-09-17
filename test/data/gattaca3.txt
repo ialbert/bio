@@ -1,7 +1,7 @@
 
 # a (5) vs b (5)
 # pident=80.0% len=5 ident=4 mis=1 del=0 ins=0
-# local: gap open=11 extend=1  matrix=NUC.4.4
+# local: score=16.0 gap open=11 extend=1  matrix=NUC.4.4
 
 GATTA
 |||.|
