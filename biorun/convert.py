@@ -154,7 +154,7 @@ class Record:
         self.annot = annot
 
         # Store the locations.
-        self.locations = [(loc.start, loc.end, loc.strand) for loc in
+        self.locations = [(loc.start+1, loc.end, loc.strand) for loc in
                           self.feat.location.parts] if feat is not None else []
 
 
@@ -184,7 +184,7 @@ def get_records(recs, format):
                 seq = feat.extract(obj.seq)
 
                 # The start/end locations
-                start, end = int(feat.location.start), int(feat.location.end)
+                start, end = int(feat.location.start) + 1, int(feat.location.end)
 
                 # Qualifiers are transformed into annotations.
                 pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
@@ -420,9 +420,14 @@ def gff_formatter(rec):
     """
     Formats a record as GFF.
     """
+
+    if rec.type == Record.SOURCE:
+        return
+
     # Parent feature
     data = feature2gff(start=rec.start, end=rec.end, ftype=rec.type, uid=rec.id, name=rec.name, strand=rec.strand,
                        seqid=rec.seqid, pid=None)
+
     line = "\t".join(map(str, data))
 
     # Parent id.

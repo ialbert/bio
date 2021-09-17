@@ -1,7 +1,7 @@
 
-# DNA: a(7) vs b(5) score=2.0
-# Alignment: pident=57.1% len=7 ident=4 mis=1 del=0 ins=2
-# Parameters: match=1 penalty=2 gapopen=6 gapextend=1
+# a (7) vs b (5)
+# pident=57.1% len=7 ident=4 mis=1 del=2 ins=0
+# semiglobal: gap open=11 extend=1  matrix=NUC.4.4
 
 GATTACA
 |||.|--
