@@ -11,7 +11,6 @@ import tempfile
 from io import StringIO
 from itertools import *
 from os.path import expanduser
-from Bio.SeqRecord import SeqRecord
 
 import requests
 from biorun.libs.sqlitedict import SqliteDict
@@ -166,6 +165,41 @@ def save_table(name, obj, fname, flg='w', chunk=20000, cache=False):
     table.close()
 
 
+class Fasta:
+    def __init__(self, name, lines=[], seq=''):
+
+        try:
+            self.name = name.rstrip().split()[0]
+            if lines:
+                self.seq = "".join(lines).replace(" ", "").replace("\r", "").upper()
+            else:
+                self.seq = seq.upper()
+        except Exception as exc:
+            error(f"Invalid FASTA format: {exc}")
+
+def fasta_parser(stream):
+    """
+    Inspired by Bio.SeqIO.FastaIO.SimpleFastaParser
+    """
+    # Skip any text before the first record (e.g. blank lines, comments)
+    for line in stream:
+        if line[0] == ">":
+            title = line[1:]
+            break
+    else:
+        return
+
+    lines = []
+    for line in stream:
+        if line[0] == ">":
+            yield Fasta(name=title, lines=lines)
+            lines = []
+            title = line[1:]
+            continue
+        lines.append(line.rstrip())
+
+    fasta = Fasta(name=title, lines=lines)
+    yield fasta
 
 
 def plural(target, val=0, end='ies'):
