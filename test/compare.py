@@ -1,5 +1,5 @@
 #
-# Compares alignments
+# Sanity check to verify that the alignments work
 #
 import difflib
 import os
@@ -44,12 +44,21 @@ def print_diff(expect, result):
     for diff in diffs:
         print(diff)
 
+LEN = 100
+MUT = 20
+
+DNA = "ATGC"
+PEP = "ARNDBCEQZGHILKMFPSTWYX"
+SEQ = DNA
 
 def main():
     from random import choice
 
-    target = [choice("ATGC") for x in range(random.randint(10, 20))]
-    query = [choice("ATGC") for x in range(random.randint(10, 20))]
+    target = [choice(SEQ) for x in range(LEN)]
+    query = list(target)
+    idx = [ random.randint(0, LEN-1) for x in range(MUT)]
+    for i in idx:
+        query[i] = random.choice(SEQ)
 
     target = "".join(target)
     query = "".join(query)
@@ -68,9 +77,9 @@ def main():
     out1 = join(RUN_DIR, "aln1.fa")
     out2 = join(RUN_DIR, "aln2.fa")
 
-    cmd1 = f'stretcher {inp1} {inp2} -gapopen 11 -gapextend 1 -filter -aformat3 fasta > {out1}'
+    cmd1 = f'needle {inp1} {inp2} -gapopen 11 -gapextend 1 -filter -aformat3 fasta > {out1}'
 
-    cmd2 = f"bio align {inp1} {inp2} -open 11 -extend 1 --fasta --global > {out2}"
+    cmd2 = f"bio align {inp1} {inp2} -open 11 -extend 1 --fasta > {out2}"
 
     proc = run(cmd1)
     proc = run(cmd2)
@@ -79,7 +88,6 @@ def main():
 
     expect = open(join(DATA_DIR, out2)).read()
 
-    print (expect)
     # Skip cases with multiople valid alignments.
     if "WARNING" in expect:
         return
