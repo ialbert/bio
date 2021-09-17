@@ -10,12 +10,7 @@ class Alignment:
     Represents a pairwise alignment.
     """
 
-    def __init__(self, target: SeqRecord, query: SeqRecord, score, par, **kwds):
-
-        # Make the trace nicer.
-
-        # Setting overrideable defaults
-        self.is_dna = True
+    def __init__(self, target: SeqRecord, query: SeqRecord, **kwds):
 
         # Original query and target.
         self.query = query
@@ -23,12 +18,9 @@ class Alignment:
 
         # Alignment parameters
         self.ident = self.ins = self.dels = self.mis = 0
-        self.score = score
-        self.tlen = par.tlen
-        self.qlen = par.qlen
 
         # Compute alignment information.
-        for idx, a, b in zip(count(), self.query.seq, self.target.seq):
+        for  a, b in zip(self.query.seq, self.target.seq):
             if a == b:
                 self.ident += 1
             elif a == '-':
@@ -38,16 +30,10 @@ class Alignment:
             elif a != b:
                 self.mis += 1
 
-        # trace = trace.replace("-"," ")
-
         # Percent identity (BLAST identity)
-        # Target sequence representes a gapped alignment.
         # Alternative ways to compute it: https://lh3.github.io/2018/11/25/on-the-definition-of-sequence-identity
         self.pident = self.ident / (self.ident + self.mis + self.dels + self.ins) * 100
-        self.alen = len(self.target.seq.strip("-"))
 
-        # Override defaults
-        self.par = par
         self.__dict__.update(kwds)
 
 
@@ -158,6 +144,9 @@ def find_variants(ref, tgt):
         base = ref.seq[idx:idx + size].strip('-')
         alt = tgt.seq[idx:idx + size].strip('-')
 
+        # Turn sequence into strings
+        base, alt = str(base), str(alt)
+
         info = f"TYPE={key}"
 
         if key == SNP:
@@ -218,14 +207,14 @@ def format_vcf(alns):
 
 
 def format_table(alns, sep="\t"):
-    header = "query target pident ident mis ins del score"
+    header = "query target pident ident mis ins del"
     print("\t".join(header.split()))
 
     for aln in alns:
         data = [
             f"{aln.query.name}", f"{aln.target.name}",
             f"{aln.pident:0.1f}",
-            f"{aln.ident}", f"{aln.mis}", f"{aln.dels}", f"{aln.ins}", f"{aln.score}",
+            f"{aln.ident}", f"{aln.mis}", f"{aln.dels}", f"{aln.ins}"
         ]
         line = sep.join(data)
         print(line)
@@ -235,7 +224,7 @@ def format_fasta(alns, sep="\t"):
 
 
     for aln in alns:
-        SeqIO.write([aln.target, aln.query], sys.stdout, "fasta")
+        SeqIO.write([aln.query, aln.target], sys.stdout, "fasta")
 
 
 
@@ -271,44 +260,31 @@ def format_variants(alns):
             print("\t".join(data))
 
 
-def format_pairwise(data, par=None, width=81):
+def format_pairwise(alns, par:Param=None, width=81):
     """
     Formats an alignment in pairwise mode
     """
 
-    stream = StringIO(data)
-
-    recs = SeqIO.parse(stream, format='fasta')
-
-    for query, target in zip(recs, recs):
-
-        out = []
+    for aln in alns:
+        out = [
+            "",
+            f"# {aln.query.name} vs {aln.target.name}",
+            f"# pident={aln.pident:0.1f}% match={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
+        ]
         if par:
-            label = 'DNA' if par.is_dna else 'PEP'
-            out = [
-                "",
-                f"# {par.mode} {label}: {query.name} vs {target.name} score={par.score}",
-                f"# Alignment: pident={aln.pident:0.1f}% len={aln.alen} ident={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
+            out.append(
+                f"# {par.mode}: open={par.gap_open} extend={par.gap_open} matrix={par.matrix}"
+            )
 
-            ]
-
-        if aln.par.matrix:
-            start = f"# Parameters: matrix={aln.par.matrix}"
-        else:
-            start = f"# Scoring: match={aln.par.match} penalty={aln.par.mismatch}"
-
-        elem = f"{start} gapopen={aln.par.gap_open} gapextend={aln.par.gap_extend}"
-
-        out.extend([elem, ""])
-        '''
+        out.append("")
 
         # Generate the traces
-        for start in range(0, len(target.seq), width):
+        for start in range(0, len(aln.target.seq), width):
 
             end = start + width
 
-            seq1 = target.seq[start:end]
-            seq2 = query.seq[start:end]
+            seq1 = aln.target.seq[start:end]
+            seq2 = aln.query.seq[start:end]
             trace = ""
 
             for a, b in zip(seq1, seq2):

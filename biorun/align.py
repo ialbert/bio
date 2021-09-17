@@ -1,3 +1,4 @@
+import io
 import os
 import string
 import subprocess
@@ -27,7 +28,7 @@ DNA, PEP = "DNA", "PEP"
 
 TABLE_FMT, VCF_FMT, VARIANTS_FMT, PAIRWISE_FMT, FASTA_FMT = "table", "vcf", 'variants', 'pariwise', 'fasta'
 
-LOCAL_ALIGN, GLOBAL_ALIGN, SEMIGLOBAL_ALIGN = "Local", "Global", "Semiglobal"
+LOCAL_ALIGN, GLOBAL_ALIGN, SEMIGLOBAL_ALIGN = "local", "global", "semiglobal"
 
 NUCLEOTIDE, PEPTIDE = "nucleotide", "peptide"
 
@@ -101,9 +102,7 @@ def run_cmd(cmd):
     return proc
 
 
-
 def run_aligner(query, targets, par: models.Param):
-
     num1, fname1 = tempfile.mkstemp()
     num2, fname2 = tempfile.mkstemp()
 
@@ -122,56 +121,89 @@ def run_aligner(query, targets, par: models.Param):
 
     results = []
     try:
+        path = matrix_path(par.matrix)
         SeqIO.write(query, fname1, format='fasta')
         for target in targets:
             SeqIO.write(target, fname2, format='fasta')
 
-            cmd = f'{program} {fname1} {fname2} --filter -aformat3 fasta --endopen {par.gap_open} '
+            cmd = f'{program} {fname1} {fname2} --filter -aformat3 fasta -gapopen {par.gap_open} -gapextend {par.gap_extend} -datafile {path}'
             proc = run_cmd(cmd)
-            text_out = proc.stdout.decode("UTF-8").strip()
+            output = proc.stdout.decode("UTF-8").strip()
+            stream = io.StringIO(output)
+            recs = SeqIO.parse(stream, format='fasta')
+
+            # Generate an alignment for the data
+            query = next(recs)
+            target = next(recs)
+
+            aln = models.Alignment(query=query, target=target)
+
+            # Read the errors
             text_err = proc.stderr.decode("UTF-8")
-            results.append(text_out)
+
+            if text_err:
+                sys.stderr.write(text_err)
+
+            results.append(aln)
     finally:
         os.remove(fname1)
         os.remove(fname2)
 
-    return "\n".join(results)
+    return results
 
 
-def get_matrix(matrix, show=False):
+def matrix_path(matrix):
+    """
+    Attempts to figure out a matrix path
+    """
+
+    if matrix.upper() in ("DNA", "EDNAFULL"):
+        matrix = "NUC.4.4"
+
     try:
-
         if os.path.isfile(matrix):
-            if show:
-                print(open(matrix).read(), end='')
-            mat = substitution_matrices.read(matrix)
+            path = matrix
         else:
+            # Attempt to load the matrix as it generates a better error message
             mat = substitution_matrices.load(matrix)
-            if show:
-                path = os.path.dirname(os.path.realpath(substitution_matrices.__file__))
-                path = os.path.join(path, "data", matrix)
-                print(open(path).read(), end='')
+            path = os.path.dirname(os.path.realpath(substitution_matrices.__file__))
+            path = os.path.join(path, "data", matrix)
+
     except Exception as exc:
         valid = substitution_matrices.load()
         utils.error(f"error loading matrix: {matrix}", stop=False)
-        utils.error(f"{exc}", stop=False)
-        utils.error(f"valid values: {', '.join(valid)}")
+        #utils.error(f"{exc}", stop=False)
+        utils.error(f"built-in matrices: {', '.join(valid)}")
+        sys.exit()
 
-    return mat
+    return path
 
+
+def show_matrix(matrix):
+    path = matrix_path(matrix)
+    print(open(path).read(), end='')
 
 
 @plac.pos("sequence", "sequences")
 @plac.opt("open_", "gap open penalty", abbrev='o')
 @plac.opt("extend", "gap extend penalty", abbrev='x')
-@plac.opt("matrix", "matrix (default: NUC.4.4 for DNA, BLOSUM62 for PEP)", abbrev='M')
+@plac.opt("matrix", "matrix (default: NUC.4.4 for DNA, BLOSUM62 for PEP)", abbrev='m')
 @plac.opt("output", "output vcf file", abbrev='O', choices=["pairwise", "vcf", "table", "vars", "fasta"])
 @plac.flg("local_", "local alignment", abbrev='L')
 @plac.flg("global_", "local alignment", abbrev='G')
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.opt("type_", "sequence type (nuc, pep)", choices=[DNA, PEP])
+@plac.flg("fasta", "fasta output", abbrev='F')
+@plac.flg("table", "tabular output", abbrev='T')
+@plac.flg("vcf", "vcf output", abbrev='V')
+@plac.flg("vars", "variant table output", abbrev='A')
+@plac.flg("pairwise", "pairwise output", abbrev='P')
 def run(open_=11, extend=1, matrix='', local_=False, global_=False,
-        semiglobal=False, type_='', output='pairwise', *sequences):
+        semiglobal=False, type_='', fasta=False, table=False, vcf=False, vars=False, pairwise=False, *sequences):
+
+    for rec in sequences:
+        if rec.startswith("-"):
+            utils.error(f"unrecognized flag: {rec}")
 
     # Select alignment mode
     if global_:
@@ -184,13 +216,13 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         mode = SEMIGLOBAL_ALIGN
 
     # Select formatting mode
-    if output == 'vcf':
+    if vcf:
         fmt = VCF_FMT
-    elif output == 'vcf':
+    elif table:
         fmt = TABLE_FMT
-    elif output == 'fasta':
+    elif fasta:
         fmt = FASTA_FMT
-    elif output == 'vars':
+    elif vars:
         fmt = VARIANTS_FMT
     else:
         fmt = PAIRWISE_FMT
@@ -215,7 +247,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
 
     # If only matrix is specified print it to the screen.
     if matrix and len(recs) == 0:
-        get_matrix(matrix, show=True)
+        show_matrix(matrix)
         sys.exit()
 
     # Sequences must be present to be aligned.
@@ -229,8 +261,19 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
             utils.error(f"Sequence {rec.id} is too long for this aligner: {len(rec)} > MAXLEN={MAXLEN:,}", stop=False)
             utils.error("We recommend that you use a different software.")
 
-    # The first sequence is rest are the queries
+    # The first sequence is the queries
     query = recs[0]
+
+    if type_:
+        is_dna = type_ == DNA
+    else:
+        is_dna = all_nuc(query.seq)
+
+    # Setting the default matrix
+    if not matrix:
+        matrix = 'NUC.4.4' if is_dna else "BLOSUM62"
+
+    # Other sequences are targets.
     targets = recs[1:]
 
     par = models.Param(
@@ -240,6 +283,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         type=type_,
         mode=mode,
         fmt=fmt,
+        is_dna=is_dna
     )
 
     results = run_aligner(query=query, targets=targets, par=par)
@@ -254,6 +298,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         models.format_fasta(results)
     else:
         models.format_pairwise(results, par=par)
+
 
 if __name__ == '__main__':
     # bio align AGATTACA GATCA
