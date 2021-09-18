@@ -28,6 +28,7 @@ SUB_COMMANDS = dict(
     data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
     align=("biorun.align.run", True, "align sequences"),
     fasta2vcf=("biorun.fasta2vcf.run", True, "convert aligned fasta to VCF"),
+    sra=("biorun.sra.run", True, "search sra data"),
 )
 
 

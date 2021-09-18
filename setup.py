@@ -26,6 +26,7 @@ setup(
         'tqdm>=4.62',
         'plac',
         'mygene',
+        'ffq',
     ],
 
     entry_points={
