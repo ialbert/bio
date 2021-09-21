@@ -1,4 +1,4 @@
-import plac
+from biorun.libs import placlib as plac
 
 from biorun import convert
 

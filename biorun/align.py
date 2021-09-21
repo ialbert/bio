@@ -3,7 +3,7 @@ import string
 import sys
 from itertools import *
 
-import plac
+from biorun.libs import placlib as plac
 
 from . import models
 

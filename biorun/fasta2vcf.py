@@ -1,4 +1,4 @@
-import plac
+from biorun.libs import placlib as plac
 import sys
 from itertools import *
 from biorun import utils

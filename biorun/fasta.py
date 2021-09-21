@@ -1,5 +1,5 @@
 import sys
-import plac
+from biorun.libs import placlib as plac
 import fileinput
 from biorun import convert
 

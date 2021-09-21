@@ -1,7 +1,7 @@
 import json, sys
 from pprint import pprint
 
-import plac
+from biorun.libs import placlib as plac
 
 import mygene
 

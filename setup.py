@@ -24,7 +24,6 @@ setup(
         'biopython >= 1.79',
         'requests',
         'tqdm>=4.62',
-        'plac',
         'mygene',
     ],
 
