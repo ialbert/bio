@@ -19,7 +19,7 @@ echo NC_045512 | bio fetch > sars2.gb
 bio fasta genomes.gb --end  100 > genomes.fa
 
 # Should produce the same output
-cat genomes.gb | bio fasta --end  100 > genomes.fa
+#cat genomes.gb | bio fasta --end  100 > genomes.fa
 
 # Slice the genomes
 bio fasta genomes.gb --end  100  --alias alias.txt > genomes.alias.fa
@@ -52,7 +52,7 @@ bio align GATTACA GATCA --vcf > gattaca.vcf
 bio align align_input.fa --vcf > align_input.vcf
 
 # Run fasta2vcf
-#bio fasta2vcf mafft.fa > mafft.vcf
+bio format mafft.fa > mafft.vcf
 
 # Select S proteins
 bio fasta --gene S --protein  genomes.gb > s.fa
