@@ -138,19 +138,20 @@ def find_variants(query, target):
         # Query starts with insertion
         pos = 1 if pos < 1 else pos
 
-        base = target.seq[idx:idx + size].strip('-')
+        ref = target.seq[idx:idx + size].strip('-')
+
         alt = query.seq[idx:idx + size].strip('-')
 
-        base = str(base)
+        ref = str(ref)
         alt = str(alt)
 
         info = f"TYPE={key}"
 
         if key == SNP:
             # Mismatches printed consecutively
-            for idx, pos, base, alt in elems:
-                name = f"{pos}_{base}_{alt}"
-                value = [target.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
+            for idx, pos, alt, ref in elems:
+                name = f"{pos}_{ref}_{alt}"
+                value = [target.name, str(pos), name, ref, alt, ".", "PASS", info, "GT", "1"]
                 vcfdict[pos] = value
 
 
@@ -162,25 +163,25 @@ def find_variants(query, target):
                 # For insertions the pos does not advance
                 if key == DEL:
                     pos = pos - 1
-                base = target.seq[idx - 1] + base
+                ref = target.seq[idx - 1] + ref
                 alt = query.seq[idx - 1] + alt
             else:
                 # When there is no preceding base the last base must be used
                 lastidx = elems[-1][0] + 1
-                base = base + target.seq[lastidx]
+                ref = ref + target.seq[lastidx]
                 alt = alt + query.seq[lastidx]
 
             alt = alt or '.'
-            base = base or '.'
+            ref = ref or '.'
 
             if key == DEL:
-                suff = len(base[1:]) if len(base) > 10 else base[1:]
+                suff = len(ref[1:]) if len(ref) > 10 else ref[1:]
                 name = f"{pos}_del_{suff}"
             else:
                 suff = len(alt[1:]) if len(alt) > 10 else alt[1:]
                 name = f"{pos}_ins_{suff}"
 
-            value = [target.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
+            value = [target.name, str(pos), name, ref, alt, ".", "PASS", info, "GT", "1"]
             vcfdict[pos] = value
 
     return vcfdict
@@ -188,7 +189,8 @@ def find_variants(query, target):
 
 def format_vcf(alns):
     for aln in alns:
-        vcfdict = find_variants(aln.query, aln.target)
+
+        vcfdict = find_variants(query=aln.query, target=aln.target)
 
         query, target = aln.query, aln.target
 
@@ -226,10 +228,9 @@ def format_variants(alns):
     header = "idx target type pos ref alt"
     print("\t".join(header.split()))
 
-    collect = {}
     for idx, aln in enumerate(alns):
 
-        vcfdict = find_variants(aln.target, aln.query)
+        vcfdict = find_variants(query=aln.query, target=aln.target)
         for value in vcfdict.values():
             name = value[2]
             pos = value[1]
