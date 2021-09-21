@@ -251,9 +251,6 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     """
     global ALIAS
 
-    # Returns the input streams.
-    streams = utils.open_streams(fnames=fnames)
-
     # Generate the ALIAS remapping.
     ALIAS = utils.parse_alias(alias) if alias else {}
 
@@ -283,7 +280,9 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     # Get a stream of
     recs = parser.get_records(fnames)
 
-    # Remap aliases.
+    if len(recs) < 1:
+        utils.error("no sequence records found in data")
+
     recs = map(remapper, recs)
 
     # Should we keep the source

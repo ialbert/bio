@@ -33,8 +33,11 @@ bio fasta genomes.gb --type CDS --translate > translate.fa
 # Extract the proteins.
 bio fasta genomes.gb  --protein > protein.fa
 
-# Stop codons
-bio fasta -s -3 > stop.fa
+# Start codons
+cat cds.fa | bio fasta -e -3 > start.fa
+
+# Last codons
+cat cds.fa | bio fasta -s -3 > stop.fa
 
 # Default alignment.
 bio align GATTACA GATCA > gattaca1.txt
@@ -73,7 +76,7 @@ bio gff genomes.gb > genomes.gff
 bio gff genomes.gb --type CDS > CDS.gff
 
 # Slice the GFF file.
-bio gff -s 300 -e 10k > slice.gff
+bio gff -s 300 -e 10k genomes.gb > slice.gff
 
 # Taxonomy listing.
 bio taxon 117565 -d 5 > taxonomy.txt

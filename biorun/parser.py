@@ -15,6 +15,8 @@ from collections import OrderedDict, defaultdict
 from itertools import *
 from biorun import utils
 
+logger = utils.logger
+
 NUCS = set("ATGC" + 'atgc')
 PEPS = set("ACDEFGHIKLMNPQRSTVWY")
 RNAS = set("AUGC" + 'augc')

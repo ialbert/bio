@@ -1,1 +1,5 @@
 ##gff-version 3
+NC_045512.2	.	mature_protein_region	806	2719	.	+	.	ID=1;Name=mature_protein_region-2;Parent=mature_protein_region-2;color=#CBAEBB
+NC_045512.2	.	mature_protein_region	2720	8554	.	+	.	ID=2;Name=mature_protein_region-3;Parent=mature_protein_region-3;color=#CBAEBB
+NC_045512.2	.	mature_protein_region	806	2719	.	+	.	ID=3;Name=mature_protein_region-17;Parent=mature_protein_region-17;color=#CBAEBB
+NC_045512.2	.	mature_protein_region	2720	8554	.	+	.	ID=4;Name=mature_protein_region-18;Parent=mature_protein_region-18;color=#CBAEBB

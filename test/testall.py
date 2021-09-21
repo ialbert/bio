@@ -66,7 +66,7 @@ def print_diff(expect, result):
     """
     lines1 = expect.splitlines()
     lines2 = result.splitlines()
-    diffs = difflib.unified_diff(lines2, lines1)
+    diffs = difflib.unified_diff(lines1, lines2)
     for diff in diffs:
         print(diff)
 
