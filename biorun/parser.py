@@ -97,6 +97,13 @@ class Peeker:
             for line in self.stream:
                 yield line
 
+    def __next__(self):
+        data = self.buffer.read() or next(self.stream)
+        if not data:
+            raise StopIteration
+        else:
+            return  data
+
 def get_streams(elems):
     """
     Returns streams including stdin.
@@ -138,8 +145,15 @@ def parse_stream(stream):
     """
     Guesses the type of input and parses the stream into a BioPython SeqRecord.
     """
-    first = stream.peek()
-    format = "fasta" if first.startswith(">") else 'genbank'
+    first = stream.peek().strip()
+    
+    if first[0] == '>':
+        format='fasta'
+    elif first[0] =='@':
+        format = 'fastq'
+    else:
+        format = 'genbank'
+    logger.error(f"parsing: {format}")
     recs = SeqIO.parse(stream, format)
     return recs
 
@@ -265,7 +279,6 @@ def get_records(fnames):
     Create a single stream of SeqRecords from multiple sources
     """
     stream = get_peakable_streams(fnames, dynamic=True)
-
 
     reader = map(parse_stream, stream)
     recs = flatten(reader)
