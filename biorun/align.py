@@ -4,6 +4,7 @@ import sys
 from itertools import *
 
 from biorun.libs import placlib as plac
+from biorun import parser
 
 from . import models
 
@@ -49,33 +50,6 @@ def all_nuc(text, limit=1000):
     subs = text[:limit]
     return all(map(is_nuc, subs))
 
-
-def guess_type(text):
-    if all_nuc(text):
-        return NUCLEOTIDE
-    elif all_pep(text):
-        return PEPTIDE
-    else:
-        return None
-
-
-def parse_input(obj, counter):
-    if hasattr(obj, "read", ):
-        # Object may already be a stream
-        recs = SeqIO.parse(obj, "fasta")
-    elif os.path.isfile(obj):
-        # Perhaps it is a filename
-        recs = SeqIO.parse(obj, "fasta")
-    elif guess_type(obj):
-        # Perhaps the sequence comes from command line
-        name = next(counter)
-        name = f"{name}"
-        recs = [SeqRecord(id=name, name=name, description='', seq=Seq(obj))]
-    else:
-        utils.error(f"Invalid file/sequence: {obj}")
-        recs = []
-
-    return list(recs)
 
 
 def safe_abs(value):
@@ -161,6 +135,7 @@ def get_matrix(matrix, show=False):
 @plac.flg("all_", "show all alignments", abbrev='A')
 def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         semiglobal=False, vcf=False, table=False, vars=False, fasta=False, all_=False, *sequences):
+
     # Select alignment mode
     if global_:
         mode = GLOBAL_ALIGN
@@ -171,23 +146,8 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
     else:
         mode = SEMIGLOBAL_ALIGN
 
-    # Input data sources.
-    lines = []
-
-    if not sys.stdin.isatty():
-        lines.append(sys.stdin)
-
-    # Command line will be second in line.
-    lines.extend(sequences)
-
-    # Names sequences that come from command line
-    counter = cycle(string.ascii_lowercase)
-
-    # Records to be aligned
-    recs = []
-    for text in lines:
-        elems = parse_input(text, counter=counter)
-        recs.extend(elems)
+    # Get the sequence records.
+    recs = list(parser.get_records(sequences))
 
     # If only matrix is specified print it to the screen.
     if matrix and len(recs) == 0:

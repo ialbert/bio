@@ -1,6 +1,8 @@
 import re
 import sys
 import json
+
+
 try:
     from Bio import Entrez
 except ImportError as exc:
@@ -159,10 +161,10 @@ def run(db="nuccore", format_="gbwithparts", type_='',  *acc):
     # Detects proteins
     prots =list(map(is_ncbi_protein, ids))
 
-    if not all(prots) or not all(nucs):
+    if any(prots) and any(nucs):
         utils.error(f"input mixes protein and nucleotide entries: {ids}")
 
-    # Fetech the ids
+    # Fetch the ids
     ids = ",".join(ids)
     fetch_ncbi(db=db, rettype=format_, ids=ids)
 

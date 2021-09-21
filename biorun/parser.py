@@ -1,8 +1,16 @@
 import string
 import sys, os, io, operator, functools
-from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
-from Bio.SeqFeature import Reference, CompoundLocation, FeatureLocation
+
+try:
+    from Bio import SeqIO
+    from Bio.SeqRecord import SeqRecord
+    from Bio.SeqFeature import Reference, CompoundLocation, FeatureLocation
+except ImportError as exc:
+    print(f"# Error: {exc}", file=sys.stderr)
+    print(f"# This program requires biopython", file=sys.stderr)
+    print(f"# Install: conda install -y biopython>=1.79", file=sys.stderr)
+    sys.exit(-1)
+
 from collections import OrderedDict, defaultdict
 from itertools import *
 from biorun import utils
@@ -191,30 +199,47 @@ def guess_name(ftype, annot):
 
 
 def record_generator(rec):
+    """
+    Returns a SeqRecord with additional attributes set.
+    """
+    pairs = [(k, json_ready(v)) for (k, v) in rec.annotations.items()]
 
+    rec.annot = dict(pairs)
     rec.type = SOURCE
     rec.strand = None
     rec.start, rec.end = 1, len(rec.seq)
     rec.locs = []
+    rec.anchor = rec.id
     yield rec
 
     for feat in rec.features:
 
+        # The source has already been generated as the first feature
         if feat.type == SOURCE:
             continue
+
+        # Override the feature type.
+        feat.type = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
 
         seq = feat.extract(rec.seq)
 
         # Qualifiers are transformed into annotations.
         pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
-
         annot = dict(pairs)
 
         uid, name, desc = guess_name(ftype=feat.type, annot=annot)
 
         sub = SeqRecord(id=uid, name=name, description=desc, seq=seq)
 
+        sub.annot = annot
+
+        # Remap types to SO terms.
         sub.type = feat.type
+
+        # The anchor for the sequence
+        sub.anchor = rec.id
+
+        #print (feat.type, sub.type)
 
         sub.strand = feat.strand
 
@@ -227,10 +252,21 @@ def record_generator(rec):
         yield sub
 
 
+def get_records(fnames):
+    """
+    Create a single stream of SeqRecords from multiple sources
+    """
+    stream = get_peakable_streams(fnames, dynamic=True)
 
 
-    for feat in rec.features:
-        print (type(feat))
+    reader = map(parse_stream, stream)
+    recs = flatten(reader)
+
+    recs = map(record_generator, recs)
+    recs = flatten(recs)
+
+    return recs
+
 
 def main():
 
