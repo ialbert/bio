@@ -32,8 +32,6 @@ def parse_commands(text, flag=False):
 def run(cmd):
     proc = subprocess.run(cmd, shell=True, stdout=PIPE, stderr=PIPE)
 
-    print (proc)
-    
     if proc.returncode != 0:
         print (proc.stdout.decode("UTF-8"))
         print(proc.stderr.decode("UTF-8"))
@@ -68,7 +66,7 @@ def print_diff(expect, result):
     """
     lines1 = expect.splitlines()
     lines2 = result.splitlines()
-    diffs = difflib.unified_diff(lines1, lines2)
+    diffs = difflib.unified_diff(lines2, lines1)
     for diff in diffs:
         print(diff)
 
