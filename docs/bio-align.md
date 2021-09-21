@@ -1,4 +1,4 @@
-# `bio align`: perform alignments {#bio-align}
+# bio align: perform alignments {#bio-align}
 
 **Note:** alignments in `bio` are primarily designed for exploratory use, for aligning relatively short (up to ~30Kb long sequences), visually investigating the alignments, interacting with the sequences before and after alignment.
 

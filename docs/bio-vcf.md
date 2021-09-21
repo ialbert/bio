@@ -1,4 +1,4 @@
-# `bio fasta2vcf`: generate VCF from aligned FASTA {#bio-fasta2vcf}
+# bio vcf: VCF from aligned FASTA {#bio-vcf}
 
 Note: the inputs for this tool must be so called "aligned" FASTA. The sequences need to arranged to contain gaps in the place of insertions and deletions. For example:
 

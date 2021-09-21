@@ -1,4 +1,4 @@
-# `bio taxon`: show taxonomies {#bio-taxonomy}
+# bio taxon: show taxonomies {#bio-taxonomy}
 
 The `bio` package provides utilities to visualize NCBI taxonomies. See the help with:
 

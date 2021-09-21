@@ -20,7 +20,6 @@ from biorun import VERSION
 #
 SUB_COMMANDS = dict(
     explain=("biorun.ontology.run", False, "explain biological terms"),
-    search=("biorun.search.run", False, "search biological data"),
     fetch=("biorun.fetch.run", True, "download GenBank data"),
     fasta=("biorun.fasta.run", True, "convert GenBank to FASTA"),
     gff=("biorun.gff.run", True, "convert GenBank to GFF"),
@@ -28,7 +27,9 @@ SUB_COMMANDS = dict(
     data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
     align=("biorun.align.run", True, "align sequences"),
     fasta2vcf=("biorun.fasta2vcf.run", True, "convert aligned fasta to VCF"),
-    sra=("biorun.sra.run", True, "search sra data"),
+    sra=("biorun.sra.run", True, "search SRA/GEO data"),
+    mygene=("biorun.mygene.run", False, "connect to mygene interface"),
+
 )
 
 

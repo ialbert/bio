@@ -3,15 +3,15 @@ rmd_files: [
   "bio-install.md",
 
   "bio-part-tasks.md",
-  "bio-explain.md",
-  "bio-search.md",
   "bio-fetch.md",
   "bio-fasta.md",
   "bio-gff.md",
   "bio-align.md",
-  "bio-fasta2vcf.md",
+  "bio-vcf.md",
   "bio-taxonomy.md",
+  "bio-explain.md",
   "bio-meta.md",
+  "bio-mygene.md",
 
   "bio-part-info.md",
 
