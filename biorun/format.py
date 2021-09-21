@@ -5,7 +5,10 @@ from biorun import utils, models, parser
 
 
 @plac.pos("fnames")
-def run(*fnames):
+@plac.opt("start", "start coordinate")
+@plac.opt("end", "end coordinate")
+def run(start='', end='', *fnames):
+
 
     #fname = '../test/data/mafft.fa'
 
@@ -17,6 +20,13 @@ def run(*fnames):
     try:
         query = next(recs)
         target = next(recs)
+
+        # Parse start and end into user friendly numbers.
+        if start or end:
+            start = utils.parse_number(start)
+            end = utils.parse_number(end)
+            query.seq = query.seq[start:end]
+            target.seq = target.seq[start:end]
 
     except StopIteration as exc:
         utils.error(f'Input must have at least two FASTA sequences')

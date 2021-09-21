@@ -18,6 +18,7 @@ from biorun import convert
 @plac.pos("fnames", "input files")
 def run(protein=False, translate=False, revcomp=False, start='1', end='', type_='', id_='', name='', gene='',  alias=None, *fnames):
 
-    convert.run(protein=protein, translate=translate, start=start, end=end, type_=type_, id_=id_, revcomp=revcomp,
+    convert.run(protein=protein, translate=translate, start=start,
+                end=end, type_=type_, id_=id_, revcomp=revcomp,
                 name=name, gene=gene, alias=alias, fasta=True, fnames=fnames)
 
