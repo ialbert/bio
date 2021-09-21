@@ -245,7 +245,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
             target_aln = SeqRecord(id=target.name, name=target.name, description='', seq=seq2)
 
             # Pack all content into the representation.
-            obj = models.Alignment(query=query_aln, target=target_aln)
+            obj = models.Alignment(query=query_aln, target=target_aln, score=aln.score)
 
             # Collect all alignments into a datastructure
             collect.append(obj)

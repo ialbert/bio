@@ -1,6 +1,16 @@
-# bio search: get gene information {#bio-search}
+# bio mygene: get gene information {#bio-mygene}
 
-We have implemented the `bio search` command to facilitate quick explorations of gene information.
+The `bio mygene` command provides command-line based access to the https://mygene.info/ query interface.
+
+The `mygene` service was published in [High-performance web services for querying gene and variant annotation, Genome Research, 2016][mygene] and is an amazingly potent query interface that focuses on returning data rather than web pages.
+
+Note that `bio mygene` is merely a command line convenience function that stands on the shoulders of giants that created the mygene service in the first place.
+
+[mygene]: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-0953-9
+
+## Rationale
+
+We have implemented the `bio mygene` command to facilitate quick explorations of gene information.
 
 For more information on data sources and representations, consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. To install `bio` use:
 
@@ -12,19 +22,9 @@ For more information on data sources and representations, consult [The Biostar H
 
 The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
-## How does this tool work?
-
-The `bio search` command provides command-line based access to the https://mygene.info/ query interface.
-
-The `mygene` service was published in [High-performance web services for querying gene and variant annotation, Genome Research, 2016][mygene] and is an amazingly potent query interface that focuses on returning data rather than web pages.
-
-Note that `bio search` is merely a front-end command line convenience function that stands on the shoulders of giants that created the mygene service in the first place.
-
-[mygene]: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-0953-9
-
 ## Usage example
 
-    bio search HBB --limit 1
+    bio mygene HBB --limit 1
 
 will print:
 
@@ -40,7 +40,7 @@ will print:
 
 The same search for `HBB` will return a lot more data as we add fields to it. Lets focus the search on symbol only `symbol:HBB`  human as species, and request Ensembl annotations:
 
-    bio search symbol:HBB --species human --fields ensembl
+    bio mygene symbol:HBB --species human --fields ensembl
 
 the query will now produce a much larger dataset:
 
@@ -94,7 +94,7 @@ the query will now produce a much larger dataset:
         }
     ]
 
-The output of the `bio search` command is in the JSON (JavaScript Object Notation) format.  JSON is not biology specifc, instead, you can think of it as a generic, lightweight, human readable approach to represent diverse and hierarchical information.
+The output of the `bio mygene` command is in the JSON (JavaScript Object Notation) format.  JSON is not biology specifc, instead, you can think of it as a generic, lightweight, human readable approach to represent diverse and hierarchical information.
 
 * https://en.wikipedia.org/wiki/JSON
 
@@ -106,7 +106,7 @@ The tool called `jq` may be used to extract information from JSON data.
 
 to use `jq` first store the output in a file:
 
-    bio search symbol:HBB --species human --fields ensembl > data.json
+    bio mygene symbol:HBB --species human --fields ensembl > data.json
 
 Then practice the building extraction patterns with the following rules:
 
@@ -162,26 +162,26 @@ There are numerous resources on learning `jq`. Search and find one that suits yo
 Often examples are more useful than words
 
     # Limiting searches
-    bio search HBB --limit 10
+    bio mygene HBB --limit 10
 
     # Adding summary
-    bio search HBB -f summary --limit 1 --species human
+    bio mygene HBB -f summary --limit 1 --species human
 
     # Adding additional fields.
-    bio search symbol:HBB --species human --fields Ensembl,RefSeq
+    bio mygene symbol:HBB --species human --fields Ensembl,RefSeq
 
     # Gene products with the function in human
-    bio search go:0000307 --species human
+    bio mygene go:0000307 --species human
 
     # Text search for a concept.
-    bio search insulin
+    bio mygene insulin
 
     # Genes with insulin in the summary then also print the summary field
-    bio search summary:insulin -f summary
+    bio mygene summary:insulin -f summary
 
     # Find aliases, produces the same output
-    bio search symbol:XRCC2 -f alias --species human
-    bio search alias:SPGF50 -f alias --species human
+    bio mygene symbol:XRCC2 -f alias --species human
+    bio mygene alias:SPGF50 -f alias --species human
 
 ## Additional fields
 

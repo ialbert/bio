@@ -1,10 +1,10 @@
-# `bio data`: obtain viral metadata
+# bio metadata: obtain viral metadata
 
 TODO: Work in progress.
 
 Display metadata on a taxonomical id (with a header):
 
-    bio data 11138 -H | head
+    bio metadata 11138 -H | head
 
 prints:
 

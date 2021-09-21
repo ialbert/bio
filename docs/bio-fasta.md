@@ -1,4 +1,4 @@
-# `bio fasta`: convert to FASTA {#bio-fasta}
+# bio fasta: convert to FASTA {#bio-fasta}
 
 A GenBank file represents sequence information in multiple sections:
 

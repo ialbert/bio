@@ -1,4 +1,4 @@
-# `bio gff`: convert to GFF {#bio-gff}
+# bio gff: convert to GFF {#bio-gff}
 
 ## Building a nicer gene model
 

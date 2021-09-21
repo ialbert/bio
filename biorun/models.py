@@ -9,7 +9,7 @@ class Alignment:
     Represents a pairwise alignment.
     """
 
-    def __init__(self, target: SeqRecord, query: SeqRecord):
+    def __init__(self, target: SeqRecord, query: SeqRecord,score=None):
 
         # Aligned query and target.
         self.query = query
@@ -17,7 +17,7 @@ class Alignment:
 
         # Alignment parameters
         self.ident = self.ins = self.dels = self.mis = 0
-
+        self.score = score
         # Query and target lenghts.
         self.qlen = sum(1 for x in self.query.seq if x != '-')
         self.tlen = sum(1 for x in self.target.seq if x != '-')
@@ -224,9 +224,13 @@ def format_table(alns, sep="\t"):
         print(line)
 
 def format_variants(alns):
-    header = "target query pos len type ref alt"
+
+    header = "idx target query type pos ref alt"
     print("\t".join(header.split()))
-    for aln in alns:
+
+    collect = {}
+    for idx, aln in enumerate(alns):
+
         vcfdict = find_variants(aln.target, aln.query)
         for value in vcfdict.values():
             name = value[2]
@@ -250,7 +254,7 @@ def format_variants(alns):
                 base = '-' * len(alt)
                 size = len(alt)
 
-            data = [aln.target.name, aln.query.name, pos, str(size), info, base, alt, ]
+            data = [str(idx+1), aln.query.name, aln.target.name, info, pos, base, alt, ]
             print("\t".join(data))
 
 def format_pairwise(alns, par=None, width=81):
@@ -267,7 +271,8 @@ def format_pairwise(alns, par=None, width=81):
         ]
 
         if par:
-            elem = f"# {par.mode}: gap open={par.gap_open} extend={par.gap_extend}  matrix={par.matrix}"
+            score = f"score={aln.score} " if aln.score is not None else ''
+            elem = f"# {par.mode}: {score}gap open={par.gap_open} extend={par.gap_extend}  matrix={par.matrix}"
             out.append(elem)
 
         out.append("")

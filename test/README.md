@@ -52,3 +52,7 @@ Complicated GO term:
     bio --define intergenic mrna trans splicing
     
 
+    # Multiple equally scoring alignments
+    bio fasta genomes.gb --gene S -s 1432 --end 1500 | bio align
+
+

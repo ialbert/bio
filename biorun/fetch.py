@@ -1,6 +1,6 @@
 import re
 import sys
-
+import json
 try:
     from Bio import Entrez
 except ImportError as exc:
@@ -9,18 +9,20 @@ except ImportError as exc:
     print(f"# Install: conda install -y biopython>=1.79", file=sys.stderr)
     sys.exit(-1)
 
+try:
+    from ffq.ffq import ffq_doi, ffq_gse, ffq_run, ffq_study
+except ImportError as exc:
+    print(f"# Error: {exc}", file=sys.stderr)
+
 from biorun.libs import placlib as plac
 from tqdm import tqdm
 from biorun import utils
 from urllib.error import HTTPError
+import requests
 
 Entrez.email = 'foo@foo.com'
 
-NCBI_PATT = r'(?P<letters>[a-zA-Z]+)(?P<under>_?)(?P<digits>\d+)(\.(?P<version>\d+))?'
-NCBI_PATT = re.compile(NCBI_PATT)
 
-ENSEMBL_PATT = r'(?P<letters>[a-zA-Z]+)(?P<digits>\d+)(\.(?P<version>\d+))?'
-ENSEMBL_PATT = re.compile(ENSEMBL_PATT)
 #
 # Genbank and Refseq accession numbers
 #
@@ -28,25 +30,35 @@ ENSEMBL_PATT = re.compile(ENSEMBL_PATT)
 # https://www.ncbi.nlm.nih.gov/books/NBK21091/table/ch18.T.refseq_accession_numbers_and_mole/?report=objectonly/
 #
 
-
-#
 # https://rest.ensembl.org/sequence/id/ENST00000288602?content-type=text/x-fasta;type=cdna
 
+
 def parse_ensmbl(text):
-    m = NCBI_PATT.search(text)
+    patt = r'(?P<letters>[a-zA-Z]+)(?P<digits>\d+)(\.(?P<version>\d+))?'
+    patt = re.compile(patt)
+    m = patt.search(text)
     code = m.group("letters") if m else ''
     digits = m.group("digits") if m else ''
     version = m.group("version") if m else ''
     return code, digits, version
 
-
 def parse_ncbi(text):
-    m = NCBI_PATT.search(text)
+    patt = r'(?P<letters>[a-zA-Z]+)(?P<under>_?)(?P<digits>\d+)(\.(?P<version>\d+))?'
+    patt = re.compile(patt)
+    m = patt.search(text)
     code = m.group("letters") if m else ''
     digits = m.group("digits") if m else ''
     refseq = m.group("under") if m else ''
     version = m.group("version") if m else ''
-    return code, digits, refseq
+    return code, digits, refseq, version
+
+def is_srr(text):
+    patt = re.compile("(S|E)RR\d+")
+    return bool(patt.search(text))
+
+def is_bioproject(text):
+    patt = re.compile("PRJN\d+")
+    return bool(patt.search(text))
 
 def is_ensembl(text):
     code, digits, version = parse_ensmbl(text)
@@ -58,7 +70,7 @@ def is_ncbi_nucleotide(text):
     """
     Returns true of text matches NCBI nucleotides.
     """
-    code, digits, refseq = parse_ncbi(text)
+    code, digits, refseq, version = parse_ncbi(text)
     if refseq:
         cond = code in ["AC", "NC", "NG", "NT", "NW", "NZ", "NM", "XM", "XR"]
     else:
@@ -71,7 +83,7 @@ def is_ncbi_protein(text):
     """
     Returns true of text matches NCBI protein sequences
     """
-    code, digits, refseq = parse_ncbi(text)
+    code, digits, refseq, version = parse_ncbi(text)
     if refseq:
         cond = code in ["AP", "NP", "YP", "XP", "WP"]
     else:
@@ -80,7 +92,8 @@ def is_ncbi_protein(text):
     return cond
 
 
-def efetch(ids, db, rettype='gbwithparts', retmode='text'):
+def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text'):
+
     try:
         stream = Entrez.efetch(db=db, id=ids, rettype=rettype, retmode=retmode)
         stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5, leave=False)
@@ -94,7 +107,7 @@ def efetch(ids, db, rettype='gbwithparts', retmode='text'):
 
 
 def fetch_ensembl(ids, ftype='genomic'):
-    import requests
+
 
     ftype = 'genomic' if not ftype else ftype
 
@@ -112,7 +125,6 @@ def fetch_ensembl(ids, ftype='genomic'):
 
         print(r.text)
 
-
 @plac.pos("acc", "accession numbers")
 @plac.opt("db", "database", choices=["nuccore", "protein"])
 @plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb"])
@@ -126,6 +138,15 @@ def run(db="nuccore", format_="gbwithparts", type_='',  *acc):
         lines = utils.read_lines(sys.stdin, sep=None)
         ids.extend(lines)
 
+    # Dealing with SRR numbers
+    srr = list(map(is_srr, ids))
+    if all(srr):
+        res = map(ffq_run, ids)
+        res = list(res)
+        text = json.dumps(res, indent=4)
+        print(text)
+        return
+
     # Dealing with Ensembl
     ensmbl = list(map(is_ensembl, ids))
     if all(ensmbl):
@@ -138,21 +159,12 @@ def run(db="nuccore", format_="gbwithparts", type_='',  *acc):
     # Detects proteins
     prots =list(map(is_ncbi_protein, ids))
 
-    # Swap to protins
-    if any(prots):
-        db = 'protein'
-        if not all (prots):
-            utils.error(f"invalid protein id in list {ids}")
-    else:
-        if not all(nucs):
-            utils.error(f"invalid nucleotide id in list {ids}")
+    if not all(prots) or not all(nucs):
+        utils.error(f"input mixes protein and nucleotide entries: {ids}")
 
+    # Fetech the ids
     ids = ",".join(ids)
-
-    if ids:
-        efetch(db=db, rettype=format_, ids=ids)
-    else:
-        utils.error("no accession numbers were specified")
+    fetch_ncbi(db=db, rettype=format_, ids=ids)
 
 
 if __name__ == '__main__':
