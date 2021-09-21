@@ -32,6 +32,8 @@ def parse_commands(text, flag=False):
 def run(cmd):
     proc = subprocess.run(cmd, shell=True, stdout=PIPE, stderr=PIPE)
 
+    print (proc)
+    
     if proc.returncode != 0:
         print (proc.stdout.decode("UTF-8"))
         print(proc.stderr.decode("UTF-8"))
@@ -95,6 +97,7 @@ def main():
             sys.exit(1)
 
         if expect != result:
+            print(f"running: {cmd}")
             print_diff(expect=expect, result=result)
             print (f"\n\n(cd test/data && {cmd})\n")
             sys.exit(1)
