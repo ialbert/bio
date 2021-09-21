@@ -26,8 +26,7 @@ SUB_COMMANDS = dict(
     taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
     data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
     align=("biorun.align.run", True, "align sequences"),
-    fasta2vcf=("biorun.fasta2vcf.run", True, "convert aligned fasta to VCF"),
-    sra=("biorun.sra.run", True, "search SRA/GEO data"),
+    format=("biorun.format.run", True, "convert aligned fasta to VCF"),
     mygene=("biorun.mygene.run", False, "connect to mygene interface"),
 
 )

@@ -106,13 +106,16 @@ def get_streams(elems):
         if os.path.isfile(fname):
             yield open(fname)
         else:
-            utils.error(f"file not found: {fname}")
+            if fname.startswith("--"):
+                utils.error(f"invalid parameter: {fname}")
+            else:
+                utils.error(f"file not found: {fname}")
 
 def get_peakable_streams(elems, dynamic=False):
     """
     Returns peekable streams. Can also generate dynamic streams from text.
     """
-    label = chain(string.ascii_lowercase)
+    label = count(1)
 
     if not sys.stdin.isatty():
         yield Peeker(sys.stdin)
@@ -121,10 +124,13 @@ def get_peakable_streams(elems, dynamic=False):
         if os.path.isfile(fname):
             yield Peeker(open(fname))
         elif dynamic and is_sequence(fname):
-            stream = io.StringIO(f">{next(label)}\n{fname}")
+            stream = io.StringIO(f">seq{next(label)}\n{fname}")
             yield Peeker(stream)
         else:
-            utils.error(f"file not found: {fname}")
+            if fname.startswith("--"):
+                utils.error(f"invalid parameter: {fname}")
+            else:
+                utils.error(f"file not found: {fname}")
 
 def parse_stream(stream):
     """

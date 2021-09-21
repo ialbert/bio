@@ -1,7 +1,6 @@
+import json
 import re
 import sys
-import json
-
 
 try:
     from Bio import Entrez
@@ -10,11 +9,6 @@ except ImportError as exc:
     print(f"# This program requires biopython", file=sys.stderr)
     print(f"# Install: conda install -y biopython>=1.79", file=sys.stderr)
     sys.exit(-1)
-
-try:
-    from ffq.ffq import ffq_doi, ffq_gse, ffq_run, ffq_study
-except ImportError as exc:
-    print(f"# Error: {exc}", file=sys.stderr)
 
 from biorun.libs import placlib as plac
 from tqdm import tqdm
@@ -44,6 +38,7 @@ def parse_ensmbl(text):
     version = m.group("version") if m else ''
     return code, digits, version
 
+
 def parse_ncbi(text):
     patt = r'(?P<letters>[a-zA-Z]+)(?P<under>_?)(?P<digits>\d+)(\.(?P<version>\d+))?'
     patt = re.compile(patt)
@@ -54,19 +49,23 @@ def parse_ncbi(text):
     version = m.group("version") if m else ''
     return code, digits, refseq, version
 
+
 def is_srr(text):
     patt = re.compile("(S|E)RR\d+")
     return bool(patt.search(text))
 
+
 def is_bioproject(text):
-    patt = re.compile("PRJN\d+")
+    patt = re.compile("PRJNA\d+")
     return bool(patt.search(text))
+
 
 def is_ensembl(text):
     code, digits, version = parse_ensmbl(text)
-    cond = code in ( "ENST", "ENSG", "ENSP", "ENSE")
-    cond = cond and len(digits)>8 and digits.startswith('0')
+    cond = code in ("ENST", "ENSG", "ENSP", "ENSE")
+    cond = cond and len(digits) > 8 and digits.startswith('0')
     return cond
+
 
 def is_ncbi_nucleotide(text):
     """
@@ -81,6 +80,7 @@ def is_ncbi_nucleotide(text):
 
     return cond
 
+
 def is_ncbi_protein(text):
     """
     Returns true of text matches NCBI protein sequences
@@ -94,13 +94,39 @@ def is_ncbi_protein(text):
     return cond
 
 
+def fetch_runinfo(ids, db, rettype='runinfo', retmode='csv', limit=None):
+
+    ids = ",".join(ids) if type(ids) == list else ids
+
+    try:
+        search = Entrez.esearch(db=db, term=ids, usehistory="y")
+        results= Entrez.read(search)
+        webenv = results["WebEnv"]
+        query_key = results["QueryKey"]
+        stream = Entrez.efetch(db=db, webenv=webenv, query_key=query_key, retmax=limit, rettype=rettype, retmode=retmode)
+    except HTTPError as exc:
+        utils.error(f"Accession or database may be incorrect: {ids}, {db}, {rettype}, {retmode}: {exc}")
+
+    # The output of this command can repeat the header and may contain
+    # empty lines. So fixing up NCBIs inconsistency here.
+    header = next(stream)
+    print (header, end='')
+
+    stream = filter(lambda x: x.strip(), stream)
+    stream = filter(lambda x: not x.startswith("Run"), stream)
+    for line in stream:
+        print(line, end='')
+
+
 def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text'):
+
+    ids = ",".join(ids) if type(ids) == list else ids
 
     try:
         stream = Entrez.efetch(db=db, id=ids, rettype=rettype, retmode=retmode)
         stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5, leave=False)
     except HTTPError as exc:
-        utils.error(f"Accession or database may be incorrect: {exc}")
+        utils.error(f"Accession or database may be incorrect: {ids}, {db}, {rettype}, {retmode}: {exc}")
 
     for line in stream:
         print(line, end='')
@@ -109,8 +135,6 @@ def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text'):
 
 
 def fetch_ensembl(ids, ftype='genomic'):
-
-
     ftype = 'genomic' if not ftype else ftype
 
     server = "https://rest.ensembl.org"
@@ -127,11 +151,13 @@ def fetch_ensembl(ids, ftype='genomic'):
 
         print(r.text)
 
+
 @plac.pos("acc", "accession numbers")
 @plac.opt("db", "database", choices=["nuccore", "protein"])
 @plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb"])
 @plac.opt("type_", "get CDS/CDNA (Ensembl only)")
-def run(db="nuccore", format_="gbwithparts", type_='',  *acc):
+@plac.opt("limit", "limit results")
+def run(db="nuccore", format_="gbwithparts", type_='', limit=None, *acc):
     ids = []
     for num in acc:
         ids.extend(num.split(","))
@@ -143,10 +169,13 @@ def run(db="nuccore", format_="gbwithparts", type_='',  *acc):
     # Dealing with SRR numbers
     srr = list(map(is_srr, ids))
     if all(srr):
-        res = map(ffq_run, ids)
-        res = list(res)
-        text = json.dumps(res, indent=4)
-        print(text)
+        fetch_runinfo(db='sra', ids=ids, limit=limit)
+        return
+
+    # Dealing with PRJN numbers
+    prn = list(map(is_bioproject, ids))
+    if all(prn):
+        fetch_runinfo(db='sra', ids=ids, limit=limit)
         return
 
     # Dealing with Ensembl
@@ -159,7 +188,7 @@ def run(db="nuccore", format_="gbwithparts", type_='',  *acc):
     nucs = list(map(is_ncbi_nucleotide, ids))
 
     # Detects proteins
-    prots =list(map(is_ncbi_protein, ids))
+    prots = list(map(is_ncbi_protein, ids))
 
     if any(prots) and any(nucs):
         utils.error(f"input mixes protein and nucleotide entries: {ids}")

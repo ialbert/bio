@@ -1,15 +1,16 @@
 import sys
 from itertools import *
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
+
 from Bio import SeqIO
+from Bio.SeqRecord import SeqRecord
+
 
 class Alignment:
     """
     Represents a pairwise alignment.
     """
 
-    def __init__(self, target: SeqRecord, query: SeqRecord,score=None):
+    def __init__(self, target: SeqRecord, query: SeqRecord, score=None):
 
         # Aligned query and target.
         self.query = query
@@ -33,13 +34,11 @@ class Alignment:
             elif a != b:
                 self.mis += 1
 
-
         # Percent identity (BLAST identity)
         # https://lh3.github.io/2018/11/25/on-the-definition-of-sequence-identity
         self.pident = self.ident / (self.ident + self.mis + self.dels + self.ins) * 100
 
         self.alen = len(self.target.seq)
-
 
 
 class Param:
@@ -58,10 +57,10 @@ class Param:
         self.__dict__.update(kwds)
 
 
-
 MATCH, SNP, INS, DEL = 'M', 'SNP', 'INS', 'DEL'
 
-def find_variants(ref, tgt):
+
+def find_variants(query, target):
     """
     Takes two aligned sequences and tabulates what variants can be found at a given position.
     This is the trickiest to get right ... mostly works but may still have bugs.
@@ -69,7 +68,7 @@ def find_variants(ref, tgt):
     Returns a dictionary keyed by position where each position describes the  variant as a tuple.
     """
 
-    stream = zip(count(), ref.seq, tgt.seq)
+    stream = zip(count(), query.seq, target.seq, )
 
     # stream = islice(stream, 50000)
 
@@ -88,13 +87,13 @@ def find_variants(ref, tgt):
             pos += 1
             op = MATCH
 
-        elif b == '-':
-            # Deletion from query.
+        elif a == '-':
+            # Insertion into query
             pos += 1
             op = DEL
 
-        elif a == '-':
-            # Insertion into query
+        elif b == '-':
+            # Deletion from query.
             op = INS
 
         elif a != b:
@@ -139,8 +138,8 @@ def find_variants(ref, tgt):
         # Query starts with insertion
         pos = 1 if pos < 1 else pos
 
-        base = ref.seq[idx:idx + size].strip('-')
-        alt = tgt.seq[idx:idx + size].strip('-')
+        base = target.seq[idx:idx + size].strip('-')
+        alt = query.seq[idx:idx + size].strip('-')
 
         base = str(base)
         alt = str(alt)
@@ -151,7 +150,7 @@ def find_variants(ref, tgt):
             # Mismatches printed consecutively
             for idx, pos, base, alt in elems:
                 name = f"{pos}_{base}_{alt}"
-                value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
+                value = [target.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
                 vcfdict[pos] = value
 
 
@@ -163,13 +162,13 @@ def find_variants(ref, tgt):
                 # For insertions the pos does not advance
                 if key == DEL:
                     pos = pos - 1
-                base = ref.seq[idx - 1] + base
-                alt = tgt.seq[idx - 1] + alt
+                base = target.seq[idx - 1] + base
+                alt = query.seq[idx - 1] + alt
             else:
                 # When there is no preceding base the last base must be used
                 lastidx = elems[-1][0] + 1
-                base = base + ref.seq[lastidx]
-                alt = alt + tgt.seq[lastidx]
+                base = base + target.seq[lastidx]
+                alt = alt + query.seq[lastidx]
 
             alt = alt or '.'
             base = base or '.'
@@ -181,7 +180,7 @@ def find_variants(ref, tgt):
                 suff = len(alt[1:]) if len(alt) > 10 else alt[1:]
                 name = f"{pos}_ins_{suff}"
 
-            value = [ref.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
+            value = [target.name, str(pos), name, base, alt, ".", "PASS", info, "GT", "1"]
             vcfdict[pos] = value
 
     return vcfdict
@@ -189,15 +188,15 @@ def find_variants(ref, tgt):
 
 def format_vcf(alns):
     for aln in alns:
-        vcfdict = find_variants(aln.target, aln.query)
+        vcfdict = find_variants(aln.query, aln.target)
 
-        ref, query = aln.target, aln.query
+        query, target = aln.query, aln.target
 
         print('##fileformat=VCFv4.2')
         print('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
         print('##FILTER=<ID=PASS,Description="All filters passed">')
         print('##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">')
-        print(f'##contig=<ID={ref.name},length={len(ref.seq.strip("-"))},assembly={ref.name}>')
+        print(f'##contig=<ID={target.name},length={len(target.seq.strip("-"))},assembly={target.name}>')
         print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{query.name}")
 
         for value in vcfdict.values():
@@ -205,10 +204,9 @@ def format_vcf(alns):
 
 
 def format_fasta(alns):
-
     for aln in alns:
-
         SeqIO.write([aln.query, aln.target], sys.stdout, "fasta")
+
 
 def format_table(alns, sep="\t"):
     header = "target query pident len match mism ins del"
@@ -223,9 +221,9 @@ def format_table(alns, sep="\t"):
         line = sep.join(data)
         print(line)
 
-def format_variants(alns):
 
-    header = "idx target query type pos ref alt"
+def format_variants(alns):
+    header = "idx target type pos ref alt"
     print("\t".join(header.split()))
 
     collect = {}
@@ -254,8 +252,9 @@ def format_variants(alns):
                 base = '-' * len(alt)
                 size = len(alt)
 
-            data = [str(idx+1), aln.query.name, aln.target.name, info, pos, base, alt, ]
+            data = [str(idx + 1), aln.target.name, info, pos, base, alt, ]
             print("\t".join(data))
+
 
 def format_pairwise(alns, par=None, width=81):
     """
@@ -299,4 +298,3 @@ def format_pairwise(alns, par=None, width=81):
             out.append("")
 
         print("\n".join(out))
-

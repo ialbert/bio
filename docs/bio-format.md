@@ -1,6 +1,6 @@
-# bio vcf: VCF from aligned FASTA {#bio-vcf}
+# bio format: summarize alignments {#bio-format}
 
-Note: the inputs for this tool must be so called "aligned" FASTA. The sequences need to arranged to contain gaps in the place of insertions and deletions. For example:
+Note: the inputs for this tool must be so in the so called "aligned" FASTA. The sequences need to arranged to contain gaps in the places of insertions and deletions. For example:
 
 
     >seq1
@@ -11,7 +11,6 @@ Note: the inputs for this tool must be so called "aligned" FASTA. The sequences 
 Many tools can generate such alignments.
 
     mamba install mafft
-
 
 ## Usage example
 

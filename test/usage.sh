@@ -102,3 +102,6 @@ comm.py -2 file1.txt file2.txt > comm2.txt
 cat file1.txt file2.txt | uniq.py -d ',' > uniq0.txt
 cat file1.txt file2.txt | uniq.py -f 2 -d ',' > uniq1.txt
 cat file1.txt file2.txt | uniq.py -c -f 2 -d ',' > uniq3.txt
+
+# Get data from SRA
+bio fetch SRR1972976 > srr.txt

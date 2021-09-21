@@ -1,8 +1,7 @@
 from biorun.libs import placlib as plac
 import sys
 from itertools import *
-from biorun import utils
-from biorun import align
+from biorun import utils, models, parser
 
 
 @plac.pos("fnames")
@@ -10,33 +9,33 @@ def run(*fnames):
 
     #fname = '../test/data/mafft.fa'
 
-    # Read all input streams.
-    streams = utils.open_streams(fnames=fnames)
-
-    # Concatenate multiple streams into a single input.
-    stream = utils.concat_stream(streams)
-
     # Parse the input
-    recs = utils.fasta_parser(stream)
+    recs = parser.get_records(fnames)
+
+    recs = iter(recs)
 
     try:
-        ref = next(recs)
         query = next(recs)
+        target = next(recs)
+
     except StopIteration as exc:
         utils.error(f'Input must have at least two FASTA sequences')
         sys.exit(1)
 
-    vcfdict = align.find_variants(ref, query)
+    vcfdict = models.find_variants(query, target)
 
     print('##fileformat=VCFv4.2')
     print('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
     print('##FILTER=<ID=PASS,Description="All filters passed">')
     print('##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">')
-    print(f'##contig=<ID={ref.name},length={len(ref.seq.strip("-"))},assembly={ref.name}>')
+    print(f'##contig=<ID={target.name},length={len(target.seq.strip("-"))},assembly={target.name}>')
     print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{query.name}")
 
     for value in vcfdict.values():
         print("\t".join(value))
+
+    if len(target)!=len(query):
+        utils.error(f"# length of query and target do not match: {len(query)}, {len(target)}")
 
 if __name__ == '__main__':
     plac.call(run)

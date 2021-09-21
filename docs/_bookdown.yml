@@ -7,7 +7,7 @@ rmd_files: [
   "bio-fasta.md",
   "bio-gff.md",
   "bio-align.md",
-  "bio-vcf.md",
+  "bio-format.md",
   "bio-taxonomy.md",
   "bio-explain.md",
   "bio-meta.md",

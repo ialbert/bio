@@ -85,9 +85,15 @@ def main():
 
     for cmd in cmds:
         fname = cmd.split(">")[1].strip()
-        run(cmd)
-        result = open(join(RUN_DIR, fname)).read()
-        expect = open(join(DATA_DIR, fname)).read()
+        try:
+            run(cmd)
+            result = open(join(RUN_DIR, fname)).read()
+            expect = open(join(DATA_DIR, fname)).read()
+        except Exception as exc:
+            print(f"\n\n(cd test/data && {cmd})\n")
+            print(f"*** error: {exc}")
+            sys.exit(1)
+
         if expect != result:
             print_diff(expect=expect, result=result)
             print (f"\n\n(cd test/data && {cmd})\n")
