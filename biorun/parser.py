@@ -2,7 +2,8 @@ import string
 import sys, os, io, operator, functools
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
-
+from Bio.SeqFeature import Reference, CompoundLocation, FeatureLocation
+from collections import OrderedDict, defaultdict
 from itertools import *
 from biorun import utils
 
@@ -19,6 +20,12 @@ SEQUENCE_ONTOLOGY = {
     "3'UTR": "three_prime_UTR",
     "mat_peptide": "mature_protein_region",
 }
+
+
+counter = count(1)
+
+UNIQUE = defaultdict(int)
+
 
 
 def is_nuc(c):
@@ -124,19 +131,100 @@ def flatten(nested):
     return functools.reduce(operator.iconcat, nested, [])
 
 
-def generate(rec):
+def json_ready(value):
+    """
+    Recursively serializes values to types that can be turned into JSON.
+    """
 
-    print(type(rec))
+    # The type of of the incoming value.
+    curr_type = type(value)
+
+    # Reference types will be dictionaries.
+    if curr_type == Reference:
+        return dict(title=value.title, authors=value.authors, journal=value.journal, pubmed_id=value.pubmed_id)
+
+    # Serialize each element of the list.
+    if curr_type == list:
+        return [json_ready(x) for x in value]
+
+    # Serialize the values of an Ordered dictionary.
+    if curr_type == OrderedDict:
+        return dict((k, json_ready(v)) for (k, v) in value.items())
+
+    return value
+
+def next_count(ftype):
+    UNIQUE[ftype] += 1
+    return f'{ftype}-{UNIQUE[ftype]}'
+
+def first(data, key, default=""):
+    # First element of a list value that is stored in a dictionary by a key.
+    return data.get(key, [default])[0]
+
+
+def guess_name(ftype, annot):
+    """
+    Attempts to generate an unique id name for a BioPython feature
+    """
+    uid = desc = ''
+
+    if ftype == 'gene':
+        name = first(annot, "gene")
+        desc = first(annot, "locus_tag")
+    elif ftype == 'CDS':
+        name = first(annot, "protein_id")
+        desc = first(annot, "product")
+    elif ftype == 'mRNA':
+        name = first(annot, "transcript_id")
+        desc = ftype
+    elif ftype == "exon":
+        name = first(annot, "gene")
+        uid = next_count(ftype)
+    else:
+        name = next_count(ftype)
+        desc = first(annot, "product")
+
+    desc = f"{ftype} {desc}"
+    name = name or next_count(f"unknown-{ftype}")
+    uid = uid or name
+    return uid, name, desc
+
+
+def record_generator(rec):
 
     rec.type = SOURCE
     rec.strand = None
     rec.start, rec.end = 1, len(rec.seq)
-
+    rec.locs = []
     yield rec
 
-    #for feat in rec.features:
-    #
-    #    yield rec
+    for feat in rec.features:
+
+        if feat.type == SOURCE:
+            continue
+
+        seq = feat.extract(rec.seq)
+
+        # Qualifiers are transformed into annotations.
+        pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
+
+        annot = dict(pairs)
+
+        uid, name, desc = guess_name(ftype=feat.type, annot=annot)
+
+        sub = SeqRecord(id=uid, name=name, description=desc, seq=seq)
+
+        sub.type = feat.type
+
+        sub.strand = feat.strand
+
+        sub.start, sub.end = int(feat.location.start) + 1, int(feat.location.end)
+
+        # Store the locations.
+        sub.locs = [(loc.start+1, loc.end, loc.strand) for loc in
+                          feat.location.parts] if feat is not None else []
+
+        yield sub
 
 
 
@@ -150,18 +238,13 @@ def main():
 
     stream = get_peakable_streams(fnames, dynamic=True)
     reader = map(parse_stream, stream)
-
-    # Flatten all records into a list.
     recs = flatten(reader)
 
-    print (recs)
-
-    recs = map(generate, recs)
-
+    recs = map(record_generator, recs)
     recs = flatten(recs)
 
     for rec in recs:
-        print (rec.type)
+        print (rec.name, rec.type)
 
 if __name__ == '__main__':
     main()
