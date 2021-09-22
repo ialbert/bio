@@ -1,12 +1,6 @@
 # bio fetch: download data {#bio-fetch}
 
-We have implemented the `bio fetch` command to facilitate data download from GenBank, SRA and Ensembl. Some of the fetch commands  build upon or directly rely on functionality already present in other tools such as Entrez Direct:
-
-* [Entrez Direct: E-utilities on the Unix Command Line][entrez-direct]
-
-If you need additional functionality beyond of what `bio fetch` offers see the end of the page for a list of alternatives.
-
-[entrez-direct]: https://www.ncbi.nlm.nih.gov/books/NBK179288/
+We have implemented the `bio fetch` command to facilitate data download from GenBank, Ensembl and other sources.  If you need additional functionality beyond of what `bio fetch` offers see the end of the page for a list of alternatives.
 
 For more information on data sources and representations, consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. To install `bio` use:
 
@@ -20,7 +14,7 @@ The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 ## Rationale
 
-`bio fetch` was written to provide a simpler data access. Since in most cases the accession numbers already uniquely define the resource we can implement a tool that bypasses the additional configuration that official data sources demand. Note how much simpler the following is:
+`bio fetch` was written to provide simpler data access. Since in most cases the accession numbers uniquely define the resource, `bio fetch` automatically resolves the destination and downloads data of the most appropriate type. For example, the:
 
     # Obtains nucleotidedata from GenBank
     bio fetch NC_045512
@@ -39,30 +33,28 @@ The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 ## Fetch data from GenBank
 
-Get Genbank nucleotides by accession number
+To get a Genbank nucleotides by accession number run:
 
 	bio fetch NC_045512 | head
 
-`fetch` automatically recognizes protein ids and connects to protein database, no further configuration is needed:
+`fetch` automatically recognizes protein accessions and will connect to protein database, no further configuration is needed, like so
 
+    # This command download a protein sequence.
 	bio fetch YP_009724390 | head
 
-You may also list multiple accession numbers:
+You may also list multiple accession numbers at once:
 
     bio fetch NC_045512 MN996532 > genomes.gb
 
 For more advanced command line data access options to NCBI see Entrez Direct
 
-[bh-entrez]: https://www.biostarhandbook.com/automating-access-to-ncbi.html
-[entrez-direct]: https://www.ncbi.nlm.nih.gov/books/NBK179288/
-
 * [Biostar Handbook: Automating access to NCBI][bh-entrez]
-* [Entrez Direct: E-utilities on the Unix Command Line][entrez-direct]
 
+[bh-entrez]: https://www.biostarhandbook.com/automating-access-to-ncbi.html
 
 ## Fetch data from Ensembl
 
-`bio fetch` recognizes Ensemble gene and transcript names (ENSG, ENST) and will automatically connect to the Ensembl REST API:
+`bio fetch` recognizes Ensemble accessions (ENSG, ENST) and will automatically connect to the Ensembl REST API:
 
 	# Ensenble gene
     bio fetch ENSG00000157764 | head
@@ -79,7 +71,7 @@ For more advanced command line data access options to NCBI see Entrez Direct
     # Transcript data as protein
     bio fetch ENST00000288602 --type protein | head
 
-For more information see the Ensembl REST API:
+These commands fetch data in FASTA formats. For more information see the Ensembl REST API:
 
 * https://rest.ensembl.org/
 
@@ -99,7 +91,6 @@ will produce the comma separated output:
     SRR1972976,2015-04-14 13:53:37,2015-04-14 13:48:38,8345287,1685747974,8345287,202,997,,https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-6/SRR1972976/SRR1972976.1,SRX994253,W220.0.l1,RNA-Seq,cDNA,TRANSCRIPTOMIC,PAIRED,0,0,ILLUMINA,Illumina HiSeq 2500,SRP045416,PRJNA257197,2,257197,SRS908478,SAMN03253746,simple,186538,Zaire ebolavirus,W220.0,,,,,,,no,,,,,BI,SRA178666,,public,6A26DBAB1096535FCB94FCE9E1AE8AD8,FB20A0391119E532EA03F374A16EB508
 
 Use `csvcut` to select columns of interest:
-
 
     bio fetch PRJNA257197 --limit 1 | csvcut -c Run,Platform,spots,avgLength
 
@@ -131,15 +122,14 @@ the command `bio fetch SRR1972976` is equivalent to running
 
 ## Tools with similar utility {#fetch_similar}
 
-`bio fetch` is primarily a convenience function that simplifies the use of entrez in certain simple and well defined cases. For all other cases please consult the documentation for Entrez Direct:
-
-* [Entrez Direct: E-utilities on the Unix Command Line][entrez-direct]
-
+`bio fetch` is primarily a convenience function that simplifies the use of Entrez and ENA in certain simple and well defined cases.
 
 See also the related tools that may have expanded functionality:
 
-* [ffq: Fetch run information from the European Nucleotide Archive (ENA)][ffq]
+* [Entrez Direct: E-utilities on the Unix Command Line][entrez-direct]
 * [enaBrowserTools: interface with the ENA web services to download data from ENA][ena]
+* [ffq: Fetch run information from the European Nucleotide Archive (ENA)][ffq]
 
 [ffq]: https://github.com/pachterlab/ffq
 [ena]: https://github.com/enasequence/enaBrowserTools
+[entrez-direct]: https://www.ncbi.nlm.nih.gov/books/NBK179288/
