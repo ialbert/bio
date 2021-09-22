@@ -127,10 +127,12 @@ def get_peakable_streams(elems, dynamic=False):
     label = count(1)
 
     if not sys.stdin.isatty():
+        logger.debug(f"stdin detected")
         yield Peeker(sys.stdin)
 
     for fname in elems:
         if os.path.isfile(fname):
+            logger.debug(f"opening: {fname}")
             yield Peeker(open(fname))
         elif dynamic and is_sequence(fname):
             stream = io.StringIO(f">seq{next(label)}\n{fname}")
@@ -146,14 +148,14 @@ def parse_stream(stream):
     Guesses the type of input and parses the stream into a BioPython SeqRecord.
     """
     first = stream.peek().strip()
-    
-    if first[0] == '>':
+    start = first[0] if first else ''
+    if start == '>':
         format='fasta'
-    elif first[0] =='@':
+    elif start =='@':
         format = 'fastq'
     else:
         format = 'genbank'
-    logger.error(f"parsing: {format}")
+    logger.debug(f"parsing: {format}")
     recs = SeqIO.parse(stream, format)
     return recs
 

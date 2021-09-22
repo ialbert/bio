@@ -3,6 +3,7 @@ The main job runner. Register additional functions here.
 """
 
 import importlib
+import logging
 import sys
 
 import biorun.libs.placlib as plac
@@ -116,6 +117,13 @@ def router():
     """
     Route the tasks based on subcommands parameters.
     """
+
+    # More verbose messages
+    debug_flag = "--debug"
+    if debug_flag in sys.argv:
+        sys.argv.remove(debug_flag)
+        logger.setLevel(logging.DEBUG)
+        logger.debug("verbose messages turned on")
 
     # Print usage when no parameters are passed.
     if len(sys.argv) == 1:
