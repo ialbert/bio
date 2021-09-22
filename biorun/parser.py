@@ -120,6 +120,7 @@ def get_streams(fnames, dynamic=False):
         yield sys.stdin
 
     for fname in fnames:
+        logger.debug(f"{fname}")
         if os.path.isfile(fname):
             if fname.endswith(".gz"):
                 logger.debug(f"gzip open: {fname}")

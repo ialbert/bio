@@ -430,7 +430,7 @@ def apply_debug_logger(name="bio", hnd=None, fmt=None, terminator='\n'):
     hnd.terminator = terminator
 
     # The logging formatter.
-    fmt = fmt or logging.Formatter('# %(module)s.%(funcName)s :%(message)s')
+    fmt = fmt or logging.Formatter('# %(module)s.%(funcName)s: %(message)s')
 
     # Add formatter to handler
     hnd.setFormatter(fmt)
