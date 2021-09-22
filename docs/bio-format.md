@@ -22,15 +22,13 @@ Turn the genomes into FASTA
 
     cat genomes.gb | bio fasta > genomes.fa
 
-
 Align the fasta files with `mafft`:
 
-    mafft --auto genomes.fa > aligned.fa
-
+    mafft --auto --preservecase genomes.fa > aligned.fa
 
 Generate the variant file:
 
-    cat aligned.fa | bio fasta2vcf > variants.vcf
+    cat aligned.fa | bio format > variants.vcf
 
 investigate the variants:
 
@@ -42,19 +40,19 @@ prints:
     ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
     ##FILTER=<ID=PASS,Description="All filters passed">
     ##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
-    ##contig=<ID=NC_045512.2,length=29903,assembly=NC_045512.2>
-    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	MN996532.2
-    NC_045512.2	19	C19T	C	T	.	PASS	TYPE=SNP	GT	1
-    NC_045512.2	37	C37G	C	G	.	PASS	TYPE=SNP	GT	1
-    NC_045512.2	42	T42C	T	C	.	PASS	TYPE=SNP	GT	1
-    NC_045512.2	91	G91A	G	A	.	PASS	TYPE=SNP	GT	1
+    ##contig=<ID=MN996532.2,length=29875,assembly=MN996532.2>
+    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	NC_045512.2
+    MN996532.2	19	19_T_C	T	C	.	PASS	TYPE=SNP	GT	1
+    MN996532.2	37	37_G_C	G	C	.	PASS	TYPE=SNP	GT	1
+    MN996532.2	42	42_C_T	C	T	.	PASS	TYPE=SNP	GT	1
+    MN996532.2	91	91_A_G	A	G	.	PASS	TYPE=SNP	GT	1
 
 
 ## One shot wonder
 
 You can do the above in a single command:
 
-    bio fetch NC_045512 MN996532 | bio fasta | mafft - | bio fasta2vcf > variants.vcf
+    bio fetch NC_045512 MN996532 | bio fasta | mafft --preservecase - | bio format > variants.vcf
 
 
 

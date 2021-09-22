@@ -4,7 +4,7 @@ We have implemented the `bio fetch` command to facilitate data download from Gen
 
 * [Entrez Direct: E-utilities on the Unix Command Line][entrez-direct]
 
-If you need additional functionality beyond of what `bio fetch` offers you will need to Entrez interfaces directly.
+If you need additional functionality beyond of what `bio fetch` offers see the end of the page for a list of alternatives.
 
 [entrez-direct]: https://www.ncbi.nlm.nih.gov/books/NBK179288/
 
@@ -83,6 +83,8 @@ For more information see the Ensembl REST API:
 
 * https://rest.ensembl.org/
 
+And the [enaBrowserTools: interface with the ENA web services to download data from ENA][ena]
+
 ## Fetch run information from BioProject id
 
 [PRJNA257197]:https://www.ncbi.nlm.nih.gov/bioproject/PRJNA257197/
@@ -127,8 +129,17 @@ the command `bio fetch SRR1972976` is equivalent to running
 
     efetch -db sra -id SRR1972976 -format runinfo
 
-## Note
+## Tools with similar utility {#fetch_similar}
 
 `bio fetch` is primarily a convenience function that simplifies the use of entrez in certain simple and well defined cases. For all other cases please consult the documentation for Entrez Direct:
 
 * [Entrez Direct: E-utilities on the Unix Command Line][entrez-direct]
+
+
+See also the related tools that may have expanded functionality:
+
+* [ffq: Fetch run information from the European Nucleotide Archive (ENA)][ffq]
+* [enaBrowserTools: interface with the ENA web services to download data from ENA][ena]
+
+[ffq]: https://github.com/pachterlab/ffq
+[ena]: https://github.com/enasequence/enaBrowserTools

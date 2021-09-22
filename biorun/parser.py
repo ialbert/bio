@@ -1,5 +1,8 @@
-import string
-import sys, os, io, operator, functools
+import functools
+import io
+import operator
+import os
+import sys
 
 try:
     from Bio import SeqIO
@@ -31,11 +34,9 @@ SEQUENCE_ONTOLOGY = {
     "mat_peptide": "mature_protein_region",
 }
 
-
 counter = count(1)
 
 UNIQUE = defaultdict(int)
-
 
 
 def is_nuc(c):
@@ -102,25 +103,10 @@ class Peeker:
         if not data:
             raise StopIteration
         else:
-            return  data
+            return data
 
-def get_streams(elems):
-    """
-    Returns streams including stdin.
-    """
-    if not sys.stdin.isatty():
-        yield sys.stdin
 
-    for fname in elems:
-        if os.path.isfile(fname):
-            yield open(fname)
-        else:
-            if fname.startswith("--"):
-                utils.error(f"invalid parameter: {fname}")
-            else:
-                utils.error(f"file not found: {fname}")
-
-def get_peakable_streams(elems, dynamic=False):
+def get_streams(elems, dynamic=False):
     """
     Returns peekable streams. Can also generate dynamic streams from text.
     """
@@ -128,36 +114,39 @@ def get_peakable_streams(elems, dynamic=False):
 
     if not sys.stdin.isatty():
         logger.debug(f"stdin detected")
-        yield Peeker(sys.stdin)
+        yield sys.stdin
 
     for fname in elems:
         if os.path.isfile(fname):
             logger.debug(f"opening: {fname}")
-            yield Peeker(open(fname))
+            yield open(fname)
         elif dynamic and is_sequence(fname):
             stream = io.StringIO(f">seq{next(label)}\n{fname}")
-            yield Peeker(stream)
+            yield stream
         else:
             if fname.startswith("--"):
                 utils.error(f"invalid parameter: {fname}")
             else:
                 utils.error(f"file not found: {fname}")
 
+
 def parse_stream(stream):
     """
     Guesses the type of input and parses the stream into a BioPython SeqRecord.
     """
+    stream = Peeker(stream)
     first = stream.peek().strip()
     start = first[0] if first else ''
     if start == '>':
-        format='fasta'
-    elif start =='@':
+        format = 'fasta'
+    elif start == '@':
         format = 'fastq'
     else:
         format = 'genbank'
     logger.debug(f"parsing: {format}")
     recs = SeqIO.parse(stream, format)
     return recs
+
 
 def flatten(nested):
     return functools.reduce(operator.iconcat, nested, [])
@@ -185,9 +174,11 @@ def json_ready(value):
 
     return value
 
+
 def next_count(ftype):
     UNIQUE[ftype] += 1
     return f'{ftype}-{UNIQUE[ftype]}'
+
 
 def first(data, key, default=""):
     # First element of a list value that is stored in a dictionary by a key.
@@ -263,15 +254,15 @@ def record_generator(rec):
         # The anchor for the sequence
         sub.anchor = rec.id
 
-        #print (feat.type, sub.type)
+        # print (feat.type, sub.type)
 
         sub.strand = feat.strand
 
         sub.start, sub.end = int(feat.location.start) + 1, int(feat.location.end)
 
         # Store the locations.
-        sub.locs = [(loc.start+1, loc.end, loc.strand) for loc in
-                          feat.location.parts] if feat is not None else []
+        sub.locs = [(loc.start + 1, loc.end, loc.strand) for loc in
+                    feat.location.parts] if feat is not None else []
 
         yield sub
 
@@ -280,9 +271,10 @@ def get_records(fnames):
     """
     Create a single stream of SeqRecords from multiple sources
     """
-    stream = get_peakable_streams(fnames, dynamic=True)
+    stream = get_streams(fnames, dynamic=True)
 
     reader = map(parse_stream, stream)
+
     recs = flatten(reader)
 
     recs = map(record_generator, recs)
@@ -292,10 +284,9 @@ def get_records(fnames):
 
 
 def main():
-
     fnames = sys.argv[1:]
 
-    stream = get_peakable_streams(fnames, dynamic=True)
+    stream = get_streams(fnames, dynamic=True)
     reader = map(parse_stream, stream)
     recs = flatten(reader)
 
@@ -303,7 +294,8 @@ def main():
     recs = flatten(recs)
 
     for rec in recs:
-        print (rec.name, rec.type)
+        print(rec.name, rec.type)
+
 
 if __name__ == '__main__':
     main()
