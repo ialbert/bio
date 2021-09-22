@@ -107,17 +107,19 @@ class Peeker:
             return data
 
 
-def get_streams(elems, dynamic=False):
+def get_streams(fnames, dynamic=False):
     """
     Returns peekable streams. Can also generate dynamic streams from text.
     """
     label = count(1)
 
+    logger.debug(f"{fnames}")
+
     if not sys.stdin.isatty():
         logger.debug(f"reading stdin")
         yield sys.stdin
 
-    for fname in elems:
+    for fname in fnames:
         if os.path.isfile(fname):
             if fname.endswith(".gz"):
                 logger.debug(f"gzip open: {fname}")
