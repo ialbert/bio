@@ -113,14 +113,16 @@ def get_streams(fnames, dynamic=False):
     """
     label = count(1)
 
-    logger.debug(f"{fnames}")
+    logger.debug(f"start: {fnames}")
 
     if not sys.stdin.isatty():
         logger.debug(f"reading stdin")
         yield sys.stdin
 
+    logger.debug(f"next: {fnames}")
+
     for fname in fnames:
-        logger.debug(f"{fname}")
+        logger.debug(f"accessing: {fname}")
         if os.path.isfile(fname):
             if fname.endswith(".gz"):
                 logger.debug(f"gzip open: {fname}")
