@@ -3,6 +3,7 @@ import io
 import operator
 import os
 import sys
+import gzip
 
 try:
     from Bio import SeqIO
@@ -113,14 +114,19 @@ def get_streams(elems, dynamic=False):
     label = count(1)
 
     if not sys.stdin.isatty():
-        logger.debug(f"stdin detected")
+        logger.debug(f"reading stdin")
         yield sys.stdin
 
     for fname in elems:
         if os.path.isfile(fname):
-            logger.debug(f"opening: {fname}")
-            yield open(fname)
+            if fname.endswith(".gz"):
+                logger.debug(f"gzip open: {fname}")
+                yield gzip.open(fname, mode='rt')
+            else:
+                logger.debug(f"open: {fname}")
+                yield open(fname)
         elif dynamic and is_sequence(fname):
+            logger.debug(f"dynamic sequence")
             stream = io.StringIO(f">seq{next(label)}\n{fname}")
             yield stream
         else:
@@ -141,6 +147,8 @@ def parse_stream(stream):
         format = 'fasta'
     elif start == '@':
         format = 'fastq'
+    elif first.startswith("ID "):
+        format = 'embl'
     else:
         format = 'genbank'
     logger.debug(f"parsing: {format}")
