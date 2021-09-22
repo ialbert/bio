@@ -123,7 +123,7 @@ def router():
     if debug_flag in sys.argv:
         sys.argv.remove(debug_flag)
         logger.setLevel(logging.DEBUG)
-        logger.debug("verbose messages turned on")
+        logger.debug("verbose messages on")
 
     # Print usage when no parameters are passed.
     if len(sys.argv) == 1:

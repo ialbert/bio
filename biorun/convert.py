@@ -251,6 +251,9 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     """
     global ALIAS
 
+    logger.debug(f"sys.argv={sys.argv}")
+    logger.debug(f"fnames={fnames}")
+
     # Generate the ALIAS remapping.
     ALIAS = utils.parse_alias(alias) if alias else {}
 
