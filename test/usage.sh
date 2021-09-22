@@ -106,11 +106,11 @@ cat file1.txt file2.txt | uniq.py -d ',' > uniq0.txt
 cat file1.txt file2.txt | uniq.py -f 2 -d ',' > uniq1.txt
 cat file1.txt file2.txt | uniq.py -c -f 2 -d ',' > uniq3.txt
 
-# Get data from SRA
-bio fetch SRR1972976 > srr.txt
+# Get data from SRA (can be spotty)
+#bio fetch SRR1972976 > srr.txt
 
 # Get bioproject information
-bio fetch PRJNA257197 --limit 1 > prjn.txt
+#bio fetch PRJNA257197 --limit 1 > prjn.txt
 
 # Access a transcript from ensembl.
-bio fetch ENST00000288602  > enst.txt
+#bio fetch ENST00000288602  > enst.txt
