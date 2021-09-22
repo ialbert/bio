@@ -14,9 +14,18 @@ from biorun import convert
 @plac.flg("translate", "translate DNA ", abbrev='T')
 @plac.flg("revcomp", "reverse complement DNA", abbrev='R')
 @plac.opt("alias", "remap sequence ids")
+@plac.opt("frame", "reading frame", type=int, choices=[1,2,3,-1,-2,-3], abbrev='F')
 @plac.pos("fnames", "input files")
 def run(start='1', end='', type_='', id_='', name='', gene='',
-        alias=None, protein=False, translate=False, revcomp=False, *fnames):
+        alias='', protein=False, translate=False, revcomp=False, frame=1, *fnames):
+
+    if frame > 1:
+        start = frame
+
+    if frame < 1:
+        start = -frame
+
+        revcomp = True
 
     convert.run(protein=protein, translate=translate, start=start,
                 end=end, type_=type_, id_=id_, revcomp=revcomp,
