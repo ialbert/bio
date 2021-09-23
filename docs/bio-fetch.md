@@ -2,7 +2,7 @@
 
 We have implemented the `bio fetch` command to facilitate data download from GenBank, Ensembl and other sources.  If you need additional functionality beyond of what `bio fetch` offers see the end of the page for a list of alternatives.
 
-For more information on data sources and representations, consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. To install `bio` use:
+For more information on data sources and representations consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. To install `bio` use:
 
 [datasource]: https://www.biostarhandbook.com/biological-data-sources.html
 [book]: https://www.biostarhandbook.com
@@ -14,7 +14,7 @@ The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 ## Rationale
 
-`bio fetch` was written to provide simpler data access. Since in most cases the accession numbers uniquely define the resource, `bio fetch` automatically resolves the destination and downloads data of the most appropriate type. For example, the:
+`bio fetch` was written to provide simpler data access. As in most cases the accession numbers uniquely define the data type `bio fetch` can automatically resolves the correct destination and will download data in the most appropriate format. Examples:
 
     # Obtains nucleotidedata from GenBank
     bio fetch NC_045512
@@ -22,14 +22,16 @@ The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
     # Obtains protein data from GenBank
     bio fetch YP_009724390
 
+    # Obtains SRR run information from the Short Read Archive
+    bio fetch SRR1972976
+
     # Obtains FASTA sequence files from Ensembl
     bio fetch ENSG00000157764
 
-    # Obtain the transcript data as CDS
+    # Obtain the coding sequence segments of a transcript
     bio fetch ENST00000288602 --type cds | head
 
-    # Obtains SRR run information from the Short Read Archive
-    bio fetch SRR1972976
+Read on for more details.
 
 ## Fetch data from GenBank
 
@@ -38,52 +40,16 @@ To get a Genbank nucleotides by accession number run:
     # Obtains nucleotidedata from GenBank
 	bio fetch NC_045512 | head
 
-`bio fetch` automatically recognizes protein accessions and will connect to protein database, no further configuration is needed, like so
-
-    # Obtains protein data from GenBank
-	bio fetch YP_009724390 | head
-
-You may also list multiple accession numbers at once:
+The default format is GenBank. You may also list multiple accession numbers at once:
 
     # Obtains mulitple entries from GenBank
     bio fetch NC_045512 MN996532 > genomes.gb
-
-For more advanced command line data access options to NCBI see Entrez Direct
-
-* [Biostar Handbook: Automating access to NCBI][bh-entrez]
-
-[bh-entrez]: https://www.biostarhandbook.com/automating-access-to-ncbi.html
-
-## Fetch data from Ensembl
-
-`bio fetch` recognizes Ensemble accessions (ENSG, ENST) and will automatically connect to the Ensembl REST API:
-
-	# Ensenble gene
-    bio fetch ENSG00000157764 | head
-
-    # Transcript data in genomic context
-    bio fetch ENST00000288602  | head
-
-    # Transcript data as CDNA
-    bio fetch ENST00000288602 --type cdna | head
-
-    # Transcript data as CDS
-    bio fetch ENST00000288602 --type cds | head
-
-    # Transcript data as protein
-    bio fetch ENST00000288602 --type protein | head
-
-These commands fetch data in FASTA formats. For more information see the Ensembl REST API:
-
-* https://rest.ensembl.org/
-
-And the [enaBrowserTools: interface with the ENA web services to download data from ENA][ena]
 
 ## Fetch SRA run information
 
 [sra]:https://www.ncbi.nlm.nih.gov/sra
 
-The following command retrievs JSON data that describes sequencing data deposited at the [Short Read Archive][sra]
+The following command retrieves JSON data that describes sequencing data deposited at the [Short Read Archive][sra]
 
     bio fetch SRR1972976
 
@@ -138,6 +104,33 @@ prints:
 The `bio fetch PRJNA257197 --limit 1` command is equivalent to running `entrez-direct` construct:
 
     esearch -db sra -query PRJNA257197 | efetch -stop 1 -format runinfo
+
+## Fetch data from Ensembl
+
+`bio fetch` recognizes Ensemble accessions (ENSG, ENST) and will automatically connect to the Ensembl REST API:
+
+	# Ensenble gene
+    bio fetch ENSG00000157764 | head
+
+    # Transcript data in genomic context
+    bio fetch ENST00000288602  | head
+
+    # Transcript data as CDNA
+    bio fetch ENST00000288602 --type cdna | head
+
+    # Transcript data as CDS
+    bio fetch ENST00000288602 --type cds | head
+
+    # Transcript data as protein
+    bio fetch ENST00000288602 --type protein | head
+
+These commands fetch data in FASTA formats. For more information see the Ensembl REST API:
+
+* https://rest.ensembl.org/
+
+And the [enaBrowserTools: interface with the ENA web services to download data from ENA][ena]
+
+
 
 ## Tools with similar utility {#fetch_similar}
 

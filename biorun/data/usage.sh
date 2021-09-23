@@ -54,11 +54,20 @@ bio align GATTACA GATCA --local > gattaca3.txt
 # Running variants.
 bio align GATTACA GATCA --vcf > gattaca.vcf
 
+# Running variants.
+bio align GATTACA GATCA --diff  > gattaca.diff
+
 # Running on FASTA files.
 bio align align_input.fa --vcf > align_input.vcf
 
-# Run fasta2vcf
-bio format mafft.fa > mafft.vcf
+# Format to pairwise
+bio format mafft.fa > mafft.txt
+
+# Format to VCF
+bio format mafft.fa --vcf > mafft.vcf
+
+# Format to diff
+bio format mafft.fa --diff > mafft.diff
 
 # Select S proteins
 bio fasta --gene S --protein  genomes.gb > s.fa

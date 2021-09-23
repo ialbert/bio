@@ -42,7 +42,7 @@ def run(start='', end='', diff=False, vcf=False, *fnames):
             elif diff:
                 models.format_diffs(alns)
             else:
-                models.format_diffs(alns)
+                models.format_pairwise(alns)
 
     except StopIteration as exc:
         utils.error(f'Input must have at least two FASTA sequences')

@@ -28,9 +28,9 @@ class Alignment:
             if a == b:
                 self.ident += 1
             elif a == '-':
-                self.ins += 1
-            elif b == '-':
                 self.dels += 1
+            elif b == '-':
+                self.ins += 1
             elif a != b:
                 self.mis += 1
 
@@ -238,16 +238,16 @@ def format_diffs(alns):
             alt = value[4]
             size = '0'
             info = value[7]
-            if "SNP" in info:
+            if SNP in info:
                 info = SNP
                 size = 1
-            elif 'DEL' in info:
+            elif DEL in info:
                 info = DEL
                 base = base[1:] if pos != '1' else base[:1]
                 alt = '-'
                 size = len(base)
 
-            elif 'INS' in info:
+            elif INS in info:
                 info = INS
                 alt = alt[1:] if pos != '1' else alt[:1]
                 base = '-'

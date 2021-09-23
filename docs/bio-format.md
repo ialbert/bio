@@ -22,13 +22,43 @@ Align the fasta files with `mafft`:
 
     mafft --auto --quiet --preservecase genomes.fa  > aligned.fa
 
-Generate the variant file:
+## Pairwise alignment
 
-    cat aligned.fa | bio format > variants.vcf
+The default output generates the diffs:
 
-investigate the variants:
+    cat aligned.fa | bio format | head -12
 
-    cat variants.vcf | head
+shows the pairwise alignment:
+
+    # NC_045512.2 (29903) vs MN996532.2 (29855)
+    # pident=96.0% len=29903 ident=28720 mis=1135 del=0 ins=48
+
+    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAA
+    ||||||||||||||||||.|||||||||||||||||.||||.|||||||||||||||||||||||||||||||||||||||
+    ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAA
+
+    ATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGAC
+    |||||||||.|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    ATCTGTGTGACTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGAC
+
+
+## Show differences
+
+    cat aligned.fa | bio format --diff | head -5
+
+This output generates an easy-to-read output of the alignments:
+
+    19	SNP	NC_045512.2	C/T	MN996532.2
+    37	SNP	NC_045512.2	C/G	MN996532.2
+    42	SNP	NC_045512.2	T/C	MN996532.2
+    91	SNP	NC_045512.2	G/A	MN996532.2
+    174	SNP	NC_045512.2	G/A	MN996532.2
+
+Columns are: position, type, query, change, target name.
+
+## Generate VCF output
+
+    cat aligned.fa | bio format --vcf | head
 
 prints:
 
@@ -48,7 +78,7 @@ prints:
 
 You can do the above in a single command:
 
-    bio fetch NC_045512 MN996532 | bio fasta | mafft --preservecase - | bio format > variants.vcf
+    bio fetch NC_045512 MN996532 | bio fasta | mafft --preservecase - | bio format --vcf > variants.vcf
 
 
 

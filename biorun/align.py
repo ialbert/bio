@@ -127,7 +127,7 @@ def get_matrix(matrix, show=False):
 @plac.opt("matrix", "matrix default: NUC4.4. or BLOSUM62)", abbrev='M')
 @plac.flg("vcf", "output vcf file", abbrev='V')
 @plac.flg("table", "output in tabular format", abbrev="T")
-@plac.flg("diff", "output differences", abbrev="X")
+@plac.flg("diff", "output differences", abbrev="D")
 @plac.flg("fasta", "output variant columns", abbrev="F")
 @plac.flg("local_", "local alignment", abbrev='L')
 @plac.flg("global_", "local alignment", abbrev='G')
@@ -162,7 +162,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
     MAXLEN = 50000
     for rec in recs:
         if len(rec.seq) > MAXLEN:
-            utils.error(f"Sequence {rec.id} is too long for this aligner: {len(rec)} > MAXLEN={MAXLEN:,}", stop=False)
+            utils.error(f"Sequence {rec.id} is too long: {len(rec)} > {MAXLEN:,}", stop=False)
             utils.error("We recommend that you use a different software.")
 
     # The first sequence is the query

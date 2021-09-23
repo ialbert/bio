@@ -1,0 +1,11 @@
+#
+# This matrix is created to mimic BLASTN defaults
+#
+# Lowest score = -2, Highest score = 1
+#
+    A   T   G   C
+A   1  -2  -2  -2
+T  -2   1  -2  -2
+G  -2  -2   1  -2
+C  -2  -2  -2   1 
+

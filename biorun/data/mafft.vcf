@@ -1,12 +1,18 @@
-1	SNP	seq1	a/c	seq2
-36	SNP	seq1	g/a	seq2
-42	SNP	seq1	c/a	seq2
-48	SNP	seq1	t/a	seq2
-68	DEL	seq1	-/gtg	seq2
-72	SNP	seq1	t/g	seq2
-95	INS	seq1	ag/-	seq2
-96	SNP	seq1	g/c	seq2
-100	SNP	seq1	t/a	seq2
-120	SNP	seq1	t/g	seq2
-121	SNP	seq1	t/a	seq2
-182	DEL	seq1	-/tttcg	seq2
+##fileformat=VCFv4.2
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FILTER=<ID=PASS,Description="All filters passed">
+##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
+##contig=<ID=seq2,length=190,assembly=seq2>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	seq1
+seq2	1	1_c_a	c	a	.	PASS	TYPE=SNP	GT	1
+seq2	36	36_a_g	a	g	.	PASS	TYPE=SNP	GT	1
+seq2	42	42_a_c	a	c	.	PASS	TYPE=SNP	GT	1
+seq2	48	48_a_t	a	t	.	PASS	TYPE=SNP	GT	1
+seq2	68	68_del_gtg	tgtg	t	.	PASS	TYPE=DEL	GT	1
+seq2	72	72_g_t	g	t	.	PASS	TYPE=SNP	GT	1
+seq2	95	95_ins_ag	t	tag	.	PASS	TYPE=INS	GT	1
+seq2	96	96_c_g	c	g	.	PASS	TYPE=SNP	GT	1
+seq2	100	100_a_t	a	t	.	PASS	TYPE=SNP	GT	1
+seq2	120	120_g_t	g	t	.	PASS	TYPE=SNP	GT	1
+seq2	121	121_a_t	a	t	.	PASS	TYPE=SNP	GT	1
+seq2	182	182_del_tttcg	gtttcg	g	.	PASS	TYPE=DEL	GT	1

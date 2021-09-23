@@ -1,0 +1,16 @@
+
+# seq1 (187) vs seq2 (188)
+# pident=87.7% len=195 ident=171 mis=9 del=8 ins=7
+
+ggtttacttccctaacaaaccaaccaactttcgatctcttgtagatctgttctctaaacgaactttaaaatct---tggct
+-----.||||||||||||||||||||||||||||||||||.|||||.|||||.||||||||||||||||||||---.||||
+-----ccttccctaacaaaccaaccaactttcgatctcttatagatatgttcactaaacgaactttaaaatctgtggggct
+
+gtcactcggctgcatgcttagggtgtacacacgcagtataattaattactaattactgtcgttgacaggacacgagtaact
+|||||||||||||||||||--.|||.|||||||||||||||||||..||||||||||||||||||||||||||||||||||
+gtcactcggctgcatgctt--cgtgaacacacgcagtataattaagaactaattactgtcgttgacaggacacgagtaact
+
+cgtctatcttctgcaggctgcttacgg-----a
+|||||||||||||||||||||||||||-----|
+cgtctatcttctgcaggctgcttacggtttcga
+

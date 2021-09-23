@@ -1,0 +1,12 @@
+1	SNP	seq1	a/c	seq2
+36	SNP	seq1	g/a	seq2
+42	SNP	seq1	c/a	seq2
+48	SNP	seq1	t/a	seq2
+68	DEL	seq1	-/gtg	seq2
+72	SNP	seq1	t/g	seq2
+95	INS	seq1	ag/-	seq2
+96	SNP	seq1	g/c	seq2
+100	SNP	seq1	t/a	seq2
+120	SNP	seq1	t/g	seq2
+121	SNP	seq1	t/a	seq2
+182	DEL	seq1	-/tttcg	seq2
