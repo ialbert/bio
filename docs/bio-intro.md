@@ -47,13 +47,13 @@ Install `bio`:
 ## Usage examples
 
 Suppose we found the accession number to data of interest: `NC_045512` representing the Wuhan-Hu-1 isolate of the coronavirus and
-the  `MN996532` that stores information on the most similar bat coronavirus. We would like to investigate the differences in the S protein.
+the  `MN996532` that stores information on the most similar bat coronavirus. We would like to investigate the differences in the S protein betweeen the two organisms. Here is how you could do it with `bio`:
 
-**Fetch data**
+### Fetch data
 
     bio fetch NC_045512 MN996532 > genomes.gb
 
-**Convert to FASTA**
+### Convert to FASTA
 
     bio fasta genomes.gb  | head
 
@@ -65,7 +65,7 @@ prints:
     CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
     TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
 
-**Align sequences**
+### Align sequences
 
 From the `genomes.gb` obtained above align the protein sequences for the `S` gene
 
@@ -81,24 +81,26 @@ prints:
 	|||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
 	MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
 
-**Show alignment as variants**
+### Show alignment as differences
 
-	cat genomes.gb | bio fasta --gene S --protein | bio align --variant | head
+	cat genomes.gb | bio fasta --gene S --protein | bio align --diff | tail
 
 prints the type and variant at each location:
 
-	pos	type	len	target	query
-	32	mis	1	F	S
-	50	mis	1	S	L
-	76	mis	1	T	I
-	218	mis	1	Q	P
-	324	mis	1	E	D
-	346	mis	1	R	T
-	372	mis	1	A	T
-	403	mis	1	R	T
-	439	mis	3	NNL	KHI
+    493	  SNP	YP_009724390.1	Q/Y	    QHR63300.2
+    494	  SNP	YP_009724390.1	S/R	    QHR63300.2
+    498	  SNP	YP_009724390.1	Q/Y	    QHR63300.2
+    501	  SNP	YP_009724390.1	N/D	    QHR63300.2
+    505	  SNP	YP_009724390.1	Y/H	    QHR63300.2
+    519	  SNP	YP_009724390.1	H/N	    QHR63300.2
+    604	  SNP	YP_009724390.1	T/A	    QHR63300.2
+    680	  INS	YP_009724390.1	PRRA/-	QHR63300.2
+    1121  SNP	YP_009724390.1	N/S	    QHR63300.2
+    1224  SNP	YP_009724390.1	V/I	    QHR63300.2
 
-**Visualize the genome data**
+It shows that at position `680` the coronavirus has an four aminoacid insertion `PRRA` the so called furin-cleavage.
+
+### Visualize the genome data
 
 Convert to GFF
 
