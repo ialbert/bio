@@ -28,7 +28,7 @@ sync:
 	rsync -avz docs/images/igv-index.png ~/book/biostar-handbook-2/books/main/images
 
 # Serve the documentation as a webpage.
-serve:
+html:
 	(cd docs && rm -rf .book)
 	Rscript -e "bookdown::serve_book(dir='docs', preview=TRUE, output_dir='.book', port=8000)"
 

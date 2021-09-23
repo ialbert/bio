@@ -27,7 +27,6 @@ os.makedirs(RUN_DIR, exist_ok=True)
 
 USAGE = join(DATA_DIR, "usage.sh")
 
-
 def parse_commands(text, flag=False):
     lines = text.splitlines()
     lines = map(lambda x: x.strip(), lines)
@@ -102,14 +101,14 @@ def main():
             result = open(join(RUN_DIR, RUN_DIR_NAME, fname)).read()
             expect = open(join(DATA_DIR, fname)).read()
         except Exception as exc:
-            print(f"\n\n(cd biorun/data && {cmd})\n")
+            print(f"\n\n(cd {DATA_DIR} && {cmd})\n")
             print(f"*** error: {exc}")
             sys.exit(1)
 
         if expect != result:
             print(f"running: {cmd}")
             print_diff(expect=expect, result=result)
-            print(f"\n\n(cd biorun/data && {cmd})\n")
+            print(f"\n\n(cd  {DATA_DIR} && {cmd})\n")
             sys.exit(1)
 
     print(f"# All tests completed")

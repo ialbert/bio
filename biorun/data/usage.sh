@@ -15,11 +15,17 @@ bio fetch NC_045512 MN996532 > genomes.gb
 # Parse the standard input.
 echo NC_045512 | bio fetch > sars2.gb
 
+# Selecting by gene id
+bio fasta genomes.gb --type gene --id N --end 10 > ids.fa
+
+# Selecting all items
+bio fasta genomes.gb --type all -end 10 > all.fa
+
 # Slice the genomes
 bio fasta genomes.gb --end  100 > genomes.fa
 
 # Should produce the same output
-#cat genomes.gb | bio fasta --end  100 > genomes.fa
+cat genomes.gb | bio fasta --end  100 > genomes.fa
 
 # Slice the genomes
 bio fasta genomes.gb --end  100  --alias alias.txt > genomes.alias.fa

@@ -156,6 +156,7 @@ def parse_stream(stream):
         format = 'genbank'
     logger.debug(f"parsing: {format}")
     recs = SeqIO.parse(stream, format)
+
     return recs
 
 
@@ -229,7 +230,6 @@ def record_generator(rec):
     Returns a SeqRecord with additional attributes set.
     """
     pairs = [(k, json_ready(v)) for (k, v) in rec.annotations.items()]
-
     rec.annot = dict(pairs)
     rec.type = SOURCE
     rec.strand = None

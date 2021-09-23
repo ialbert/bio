@@ -69,8 +69,14 @@ def sequence_slicer(start=0, end=None):
 
     return func
 
+def true_all(x):
+    return True
 
 def type_selector(ftype):
+
+    if ftype =='all':
+        return lambda x: True
+
     types = set(ftype.split(","))
 
     def func(rec):
@@ -134,6 +140,13 @@ def source_only(flag):
         return rec.type == parser.SOURCE if flag else True
 
     return func
+
+def keep_source(rec):
+    return rec.type == parser.SOURCE
+
+
+def remove_source(rec):
+    return rec.type != parser.SOURCE
 
 
 def protein_filter(rec):
@@ -251,10 +264,6 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     """
     global ALIAS
 
-    logger.debug(f"sys.argv={sys.argv}")
-
-    logger.debug(f"fnames={fnames}")
-
     # Generate the ALIAS remapping.
     ALIAS = utils.parse_alias(alias) if alias else {}
 
@@ -275,12 +284,6 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     # Turn type to CDS if gene is selected
     ftype = 'CDS' if gene else ftype
 
-    # Selects sources only when no other feature specific option is set.
-    source_flag = not (gene or name or type_ or translate or protein or features)
-
-    # Use the source only in fasta mode.
-    source_flag = source_flag and fasta
-
     # Get a stream of
     recs = parser.get_records(fnames)
 
@@ -289,17 +292,20 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
 
     recs = map(remapper, recs)
 
-    # Should we keep the source
-    recs = filter(source_only(source_flag), recs)
-
-    # Filter by sequence name
-    recs = filter(name_selector(name), recs)
-
-    # Filters gene and CDS
-    recs = filter(gene_selector(gene), recs)
+    # Keep all records when selecting by sequence id
+    gff = not fasta
+    if not seqid:
+        feature_selection = (gene or type_ or protein or features or gff)
+        if feature_selection:
+            recs = filter(remove_source, recs)
+        else:
+            recs = filter(keep_source, recs)
 
     # Filter by seqid.
     recs = filter(seqid_selector(seqid), recs)
+
+    # Filters gene and CDS
+    recs = filter(gene_selector(gene), recs)
 
     # Extract proteins if requested.
     if protein:

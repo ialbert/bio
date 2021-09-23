@@ -1,0 +1,152 @@
+>five_prime_UTR-1 five_prime_UTR  [1:10]
+ATTAAAGGTT
+>ORF1ab gene GU280_gp01 [1:10]
+ATGGAGAGCC
+>YP_009724389.1 CDS ORF1ab polyprotein [1:10]
+ATGGAGAGCC
+>mature_protein_region-1 mature_protein_region leader protein [1:10]
+ATGGAGAGCC
+>mature_protein_region-2 mature_protein_region nsp2 [1:10]
+GCATACACTC
+>mature_protein_region-3 mature_protein_region nsp3 [1:10]
+GCACCAACAA
+>mature_protein_region-4 mature_protein_region nsp4 [1:10]
+AAAATTGTTA
+>mature_protein_region-5 mature_protein_region 3C-like proteinase [1:10]
+AGTGGTTTTA
+>mature_protein_region-6 mature_protein_region nsp6 [1:10]
+AGTGCAGTGA
+>mature_protein_region-7 mature_protein_region nsp7 [1:10]
+TCTAAAATGT
+>mature_protein_region-8 mature_protein_region nsp8 [1:10]
+GCTATAGCCT
+>mature_protein_region-9 mature_protein_region nsp9 [1:10]
+AATAATGAGC
+>mature_protein_region-10 mature_protein_region nsp10 [1:10]
+GCTGGTAATG
+>mature_protein_region-11 mature_protein_region RNA-dependent RNA polymerase [1:10]
+TCAGCTGATG
+>mature_protein_region-12 mature_protein_region helicase [1:10]
+GCTGTTGGGG
+>mature_protein_region-13 mature_protein_region 3'-to-5' exonuclease [1:10]
+GCTGAAAATG
+>mature_protein_region-14 mature_protein_region endoRNAse [1:10]
+AGTTTAGAAA
+>mature_protein_region-15 mature_protein_region 2'-O-ribose methyltransferase [1:10]
+TCTAGTCAAG
+>YP_009725295.1 CDS ORF1a polyprotein [1:10]
+ATGGAGAGCC
+>mature_protein_region-16 mature_protein_region leader protein [1:10]
+ATGGAGAGCC
+>mature_protein_region-17 mature_protein_region nsp2 [1:10]
+GCATACACTC
+>mature_protein_region-18 mature_protein_region nsp3 [1:10]
+GCACCAACAA
+>mature_protein_region-19 mature_protein_region nsp4 [1:10]
+AAAATTGTTA
+>mature_protein_region-20 mature_protein_region 3C-like proteinase [1:10]
+AGTGGTTTTA
+>mature_protein_region-21 mature_protein_region nsp6 [1:10]
+AGTGCAGTGA
+>mature_protein_region-22 mature_protein_region nsp7 [1:10]
+TCTAAAATGT
+>mature_protein_region-23 mature_protein_region nsp8 [1:10]
+GCTATAGCCT
+>mature_protein_region-24 mature_protein_region nsp9 [1:10]
+AATAATGAGC
+>mature_protein_region-25 mature_protein_region nsp10 [1:10]
+GCTGGTAATG
+>mature_protein_region-26 mature_protein_region nsp11 [1:10]
+TCAGCTGATG
+>stem_loop-1 stem_loop  [1:10]
+CGGTGTAAGT
+>stem_loop-2 stem_loop  [1:10]
+AGCCCGTCTT
+>S gene GU280_gp02 [1:10]
+ATGTTTGTTT
+>YP_009724390.1 CDS surface glycoprotein [1:10]
+ATGTTTGTTT
+>ORF3a gene GU280_gp03 [1:10]
+ATGGATTTGT
+>YP_009724391.1 CDS ORF3a protein [1:10]
+ATGGATTTGT
+>E gene GU280_gp04 [1:10]
+ATGTACTCAT
+>YP_009724392.1 CDS envelope protein [1:10]
+ATGTACTCAT
+>M gene GU280_gp05 [1:10]
+ATGGCAGATT
+>YP_009724393.1 CDS membrane glycoprotein [1:10]
+ATGGCAGATT
+>ORF6 gene GU280_gp06 [1:10]
+ATGTTTCATC
+>YP_009724394.1 CDS ORF6 protein [1:10]
+ATGTTTCATC
+>ORF7a gene GU280_gp07 [1:10]
+ATGAAAATTA
+>YP_009724395.1 CDS ORF7a protein [1:10]
+ATGAAAATTA
+>ORF7b gene GU280_gp08 [1:10]
+ATGATTGAAC
+>YP_009725318.1 CDS ORF7b [1:10]
+ATGATTGAAC
+>ORF8 gene GU280_gp09 [1:10]
+ATGAAATTTC
+>YP_009724396.1 CDS ORF8 protein [1:10]
+ATGAAATTTC
+>N gene GU280_gp10 [1:10]
+ATGTCTGATA
+>YP_009724397.2 CDS nucleocapsid phosphoprotein [1:10]
+ATGTCTGATA
+>ORF10 gene GU280_gp11 [1:10]
+ATGGGCTATA
+>YP_009725255.1 CDS ORF10 protein [1:10]
+ATGGGCTATA
+>stem_loop-3 stem_loop  [1:10]
+TTGTGCAGAA
+>stem_loop-4 stem_loop  [1:10]
+TAACTACATA
+>three_prime_UTR-1 three_prime_UTR  [1:10]
+CAATCTTTAA
+>stem_loop-5 stem_loop  [1:10]
+TTCACCGAGG
+>orf1ab gene  [1:10]
+ATGGAGAGCC
+>QHR63299.2 CDS orf1ab polyprotein [1:10]
+ATGGAGAGCC
+>S gene  [1:10]
+ATGTTTGTTT
+>QHR63300.2 CDS spike glycoprotein [1:10]
+ATGTTTGTTT
+>NS3 gene  [1:10]
+ATGGATTTGT
+>QHR63301.1 CDS nonstructural protein NS3 [1:10]
+ATGGATTTGT
+>E gene  [1:10]
+ATGTACTCAT
+>QHR63302.1 CDS envelope protein [1:10]
+ATGTACTCAT
+>M gene  [1:10]
+ATGGCAGATA
+>QHR63303.1 CDS membrane protein [1:10]
+ATGGCAGATA
+>NS6 gene  [1:10]
+ATGTTTCATC
+>QHR63304.1 CDS nonstructural protein NS6 [1:10]
+ATGTTTCATC
+>NS7a gene  [1:10]
+ATGAAAATTA
+>QHR63305.1 CDS nonstructural protein NS7a [1:10]
+ATGAAAATTA
+>NS7b gene  [1:10]
+ATGAGTGAAC
+>QHR63306.1 CDS nonstructural protein NS7b [1:10]
+ATGAGTGAAC
+>NS8 gene  [1:10]
+ATGAAACTTC
+>QHR63307.1 CDS nonstructural protein NS8 [1:10]
+ATGAAACTTC
+>N gene  [1:10]
+ATGTCTGATA
+>QHR63308.1 CDS nucleocapsid protein [1:10]
+ATGTCTGATA
