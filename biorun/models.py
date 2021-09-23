@@ -224,9 +224,9 @@ def format_table(alns, sep="\t"):
         print(line)
 
 
-def format_variants(alns):
-    header = "idx target type pos ref alt"
-    print("\t".join(header.split()))
+def format_diffs(alns):
+    #header = "pos info query change target"
+    #print("\t".join(header.split()))
 
     for idx, aln in enumerate(alns):
 
@@ -239,21 +239,22 @@ def format_variants(alns):
             size = '0'
             info = value[7]
             if "SNP" in info:
-                info = 'snp'
+                info = SNP
                 size = 1
             elif 'DEL' in info:
-                info = 'del'
+                info = DEL
                 base = base[1:] if pos != '1' else base[:1]
-                alt = '-' * len(base)
+                alt = '-'
                 size = len(base)
 
             elif 'INS' in info:
-                info = 'ins'
+                info = INS
                 alt = alt[1:] if pos != '1' else alt[:1]
-                base = '-' * len(alt)
+                base = '-'
                 size = len(alt)
 
-            data = [str(idx + 1), aln.target.name, info, pos, base, alt, ]
+            data = [pos, info, aln.query.name, f"{alt}/{base}", aln.target.name, ]
+
             print("\t".join(data))
 
 

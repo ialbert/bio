@@ -14,17 +14,13 @@ Many tools can generate such alignments.
 
 ## Usage example
 
-Get data for coronavirus and a related bat coronavirus
+Get FASTA sequences for the coronavirus and the closest related bat coronavirus
 
-    bio fetch NC_045512 MN996532 > genomes.gb
-
-Turn the genomes into FASTA
-
-    cat genomes.gb | bio fasta > genomes.fa
+    bio fetch NC_045512 MN996532 | bio fasta > genomes.fa
 
 Align the fasta files with `mafft`:
 
-    mafft --auto --preservecase genomes.fa > aligned.fa
+    mafft --auto --quiet --preservecase genomes.fa  > aligned.fa
 
 Generate the variant file:
 

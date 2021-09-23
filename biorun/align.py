@@ -127,14 +127,14 @@ def get_matrix(matrix, show=False):
 @plac.opt("matrix", "matrix default: NUC4.4. or BLOSUM62)", abbrev='M')
 @plac.flg("vcf", "output vcf file", abbrev='V')
 @plac.flg("table", "output in tabular format", abbrev="T")
-@plac.flg("vars", "output variant columns", abbrev="X")
+@plac.flg("diff", "output differences", abbrev="X")
 @plac.flg("fasta", "output variant columns", abbrev="F")
 @plac.flg("local_", "local alignment", abbrev='L')
 @plac.flg("global_", "local alignment", abbrev='G')
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.flg("all_", "show all alignments", abbrev='A')
 def run(open_=11, extend=1, matrix='', local_=False, global_=False,
-        semiglobal=False, vcf=False, table=False, vars=False, fasta=False, all_=False, *sequences):
+        semiglobal=False, vcf=False, table=False, diff=False, fasta=False, all_=False, *sequences):
 
     # Select alignment mode
     if global_:
@@ -178,7 +178,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         mode=mode,
     )
 
-    # Generate an alignment for each record
+    # Generate an alignment for each target
     for target in recs[1:]:
 
         alns = align(query, target, par=par)
@@ -221,8 +221,8 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         models.format_vcf(collect)
     elif table:
         models.format_table(collect)
-    elif vars:
-        models.format_variants(collect)
+    elif diff:
+        models.format_diffs(collect)
     elif fasta:
         models.format_fasta(collect)
     else:
