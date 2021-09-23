@@ -1,5 +1,6 @@
-import biorun
 from setuptools import setup, find_packages
+
+import biorun
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -14,6 +15,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ialbert/bio",
     packages=find_packages(include=["biorun", "biorun.*"]),
+    include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

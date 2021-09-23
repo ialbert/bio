@@ -118,6 +118,12 @@ def router():
     Route the tasks based on subcommands parameters.
     """
 
+    if len(sys.argv) == 2 and sys.argv[1] == 'test':
+        # Run a test
+        from biorun import test
+        test.main()
+        sys.exit(0)
+
     # More verbose messages
     debug_flag = "--debug"
     if debug_flag in sys.argv:

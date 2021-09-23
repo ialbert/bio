@@ -7,7 +7,7 @@ all: serve
 
 # Run the tests.
 test:
-	@python test/testall.py
+	@python biorun/test.py
 
 # Update the usage data.
 testdata:

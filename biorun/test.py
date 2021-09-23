@@ -1,5 +1,5 @@
 import os, sys
-import plac
+from biorun.libs import placlib as plac
 import subprocess, difflib
 from subprocess import PIPE
 from tqdm import tqdm
@@ -12,11 +12,14 @@ CURR_DIR = os.path.abspath(os.path.dirname(__file__))
 # The default data directory.
 DATA_DIR = os.path.join(CURR_DIR, "data")
 
-# The run directory
-RUN_NAME = "run"
-RUN_DIR = os.path.join(CURR_DIR, RUN_NAME)
+RUN_DIR_NAME = "testrun"
 
-USAGE = join(CURR_DIR, "usage.sh")
+# The run directory
+RUN_DIR = os.path.expanduser(f"~/.bio/")
+
+os.makedirs(RUN_DIR, exist_ok = True)
+
+USAGE = join(DATA_DIR, "usage.sh")
 
 def parse_commands(text, flag=False):
     lines = text.splitlines()
@@ -29,7 +32,7 @@ def parse_commands(text, flag=False):
     return lines
 
 
-def run(cmd):
+def shell(cmd):
     proc = subprocess.run(cmd, shell=True, stdout=PIPE, stderr=PIPE)
 
     if proc.returncode != 0:
@@ -43,22 +46,24 @@ def run(cmd):
 
 
 INIT = f"""    
-    ln -s ../data/alias.txt
-    ln -s ../data/align_input.fa
-    ln -s ../data/mafft.fa
-    ln -s ../data/file1.txt
-    ln -s ../data/file2.txt
+    ln -s {CURR_DIR}/data/alias.txt
+    ln -s {CURR_DIR}/data/align_input.fa
+    ln -s {CURR_DIR}/data/mafft.fa
+    ln -s {CURR_DIR}/data/file1.txt
+    ln -s {CURR_DIR}/data/file2.txt
 """
 
 
-def run_setup():
-    os.chdir(CURR_DIR)
-    run(f"rm -rf {RUN_NAME}")
-    run(f"mkdir {RUN_NAME}")
+def test_setup():
     os.chdir(RUN_DIR)
+    shell(f"rm -rf {RUN_DIR_NAME}")
+    shell(f"mkdir {RUN_DIR_NAME}")
+    os.chdir(RUN_DIR_NAME)
+
     init = parse_commands(INIT)
     for cmd in init:
-        run(cmd)
+        shell(cmd)
+
 
 def print_diff(expect, result):
     """
@@ -72,7 +77,7 @@ def print_diff(expect, result):
 
 def main():
 
-    run_setup()
+    test_setup()
 
     text = open(USAGE).read()
     cmds = parse_commands(text, flag=True)
@@ -86,8 +91,8 @@ def main():
     for cmd in cmds:
         fname = cmd.split(">")[1].strip()
         try:
-            run(cmd)
-            result = open(join(RUN_DIR, fname)).read()
+            shell(cmd)
+            result = open(join(RUN_DIR, RUN_DIR_NAME, fname)).read()
             expect = open(join(DATA_DIR, fname)).read()
         except Exception as exc:
             print(f"\n\n(cd test/data && {cmd})\n")
@@ -101,5 +106,9 @@ def main():
             sys.exit(1)
 
     print (f"# All tests completed")
-if __name__ == '__main__':
+
+def run():
     plac.call(main)
+
+if __name__ == '__main__':
+    run()
