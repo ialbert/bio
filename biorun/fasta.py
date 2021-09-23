@@ -24,7 +24,6 @@ def run(start='1', end='', type_='', id_='', name='', gene='',
 
     if frame < 1:
         start = -frame
-
         revcomp = True
 
     convert.run(protein=protein, translate=translate, start=start,

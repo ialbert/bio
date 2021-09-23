@@ -315,14 +315,14 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     # Apply additional filters.
     recs = filter(type_selector(ftype), recs)
 
+    # Reverse complement the sequence
+    recs = map(reverse_complement(revcomp), recs)
+
     # Slicing depends on output type.
     if fasta:
         recs = map(sequence_slicer(start=start, end=end), recs)
     else:
         recs = filter(interval_selector(start=start, end=end), recs)
-
-    # Reverse complement the sequence
-    recs = map(reverse_complement(revcomp), recs)
 
     # Apply the translation
     recs = map(translate_recs(translate), recs)
