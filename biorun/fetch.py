@@ -138,8 +138,11 @@ def format_results(stream, ftype=None):
 
 
 def format_runinfo(stream, ftype=None):
-    if type(stream) == bytes:
-        utils.error(f"Invalid stream type: {type(stream)}")
+
+    if hasattr(stream, 'peek'):
+        logger.debug(stream.read())
+        logger.error("no valid results returned")
+        sys.exit(1)
 
     # Get the CSV header.
     reader = csv.DictReader(stream)
