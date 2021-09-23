@@ -1,4 +1,4 @@
-# `uniq.py`: find unique elements
+# uniq.py: find unique elements
 
 The need to find unique elements within columns of different files is very common.
 

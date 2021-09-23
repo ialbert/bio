@@ -1,4 +1,4 @@
-import json
+import csv
 import re
 import sys
 
@@ -17,6 +17,8 @@ from urllib.error import HTTPError
 import requests
 
 Entrez.email = 'foo@foo.com'
+
+logger = utils.logger
 
 
 #
@@ -94,36 +96,91 @@ def is_ncbi_protein(text):
     return cond
 
 
-def fetch_runinfo(ids, db, rettype='runinfo', retmode='csv', limit=None):
-
+def efetch(ids, db, rettype, retmode, limit=None):
+    """
+    Fetches data from GenBank
+    """
     ids = ",".join(ids) if type(ids) == list else ids
 
     try:
-        search = Entrez.esearch(db=db, term=ids, usehistory="y")
-        results= Entrez.read(search)
+        stream = Entrez.efetch(db='sra', id=ids, rettype=rettype, retmode=retmode, retmax=limit)
+    except HTTPError as exc:
+        utils.error(f"HTTP Error: ids={ids}, db={db}, rettype={rettype}, retmode={retmode}, exc={exc}")
+        stream = None
+
+    return stream
+
+
+def esearch_and_efetch(term, db, rettype, retmode, limit=None):
+    """
+    Search piped into a fetch
+    """
+    try:
+        search = Entrez.esearch(db=db, term=term, usehistory="y", retmax=limit)
+        results = Entrez.read(search)
         webenv = results["WebEnv"]
         query_key = results["QueryKey"]
-        stream = Entrez.efetch(db=db, webenv=webenv, query_key=query_key, retmax=limit, rettype=rettype, retmode=retmode)
+        logger.debug(f"query={results}")
+        stream = Entrez.efetch(db=db, webenv=webenv, query_key=query_key, retmax=limit, rettype=rettype,
+                               retmode=retmode)
     except HTTPError as exc:
-        utils.error(f"Accession or database may be incorrect: {ids}, {db}, {rettype}, {retmode}: {exc}")
+        utils.error(f"HTTP Error: term={term}, db={db}, rettype={rettype}, retmode={retmode}, exc={exc}")
+        stream = None
 
-    # The output of this command can repeat the header and may contain
-    # empty lines. So fixing up NCBIs inconsistency here.
-    header = next(stream)
-    print (header, end='')
+    return stream
 
-    stream = filter(lambda x: x.strip(), stream)
-    stream = filter(lambda x: not x.startswith("Run"), stream)
+
+def format_results(stream, ftype=None):
     for line in stream:
         print(line, end='')
+    return
 
 
-def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text'):
 
+def format_runinfo(stream, ftype=None):
+    if type(stream) == bytes:
+        utils.error(f"Invalid stream type: {type(stream)}")
+
+    # Get the CSV header.
+    reader = csv.DictReader(stream)
+
+    # Output may contain errors, empty rows and
+    items = filter(lambda x: len(x.get("Run")) > 5, reader)
+
+    if ftype == 'tsv':
+        writer = csv.DictWriter(sys.stdout, delimiter="\t", fieldnames=reader.fieldnames)
+        writer.writeheader()
+        writer.writerows(items)
+    if ftype == 'csv':
+        writer = csv.DictWriter(sys.stdout, fieldnames=reader.fieldnames)
+        writer.writeheader()
+        writer.writerows(items)
+
+    else:
+        for elem in items:
+            # print(elem)
+            g = elem.get
+            data = {
+                "Project": f"{g('BioProject')}",
+                "Run": g('Run'),
+                "Library": f"{g('LibraryLayout')}, {g('LibrarySource')}, {g('LibraryStrategy')}",
+                "Origin": f"{g('ScientificName')} ({g('TaxID')})",
+                "Reads": f"{int(g('spots')):,d} (avgLength={g('avgLength')})",
+                "Size": f"{int(g('size_MB')):d}MB",
+                "Instr": f"{g('Platform')} ({g('Model')})",
+                "Date": f"{g('LoadDate')}",
+
+            }
+            print("")
+            for key, value in data.items():
+                print(f"{key}\t{value}")
+        print ("")
+
+def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
     ids = ",".join(ids) if type(ids) == list else ids
 
     try:
-        stream = Entrez.efetch(db=db, id=ids, rettype=rettype, retmode=retmode)
+        stream = Entrez.efetch(db=db, id=ids, rettype=rettype, retmode=retmode, retmax=limit)
         stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5, leave=False)
     except HTTPError as exc:
         utils.error(f"Accession or database may be incorrect: {ids}, {db}, {rettype}, {retmode}: {exc}")
@@ -154,10 +211,10 @@ def fetch_ensembl(ids, ftype='genomic'):
 
 @plac.pos("acc", "accession numbers")
 @plac.opt("db", "database", choices=["nuccore", "protein"])
-@plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb"])
+@plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default"])
 @plac.opt("type_", "get CDS/CDNA (Ensembl only)")
 @plac.opt("limit", "limit results")
-def run(db="nuccore", format_="gbwithparts", type_='', limit=None, *acc):
+def run(db="nuccore", type_='', format_='', limit=None, *acc):
     ids = []
     for num in acc:
         ids.extend(num.split(","))
@@ -169,13 +226,20 @@ def run(db="nuccore", format_="gbwithparts", type_='', limit=None, *acc):
     # Dealing with SRR numbers
     srr = list(map(is_srr, ids))
     if all(srr):
-        fetch_runinfo(db='sra', ids=ids, limit=limit)
+        # Default output is text format.
+        ftype = format_ or 'text'
+        stream = efetch(ids=ids, db='sra', rettype='runinfo', retmode='csv', limit=limit)
+        format_runinfo(stream, ftype=ftype)
         return
 
     # Dealing with PRJN numbers
     prn = list(map(is_bioproject, ids))
     if all(prn):
-        fetch_runinfo(db='sra', ids=ids, limit=limit)
+        for term in ids:
+            # Default is CSV
+            ftype = format_ or 'csv'
+            stream = esearch_and_efetch(term=term, db='sra', rettype='runinfo', retmode='csv', limit=limit)
+            format_runinfo(stream, ftype=ftype)
         return
 
     # Dealing with Ensembl
@@ -195,8 +259,7 @@ def run(db="nuccore", format_="gbwithparts", type_='', limit=None, *acc):
 
     # Fetch the ids
     ids = ",".join(ids)
-    fetch_ncbi(db=db, rettype=format_, ids=ids)
-
+    fetch_ncbi(db=db, rettype="gbwithparts", ids=ids)
 
 if __name__ == '__main__':
     # id = "AY851612",

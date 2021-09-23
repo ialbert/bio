@@ -1,4 +1,4 @@
-# Welcome to `bio` {#bio-intro}
+# Welcome to bio {#bio-intro}
 
 If you've ever done bioinformatics you know how even seemingly straightforward tasks often require multiple steps, searching the web, reading documentation, clicking around various websites that all together can slow down your progress.
 

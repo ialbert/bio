@@ -35,15 +35,17 @@ The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 To get a Genbank nucleotides by accession number run:
 
+    # Obtains nucleotidedata from GenBank
 	bio fetch NC_045512 | head
 
-`fetch` automatically recognizes protein accessions and will connect to protein database, no further configuration is needed, like so
+`bio fetch` automatically recognizes protein accessions and will connect to protein database, no further configuration is needed, like so
 
-    # This command download a protein sequence.
+    # Obtains protein data from GenBank
 	bio fetch YP_009724390 | head
 
 You may also list multiple accession numbers at once:
 
+    # Obtains mulitple entries from GenBank
     bio fetch NC_045512 MN996532 > genomes.gb
 
 For more advanced command line data access options to NCBI see Entrez Direct
@@ -77,6 +79,40 @@ These commands fetch data in FASTA formats. For more information see the Ensembl
 
 And the [enaBrowserTools: interface with the ENA web services to download data from ENA][ena]
 
+## Fetch SRA run information
+
+[sra]:https://www.ncbi.nlm.nih.gov/sra
+
+The following command retrievs JSON data that describes sequencing data deposited at the [Short Read Archive][sra]
+
+    bio fetch SRR1972976
+
+produces:
+
+    Project PRJNA257197
+    Run	    SRR1972976
+    Library PAIRED, TRANSCRIPTOMIC, RNA-Seq
+    Origin  Zaire ebolavirus (186538)
+    Reads   8,345,287 (avgLength=202)
+    Size    997MB
+    Instr   ILLUMINA (Illumina HiSeq 2500)
+    Date    2015-04-14 13:48:38
+
+the command `bio fetch SRR1972976` is equivalent to running and transforming the output of:
+
+    efetch -db sra -id SRR1972976 -format runinfo
+
+Other usecases:
+
+    # Get multiple SRR numbers.
+    bio fetch SRR14575325 SRR1972919
+
+    # Comma or tab separated output.
+    bio fetch SRR1972976 --format csv
+
+    # Tab separated output.
+    bio fetch SRR1972976 --format tsv
+
 ## Fetch run information from BioProject id
 
 [PRJNA257197]:https://www.ncbi.nlm.nih.gov/bioproject/PRJNA257197/
@@ -85,7 +121,7 @@ The following command produces a comma separated run information associated with
 
     bio fetch PRJNA257197 --limit 1
 
-will produce the comma separated output:
+will produce the comma separated output with multiple columns:
 
     Run,ReleaseDate,LoadDate,spots,bases,spots_with_mates,avgLength,size_MB,AssemblyName,download_path,Experiment,LibraryName,LibraryStrategy,LibrarySelection,LibrarySource,LibraryLayout,InsertSize,InsertDev,Platform,Model,SRAStudy,BioProject,Study_Pubmed_id,ProjectID,Sample,BioSample,SampleType,TaxID,ScientificName,SampleName,g1k_pop_code,source,g1k_analysis_group,Subject_ID,Sex,Disease,Tumor,Affection_Status,Analyte_Type,Histological_Type,Body_Site,CenterName,Submission,dbgap_study_accession,Consent,RunHash,ReadHash
     SRR1972976,2015-04-14 13:53:37,2015-04-14 13:48:38,8345287,1685747974,8345287,202,997,,https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-6/SRR1972976/SRR1972976.1,SRX994253,W220.0.l1,RNA-Seq,cDNA,TRANSCRIPTOMIC,PAIRED,0,0,ILLUMINA,Illumina HiSeq 2500,SRP045416,PRJNA257197,2,257197,SRS908478,SAMN03253746,simple,186538,Zaire ebolavirus,W220.0,,,,,,,no,,,,,BI,SRA178666,,public,6A26DBAB1096535FCB94FCE9E1AE8AD8,FB20A0391119E532EA03F374A16EB508
@@ -102,23 +138,6 @@ prints:
 The `bio fetch PRJNA257197 --limit 1` command is equivalent to running `entrez-direct` construct:
 
     esearch -db sra -query PRJNA257197 | efetch -stop 1 -format runinfo
-
-## Fetch SRA run information
-
-[sra]:https://www.ncbi.nlm.nih.gov/sra
-
-The following command retrievs JSON data that describes sequencing data deposited at the [Short Read Archive][sra]
-
-    bio fetch SRR1972976 | csvcut -c Run,ScientificName,TaxID
-
-produces:
-
-    Run,ScientificName,TaxID
-    SRR1972976,Zaire ebolavirus,186538
-
-the command `bio fetch SRR1972976` is equivalent to running
-
-    efetch -db sra -id SRR1972976 -format runinfo
 
 ## Tools with similar utility {#fetch_similar}
 

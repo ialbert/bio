@@ -1,4 +1,4 @@
-# `bio`: general tips {#bio-tips}
+# bio: general tips {#bio-tips}
 
 Substantial effort has been devoted to making the command line more error-tolerant and user friendly.
 
@@ -8,7 +8,7 @@ Each command, when invoked with no parameters, will produce help:
 
     bio
 
-## Many commands take standard input
+## All commands can read the standard input
 
     bio fetch AF086833  KJ660346 > genome.gb
 
@@ -20,6 +20,14 @@ or if the file `ids.txt` contains:
 you can run:
 
     cat ids.txt | bio fetch > genome.gb
+
+## Some commands can create sequences on the fly
+
+    bio align GATCA GATTACA
+
+or
+
+    bio fasta GATTACA --translate
 
 ## Parameter order does not matter
 

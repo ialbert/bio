@@ -1,4 +1,4 @@
-# `comm.py`: find common values
+# comm.py: find common values
 
 The need to find identical elements within columns of different files is surprisingly common (pun intended).
 

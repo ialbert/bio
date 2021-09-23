@@ -30,6 +30,9 @@ bio fasta genomes.gb --end 10 --type CDS > cds.fa
 # Translate the features.
 bio fasta genomes.gb --type CDS --translate > translate.fa
 
+# Translate in a frame
+bio fasta GATTACA --frame -3 --translate > frame.fa
+
 # Extract the proteins.
 bio fasta genomes.gb  --protein > protein.fa
 
@@ -107,10 +110,10 @@ cat file1.txt file2.txt | uniq.py -f 2 -d ',' > uniq1.txt
 cat file1.txt file2.txt | uniq.py -c -f 2 -d ',' > uniq3.txt
 
 # Get data from SRA (can be spotty)
-#bio fetch SRR1972976 > srr.txt
+bio fetch SRR1972976 > srr.txt
 
 # Get bioproject information
-#bio fetch PRJNA257197 --limit 1 > prjn.txt
+bio fetch PRJNA257197 --limit 1 > prjn.txt
 
 # Access a transcript from ensembl.
-#bio fetch ENST00000288602  > enst.txt
+bio fetch ENST00000288602  > enst.txt
