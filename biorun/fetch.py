@@ -136,6 +136,11 @@ def format_results(stream, ftype=None):
     return
 
 
+def safe_int(text):
+    try:
+        return int(text)
+    except ValueError:
+        return 0
 
 def format_runinfo(stream, ftype=None):
 
@@ -163,13 +168,22 @@ def format_runinfo(stream, ftype=None):
         for elem in items:
             # print(elem)
             g = elem.get
+
+            # Human friendly size
+            size = safe_int(g('size_MB'))
+            if size < 1024:
+                size = f"{size:,d} MB"
+            else:
+                size = size/1024
+                size = f"{size:0.1f} GB"
+
             data = {
                 "Project": f"{g('BioProject')}",
                 "Run": g('Run'),
                 "Library": f"{g('LibraryLayout')}, {g('LibrarySource')}, {g('LibraryStrategy')}",
                 "Origin": f"{g('ScientificName')} ({g('TaxID')})",
                 "Reads": f"{int(g('spots')):,d} (avgLength={g('avgLength')})",
-                "Size": f"{int(g('size_MB')):d}MB",
+                "Size": f"{size}",
                 "Instr": f"{g('Platform')} ({g('Model')})",
                 "Date": f"{g('LoadDate')}",
 

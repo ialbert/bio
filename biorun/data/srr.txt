@@ -4,7 +4,7 @@ Run	SRR1972976
 Library	PAIRED, TRANSCRIPTOMIC, RNA-Seq
 Origin	Zaire ebolavirus (186538)
 Reads	8,345,287 (avgLength=202)
-Size	997MB
+Size	997 MB
 Instr	ILLUMINA (Illumina HiSeq 2500)
 Date	2015-04-14 13:48:38
 
