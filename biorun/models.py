@@ -243,13 +243,13 @@ def format_diffs(alns):
                 size = 1
             elif DEL in info:
                 info = DEL
-                base = base[1:] if pos != '1' else base[:1]
+                base = base[1:]
                 alt = '-'
                 size = len(base)
 
             elif INS in info:
                 info = INS
-                alt = alt[1:] if pos != '1' else alt[:1]
+                alt = alt[1:]
                 base = '-'
                 size = len(alt)
 
