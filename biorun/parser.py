@@ -208,13 +208,19 @@ def guess_name(ftype, annot):
         desc = first(annot, "locus_tag")
     elif ftype == 'CDS':
         name = first(annot, "protein_id")
-        desc = first(annot, "product")
+        gene = first(annot, "gene")
+        prod = first(annot, "product")
+        desc = f"gene {gene}, {prod}"
     elif ftype == 'mRNA':
         name = first(annot, "transcript_id")
-        desc = ftype
+        prod = first(annot, "product")
+        gene = first(annot, "gene")
+        desc = f"{gene}, {prod}"
     elif ftype == "exon":
-        name = first(annot, "gene")
-        uid = next_count(ftype)
+        name = gene = first(annot, "gene")
+        number = first(annot, "number") or 1
+        uid = f"{gene}-{ftype}-{number}"
+        desc = f"{gene}"
     else:
         name = next_count(ftype)
         desc = first(annot, "product")

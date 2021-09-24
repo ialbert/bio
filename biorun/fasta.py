@@ -8,7 +8,7 @@ from biorun import convert
 @plac.opt("end", "end coordinate")
 @plac.opt("type_", "filter for a feature type")
 @plac.opt("id_", "filter for a sequence id")
-@plac.opt("name", "filter for a sequence name")
+@plac.opt("match", "regexp match on a name")
 @plac.opt("gene", "filter for a gene name", abbrev='g')
 @plac.flg("protein", "operate on the protein sequences", abbrev='p')
 @plac.flg("translate", "translate DNA ", abbrev='T')
@@ -16,7 +16,7 @@ from biorun import convert
 @plac.opt("alias", "remap sequence ids")
 @plac.opt("frame", "reading frame", type=int, choices=[1,2,3,-1,-2,-3], abbrev='F')
 @plac.pos("fnames", "input files")
-def run(start='1', end='', type_='', id_='', name='', gene='',
+def run(start='1', end='', type_='', id_='', match='', gene='',
         alias='', protein=False, translate=False, revcomp=False, frame=1, *fnames):
 
     if frame > 1:
@@ -28,5 +28,5 @@ def run(start='1', end='', type_='', id_='', name='', gene='',
 
     convert.run(protein=protein, translate=translate, start=start,
                 end=end, type_=type_, id_=id_, revcomp=revcomp,
-                name=name, gene=gene, alias=alias, fasta=True, fnames=fnames)
+                match=match, gene=gene, alias=alias, fasta=True, fnames=fnames)
 

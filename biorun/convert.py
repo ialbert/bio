@@ -2,10 +2,11 @@
 Converts across formats
 """
 import gzip
-import os
+import os, re
 import sys
 from collections import OrderedDict, defaultdict
 from itertools import count, tee
+
 from Bio.SeqIO.FastaIO import FastaIterator
 
 from biorun import utils, parser
@@ -99,6 +100,17 @@ def name_selector(name):
 
     def func(rec):
         return rec.id in names if name else True
+
+    return func
+
+def regex_selector(patt):
+    cpatt = re.compile(patt)
+    def func(rec):
+        if patt:
+            cond = cpatt.search(rec.id) or cpatt.search(rec.description)
+            return cond
+        else:
+            return True
 
     return func
 
@@ -258,7 +270,7 @@ def gff_formatter(rec):
 
 
 def run(features=False, protein=False, translate=False, fasta=False, revcomp=False,
-        start='1', end=None, type_='', id_='', name='', gene='', alias=None, fnames=[]):
+        start='1', end=None, type_='', id_='', match='', gene='', alias=None, fnames=[]):
     """
     Converts data to different formats.
     """
@@ -292,17 +304,22 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
 
     recs = map(remapper, recs)
 
-    # Keep all records when selecting by sequence id
-    gff = not fasta
-    if not seqid:
+    if seqid or match:
+
+        recs = filter(regex_selector(match), recs)
+
+        # Filter by seqid.
+        recs = filter(seqid_selector(seqid), recs)
+
+    else:
+        # Keep all records when selecting by sequence id
+        gff = not fasta
+
         feature_selection = (gene or type_ or protein or features or gff)
         if feature_selection:
             recs = filter(remove_source, recs)
         else:
             recs = filter(keep_source, recs)
-
-    # Filter by seqid.
-    recs = filter(seqid_selector(seqid), recs)
 
     # Filters gene and CDS
     recs = filter(gene_selector(gene), recs)

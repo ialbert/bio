@@ -79,7 +79,6 @@ def is_ncbi_nucleotide(text):
     else:
         num1, num2 = len(code), len(digits)
         cond = (num1 == 1 and num2 == 5) or (num1 == 2 and num2 == 6) or (num1 == 3 and num2 == 8)
-
     return cond
 
 
@@ -231,7 +230,7 @@ def fetch_ensembl(ids, ftype='genomic'):
 @plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default"])
 @plac.opt("type_", "get CDS/CDNA (Ensembl only)")
 @plac.opt("limit", "limit results")
-def run(db="nuccore", type_='', format_='', limit=None, *acc):
+def run(db="", type_='', format_='', limit=None, *acc):
     ids = []
     for num in acc:
         ids.extend(num.split(","))
@@ -274,6 +273,13 @@ def run(db="nuccore", type_='', format_='', limit=None, *acc):
     if any(prots) and any(nucs):
         utils.error(f"input mixes protein and nucleotide entries: {ids}")
 
+    # Select protein database
+    if all(prots):
+        default = "protein"
+    else:
+        default = "nuccore"
+
+    db = default if not db else db
     # Fetch the ids
     ids = ",".join(ids)
     fetch_ncbi(db=db, rettype="gbwithparts", ids=ids)

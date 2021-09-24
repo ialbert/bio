@@ -12,8 +12,8 @@ set -uex
 # Get data from NCBI
 bio fetch NC_045512 MN996532 > genomes.gb
 
-# Parse the standard input.
-echo NC_045512 | bio fetch > sars2.gb
+# Get a protein.
+bio fetch YP_009724390 > prot.fa
 
 # Selecting by gene id
 bio fasta genomes.gb --type gene --id N --end 10 > ids.fa
