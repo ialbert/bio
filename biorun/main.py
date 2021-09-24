@@ -20,16 +20,15 @@ from biorun import VERSION
 # name = (module.function, automatic_help_flag, command_help)
 #
 SUB_COMMANDS = dict(
-    explain=("biorun.ontology.run", False, "explain biological terms"),
-    fetch=("biorun.fetch.run", True, "download GenBank data"),
-    fasta=("biorun.fasta.run", True, "convert GenBank to FASTA"),
-    gff=("biorun.gff.run", True, "convert GenBank to GFF"),
-    taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
-    data=("biorun.meta.run", False, "download metadata by taxonomy ID"),
+    fetch=("biorun.fetch.run", True, "download GenBank/ENSEMBL data"),
+    fasta=("biorun.fasta.run", True, "convert to FASTA"),
+    gff=("biorun.gff.run", True, "convert to GFF"),
     align=("biorun.align.run", True, "align sequences"),
-    format=("biorun.format.run", True, "convert aligned fasta to VCF"),
+    format=("biorun.format.run", True, "reformat aligned fasta"),
+    taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
+    explain=("biorun.ontology.run", False, "explain biological terms"),
+    meta=("biorun.meta.run", False, "download metadata by taxonomy ID"),
     mygene=("biorun.mygene.run", False, "connect to mygene interface"),
-
 )
 
 
@@ -49,15 +48,15 @@ bio: making bioinformatics fun again
 
 Examples:
 
-  bio explain exon 
-  bio search HAD3 -fields refseq
   bio fetch NC_045512 MN996532 > genomes.gb
   bio fasta genomes.gb --gene S 
   bio fasta genomes.gb --gene S | bio align
   bio gff genomes.gb --type CDS
   bio taxon 2697049 --lineage
   bio align GATTACA GATCA  
-
+  bio explain exon 
+  bio mygene HAD3 -fields refseq
+ 
 See also: https://www.bioinfo.help
 
 Version: {VERSION}

@@ -14,7 +14,7 @@ The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 ## Rationale
 
-`bio fetch` was written to provide simpler data access. As in most cases the accession numbers uniquely define the data type `bio fetch` can automatically resolves the correct destination and will download data in the most appropriate format. Examples:
+`bio fetch` was written to provide simpler data access. As in most cases the accession numbers uniquely define the data type `bio fetch` can automatically resolve the correct destination and will download data in the most appropriate format. Examples:
 
     # Obtains nucleotidedata from GenBank
     bio fetch NC_045512

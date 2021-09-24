@@ -8,13 +8,9 @@ Installation:
 
     pip install bio --upgrade
 
-## Download prebuild databases
-
 Some tasks (`bio taxon`, `bio explain`) need access to additional data. Install the required databases with:
 
     bio --download
-
-## Test the code
 
 To execute a batch of tests run
 

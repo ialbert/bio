@@ -1,6 +1,6 @@
 # bio format: summarize alignments {#bio-format}
 
-Note: the inputs for this tool must be so in the so called "aligned" FASTA. The sequences need to arranged to contain gaps in the places of insertions and deletions. For example:
+Note: the inputs for this tool must be in the so called "aligned" FASTA. The sequences need to arranged to contain gaps in the places of insertions and deletions. For example:
 
 
     >seq1
