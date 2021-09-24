@@ -73,6 +73,7 @@ def find_variants(query, target):
     # stream = islice(stream, 50000)
 
     collect = []
+    seqa = seqb = ''
     variants = []
     lastop = None
     pos = 0
@@ -84,52 +85,60 @@ def find_variants(query, target):
 
         if a == b:
             # Matches
-            pos += 1
             op = MATCH
 
         elif a == '-':
-            # Insertion into query
-            pos += 1
+            # Deletion from query.
             op = DEL
 
         elif b == '-':
-            # Deletion from query.
+            # Insertion into query.
             op = INS
 
         elif a != b:
             # Mismatching bases.
-            pos += 1
             op = SNP
-
         else:
             raise Exception(f"Should never hit this (sanity check): {a} vs {b}")
 
         # Collect variants when the operator changes.
         if lastop != op:
-            if collect:
-                if lastop != MATCH:
-                    variants.append((lastop, collect))
-            # Reset the collector
-            collect = []
-
-        # Collect the positions that have been visited
-        collect.append((idx, pos, a, b))
+            # Collect subsequences when we see a match only
+            if op == MATCH:
+                if seqa:
+                    variants.append((None, seqa, seqb))
+                variants.append((MATCH, a, b))
+                seqa = seqb = ''
 
         # Keep track of the last previous operation
         lastop = op
 
+        # Collect all the non matching sequences in between
+        if op != MATCH:
+            seqa += a
+            seqb += b
+
     # Collect last element
-    if collect:
-        variants.append((lastop, collect))
+    if seqa:
+        variants.append((None, seqa, seqb))
 
-    # This is necessary because consecutive variants may overlap SNP + INSERT for example
-    vcfdict = dict()
-
-    for key, elems in variants:
+    last = ''
+    for key, seqa, seqb in variants:
 
         if key == MATCH:
+            last = seqa
             continue
 
+        print(key, seqa, seqb)
+
+        a = ''.join(c for c in seqa if c != '-')
+        b = ''.join(c for c in seqb if c != '-')
+
+        ftype = None
+
+
+        print(a, b, ftype)
+        continue
         # Lenght of variant
         size = len(elems)
 
@@ -184,6 +193,8 @@ def find_variants(query, target):
             value = [target.name, str(pos), name, ref, alt, ".", "PASS", info, "GT", "1"]
             vcfdict[pos] = value
 
+    sys.exit()
+
     return vcfdict
 
 
@@ -225,8 +236,8 @@ def format_table(alns, sep="\t"):
 
 
 def format_diffs(alns):
-    #header = "pos info query change target"
-    #print("\t".join(header.split()))
+    # header = "pos info query change target"
+    # print("\t".join(header.split()))
 
     for idx, aln in enumerate(alns):
 
