@@ -295,13 +295,16 @@ def run(db="", type_='', format_='', limit=None, *acc):
     # Fetch the ids
     ids = ",".join(ids)
 
+    # Set a default.
+    format_ = "gbwithparts" if not format_ else format_
+
     if format_ == "gff":
         fetch_ncbi_gff(ids=ids)
     elif format_ in ("genbank", "fasta", "gbwithparts"):
         rettype = "gbwithparts" if format_ == "genbank" else format_
         fetch_ncbi(db=db, rettype=rettype, ids=ids)
     else:
-        utils.error("Not a valid format for this accession number")
+        utils.error(f"Not a valid format for this accession number: {format_}")
 
 
 if __name__ == '__main__':
