@@ -141,8 +141,8 @@ def safe_int(text):
     except ValueError:
         return 0
 
-def format_runinfo(stream, ftype=None):
 
+def format_runinfo(stream, ftype=None):
     if hasattr(stream, 'peek'):
         logger.debug(stream.read())
         logger.error("no valid results returned")
@@ -173,7 +173,7 @@ def format_runinfo(stream, ftype=None):
             if size < 1024:
                 size = f"{size:,d} MB"
             else:
-                size = size/1024
+                size = size / 1024
                 size = f"{size:0.1f} GB"
 
             data = {
@@ -190,7 +190,19 @@ def format_runinfo(stream, ftype=None):
             print("")
             for key, value in data.items():
                 print(f"{key}\t{value}")
-        print ("")
+        print("")
+
+
+def fetch_ncbi_gff(ids, db="nuccore"):
+    url = "https://www.ncbi.nlm.nih.gov/sviewer/viewer.cgi"
+    params = dict(db=db, report='gff3', id=ids)
+    try:
+        r = requests.get(url, params=params)
+        for chunk in r.iter_content(chunk_size=1024):
+            text = chunk.decode("utf8")
+            print(text)
+    except Exception as exc:
+        utils.error(f"{exc}")
 
 def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
     ids = ",".join(ids) if type(ids) == list else ids
@@ -227,7 +239,7 @@ def fetch_ensembl(ids, ftype='genomic'):
 
 @plac.pos("acc", "accession numbers")
 @plac.opt("db", "database", choices=["nuccore", "protein"])
-@plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default"])
+@plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default", "gff"])
 @plac.opt("type_", "get CDS/CDNA (Ensembl only)")
 @plac.opt("limit", "limit results")
 def run(db="", type_='', format_='', limit=None, *acc):
@@ -282,7 +294,15 @@ def run(db="", type_='', format_='', limit=None, *acc):
     db = default if not db else db
     # Fetch the ids
     ids = ",".join(ids)
-    fetch_ncbi(db=db, rettype="gbwithparts", ids=ids)
+
+    if format_ == "gff":
+        fetch_ncbi_gff(ids=ids)
+    elif format_ in ("genbank", "fasta", "gbwithparts"):
+        rettype = "gbwithparts" if format_ == "genbank" else format_
+        fetch_ncbi(db=db, rettype=rettype, ids=ids)
+    else:
+        utils.error("Not a valid format for this accession number")
+
 
 if __name__ == '__main__':
     # id = "AY851612",

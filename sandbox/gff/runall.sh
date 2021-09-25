@@ -8,7 +8,7 @@ GBK=$ACC.gb
 XML=$ACC.xml
 
 # The official SARS-COV-2 annotation
-URL='https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/009/858/895/GCF_009858895.2_ASM985889v3/GCF_009858895.2_ASM985889v3_genomic.gff.gz'
+#URL='https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/009/858/895/GCF_009858895.2_ASM985889v3/GCF_009858895.2_ASM985889v3_genomic.gff.gz'
 
 
 # Store the output here.
