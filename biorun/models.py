@@ -142,7 +142,7 @@ def find_variants(query, target):
             for i, a, b in zip(count(), seqa, seqb):
                 info = f"TYPE={SNP}"
                 name = f"{pos + i + 1}_{SNP}_{b}/{a}"
-                row = [target.name, str(pos + i + 1), name, b, a, "PASS", info, "GT", "1"]
+                row = [target.name, str(pos + i + 1), name, b, a, ".", "PASS", info, "GT", "1"]
                 store.append(row)
             continue
 
@@ -173,7 +173,7 @@ def find_variants(query, target):
             info = f"TYPE={SUB}"
             name = f"{pos}_{SUB}_{len(ref)-1}"
 
-        row = [target.name, str(pos), name, ref, alt, "PASS", info, "GT", "1"]
+        row = [target.name, str(pos), name, ref, alt, ".", "PASS", info, "GT", "1"]
 
         store.append(row)
 
