@@ -3,6 +3,7 @@ from itertools import *
 
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
+from pprint import pprint
 
 
 class Alignment:
@@ -57,7 +58,7 @@ class Param:
         self.__dict__.update(kwds)
 
 
-MATCH, SNP, INS, DEL = 'M', 'SNP', 'INS', 'DEL'
+MATCH, SNP, INS, DEL, VAR, SUB = 'MTC', 'SNP', 'INS', 'DEL', 'VAR', 'SUB'
 
 
 def find_variants(query, target):
@@ -72,8 +73,7 @@ def find_variants(query, target):
 
     # stream = islice(stream, 50000)
 
-    collect = []
-    seqa = seqb = ''
+    vara = varb = ''
     variants = []
     lastop = None
     pos = 0
@@ -104,104 +104,86 @@ def find_variants(query, target):
         # Collect variants when the operator changes.
         if lastop != op:
             # Collect subsequences when we see a match only
-            if op == MATCH:
-                if seqa:
-                    variants.append((None, seqa, seqb))
-                variants.append((MATCH, a, b))
-                seqa = seqb = ''
+            if op == MATCH or lastop == MATCH:
+                if vara:
+                    label = lastop if lastop == MATCH else VAR
+                    variants.append((label, pos, vara, varb))
+                    pos += len(varb) - varb.count('-')
+                vara = varb = ''
 
         # Keep track of the last previous operation
         lastop = op
-
-        # Collect all the non matching sequences in between
-        if op != MATCH:
-            seqa += a
-            seqb += b
+        vara += a
+        varb += b
 
     # Collect last element
-    if seqa:
-        variants.append((None, seqa, seqb))
+    if vara:
+        variants.append((lastop, pos, vara, varb))
 
-    last = ''
-    for key, seqa, seqb in variants:
+    last_a, last_b = None, None
+
+    store = []
+    for key, pos, seqa, seqb in variants:
 
         if key == MATCH:
-            last = seqa
+            info = f"TYPE={MATCH}"
+            name = f"{pos + 1}_{seqb}/{seqa}"
+            row = [target.name, str(pos+1), name, seqb, seqa, "PASS", info, "GT", "1"]
+            last_a = seqa[-1]
+            last_b = seqb[-1]
+            #store.append(row)
             continue
 
-        print(key, seqa, seqb)
+        gaps_a = seqa.count("-")
+        gaps_b = seqb.count("-")
 
-        a = ''.join(c for c in seqa if c != '-')
-        b = ''.join(c for c in seqb if c != '-')
+        if not gaps_a and not gaps_b:
+            # SNPS
+            for i, a, b in zip(count(), seqa, seqb):
+                info = f"TYPE={SNP}"
+                name = f"{pos + i + 1}_{SNP}_{b}/{a}"
+                row = [target.name, str(pos + i + 1), name, b, a, "PASS", info, "GT", "1"]
+                store.append(row)
+            continue
 
-        ftype = None
+        alt = seqa.replace("-", "")
+        ref = seqb.replace("-", "")
 
+        if last_b:
+            alt = last_a + alt
+            ref = last_b + ref
+        else:
+            pos = 1
+            str1 = str(query.seq).replace("-", "")
+            str2 = str(target.seq).replace("-", "")
+            alt = alt + str1[len(alt)]
+            ref = ref + str2[len(ref)]
 
-        print(a, b, ftype)
-        continue
-        # Lenght of variant
-        size = len(elems)
+        if len(ref) == 1:
+            # Insertion
+            info = f"TYPE={INS}"
+            name = f"{pos}_{INS}_{len(alt)-1}"
 
-        idx, pos = elems[0][0], elems[0][1]
+        elif len(alt) == 1:
+            # Deletion
+            info = f"TYPE={DEL}"
+            name = f"{pos}_{DEL}_{len(ref)-1}"
 
-        # Query starts with insertion
-        pos = 1 if pos < 1 else pos
+        else:
+            info = f"TYPE={SUB}"
+            name = f"{pos}_{SUB}_{len(ref)-1}"
 
-        ref = target.seq[idx:idx + size].strip('-')
+        row = [target.name, str(pos), name, ref, alt, "PASS", info, "GT", "1"]
 
-        alt = query.seq[idx:idx + size].strip('-')
+        store.append(row)
 
-        ref = str(ref)
-        alt = str(alt)
-
-        info = f"TYPE={key}"
-
-        if key == SNP:
-            # Mismatches printed consecutively
-            for idx, pos, alt, ref in elems:
-                name = f"{pos}_{ref}_{alt}"
-                value = [target.name, str(pos), name, ref, alt, ".", "PASS", info, "GT", "1"]
-                vcfdict[pos] = value
-
-
-        elif key == INS or key == DEL:
-            # Handle insertions and deletions.
-
-            # Push back on POS if it is not 1.
-            if idx > 0:
-                # For insertions the pos does not advance
-                if key == DEL:
-                    pos = pos - 1
-                ref = target.seq[idx - 1] + ref
-                alt = query.seq[idx - 1] + alt
-            else:
-                # When there is no preceding base the last base must be used
-                lastidx = elems[-1][0] + 1
-                ref = ref + target.seq[lastidx]
-                alt = alt + query.seq[lastidx]
-
-            alt = alt or '.'
-            ref = ref or '.'
-
-            if key == DEL:
-                suff = len(ref[1:]) if len(ref) > 10 else ref[1:]
-                name = f"{pos}_del_{suff}"
-            else:
-                suff = len(alt[1:]) if len(alt) > 10 else alt[1:]
-                name = f"{pos}_ins_{suff}"
-
-            value = [target.name, str(pos), name, ref, alt, ".", "PASS", info, "GT", "1"]
-            vcfdict[pos] = value
-
-    sys.exit()
-
-    return vcfdict
+    return store
 
 
 def format_vcf(alns):
     for aln in alns:
 
-        vcfdict = find_variants(query=aln.query, target=aln.target)
+        values = find_variants(query=aln.query, target=aln.target)
 
         query, target = aln.query, aln.target
 
@@ -212,8 +194,8 @@ def format_vcf(alns):
         print(f'##contig=<ID={target.name},length={len(target.seq.strip("-"))},assembly={target.name}>')
         print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{query.name}")
 
-        for value in vcfdict.values():
-            print("\t".join(value))
+        for row in values:
+            print("\t".join(row))
 
 
 def format_fasta(alns):
@@ -241,28 +223,26 @@ def format_diffs(alns):
 
     for idx, aln in enumerate(alns):
 
-        vcfdict = find_variants(query=aln.query, target=aln.target)
-        for value in vcfdict.values():
-            name = value[2]
-            pos = value[1]
-            base = value[3]
-            alt = value[4]
-            size = '0'
-            info = value[7]
+        values = find_variants(query=aln.query, target=aln.target)
+
+        for elems in values:
+
+            pos = elems[1]
+            base = elems[3]
+            alt = elems[4]
+            info = elems[6]
             if SNP in info:
                 info = SNP
-                size = 1
             elif DEL in info:
                 info = DEL
                 base = base[1:]
                 alt = '-'
-                size = len(base)
-
             elif INS in info:
                 info = INS
                 alt = alt[1:]
                 base = '-'
-                size = len(alt)
+            else:
+                info = SUB
 
             data = [pos, info, aln.query.name, f"{alt}/{base}", aln.target.name, ]
 
