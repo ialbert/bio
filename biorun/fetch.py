@@ -58,8 +58,10 @@ def is_srr(text):
 
 
 def is_bioproject(text):
-    patt = re.compile("PRJNA\d+")
-    return bool(patt.search(text))
+    """
+    Pattern for project numbers.
+    """
+    return text.startswith("PRJ")
 
 
 def is_ensembl(text):

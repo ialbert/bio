@@ -1,2 +1,2 @@
-4	SUB	seq1	T/C	seq2
-5	SUB	seq1	ACA/A	seq2
+4	SNP	seq2	C/T	seq1
+5	INS	seq2	A/ACA	seq1
