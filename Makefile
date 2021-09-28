@@ -22,7 +22,7 @@ docs:
 	(cd docs && Rscript -e "bookdown::render_book(input='index.Rmd', output_dir='.book', output_format='bookdown::gitbook')")
 
 # Push out the docs to remote docs.
-sync:
+sync: docs
 	rsync -avz  docs/.book/ ${REMOTE}
 	rsync -avz docs/*.md ~/book/biostar-handbook-2/books/bio/
 	rsync -avz docs/images/igv-index.png ~/book/biostar-handbook-2/books/main/images

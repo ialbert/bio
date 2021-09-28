@@ -1,8 +1,8 @@
 # How to install bio {#bio-install}
 
-`bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
+`bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem.
 
-## Discussion board
+# Contact information
 
 If you are reporting a bug please open an issue below:
 
@@ -11,7 +11,6 @@ If you are reporting a bug please open an issue below:
 If you have other questions/suggestions on how to use  `bio` use the discussion board:
 
 * https://github.com/ialbert/bio/discussions
-
 
 ## Installation
 
@@ -26,6 +25,8 @@ Some tasks (`bio taxon`, `bio explain`) need access to additional data. Install 
 To execute a batch of tests run
 
     bio test
+
+Tests depend on the availability of a number of online services. Some test fail whenever the corresponding remote data service is unavailable. Connection problems are typically corrected within a short period of time.
 
 ## Usage
 
