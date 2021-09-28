@@ -149,6 +149,11 @@ def find_variants(query, target):
         alt = seqa.replace("-", "")
         ref = seqb.replace("-", "")
 
+        if alt == ref:
+            # Rarely but happens.
+            # Alignment gone bad.
+            continue
+
         if last_b:
             alt = last_a + alt
             ref = last_b + ref
@@ -227,24 +232,12 @@ def format_diffs(alns):
 
         for elems in values:
 
+
             pos = elems[1]
             base = elems[3]
             alt = elems[4]
-            info = elems[6]
-            if SNP in info:
-                info = SNP
-            elif DEL in info:
-                info = DEL
-                base = base[1:]
-                alt = '-'
-            elif INS in info:
-                info = INS
-                alt = alt[1:]
-                base = '-'
-            else:
-                info = SUB
-
-            data = [pos, info, aln.query.name, f"{alt}/{base}", aln.target.name, ]
+            info = elems[7].split("=")[-1]
+            data = [pos, info, aln.target.name, f"{base}/{alt}", aln.query.name, ]
 
             print("\t".join(data))
 
