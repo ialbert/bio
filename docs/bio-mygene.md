@@ -4,21 +4,18 @@ The `bio mygene` command provides command-line based access to the https://mygen
 
 The `mygene` service was published in [High-performance web services for querying gene and variant annotation, Genome Research, 2016][mygene] and is an amazingly potent query interface that focuses on returning data rather than web pages.
 
-Note that `bio mygene` is merely a command line convenience function that stands on the shoulders of giants that created the mygene service in the first place.
+Note that `bio mygene` is merely a command line convenience function that stands on the shoulders of the giants that created the [mygene service][mygene] in the first place.
 
 [mygene]: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-0953-9
 
 ## Rationale
 
-We have implemented the `bio mygene` command to facilitate quick explorations of gene information.
-
-For more information on data sources and representations, consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. To install `bio` use:
+We have implemented the `bio mygene` command to facilitate quick explorations of gene information. For more information on data sources and representations, consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. To install `bio` use:
 
 [datasource]: https://www.biostarhandbook.com/biological-data-sources.html
 [book]: https://www.biostarhandbook.com
 
     pip install bio --upgrade
-    bio --download
 
 The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
@@ -94,7 +91,7 @@ the query will now produce a much larger dataset:
         }
     ]
 
-The output of the `bio mygene` command is in the JSON (JavaScript Object Notation) format.  JSON is not biology specifc, instead, you can think of it as a generic, lightweight, human readable approach to represent diverse and hierarchical information.
+The output of the `bio mygene` command is in the JSON (JavaScript Object Notation) format.  JSON is not biology specific, instead, you can think of it as a generic, lightweight, human readable approach to represent diverse and hierarchical information.
 
 * https://en.wikipedia.org/wiki/JSON
 
@@ -155,9 +152,7 @@ There are numerous resources on learning `jq`. Search and find one that suits yo
 
 * https://earthly.dev/blog/jq-select/
 
-
-## More example
-
+## Additional examples
 
 Often examples are more useful than words
 
@@ -183,7 +178,7 @@ Often examples are more useful than words
     bio mygene symbol:XRCC2 -f alias --species human
     bio mygene alias:SPGF50 -f alias --species human
 
-## Additional fields
+## Field documention
 
 See the fields listed at API documentation site:
 
