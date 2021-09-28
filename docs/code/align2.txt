@@ -1,0 +1,2 @@
+target  query  pident  len  match  mism  ins  del
+seq2    seq1   57.1    7    4      1     0    2

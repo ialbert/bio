@@ -232,7 +232,6 @@ def format_diffs(alns):
 
         for elems in values:
 
-
             pos = elems[1]
             base = elems[3]
             alt = elems[4]

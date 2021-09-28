@@ -87,18 +87,18 @@ prints:
 
 prints the type and variant at each location:
 
-    493	  SNP	YP_009724390.1	Q/Y	    QHR63300.2
-    494	  SNP	YP_009724390.1	S/R	    QHR63300.2
-    498	  SNP	YP_009724390.1	Q/Y	    QHR63300.2
-    501	  SNP	YP_009724390.1	N/D	    QHR63300.2
-    505	  SNP	YP_009724390.1	Y/H	    QHR63300.2
-    519	  SNP	YP_009724390.1	H/N	    QHR63300.2
-    604	  SNP	YP_009724390.1	T/A	    QHR63300.2
-    680	  INS	YP_009724390.1	PRRA/-	QHR63300.2
-    1121  SNP	YP_009724390.1	N/S	    QHR63300.2
-    1224  SNP	YP_009724390.1	V/I	    QHR63300.2
+    493    SNP    QHR63300.2    Y/Q     YP_009724390.1
+    494    SNP    QHR63300.2    R/S     YP_009724390.1
+    498    SNP    QHR63300.2    Y/Q     YP_009724390.1
+    501    SNP    QHR63300.2    D/N     YP_009724390.1
+    505    SNP    QHR63300.2    H/Y     YP_009724390.1
+    519    SNP    QHR63300.2    N/H     YP_009724390.1
+    604    SNP    QHR63300.2    A/T     YP_009724390.1
+    680    INS    QHR63300.2    S/SPRRA  YP_009724390.1
+    1121   SNP    QHR63300.2    S/N     YP_009724390.1
+    1224   SNP    QHR63300.2    I/V     YP_009724390.1
 
-It shows that at position `680` the coronavirus has an four aminoacid insertion `PRRA` the so called furin-cleavage.
+It shows that at position `680` the coronavirus has an four aminoacid insertion `PRRA`, the so called furin-cleavage.
 
 ### Visualize the genome data
 

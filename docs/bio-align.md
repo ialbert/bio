@@ -13,13 +13,8 @@ Input may be given from command line:
 
 prints:
 
-    # DNA: SeqA (7) vs SeqB (5) score=24.0
-    # Alignment: length=7 ident=4/7(57.1%) mis=1 del=2 ins=0 gap=2
-    # Parameters: match=5 mismatch=4 gap-open=11 gap-extend=1
-
-    GATTACA
-    |||.|   7
-    GATCA--
+```{r, code=xfun::read_utf8('code/align1.txt'), eval=F}
+```
 
 output may be formatted in as table:
 
@@ -27,8 +22,8 @@ output may be formatted in as table:
 
 prints:
 
-    target	query	score	len	pident	match	mism	ins	del
-    SeqA	SeqB	2.0	57.1	7	4	1	2	0
+```{r, code=xfun::read_utf8('code/align2.txt'), eval=F}
+```
 
 output may be formatted in as VCF:
 
@@ -37,24 +32,19 @@ output may be formatted in as VCF:
 prints:
 
 
-    ##fileformat=VCFv4.2
-    ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
-    ##FILTER=<ID=PASS,Description="All filters passed">
-    ##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
-    ##contig=<ID=SeqA,length=7,assembly=SeqA>
-    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SeqB
-    SeqA	4	T4C	T	C	.	PASS	TYPE=SNP	GT	1
-    SeqA	5	5delCA	ACA	A	.	PASS	TYPE=DEL	GT	1
+```{r, code=xfun::read_utf8('code/align3.txt'), eval=F}
+```
 
-output may be formatted in as variants:
+output may be formatted in as "differences" between the reference (second sequence) and the query (first sequence):
 
-    bio align GATTACA GATCA --variants
+    bio align GATTACA GATCA --diff
 
 prints:
 
-    pos type   len target  query
-    4    snp    1    T       C
-    6    del    2    CA      --
+```{r, code=xfun::read_utf8('code/align4.txt'), eval=F}
+```
+
+The "diff" output can be thought of a a simplified VCF.
 
 ## Alignment types
 
@@ -64,13 +54,8 @@ The default alignment is semi-global (global alignment with no end gap penalies)
 
 the output is:
 
-    # DNA: SeqA (7) vs SeqB (5) score=13.0
-    # Alignment: length=7 ident=5/7(71.4%) mis=0 del=2 ins=0 gap=2
-    # Parameters: match=5 mismatch=4 gap-open=11 gap-extend=1
-
-    GATTACA
-    |||  || 7
-    GAT--CA
+```{r, code=xfun::read_utf8('code/align5.txt'), eval=F}
+```
 
 Available ptions are : `--global`, `-local`, `-semi-global`
 
@@ -86,12 +71,12 @@ Aligning two genomes:
 
 the command aligns two 30KB sequences and takes about 15 seconds on my system, it will print:
 
-    # DNA: NC_045512.2 (29,903) vs MN996532.2 (29,855) score=148070.0
-    # Alignment: length=29903 ident=28720/29903(96.0%) mis=1135 del=48 ins=0 gap=48
-    # Parameters: match=5 mismatch=4 gap-open=11 gap-extend=1
+    # NC_045512.2 (29903) vs MN996532.2 (29855)
+    # pident=96.0% len=29908 ident=28725 mis=1125 del=5 ins=53
+    # semiglobal: score=139005.0 gap open=11 extend=1  matrix=NUC.4.4
 
     ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAA
-    ||||||||||||||||||.|||||||||||||||||.||||.||||||||||||||||||||||||||||||||||||||| 81
+    ||||||||||||||||||.|||||||||||||||||.||||.|||||||||||||||||||||||||||||||||||||||
     ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAA
 
 The `bio align` method takes the first file that it sees as target and aligns all other sequences to it as queries.
@@ -100,60 +85,39 @@ The `bio align` method takes the first file that it sees as target and aligns al
 
 Align the DNA corresponding to protein `S`
 
-    cat genomes.gb | bio fasta --gene S | bio align | head
+    cat genomes.gb | bio fasta --gene S | bio align | head -8
 
 prints:
 
-    # DNA: YP_009724390.1 (3,822) vs QHR63300.2 (3,810) score=18767.0
-    # Alignment: length=3822 ident=3549/3822(92.9%) mis=261 del=12 ins=0 gap=12
-    # Parameters: match=5 mismatch=4 gap-open=11 gap-extend=1
-
-    ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCA
-    ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.|||||| 81
-    ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCA
+```{r, code=xfun::read_utf8('code/align6.txt'), eval=F}
+```
 
 or as translated sequences that prints:
 
-    cat genomes.gb | bio fasta --gene S --translate | bio align | head
+    cat genomes.gb | bio fasta --gene S --translate | bio align | head -8
 
 that prints:
 
-    # PEP: YP_009724390.1 (1,274) vs QHR63300.2 (1,270) score=6542.0
-    # Alignment: length=1274 ident=1241/1274(97.4%) mis=29 del=4 ins=0 gap=4
-    # Parameters: matrix=BLOSUM62 gap-open=11 gap-extend=1
-
-    MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDN
-    |||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
-    MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
+```{r, code=xfun::read_utf8('code/align7.txt'), eval=F}
+```
 
 ## Alignment with tabular output
 
     cat genomes.gb | bio fasta --gene S --translate | bio align --table
 
-prints (check the default output to identify which number corresonds to what):
+prints:
 
-    target	query	score	len	pident	match	mism	ins	del
-    YP_009724390.1	QHR63300.2	6547.0	97.4	1274	1241	29	4	0
+```{r, code=xfun::read_utf8('code/align8.txt'), eval=F}
+```
 
 ## Alignment with variant output
 
-    cat genomes.gb | bio fasta --gene S --translate | bio align --variants
+    cat genomes.gb | bio fasta --gene S --translate | bio align --diff | tail -5
 
 prints the variation (some lines not show):
 
-    pos   type    len    target    query
-    32     mis     1       F         S
-    50     mis     1       S         L
-    346    mis     1       R         T
-    372    mis     1       A         T
-    403    mis     1       R         T
-    439    mis     3       NNL       KHI
-    604    mis     1       T         A
-    681    del     4       PRRA      ----
-    1125   mis     1       N         S
-    1228   mis     1       V         I
-    ...
-
+```{r, code=xfun::read_utf8('code/align9.txt'), eval=F}
+```
 
 ## Different scoring matrices
 
@@ -161,14 +125,8 @@ prints the variation (some lines not show):
 
 prints:
 
-    # PEP: YP_009724390.1 (1,274) vs QHR63300.2 (1,270) score=9339.0
-    # Alignment: length=1274 ident=1241/1274(97.4%) mis=29 del=4 ins=0 gap=4
-    # Parameters: matrix=PAM30 gap-open=11 gap-extend=1
-
-    MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDN
-    |||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
-    MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
-
+```{r, code=xfun::read_utf8('code/align10.txt'), eval=F}
+```
 
 ### Scoring matrices
 

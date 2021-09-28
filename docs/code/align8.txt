@@ -1,0 +1,2 @@
+target      query           pident  len   match  mism  ins  del
+QHR63300.2  YP_009724390.1  97.4    1274  1241   29    0    4

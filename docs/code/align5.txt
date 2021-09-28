@@ -1,0 +1,9 @@
+
+# seq1 (7) vs seq2 (5)
+# pident=71.4% len=7 ident=5 mis=0 del=0 ins=2
+# global: score=13.0 gap open=11 extend=1  matrix=NUC.4.4
+
+GATTACA
+|||--||
+GAT--CA
+
