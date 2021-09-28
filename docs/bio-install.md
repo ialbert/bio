@@ -2,6 +2,17 @@
 
 `bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
 
+## Discussion board
+
+If you are reporting a bug please open an issue below:
+
+*  https://github.com/ialbert/bio/issues
+
+If you have other questions/suggestions on how to use  `bio` use the discussion board:
+
+* https://github.com/ialbert/bio/discussions
+
+
 ## Installation
 
 Installation:
@@ -34,6 +45,10 @@ You can get help on any command by just entering it
     bio taxon
 
 each line above will print a help on the task usage.
+
+Use the discussion board for other questions:
+
+* https://github.com/ialbert/bio/discussions
 
 ## Tasks
 

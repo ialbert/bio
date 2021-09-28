@@ -19,7 +19,7 @@ FILE_DIR = join(os.path.dirname(__file__))
 # The default data directory.
 DATA_DIR = join(FILE_DIR, "data")
 
-RUN_DIR_NAME = "testrun"
+RUN_DIR_NAME = "test"
 
 # The run directory
 RUN_DIR = join(os.path.expanduser("~"), ".bio", RUN_DIR_NAME)
