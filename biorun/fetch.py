@@ -187,7 +187,7 @@ def format_runinfo(stream, ftype=None):
                 "Size": f"{size}",
                 "Instr": f"{g('Platform')} ({g('Model')})",
                 "Date": f"{g('LoadDate')}",
-
+                "Path": f"{g('download_path')}",
             }
             print("")
             for key, value in data.items():
@@ -205,6 +205,7 @@ def fetch_ncbi_gff(ids, db="nuccore"):
             print(text)
     except Exception as exc:
         utils.error(f"{exc}")
+
 
 def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
     ids = ",".join(ids) if type(ids) == list else ids

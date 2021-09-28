@@ -7,4 +7,5 @@ Reads	8,345,287 (avgLength=202)
 Size	997 MB
 Instr	ILLUMINA (Illumina HiSeq 2500)
 Date	2015-04-14 13:48:38
+Path	https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-6/SRR1972976/SRR1972976.1
 

@@ -45,6 +45,27 @@ The default format is GenBank. You may also list multiple accession numbers at o
     # Obtains mulitple entries from GenBank
     bio fetch NC_045512 MN996532 > genomes.gb
 
+you may also fetch FASTA and GFF data directly from GenBank. The command
+
+    bio fetch NC_045512 --format fasta  | head -3
+
+returns a FASTA file:
+
+    >NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
+    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAA
+    CGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAAC
+
+
+whereas:
+
+    bio fetch NC_045512 --format gff  | head -3
+
+returns a GFF file:
+
+    ##sequence-region NC_045512.2 1 29903
+    ##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
+    NC_045512.2	RefSeq	region	1	29903	.	+	.	ID=NC_045512.2:1..29903;Dbxref=taxon:2697049;collection-date=Dec-2019;country=China;gb-acronym=SARS-CoV-2;gbkey=Src;genome=genomic;isolate=Wuhan-Hu-1;mol_type=genomic RNA;nat-host=Homo sapiens;old-name=Wuhan seafood market pneumonia virus
+
 ## Fetch SRA run information
 
 [sra]:https://www.ncbi.nlm.nih.gov/sra
@@ -63,10 +84,7 @@ produces:
     Size    997MB
     Instr   ILLUMINA (Illumina HiSeq 2500)
     Date    2015-04-14 13:48:38
-
-the command `bio fetch SRR1972976` is equivalent to running and transforming the output of:
-
-    efetch -db sra -id SRR1972976 -format runinfo
+    Path	https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-6/SRR1972976/SRR1972976.1
 
 Other usecases:
 
