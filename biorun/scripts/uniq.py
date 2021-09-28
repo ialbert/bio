@@ -32,7 +32,7 @@ def main(field=1, delim='', count=False, *fnames):
     streams = utils.get_streams(fnames)
 
     # Find the delimiter.
-    delim = decode(delim) if delim else "\t"
+    delim = decode(delim) if delim else '\t'
 
     # Initialize the counter.
     store = defaultdict(int)

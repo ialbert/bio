@@ -256,10 +256,10 @@ def download(url, fname, cache=False, params={}, overwrite=False):
 
     try:
 
-        #
+        # More portable on different platforms.
         tempname = os.path.join(tempfile.gettempdir(), os.urandom(24).hex())
 
-        logger.info(f"opening: {tempname}")
+        logger.info(f"tempfile: {tempname}")
 
         fp = open(tempname, 'wb')
 
@@ -270,7 +270,7 @@ def download(url, fname, cache=False, params={}, overwrite=False):
             pbar.update(len(chunk))
 
         # File creation completed.
-        fp.flush()
+        fp.close()
 
         # Copy file to destination.
         shutil.copy(tempname, path)

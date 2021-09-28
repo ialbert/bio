@@ -1,5 +1,6 @@
 import difflib
 import os
+import shutil
 import subprocess
 import sys
 from subprocess import PIPE
@@ -21,7 +22,7 @@ DATA_DIR = join(FILE_DIR, "data")
 RUN_DIR_NAME = "testrun"
 
 # The run directory
-RUN_DIR = join(os.path.expanduser("~"), ".bio")
+RUN_DIR = join(os.path.expanduser("~"), ".bio", RUN_DIR_NAME)
 
 os.makedirs(RUN_DIR, exist_ok=True)
 
@@ -61,15 +62,14 @@ INIT = f"""
 
 
 def test_setup():
-    os.chdir(RUN_DIR)
-    shell(f"rm -rf '{RUN_DIR_NAME}'")
-    shell(f"mkdir '{RUN_DIR_NAME}'")
-    os.chdir(RUN_DIR_NAME)
 
-    init = parse_commands(INIT)
-    for cmd in init:
-        shell(cmd)
-
+    names = [
+        'alias.txt', 'align_input.fa', 'mafft.fa', 'file1.txt', 'file2.txt'
+    ]
+    for name in names:
+        src = f'{FILE_DIR}/data/{name}'
+        dest = f'{RUN_DIR}/{name}'
+        shutil.copyfile(src, dest)
 
 def print_diff(expect, result):
     """
@@ -83,12 +83,15 @@ def print_diff(expect, result):
 
 
 def main():
+
     test_setup()
 
     text = open(USAGE).read()
     cmds = parse_commands(text, flag=True)
 
     # cmds = cmds[:5]
+
+    os.chdir(RUN_DIR)
 
     print(f"# Running {len(cmds)} tests:")
 
@@ -98,7 +101,7 @@ def main():
         fname = cmd.split(">")[1].strip()
         try:
             shell(cmd)
-            result = open(join(RUN_DIR, RUN_DIR_NAME, fname)).read()
+            result = open(join(RUN_DIR, fname)).read()
             expect = open(join(DATA_DIR, fname)).read()
         except Exception as exc:
             print(f"\n\n(cd {DATA_DIR} && {cmd})\n")
