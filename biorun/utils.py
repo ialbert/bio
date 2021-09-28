@@ -254,7 +254,15 @@ def download(url, fname, cache=False, params={}, overwrite=False):
     # Create file only if download completes successfully.
     pbar = tqdm(desc=f"# {fname}", unit="B", unit_scale=True, unit_divisor=1024, total=total)
 
-    with tempfile.NamedTemporaryFile(delete=True) as fp:
+    try:
+
+        #
+        tempname = os.path.join(tempfile.gettempdir(), os.urandom(24).hex())
+
+        logger.info(f"opening: {tempname}")
+
+        fp = open(tempname, 'wb')
+
         # Iterate over the content and write to temp file
         for chunk in r.iter_content(chunk_size=chunk_size):
             total += len(chunk)
@@ -265,10 +273,13 @@ def download(url, fname, cache=False, params={}, overwrite=False):
         fp.flush()
 
         # Copy file to destination.
-        shutil.copyfile(fp.name, path)
+        shutil.copy(tempname, path)
 
         # Logging.
         logger.info(f"saved to: {path}")
+
+    finally:
+        os.unlink(tempname)
 
     pbar.close()
 
