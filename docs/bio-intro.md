@@ -41,8 +41,8 @@ Install `bio`:
 
 * Source code: https://github.com/ialbert/bio
 * Documentation: https://www.bioinfo.help
-* Feedback/Comments/Issues: https://github.com/ialbert/bio/issues
-
+* Report errors: https://github.com/ialbert/bio/issues
+* Discussion board (new): https://github.com/ialbert/bio/discussions
 
 ## Usage examples
 
