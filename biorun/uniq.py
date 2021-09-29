@@ -25,14 +25,14 @@ def decode(text):
 
 @plac.flg('count', "produce counts")
 @plac.opt('field', "field index (1 by default)", type=int)
-@plac.opt('delim', "delimiter (tab by default)")
+@plac.flg('tab', "tab delimited (default is csv)", abbrev="t")
 @plac.pos('fnames', "file names")
-def main(field=1, delim='', count=False, *fnames):
+def run(field=1, count=False, tab=False,  *fnames):
 
     streams = utils.get_streams(fnames)
 
     # Find the delimiter.
-    delim = decode(delim) if delim else '\t'
+    delim = '\t' if tab else ','
 
     # Initialize the counter.
     store = defaultdict(int)
@@ -64,12 +64,12 @@ def main(field=1, delim='', count=False, *fnames):
             print(f"{k}")
 
 @nointerrupt
-def run():
+def main():
     """
     Entry point for the script.
     """
-    plac.call(main)
+    plac.call(run)
 
 
 if __name__ == '__main__':
-    run()
+    main()

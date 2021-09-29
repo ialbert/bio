@@ -1,11 +1,10 @@
-# comm.py: find common values
+# bio comm: find common values
 
 The need to find identical elements within columns of different files is surprisingly common (pun intended).
 
-Thus when you install the `bio` package another script called `comm.py` is also installed.
-It is a tool that prints the common elements from two files.'
+Thus `bio` packages another utility called `comm`. It is a tool that prints the common elements from two files.'
 
-## Using `comm.py`
+## Using `bio comm`
 
  If file 1 contains:
 
@@ -21,18 +20,18 @@ and file 2 contains
     
 then the command:
 
-    comm.py file1 file2
+    bio comm file1 file2
 
 will print the common elements present in the first column of both files:
 
     A
     C
 
-This is the main usecase of the `comm.py` software.
+This is the main usecase of the `bio comm` software.
 
 ## Other features
 
-`comm.py` has a number of convenience parameters:
+`bio comm` has a number of convenience parameters:
 
 * `-1` will print elements unique to file 1: `B`
 * `-2` will print elements unique to file 2: `D`
@@ -43,7 +42,7 @@ This is the main usecase of the `comm.py` software.
 
 The content for either file may come from standard input. In that case the `-` symbol should be used instead of file name.
 
-## Why does `comm.py` exist?
+## Why does `bio comm` exist?
 
 We could use the UNIX tool called `comm` to find common or distinct elements. When used properly `comm` allows you to answer a wide variety of interesting questions.
 
@@ -55,12 +54,12 @@ I don't usually advocate rewriting UNIX tools, in this case, writing a better `c
 
 ## Potential limitations
 
-With `comm.py` most operations will be quicker to do, simpler to perform and easier to understand. The primary limitation of `comm.py` vs `comm` is that `comm.py` loads all elements into memory.
+With `bio comm` most operations will be quicker to do, simpler to perform and easier to understand. The primary limitation of `bio comm` vs `comm` is that `bio comm` loads all elements into memory.
 
-For most use-cases `comm.py` will work exceedingly well.
+For most use-cases `bio comm` will work exceedingly well.
 
 ## Usage
 
 ```{bash, comment=NA}
-comm.py -h
+bio comm -h
 ```

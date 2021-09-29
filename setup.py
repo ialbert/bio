@@ -32,8 +32,6 @@ setup(
     entry_points={
         'console_scripts': [
             'bio=biorun.__main__:run',
-            'comm.py=biorun.scripts.comm:run',
-            'uniq.py=biorun.scripts.uniq:run',
             'fasta_filter.py=biorun.scripts.fasta_filter:run',
         ],
     },

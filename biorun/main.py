@@ -17,25 +17,27 @@ from biorun import VERSION
 #
 # Subcommand registration:
 #
-# name = (module.function, automatic_help_flag, command_help)
+# name = (module.function, automatic_help_flag, list_command, command_help)
 #
 SUB_COMMANDS = dict(
-    fetch=("biorun.fetch.run", True, "download GenBank/ENSEMBL data"),
-    fasta=("biorun.fasta.run", True, "convert to FASTA"),
-    gff=("biorun.gff.run", True, "convert to GFF"),
-    align=("biorun.align.run", True, "align sequences"),
-    format=("biorun.format.run", True, "reformat aligned fasta"),
-    taxon=("biorun.taxon.run", False, "operate on NCBI taxonomies"),
-    explain=("biorun.ontology.run", False, "explain biological terms"),
-    meta=("biorun.meta.run", False, "download metadata by taxonomy ID"),
-    mygene=("biorun.mygene.run", False, "connect to mygene interface"),
+    fetch=("biorun.fetch.run", True, True, "download GenBank/ENSEMBL data"),
+    fasta=("biorun.fasta.run", True, True, "convert to FASTA"),
+    gff=("biorun.gff.run", True, True,"convert to GFF"),
+    align=("biorun.align.run", True,True, "align sequences"),
+    format=("biorun.format.run", True, True,"reformat aligned fasta"),
+    taxon=("biorun.taxon.run", False, True,"operate on NCBI taxonomies"),
+    explain=("biorun.ontology.run", False, True,"explain biological terms"),
+    meta=("biorun.meta.run", False, True,"download metadata by taxonomy ID"),
+    mygene=("biorun.mygene.run", False, True,"connect to mygene interface"),
+    comm=("biorun.comm.run", False, False, "find common elements"),
+    uniq=("biorun.uniq.run", False, False, "find unique elements"),
 )
 
 
 DOWNLOAD_CMD = '--download'
 
-# Generates indented help for each subcommand.
-block = [f"  bio {key:9} : {value[2]}" for (key, value) in SUB_COMMANDS.items()]
+# Generates indented help for each subcommand
+block = [f"  bio {key:9} : {value[3]}" for (key, value) in SUB_COMMANDS.items() if value[2]]
 
 # Join help into a section.
 block = "\n".join(block)
@@ -49,7 +51,6 @@ bio: making bioinformatics fun again
 Examples:
 
   bio fetch NC_045512 MN996532 > genomes.gb
-  bio fasta genomes.gb --gene S 
   bio fasta genomes.gb --gene S | bio align
   bio gff genomes.gb --type CDS
   bio taxon 2697049 --lineage
@@ -146,9 +147,6 @@ def router():
     # Check the subcommand.
     cmd = sys.argv[1]
 
-    # Maintain compatibility with a prior use case (convert == view).
-    cmd = "convert" if cmd == "view" else cmd
-
     # Raise an error is not a valid subcommand.
     if cmd not in SUB_COMMANDS:
         print(USAGE, file=sys.stderr)
@@ -162,7 +160,7 @@ def router():
     sys.argv = list(map(fix_parameter, sys.argv))
 
     # Delegate to the imported method
-    modfunc, flag, help = SUB_COMMANDS[cmd]
+    modfunc, flag, tmp, help = SUB_COMMANDS[cmd]
 
     # Add the help flag if no other information is present beyond command.
     if sys.stdin.isatty() and flag and len(sys.argv) == 1:
@@ -177,6 +175,7 @@ def router():
 
     # Get the function of the module
     func = getattr(mod, func_name)
+
 
     # Execute the function with plac.
     plac.call(func)

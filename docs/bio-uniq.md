@@ -1,9 +1,7 @@
-# uniq.py: find unique elements
+# bio uniq: find unique elements
 
 The need to find unique elements within columns of different files is very common.
 
-Thus when you install the `bio` package another script called `uniq.py` is also installed.
-This software prints the unique elements from a column.
 
 ## Using `comm.py`
 
@@ -18,7 +16,7 @@ This software prints the unique elements from a column.
     
 then the command:
 
-    uniq.py file_1.txt
+    bio uniq file_1.txt
 
 will print:
 
@@ -28,7 +26,7 @@ will print:
 
 The flag `-c` used as:
 
-    uniq.py -c file_1.txt
+    bio uniq  -c file_1.txt
     
 will print:
 
@@ -39,7 +37,7 @@ will print:
 
 `uniq.py` can be used from standard input:
 
-    cat file_1.txt |  uniq.py -c
+    cat file_1.txt |  bio uniq -c
 
 ## Why does `uniq.py` exist?
 
@@ -53,16 +51,15 @@ the problem with the above is that the columns it prints are not tab separated. 
 
 but for that `entrez-direct` must be installed.
 
-## Additional utility
 
-`uniq.py` can read different columns of a file and the delimiter may be changed as well. Read the second columns of three comma separated files:
+In addition `bio uniq` can read different columns of a file plus the delimiter may be changed as well. To find the unique elements listed in the seecond column of three comma separated files:
 
-    uniq.py -c -d , -f 2  file1 file2 file3
+    bio uniq -c -d , -f 2  file1 file2 file3
 
 I don't usually advocate rewriting UNIX tools, in this case, writing a better `uniq` makes a lot of sense.
 
 ## Usage
 
 ```{bash, comment=NA}
-uniq.py -h
+bio uniq -h
 ```

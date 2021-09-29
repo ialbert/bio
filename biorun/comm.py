@@ -87,7 +87,7 @@ def get_stream(fname):
 @plac.flg('tab', "tab delimited (default is csv)", abbrev="t")
 @plac.opt('col1', "column index for file 1 [default=1]", abbrev="x", type=int)
 @plac.opt('col2', "column index for file 2 [default=1]", abbrev="y", type=int)
-def main(file1, file2, uniq1=False, uniq2=False, union=False, tab=False, col1=1, col2=1):
+def run(file1, file2, uniq1=False, uniq2=False, union=False, tab=False, col1=1, col2=1):
     """
     A better 'comm' command. Prints elements common from columns from two files.
     """
@@ -114,14 +114,14 @@ def main(file1, file2, uniq1=False, uniq2=False, union=False, tab=False, col1=1,
     process(stream1=stream1, stream2=stream2, delimiter=delimiter, idx1=idx1, idx2=idx2, show=show)
 
 
-def run():
+def main():
     """
     Entry point for the script.
     """
     if len(sys.argv)<2:
         sys.argv.append("-h")
-    plac.call(main)
+    plac.call(run)
 
 
 if __name__ == '__main__':
-    run()
+    main()

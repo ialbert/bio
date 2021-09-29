@@ -85,7 +85,7 @@ The `bio align` method takes the first file that it sees as target and aligns al
 
 Align the DNA corresponding to protein `S`
 
-    cat genomes.gb | bio fasta --gene S | bio align | head -8
+    cat genomes.gb | bio fasta --gene S | bio align | head
 
 prints:
 
@@ -94,7 +94,7 @@ prints:
 
 or as translated sequences that prints:
 
-    cat genomes.gb | bio fasta --gene S --translate | bio align | head -8
+    cat genomes.gb | bio fasta --gene S --translate | bio align | head
 
 that prints:
 

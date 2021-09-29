@@ -53,7 +53,10 @@ def get_streams(fnames):
     Returns open streams to files.
     """
     streams = []
+
     for name in fnames:
+        if not os.path.isfile(name):
+            error(f"File not found: {name}")
         streams.append(open(name))
 
     if not sys.stdin.isatty():
