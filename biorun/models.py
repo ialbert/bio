@@ -253,7 +253,7 @@ def format_pairwise(alns, par=None, width=81):
 
         out = [
             "",
-            f"# {aln.query.name} ({aln.qlen}) vs {aln.target.name} ({aln.tlen})",
+            f"# {aln.target.name} ({aln.tlen}) vs {aln.query.name} ({aln.qlen})",
             f"# pident={aln.pident:0.1f}% len={aln.alen} ident={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
 
         ]
@@ -269,8 +269,8 @@ def format_pairwise(alns, par=None, width=81):
         for start in range(0, len(aln.target.seq), width):
             end = start + width
 
-            seq1 = aln.query.seq[start:end]
-            seq2 = aln.target.seq[start:end]
+            seq1 = aln.target.seq[start:end]
+            seq2 = aln.query.seq[start:end]
 
             trace = ""
             for a, b in zip(seq1, seq2):

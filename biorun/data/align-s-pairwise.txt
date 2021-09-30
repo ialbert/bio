@@ -1,6 +1,6 @@
 
 # YP_009724390.1 (1273) vs QHR63300.2 (1269)
-# pident=97.4% len=1273 ident=1240 mis=29 del=0 ins=4
+# pident=97.4% len=1273 ident=1240 mis=29 del=4 ins=0
 # semiglobal: score=6541.0 gap open=11 extend=1  matrix=BLOSUM62
 
 MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDN

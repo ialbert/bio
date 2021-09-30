@@ -51,7 +51,7 @@ the  `MN996532` that stores information on the most similar bat coronavirus. We 
 
 ### Fetch data
 
-    bio fetch NC_045512 MN996532 > genomes.gb
+    bio fetch MN996532 NC_045512 > genomes.gb
 
 ### Convert to FASTA
 
@@ -89,17 +89,17 @@ prints:
 	cat genomes.gb | bio fasta --gene S --protein | bio align --diff | tail
 
 prints the type and variant at each location:
-
-    493    SNP    QHR63300.2    Y/Q     YP_009724390.1
-    494    SNP    QHR63300.2    R/S     YP_009724390.1
-    498    SNP    QHR63300.2    Y/Q     YP_009724390.1
-    501    SNP    QHR63300.2    D/N     YP_009724390.1
-    505    SNP    QHR63300.2    H/Y     YP_009724390.1
-    519    SNP    QHR63300.2    N/H     YP_009724390.1
-    604    SNP    QHR63300.2    A/T     YP_009724390.1
-    680    INS    QHR63300.2    S/SPRRA  YP_009724390.1
-    1121   SNP    QHR63300.2    S/N     YP_009724390.1
-    1224   SNP    QHR63300.2    I/V     YP_009724390.1
+    
+    Y493Q   SNP     493     Y       Q
+    R494S   SNP     494     R       S
+    Y498Q   SNP     498     Y       Q
+    D501N   SNP     501     D       N
+    H505Y   SNP     505     H       Y
+    N519H   SNP     519     N       H
+    A604T   SNP     604     A       T
+    S680SPRRA       INS     680     S       SPRRA
+    S1121N  SNP     1121    S       N
+    I1224V  SNP     1224    I       V
 
 It shows that at position `680` the coronavirus has an four aminoacid insertion `PRRA`, the so called furin-cleavage.
 
@@ -107,17 +107,16 @@ It shows that at position `680` the coronavirus has an four aminoacid insertion 
 
 Convert to GFF
 
-    bio gff genomes.gb  | head
+    bio gff genomes.gb | head
 
 prints:
 
     ##gff-version 3
-    NC_045512.2	.	source	0	29903	.	+	.	ID=1;Name=NC_045512;Parent=NC_045512.2
-    NC_045512.2	.	five_prime_UTR	0	265	.	+	.	ID=2;Name=five_prime_UTR-1;Parent=five_prime_UTR-1;color=#cc0e74
-    NC_045512.2	.	gene	265	21555	.	+	.	ID=3;Name=ORF1ab;Parent=ORF1ab;color=#cb7a77
-    NC_045512.2	.	CDS	265	13468	.	+	.	ID=4;Name=YP_009724389.1;Parent=YP_009724389.1
-    NC_045512.2	.	CDS	13467	21555	.	+	.	ID=5;Name=YP_009724389.1;Parent=YP_009724389.1
-
+    MN996532.2      .       gene    266     21552   .       +       .       ID=1;Name=orf1ab;Parent=orf1ab;color=#cb7a77
+    MN996532.2      .       CDS     266     13465   .       +       .       ID=2;Name=QHR63299.2;Parent=QHR63299.2
+    MN996532.2      .       CDS     13465   21552   .       +       .       ID=3;Name=QHR63299.2;Parent=QHR63299.2
+    MN996532.2      .       gene    21560   25369   .       +       .       ID=4;Name=S;Parent=S;color=#cb7a77
+    MN996532.2      .       CDS     21560   25369   .       +       .       ID=5;Name=QHR63300.2;Parent=QHR63300.2
 Load and view the resulting files in IGV
 
 ```{r fig.align='center', echo=FALSE}

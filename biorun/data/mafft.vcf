@@ -2,15 +2,15 @@
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
-##contig=<ID=seq2,length=190,assembly=seq2>
-#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	seq1
-seq2	1	1_SUB_1	cc	ggtttac	.	PASS	TYPE=SUB	GT	1
-seq2	36	36_SNP_a/g	a	g	.	PASS	TYPE=SNP	GT	1
-seq2	42	42_SNP_a/c	a	c	.	PASS	TYPE=SNP	GT	1
-seq2	48	48_SNP_a/t	a	t	.	PASS	TYPE=SNP	GT	1
-seq2	68	68_SUB_4	tgtgg	tt	.	PASS	TYPE=SUB	GT	1
-seq2	95	95_SUB_1	tc	tagg	.	PASS	TYPE=SUB	GT	1
-seq2	100	100_SNP_a/t	a	t	.	PASS	TYPE=SNP	GT	1
-seq2	120	120_SNP_g/t	g	t	.	PASS	TYPE=SNP	GT	1
-seq2	121	121_SNP_a/t	a	t	.	PASS	TYPE=SNP	GT	1
-seq2	182	182_DEL_5	gtttcg	g	.	PASS	TYPE=DEL	GT	1
+##contig=<ID=seq1,length=195,assembly=seq1>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	seq2
+seq1	1	1_SUB_6	ggtttac	cc	.	PASS	TYPE=SUB	GT	1
+seq1	41	41_SNP_g/a	g	a	.	PASS	TYPE=SNP	GT	1
+seq1	47	47_SNP_c/a	c	a	.	PASS	TYPE=SNP	GT	1
+seq1	53	53_SNP_t/a	t	a	.	PASS	TYPE=SNP	GT	1
+seq1	73	73_SUB_1	tt	tgtgg	.	PASS	TYPE=SUB	GT	1
+seq1	97	97_SUB_3	tagg	tc	.	PASS	TYPE=SUB	GT	1
+seq1	104	104_SNP_t/a	t	a	.	PASS	TYPE=SNP	GT	1
+seq1	124	124_SNP_t/g	t	g	.	PASS	TYPE=SNP	GT	1
+seq1	125	125_SNP_t/a	t	a	.	PASS	TYPE=SNP	GT	1
+seq1	186	186_INS_5	g	gtttcg	.	PASS	TYPE=INS	GT	1

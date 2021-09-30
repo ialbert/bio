@@ -166,7 +166,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
             utils.error("We recommend that you use a different software.")
 
     # The first sequence is the query
-    query = recs[0]
+    target = recs[0]
 
     # Resulting alignments
     collect = []
@@ -179,7 +179,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
     )
 
     # Generate an alignment for each target
-    for target in recs[1:]:
+    for query in recs[1:]:
 
         alns = align(query, target, par=par)
 

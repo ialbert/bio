@@ -18,9 +18,9 @@ def run(start='', end='', diff=False, vcf=False, *fnames):
     recs = iter(recs)
 
     try:
-        query = next(recs)
+        target = next(recs)
 
-        for target in recs:
+        for query in recs:
 
             # Sanity check.
             if len(target) != len(query):

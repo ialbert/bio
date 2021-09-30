@@ -1,0 +1,10 @@
+##fileformat=VCFv4.2
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FILTER=<ID=PASS,Description="All filters passed">
+##INFO=<ID=TYPE,Number=1,Type=String,Description="Type of the variant">
+##contig=<ID=MN996532.2,length=29875,assembly=MN996532.2>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	NC_045512.2
+MN996532.2	19	19_SNP_T/C	T	C	.	PASS	TYPE=SNP	GT	1
+MN996532.2	37	37_SNP_G/C	G	C	.	PASS	TYPE=SNP	GT	1
+MN996532.2	42	42_SNP_C/T	C	T	.	PASS	TYPE=SNP	GT	1
+MN996532.2	91	91_SNP_A/G	A	G	.	PASS	TYPE=SNP	GT	1

@@ -1,2 +1,2 @@
-C4T    SNP  4  C  T
-A5ACA  INS  5  A  ACA
+T4C    SNP  4  T    C
+ACA5A  DEL  5  ACA  A

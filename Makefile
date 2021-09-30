@@ -17,6 +17,10 @@ testdata:
 # Update the data for the test script.
 fulltest: testdata test
 
+# Generate the output for docs
+code:
+	(cd docs/code && bash code.sh)
+
 # Generate the docs.
 docs:
 	(cd docs && Rscript -e "bookdown::render_book(input='index.Rmd', output_dir='.book', output_format='bookdown::gitbook')")

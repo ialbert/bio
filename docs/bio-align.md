@@ -11,7 +11,7 @@ Input may be given from command line:
 
     bio align GATTACA GATCA
 
-prints:
+the first sequence is the target, all following sequences are aligned considered queries. The command prints:
 
 ```{r, code=xfun::read_utf8('code/align1.txt'), eval=F}
 ```
@@ -63,25 +63,25 @@ Available ptions are : `--global`, `-local`, `-semi-global`
 
 Fetches two genomic files:
 
-    bio fetch NC_045512 MN996532 > genomes.gb
+    bio fetch MN996532 NC_045512 > genomes.gb
 
-Aligning two genomes:
+Align two genomes, the first is the target, all following sequences are considered queries and are aligned against the target. Here we are looking at what mutations would need to be made to the bat genome to turn it into the coronavirus genome:
 
     cat genomes.gb | bio fasta --genome | bio align | head
 
 the command aligns two 30KB sequences and takes about 15 seconds on my system, it will print:
 
-    # NC_045512.2 (29903) vs MN996532.2 (29855)
+    # MN996532.2 (29855) vs NC_045512.2 (29903)
     # pident=96.0% len=29908 ident=28725 mis=1125 del=5 ins=53
     # semiglobal: score=139005.0 gap open=11 extend=1  matrix=NUC.4.4
-
-    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAA
-    ||||||||||||||||||.|||||||||||||||||.||||.|||||||||||||||||||||||||||||||||||||||
+    
     ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAA
+    ||||||||||||||||||.|||||||||||||||||.||||.|||||||||||||||||||||||||||||||||||||||
+    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAA
 
 The `bio align` method takes the first file that it sees as target and aligns all other sequences to it as queries.
 
-## Protein alignments
+## Align coding sequences
 
 Align the DNA corresponding to protein `S`
 
@@ -92,32 +92,38 @@ prints:
 ```{r, code=xfun::read_utf8('code/align6.txt'), eval=F}
 ```
 
-or as translated sequences that prints:
+## Align protein sequences
 
-    cat genomes.gb | bio fasta --gene S --translate | bio align | head
+Align the protein sequences that prints:
+
+    cat genomes.gb | bio fasta --gene S --protein |  head
 
 that prints:
 
 ```{r, code=xfun::read_utf8('code/align7.txt'), eval=F}
 ```
 
+
+## Alignment showing mutations
+
+    cat genomes.gb | bio fasta --gene S --protein | bio align --diff | tail -5
+
+prints the variations:
+
+```{r, code=xfun::read_utf8('code/align9.txt'), eval=F}
+```
+
 ## Alignment with tabular output
 
-    cat genomes.gb | bio fasta --gene S --translate | bio align --table
+You can produce a column based table output
+
+    cat genomes.gb | bio fasta --gene S --protein | bio align --table
 
 prints:
 
 ```{r, code=xfun::read_utf8('code/align8.txt'), eval=F}
 ```
 
-## Alignment with variant output
-
-    cat genomes.gb | bio fasta --gene S --translate | bio align --diff | tail -5
-
-prints the variation (some lines not show):
-
-```{r, code=xfun::read_utf8('code/align9.txt'), eval=F}
-```
 
 ## Different scoring matrices
 
