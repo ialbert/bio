@@ -1,10 +1,10 @@
-# bio metadata: obtain viral metadata
+# bio meta: obtain viral metadata
 
 TODO: Work in progress.
 
 Display metadata on a taxonomical id (with a header):
 
-    bio metadata 11138 -H | head
+    bio meta 11138 -H | head
 
 prints:
 
@@ -18,3 +18,14 @@ prints:
     AF208066.1,11138,,,,,Murine hepatitis virus
     AF201929.1,76344,,,,,Murine hepatitis virus strain 2
     AF029248.1,11138,,,,,Murine hepatitis virus
+
+
+The column order is:
+
+* accession
+* species
+* host,date
+* location
+* isolate
+* species_name
+

@@ -9,10 +9,11 @@ from biorun import convert
 @plac.opt("type_", "filter for a feature type")
 @plac.opt("id_", "filter for a sequence id")
 @plac.opt("match", "regexp match on a name")
+@plac.opt("olap", "overlap with coordinate")
 @plac.opt("gene", "filter for a gene name", abbrev='g')
 @plac.opt("alias", "remap sequence ids")
 @plac.pos("fnames", "input files")
-def run(start='1', end='', type_='', id_='', match='', gene='', alias=None, *fnames):
-    convert.run(start=start, end=end, type_=type_, match=match, id_=id_, gene=gene, alias=alias, fasta=False, fnames=fnames)
+def run(start='1', end='', type_='', id_='', match='', gene='', olap='', alias=None, *fnames):
+    convert.run(start=start, end=end, type_=type_, match=match, id_=id_, gene=gene, alias=alias, olap=olap, fasta=False, fnames=fnames)
 
 

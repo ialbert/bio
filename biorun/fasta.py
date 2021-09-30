@@ -15,10 +15,11 @@ from biorun import convert
 @plac.flg("genome", "extract genome only ", abbrev='G')
 @plac.flg("revcomp", "reverse complement DNA", abbrev='R')
 @plac.opt("alias", "remap sequence ids")
+@plac.opt("olap", "overlap with coordinate")
 @plac.opt("frame", "reading frame", type=int, choices=[1,2,3,-1,-2,-3], abbrev='F')
 @plac.pos("fnames", "input files")
 def run(start='1', end='', type_='', id_='', match='', gene='',
-        alias='', protein=False, translate=False, revcomp=False, genome=False, frame=1, *fnames):
+        alias='', protein=False, translate=False, revcomp=False, genome=False, olap='', frame=1, *fnames):
 
     if frame > 1:
         start = frame
@@ -28,6 +29,6 @@ def run(start='1', end='', type_='', id_='', match='', gene='',
         revcomp = True
 
     convert.run(protein=protein, translate=translate, start=start,
-                end=end, type_=type_, id_=id_, revcomp=revcomp, genome=genome,
+                end=end, type_=type_, id_=id_, revcomp=revcomp, genome=genome, olap=olap,
                 match=match, gene=gene, alias=alias, fasta=True, fnames=fnames)
 

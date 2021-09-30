@@ -1,13 +1,8 @@
 """
 Converts across formats
 """
-import gzip
-import os, re
+import re
 import sys
-from collections import OrderedDict, defaultdict
-from itertools import count, tee
-
-from Bio.SeqIO.FastaIO import FastaIterator
 
 from biorun import utils, parser
 
@@ -70,12 +65,35 @@ def sequence_slicer(start=0, end=None):
 
     return func
 
-def true_all(x):
+
+def true(x):
     return True
 
-def type_selector(ftype):
+def false(x):
+    return True
 
-    if ftype =='all':
+def overlap_selector(olap):
+    olaps = set(olap.split(","))
+
+    if not olap:
+        func = false
+    else:
+        try:
+            values = list(map(int, olaps))
+        except ValueError as exc:
+            utils.error(f"Invalid numeric values: {olaps}")
+
+        def func(rec):
+            for value in values:
+                if rec.start <= value <= rec.end:
+                    return True
+            return False
+
+    return func
+
+
+def type_selector(ftype):
+    if ftype == 'all':
         return lambda x: True
 
     types = set(ftype.split(","))
@@ -103,8 +121,10 @@ def name_selector(name):
 
     return func
 
+
 def regex_selector(patt):
     cpatt = re.compile(patt)
+
     def func(rec):
         if patt:
             cond = cpatt.search(rec.id) or cpatt.search(rec.description)
@@ -145,7 +165,6 @@ def reverse_complement(flag):
         return rec
 
     return func
-
 
 
 def source_only(rec):
@@ -264,7 +283,7 @@ def gff_formatter(rec):
         print(line)
 
 
-def run(features=False, protein=False, translate=False, fasta=False, revcomp=False, genome=False,
+def run(features=False, protein=False, translate=False, fasta=False, revcomp=False, genome=False, olap='',
         start='1', end=None, type_='', id_='', match='', gene='', alias=None, fnames=[]):
     """
     Converts data to different formats.
@@ -311,6 +330,8 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
         # Apply regular expression match.
         recs = filter(regex_selector(match), recs)
 
+    # Select by overlap
+    recs = filter(overlap_selector(olap), recs)
 
     # Filters gene and CDS
     recs = filter(gene_selector(gene), recs)

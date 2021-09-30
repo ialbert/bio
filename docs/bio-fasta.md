@@ -8,7 +8,7 @@ A GenBank file represents sequence information in multiple sections:
     
 ## Get a GenBank file
 
-    bio fetch NC_045512,MN996532 > genomes.gb
+    bio fetch NC_045512 MN996532 > genomes.gb
 
 ## Convert to FASTA
 
@@ -16,7 +16,7 @@ The default behavior is to convert the genome (source) of the GenBank file to FA
 
     bio fasta genomes.gb
 
-or it also works as a stream
+all tools also work as a stream
     
     cat genomes.gb | bio fasta
 
@@ -24,15 +24,22 @@ or it also works as a stream
 
 The input may be GENBANK, FASTA, EMBL or FASTQ.
 
-
 ## What gets converted?
 
 GenBank and EMBL files contain both genomes and features all features are extracted.
 
-    # Extracts genomic DNA
-    cat genomes.gb | bio fasta | head
+    cat genomes.gb | bio fasta > all.fa
 
-pass any feature matcher to get
+pass any feature matcher to limit to certain types:
+
+    bio fasta --type CDS genomes.gb -e 10 | head
+
+prints:
+
+    >YP_009724389.1 CDS gene ORF1ab, ORF1ab polyprotein [1:10]
+    ATGGAGAGCC
+    >YP_009725295.1 CDS gene ORF1ab, ORF1a polyprotein [1:10]
+    ATGGAGAGCC
 
 ## Select by name
 
@@ -77,15 +84,12 @@ If any feature selector is passed the FASTA conversion operates on the features 
 
 will convert to fasta the coding sequences alone.
 
-### Get the sequence for the genome
 
-    bio fasta genomes.gb | head -3
+## Manipulate a genomic subsequence
 
-### Manipulate a genomic subsequence
+    bio fasta genomes.gb --genome --start 100 --end 10kb
 
-    bio fasta genomes.gb --start 100 --end 10kb 
-
-### Extract the sequences for annotations of a certain type
+## Extract the sequences for annotations of a certain type
 
     bio fasta genomes.gb --type CDS | head -3
 
@@ -95,7 +99,7 @@ will convert to fasta the coding sequences alone.
 
 ### Extract sequence by feature accession number
 
-    cat genomes.gb | bio fasta --end 10 --name QHR63308.1
+    cat genomes.gb | bio fasta --end 10 --id QHR63308.1
 
 ### Translate the sequence
 

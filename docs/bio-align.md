@@ -61,7 +61,7 @@ Available ptions are : `--global`, `-local`, `-semi-global`
 
 ## Align realistic data
 
-Fetches two files
+Fetches two genomic files:
 
     bio fetch NC_045512 MN996532 > genomes.gb
 
