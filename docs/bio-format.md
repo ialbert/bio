@@ -16,7 +16,7 @@ Many tools can generate such alignments.
 
 Get FASTA sequences for the coronavirus and the closest related bat coronavirus
 
-    bio fetch NC_045512 MN996532 | bio fasta > genomes.fa
+    bio fetch NC_045512 MN996532 | bio fasta --genome > genomes.fa
 
 Align the fasta files with `mafft`:
 
@@ -48,11 +48,11 @@ shows the pairwise alignment:
 
 This output generates an easy-to-read output of the alignments:
 
-    19	SNP	NC_045512.2	C/T	MN996532.2
-    37	SNP	NC_045512.2	C/G	MN996532.2
-    42	SNP	NC_045512.2	T/C	MN996532.2
-    91	SNP	NC_045512.2	G/A	MN996532.2
-    174	SNP	NC_045512.2	G/A	MN996532.2
+    T19C    SNP     19      T       C
+    G37C    SNP     37      G       C
+    C42T    SNP     42      C       T
+    A91G    SNP     91      A       G
+    A174G   SNP     174     A       G
 
 Columns are: position, type, query, change, target name.
 

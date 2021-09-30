@@ -12,13 +12,13 @@ A GenBank file represents sequence information in multiple sections:
 
 ## Convert to FASTA
 
-The default behavior is to convert the genome (source) of the GenBank file to FASTA. The following commands print the genome sequence:
+The default behavior is to convert all features of the GenBank file to FASTA (this includes both the genome and all features).
 
-    bio fasta genomes.gb
+    bio fasta genomes.gb > all.fa
 
-all tools also work as a stream
-    
-    cat genomes.gb | bio fasta
+to convert only the genome component pass the `--genome` flag:
+
+    bio fasta genomes.gb --genome > genomes.fa
 
 ## Inputs
 
