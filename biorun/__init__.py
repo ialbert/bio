@@ -6,7 +6,7 @@
 import sys
 
 # Global package version
-VERSION = "1.0.7"
+VERSION = "1.0.8"
 
 try:
     from signal import signal, SIGPIPE, SIG_DFL

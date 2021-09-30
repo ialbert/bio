@@ -147,13 +147,8 @@ def reverse_complement(flag):
     return func
 
 
-def source_only(flag):
-    def func(rec):
-        return rec.type == parser.SOURCE if flag else True
 
-    return func
-
-def keep_source(rec):
+def source_only(rec):
     return rec.type == parser.SOURCE
 
 
@@ -269,7 +264,7 @@ def gff_formatter(rec):
         print(line)
 
 
-def run(features=False, protein=False, translate=False, fasta=False, revcomp=False,
+def run(features=False, protein=False, translate=False, fasta=False, revcomp=False, genome=False,
         start='1', end=None, type_='', id_='', match='', gene='', alias=None, fnames=[]):
     """
     Converts data to different formats.
@@ -304,22 +299,18 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
 
     recs = map(remapper, recs)
 
-    if seqid or match:
+    # Keep the genome only
+    if genome:
+        recs = filter(source_only, recs)
 
-        recs = filter(regex_selector(match), recs)
-
+    if seqid:
         # Filter by seqid.
         recs = filter(seqid_selector(seqid), recs)
 
-    else:
-        # Keep all records when selecting by sequence id
-        gff = not fasta
+    if match:
+        # Apply regular expression match.
+        recs = filter(regex_selector(match), recs)
 
-        feature_selection = (gene or type_ or protein or features or gff)
-        if feature_selection:
-            recs = filter(remove_source, recs)
-        else:
-            recs = filter(keep_source, recs)
 
     # Filters gene and CDS
     recs = filter(gene_selector(gene), recs)

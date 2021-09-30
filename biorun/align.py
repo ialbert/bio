@@ -127,7 +127,7 @@ def get_matrix(matrix, show=False):
 @plac.opt("matrix", "matrix default: NUC4.4. or BLOSUM62)", abbrev='M')
 @plac.flg("vcf", "output vcf file", abbrev='V')
 @plac.flg("table", "output in tabular format", abbrev="T")
-@plac.flg("diff", "output differences", abbrev="D")
+@plac.flg("diff", "output differences", abbrev="d")
 @plac.flg("fasta", "output variant columns", abbrev="F")
 @plac.flg("local_", "local alignment", abbrev='L')
 @plac.flg("global_", "local alignment", abbrev='G')
@@ -229,7 +229,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         models.format_pairwise(collect, par=par)
 
     if count > 1 and not all_:
-        print(f"# WARNING: {count} identically scoring alignments! Run -A to see them all", file=sys.stderr)
+        print(f"# {count} identically scoring alignments! Pass the flag -A to see them all", file=sys.stderr)
 
 if __name__ == '__main__':
 

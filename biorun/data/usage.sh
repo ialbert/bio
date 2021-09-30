@@ -12,23 +12,26 @@ set -uex
 # Get data from NCBI
 bio fetch NC_045512 MN996532 > genomes.gb
 
+# Get a GFF from NCBI
+bio fetch NC_045512 --format gff > NC_045512.gff
+
 # Get a protein.
 bio fetch YP_009724390 > prot.fa
 
 # Selecting by gene id
 bio fasta genomes.gb --type gene --id N --end 10 > ids.fa
 
-# Selecting all items
-bio fasta genomes.gb --type all -end 10 > all.fa
+# Last ten sequences of all entries.
+bio fasta genomes.gb -end 10 > all_1.fa
+
+# Should produce the same output as above
+cat genomes.gb | bio fasta --end  10 > all_2.fa
+
+# No difference between outputs.
+diff all_1.fa all_2.fa > nodiff.txt
 
 # Slice the genomes
-bio fasta genomes.gb --end  100 > genomes.fa
-
-# Should produce the same output
-cat genomes.gb | bio fasta --end  100 > genomes.fa
-
-# Slice the genomes
-bio fasta genomes.gb --end  100  --alias alias.txt > genomes.alias.fa
+bio fasta genomes.gb --end 100 --genome --alias alias.txt > genomes.alias.fa
 
 # Generate features only.
 bio fasta genomes.gb --end 10 --type CDS > cds.fa
@@ -40,7 +43,7 @@ bio fasta genomes.gb --type CDS --translate > translate.fa
 bio fasta GATTACA --frame -3 --translate > frame.fa
 
 # Extract the proteins.
-bio fasta genomes.gb  --protein > protein.fa
+bio fasta genomes.gb --protein > protein.fa
 
 # Start codons
 cat cds.fa | bio fasta -e -3 > start.fa

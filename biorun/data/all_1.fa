@@ -1,3 +1,5 @@
+>NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome [1:10]
+ATTAAAGGTT
 >five_prime_UTR-1 five_prime_UTR  [1:10]
 ATTAAAGGTT
 >ORF1ab gene GU280_gp01 [1:10]
@@ -110,6 +112,8 @@ TAACTACATA
 CAATCTTTAA
 >stem_loop-5 stem_loop  [1:10]
 TTCACCGAGG
+>MN996532.2 Bat coronavirus RaTG13, complete genome [1:10]
+ATTAAAGGTT
 >orf1ab gene  [1:10]
 ATGGAGAGCC
 >QHR63299.2 CDS gene orf1ab, orf1ab polyprotein [1:10]

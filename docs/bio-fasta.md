@@ -6,11 +6,11 @@ A GenBank file represents sequence information in multiple sections:
 1. Feature annotation (intervals relative to the genome)
 
     
-### Get a GenBank file
+## Get a GenBank file
 
     bio fetch NC_045512,MN996532 > genomes.gb
 
-### Convert to FASTA
+## Convert to FASTA
 
 The default behavior is to convert the genome (source) of the GenBank file to FASTA. The following commands print the genome sequence:
 
@@ -20,14 +20,62 @@ or it also works as a stream
     
     cat genomes.gb | bio fasta
 
-### Selecting features
+## Inputs
+
+The input may be GENBANK, FASTA, EMBL or FASTQ.
+
+
+## What gets converted?
+
+GenBank and EMBL files contain both genomes and features all features are extracted.
+
+    # Extracts genomic DNA
+    cat genomes.gb | bio fasta | head
+
+pass any feature matcher to get
+
+## Select by name
+
+`-m` or `--match` performs a regular expression match on sequence ids:
+
+    cat genomes.gb | bio fasta -m glyco -end 10
+
+prints:
+
+    >YP_009724390.1 CDS gene S, surface glycoprotein [1:10]
+    ATGTTTGTTT
+    >YP_009724393.1 CDS gene M, membrane glycoprotein [1:10]
+    ATGGCAGATT
+    >QHR63300.2 CDS gene S, spike glycoprotein [1:10]
+    ATGTTTGTTT
+
+`-i` or `--id` performs an exact match on sequence ids:
+
+    cat genomes.gb | bio fasta -i YP_009724390.1  -end 10
+
+prints:
+
+    >YP_009724390.1 CDS gene S, surface glycoprotein [1:10]
+    ATGTTTGTTT
+
+pass multiple ids to match multiple sequences:
+
+    cat genomes.gb | bio fasta -i YP_009724390.1,QHR63300.2  -end 10
+
+prints:
+
+    >YP_009724390.1 CDS gene S, surface glycoprotein [1:10]
+    ATGTTTGTTT
+    >QHR63300.2 CDS gene S, spike glycoprotein [1:10]
+    ATGTTTGTTT
+
+## Selecting features
 
 If any feature selector is passed the FASTA conversion operates on the features in the GenBank:
 
     bio fasta --type CDS genomes.gb
 
 will convert to fasta the coding sequences alone.
-
 
 ### Get the sequence for the genome
 

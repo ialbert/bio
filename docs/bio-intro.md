@@ -55,15 +55,18 @@ the  `MN996532` that stores information on the most similar bat coronavirus. We 
 
 ### Convert to FASTA
 
-    bio fasta genomes.gb  | head
+The command will convert *all* features into FASTA, here we are showing first 10 bases
+
+    bio fasta genomes.gb --end 10  | head
 
 prints:
 
-    >NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome
-    ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
-    GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
-    CACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATC
-    TTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTT
+    >NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome [1:10]
+    ATTAAAGGTT
+    >five_prime_UTR-1 five_prime_UTR  [1:10]
+    ATTAAAGGTT
+    >ORF1ab gene GU280_gp01 [1:10]
+    ATGGAGAGCC
 
 ### Align sequences
 

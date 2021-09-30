@@ -67,7 +67,7 @@ Fetches two files
 
 Aligning two genomes:
 
-    cat genomes.gb | bio fasta | bio align | head
+    cat genomes.gb | bio fasta --genome | bio align | head
 
 the command aligns two 30KB sequences and takes about 15 seconds on my system, it will print:
 
