@@ -44,7 +44,7 @@ prints:
 ```{r, code=xfun::read_utf8('code/align4.txt'), eval=F}
 ```
 
-The "diff" output can be thought of a a simplified VCF.
+The "diff" output can be thought of as a simplified VCF.
 
 ## Alignment types
 

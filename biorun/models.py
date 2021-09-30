@@ -236,7 +236,11 @@ def format_diffs(alns):
             base = elems[3]
             alt = elems[4]
             info = elems[7].split("=")[-1]
-            data = [pos, info, aln.target.name, f"{base}/{alt}", aln.query.name, ]
+            short = f"{base}{pos}{alt}"
+
+            #data = [short, pos, info, aln.target.name, f"{base}/{alt}", aln.query.name, ]
+
+            data = [short, info, pos, base, alt]
 
             print("\t".join(data))
 

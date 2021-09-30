@@ -25,7 +25,7 @@ def print_acc(records):
 @plac.opt('minL', "minimum lenght", type=int, abbrev="L")
 @plac.opt('maxN', "maximum number of Ns", abbrev="N")
 @plac.opt('maxX', "maximum number of Xs", abbrev="X")
-@plac.flg('invert', "invert the action")
+@plac.flg('invert', "invert filtering action")
 @plac.flg('acc', "print accession numbers only")
 def main(minL=-1, maxN=-1, maxX=-1, invert=False, acc=False):
     # Parse the input string.
