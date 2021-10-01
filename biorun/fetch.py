@@ -124,7 +124,7 @@ def esearch_and_efetch(term, db, rettype, retmode, limit=None):
         logger.debug(f"query={results}")
         stream = Entrez.efetch(db=db, webenv=webenv, query_key=query_key, retmax=limit, rettype=rettype,
                                retmode=retmode)
-    except HTTPError as exc:
+    except Exception as exc:
         utils.error(f"HTTP Error: term={term}, db={db}, rettype={rettype}, retmode={retmode}, exc={exc}")
         stream = None
 
@@ -204,7 +204,7 @@ def fetch_ncbi_gff(ids, db="nuccore"):
             text = chunk.decode("utf8")
             print(text)
     except Exception as exc:
-        utils.error(f"{exc}")
+        utils.error(f"Error for {ids}, {db} : {exc}")
 
 
 def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
@@ -213,8 +213,8 @@ def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
     try:
         stream = Entrez.efetch(db=db, id=ids, rettype=rettype, retmode=retmode, retmax=limit)
         stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5, leave=False)
-    except HTTPError as exc:
-        utils.error(f"Accession or database may be incorrect: {ids}, {db}, {rettype}, {retmode}: {exc}")
+    except Exception as exc:
+        utils.error(f"Error for {ids}, {db}, {rettype}, {retmode}: {exc}")
 
     for line in stream:
         print(line, end='')
@@ -227,18 +227,20 @@ def fetch_ensembl(ids, ftype='genomic'):
 
     server = "https://rest.ensembl.org"
 
-    for acc in ids:
+    try:
+        for acc in ids:
 
-        ext = f"/sequence/id/{acc}?type={ftype}"
+            ext = f"/sequence/id/{acc}?type={ftype}"
 
-        r = requests.get(server + ext, headers={"Content-Type": "text/x-fasta"})
+            r = requests.get(server + ext, headers={"Content-Type": "text/x-fasta"})
 
-        if not r.ok:
-            r.raise_for_status()
-            sys.exit()
+            if not r.ok:
+                r.raise_for_status()
+                sys.exit()
 
-        print(r.text)
-
+            print(r.text)
+    except Exception as exc:
+        utils.error(f"Error for {ids}, {ftype}: {exc}")
 
 @plac.pos("acc", "accession numbers")
 @plac.opt("db", "database", choices=["nuccore", "protein"])

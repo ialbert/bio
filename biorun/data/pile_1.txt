@@ -1,0 +1,4 @@
+# seq1 vs seq2 vs seq3 vs seq4
+A2T	2	A	TTT	3
+T4A	4	T	A..	1
+C6T	6	C	.T.	1

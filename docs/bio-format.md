@@ -53,11 +53,4 @@ prints:
 ```{r, code=xfun::read_utf8('code/format3.txt'), eval=F}
 ```
 
-## One shot wonder
-
-You can do the above in a single command:
-
-    bio fetch NC_045512 MN996532 | bio fasta | mafft --preservecase - | bio format --vcf > variants.vcf
-
-
 

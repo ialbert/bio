@@ -3,7 +3,6 @@ from itertools import *
 
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
-from pprint import pprint
 
 
 class Alignment:
@@ -128,10 +127,10 @@ def find_variants(query, target):
         if key == MATCH:
             info = f"TYPE={MATCH}"
             name = f"{pos + 1}_{seqb}/{seqa}"
-            row = [target.name, str(pos+1), name, seqb, seqa, "PASS", info, "GT", "1"]
+            row = [target.name, str(pos + 1), name, seqb, seqa, "PASS", info, "GT", "1"]
             last_a = seqa[-1]
             last_b = seqb[-1]
-            #store.append(row)
+            # store.append(row)
             continue
 
         gaps_a = seqa.count("-")
@@ -167,16 +166,16 @@ def find_variants(query, target):
         if len(ref) == 1:
             # Insertion
             info = f"TYPE={INS}"
-            name = f"{pos}_{INS}_{len(alt)-1}"
+            name = f"{pos}_{INS}_{len(alt) - 1}"
 
         elif len(alt) == 1:
             # Deletion
             info = f"TYPE={DEL}"
-            name = f"{pos}_{DEL}_{len(ref)-1}"
+            name = f"{pos}_{DEL}_{len(ref) - 1}"
 
         else:
             info = f"TYPE={SUB}"
-            name = f"{pos}_{SUB}_{len(ref)-1}"
+            name = f"{pos}_{SUB}_{len(ref) - 1}"
 
         row = [target.name, str(pos), name, ref, alt, ".", "PASS", info, "GT", "1"]
 
@@ -230,6 +229,36 @@ def format_diffs(alns):
 
         values = find_variants(query=aln.query, target=aln.target)
 
+        print(f"# {aln.target.name} vs {aln.query.name}")
+
+        for elems in values:
+            pos = elems[1]
+            base = elems[3]
+            alt = elems[4]
+            info = elems[7].split("=")[-1]
+            short = f"{base}{pos}{alt}"
+
+            # data = [short, pos, info, aln.target.name, f"{base}/{alt}", aln.query.name, ]
+
+            data = [short, info, pos, base, alt]
+
+            print("\t".join(data))
+
+
+def format_pile(alns):
+    coords = dict()
+    data = dict()
+    names = dict()
+
+    for idx, aln in enumerate(alns):
+
+        names[aln.target.name] = True
+        names[aln.query.name] = True
+
+        values = find_variants(query=aln.query, target=aln.target)
+
+        data[idx] = dict()
+
         for elems in values:
 
             pos = elems[1]
@@ -237,12 +266,35 @@ def format_diffs(alns):
             alt = elems[4]
             info = elems[7].split("=")[-1]
             short = f"{base}{pos}{alt}"
+            pos = int(pos)
+            if info != SNP:
+                continue
 
-            #data = [short, pos, info, aln.target.name, f"{base}/{alt}", aln.query.name, ]
+            coords[(pos, base, short)]= True
 
-            data = [short, info, pos, base, alt]
+            data[idx][short] = alt
 
-            print("\t".join(data))
+    header = " vs ".join(names.keys())
+    print(f"# {header}")
+    for coord in sorted(coords.keys()):
+
+        pos, base, short = coord
+
+        out = [short, f"{pos}", f"{base}"]
+
+        found = 0
+        pile = ''
+        for idx in data:
+            alt = data[idx].get(short, ".")
+            if alt != '.':
+                found += 1
+
+            pile += alt
+
+        out.append(pile)
+        out.append(f"{found}")
+
+        print("\t".join(out))
 
 
 def format_pairwise(alns, par=None, width=81):

@@ -78,6 +78,9 @@ bio align GATTACA GATCA --diff  > gattaca.diff
 # Running on FASTA files.
 bio align align_input.fa --vcf > align_input.vcf
 
+# Creating the pileup output.
+bio align GATTACA GTTAACA GTTTATA GTTT --pile > pile_1.txt
+
 # Format to pairwise
 bio format mafft.fa > mafft.txt
 
