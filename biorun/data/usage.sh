@@ -39,6 +39,9 @@ cat genomes.gb | bio fasta --olap 29514 -e 10 --type CDS > olap_1.fa
 # Outputs overlapping features as GFF
 cat genomes.gb | bio gff --olap 29514 > olap_2.gff
 
+# Compute sizes
+cat genomes.gb | bio fasta --type CDS --olap 3778,8388,8987  --size > size_1.txt
+
 # Generate features only.
 bio fasta genomes.gb --end 10 --type CDS > cds.fa
 

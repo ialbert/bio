@@ -25,6 +25,10 @@ except ImportError as exc:
     sys.exit()
 
 
+def size_formatter(rec):
+    print(f"{rec.id}\t{rec.gene}\t{len(rec.seq)}")
+
+
 def fasta_formatter(rec):
     print(rec.format("fasta"), end='')
 
@@ -283,7 +287,7 @@ def gff_formatter(rec):
         print(line)
 
 
-def run(features=False, protein=False, translate=False, fasta=False, revcomp=False, genome=False, olap='',
+def run(features=False, protein=False, translate=False, fasta=False, revcomp=False, genome=False, olap='', size=False,
         start='1', end=None, type_='', id_='', match='', gene='', alias=None, fnames=[]):
     """
     Converts data to different formats.
@@ -357,7 +361,9 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     recs = map(translate_recs(translate), recs)
 
     # Select the formatter.
-    if fasta:
+    if size:
+        formatter = size_formatter
+    elif fasta:
         # Fasta formatter.
         formatter = fasta_formatter
     else:
