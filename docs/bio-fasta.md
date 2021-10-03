@@ -116,3 +116,23 @@ This flag extracts the protein sequence embedded in the original GenBank file:
     bio fasta --end 10 --protein --gene S genomes.gb
 
 Note how in this case the slice to 10 is applied on the protein sequence.
+
+## Other tools 
+
+My first choice when needing functionality not present in `bio fasta` would be to look at:
+
+* `seqkit` a cross-platform and ultrafast toolkit for FASTA/Q file manipulation <https://bioinf.shenwei.me/seqkit/>
+
+and
+
+* `seqtk` a fast and lightweight tool for processing sequences in the FASTA or FASTQ format. It seamlessly parses both FASTA and FASTQ files which can also be optionally compressed by gzip.  <https://github.com/lh3/seqtk>
+
+
+### Other potentially useful software
+
+The following software may be installed with `conda/mamba`:
+
+* `any2fasta` converts various outputs to FASTA see <https://github.com/tseemann/any2fasta>
+* `seqret` part the EMBOSS suite <https://www.bioinformatics.nl/cgi-bin/emboss/help/seqret>
+* `pyfastq` Python3 script to manipulate FASTA and FASTQ (and other format) files, plus API for developers https://github.com/sanger-pathogens/Fastaq   
+* `bam2fasta` Convert 10x bam file or fastq.gz files to individual FASTA files per cell barcode convert large bam files to fastq.gz format before the individual fasta files per cell barcode conversion <https://github.com/czbiohub/bam2fasta>
