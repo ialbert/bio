@@ -133,6 +133,7 @@ and
 The following software may be installed with `conda/mamba`:
 
 * `any2fasta` converts various outputs to FASTA see <https://github.com/tseemann/any2fasta>
-* `seqret` part the EMBOSS suite <https://www.bioinformatics.nl/cgi-bin/emboss/help/seqret>
+* `pyfasta` pythonic access to fasta sequence files <https://github.com/brentp/pyfasta>
 * `pyfastq` Python3 script to manipulate FASTA and FASTQ (and other format) files, plus API for developers https://github.com/sanger-pathogens/Fastaq   
+* `seqret` part the EMBOSS suite <https://www.bioinformatics.nl/cgi-bin/emboss/help/seqret>
 * `bam2fasta` Convert 10x bam file or fastq.gz files to individual FASTA files per cell barcode convert large bam files to fastq.gz format before the individual fasta files per cell barcode conversion <https://github.com/czbiohub/bam2fasta>
