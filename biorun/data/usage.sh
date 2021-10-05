@@ -27,7 +27,7 @@ bio fasta genomes.gb -end 10 > all_1.fa
 # Should produce the same output as above
 cat genomes.gb | bio fasta --end  10 > all_2.fa
 
-# No difference between outputs.
+# No muterence between outputs.
 diff all_1.fa all_2.fa > nodiff.txt
 
 # Slice the genomes
@@ -73,7 +73,7 @@ bio align GATTACA GATCA --local > gattaca3.txt
 bio align GATTACA GATCA --vcf > gattaca.vcf
 
 # Running variants.
-bio align GATTACA GATCA --diff  > gattaca.diff
+bio align GATTACA GATCA --mut  > gattaca.mut.txt
 
 # Running on FASTA files.
 bio align align_input.fa --vcf > align_input.vcf
@@ -87,8 +87,8 @@ bio format mafft.fa > mafft.txt
 # Format to VCF
 bio format mafft.fa --vcf > mafft.vcf
 
-# Format to diff
-bio format mafft.fa --diff > mafft.diff
+# Format to mut
+bio format mafft.fa --mut > mafft.mut.txt
 
 # Select S proteins
 bio fasta --gene S --protein  genomes.gb > s.fa

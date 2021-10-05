@@ -7,9 +7,9 @@ from biorun.libs import placlib as plac
 @plac.pos("fnames")
 @plac.opt("start", "start coordinate")
 @plac.opt("end", "end coordinate")
-@plac.flg("diff", "output differences")
+@plac.flg("mut", "output mutations")
 @plac.flg("vcf", "output vcf")
-def run(start='', end='', diff=False, vcf=False, *fnames):
+def run(start='', end='', mut=False, vcf=False, *fnames):
     # fname = '../test/data/mafft.fa'
 
     # Parse the input
@@ -39,8 +39,8 @@ def run(start='', end='', diff=False, vcf=False, *fnames):
 
             if vcf:
                 models.format_vcf(alns)
-            elif diff:
-                models.format_diffs(alns)
+            elif mut:
+                models.format_mutations(alns)
             else:
                 models.format_pairwise(alns)
 

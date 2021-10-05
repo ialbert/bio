@@ -16,7 +16,9 @@ the first sequence is the target, all following sequences are aligned considered
 ```{r, code=xfun::read_utf8('code/align1.txt'), eval=F}
 ```
 
-output may be formatted in as table:
+## Alignment as a table
+
+When generating alignment providing output in different formats is important. Here is the alignment formatted as a table:
 
     bio align GATTACA GATCA --table
 
@@ -25,7 +27,7 @@ prints:
 ```{r, code=xfun::read_utf8('code/align2.txt'), eval=F}
 ```
 
-output may be formatted in as VCF:
+## Alignment as VCF
 
     bio align GATTACA GATCA --vcf
 
@@ -35,16 +37,18 @@ prints:
 ```{r, code=xfun::read_utf8('code/align3.txt'), eval=F}
 ```
 
-output may be formatted in as "differences" between the reference (second sequence) and the query (first sequence):
+## Alignment as mutations
 
-    bio align GATTACA GATCA --diff
+The output may be formatted in as mutations between the reference (second sequence) and the query (first sequence):
+
+    bio align GATTACA GATCA --mut
 
 prints:
 
 ```{r, code=xfun::read_utf8('code/align4.txt'), eval=F}
 ```
 
-The "diff" output can be thought of as a simplified VCF.
+You can think of the mutations output can be thought of as a simplified VCF.
 
 ## Alignment types
 
@@ -106,7 +110,7 @@ that prints:
 
 ## Alignment showing mutations
 
-    cat genomes.gb | bio fasta --gene S --protein | bio align --diff | tail -5
+    cat genomes.gb | bio fasta --gene S --protein | bio align --mut | tail -5
 
 prints the variations:
 

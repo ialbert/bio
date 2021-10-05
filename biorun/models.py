@@ -5,6 +5,25 @@ from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 
 
+def positions(query, target):
+    pos = dict()
+
+    posa = posb = 0
+
+    for a, b in zip(query, target):
+
+        if a != b:
+            pos[posb] = posa
+
+        if a != '-':
+            posa += 1
+
+        if b != '-':
+            posb += 1
+
+    return pos
+
+
 class Alignment:
     """
     Represents a pairwise alignment.
@@ -19,13 +38,16 @@ class Alignment:
         # Alignment parameters
         self.ident = self.ins = self.dels = self.mis = 0
         self.score = score
-        # Query and target lenghts.
+
+        # Query and target lengths.
         self.qlen = sum(1 for x in self.query.seq if x != '-')
         self.tlen = sum(1 for x in self.target.seq if x != '-')
 
         # Compute alignment information.
-        for a, b in zip(self.query.seq, self.target.seq):
-            if a == b:
+        for a, b in zip(self.query, self.target):
+            if a == '-' and b == ' -':
+                continue
+            elif a == b:
                 self.ident += 1
             elif a == '-':
                 self.dels += 1
@@ -33,6 +55,9 @@ class Alignment:
                 self.ins += 1
             elif a != b:
                 self.mis += 1
+
+        # Maps the positions between the two sequences
+        self.pos = positions(query=self.query, target=self.target)
 
         # Percent identity (BLAST identity)
         # https://lh3.github.io/2018/11/25/on-the-definition-of-sequence-identity
@@ -49,8 +74,11 @@ class Param:
     def __init__(self, **kwds):
         self.is_dna = False
         self.matrix = None
+        self.match = 1
+        self.mismatch = 2
         self.gap_open = 11
         self.gap_extend = 1
+        self.is_dna = True
         self.mode = ''
         self.type = ''
         # Override with defaults
@@ -221,7 +249,7 @@ def format_table(alns, sep="\t"):
         print(line)
 
 
-def format_diffs(alns):
+def format_mutations(alns):
     # header = "pos info query change target"
     # print("\t".join(header.split()))
 
@@ -270,7 +298,7 @@ def format_pile(alns):
             if info != SNP:
                 continue
 
-            coords[(pos, base, short)]= True
+            coords[(pos, base, short)] = True
 
             data[idx][short] = alt
 
@@ -307,12 +335,14 @@ def format_pairwise(alns, par=None, width=81):
             "",
             f"# {aln.target.name} ({aln.tlen}) vs {aln.query.name} ({aln.qlen})",
             f"# pident={aln.pident:0.1f}% len={aln.alen} ident={aln.ident} mis={aln.mis} del={aln.dels} ins={aln.ins}",
-
         ]
 
         if par:
-            score = f"score={aln.score} " if aln.score is not None else ''
-            elem = f"# {par.mode}: {score}gap open={par.gap_open} extend={par.gap_extend}  matrix={par.matrix}"
+            score = f"score={aln.score}" if aln.score is not None else ''
+            if par.matrix:
+                elem = f"# {par.mode}: {score} matrix={par.matrix} gapopen={par.gap_open} gapextend={par.gap_extend}"
+            else:
+                elem = f"# {par.mode}: {score} match={par.match} mismatch={par.mismatch} gapopen={par.gap_open} gapextend={par.gap_extend}"
             out.append(elem)
 
         out.append("")

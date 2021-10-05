@@ -1,9 +1,9 @@
 
-# seq1 (5) vs seq2 (5)
-# pident=80.0% len=5 ident=4 mis=1 del=0 ins=0
-# local: score=16.0 gap open=11 extend=1  matrix=NUC.4.4
+# seq1 (3) vs seq2 (3)
+# pident=100.0% len=3 ident=3 mis=0 del=0 ins=0
+# local: score=3.0 match=1 mismatch=2 gapopen=11 gapextend=1
 
-GATTA
-|||.|
-GATCA
+GAT
+|||
+GAT
 

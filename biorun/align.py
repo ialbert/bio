@@ -72,12 +72,25 @@ def align(target, query, par: models.Param):
     else:
         aligner.mode = 'global'
 
-    # Attempts to detect DNA vs peptide sequences.
-    if not par.matrix:
-        par.matrix = 'NUC.4.4' if all_nuc(t) else "BLOSUM62"
+    # Recognize a few shorter matrix names.
+    par.matrix = 'NUC.4.4' if par.matrix in('DNA', 'EDNAFULL') else par.matrix
+    par.matrix = 'BLOSUM62' if par.matrix in ('PROT', 'PEP') else par.matrix
 
-    # Load the substitutions matrix
-    aligner.substitution_matrix = get_matrix(par.matrix)
+    # Automatic detection of nucleotide vs peptide
+    par.is_dna = all_nuc(t)
+
+    # Peptides get the BLOSUM matrix as default.
+    if not par.matrix and not par.is_dna:
+        par.matrix = "BLOSUM62"
+
+    if par.matrix:
+        # Load the substitutions matrix
+        aligner.substitution_matrix = get_matrix(par.matrix)
+    else:
+        # Nucleotide defaults.
+        aligner.match_score = safe_abs(par.match)
+        aligner.mismatch_score = -safe_abs(par.mismatch)
+
 
     # Internal gap scoring.
     aligner.open_gap_score = -safe_abs(par.gap_open)
@@ -123,11 +136,13 @@ def get_matrix(matrix, show=False):
 
 @plac.pos("sequence", "sequences")
 @plac.opt("open_", "gap open penalty", type=int, abbrev='o')
-@plac.opt("extend", "gap extend penalty", type=int, abbrev='x')
+@plac.opt("extend", "gap extend penalty", type=float, abbrev='x')
+@plac.opt("match", "alignment match (DNA only)", abbrev='m')
+@plac.opt("mismatch", "alignment mismatch (DNA only)", abbrev='i')
 @plac.opt("matrix", "matrix default: NUC4.4. or BLOSUM62)", abbrev='M')
 @plac.flg("vcf", "output vcf file", abbrev='V')
 @plac.flg("table", "output in tabular format", abbrev="T")
-@plac.flg("diff", "output differences", abbrev="d")
+@plac.flg("mut", "output mutations", abbrev="u")
 @plac.flg("pile", "output pileup", abbrev="p")
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.flg("fasta", "output variant columns", abbrev="F")
@@ -135,8 +150,8 @@ def get_matrix(matrix, show=False):
 @plac.flg("global_", "local alignment", abbrev='G')
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.flg("all_", "show all alignments", abbrev='A')
-def run(open_=11, extend=1, matrix='', local_=False, global_=False,
-        semiglobal=False, vcf=False, table=False, diff=False, pile=False, fasta=False, all_=False, *sequences):
+def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mismatch=2,
+        semiglobal=False, vcf=False, table=False, mut=False, pile=False, fasta=False, all_=False, *sequences):
 
     # Select alignment mode
     if global_:
@@ -178,6 +193,8 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         gap_extend=extend,
         matrix=matrix,
         mode=mode,
+        match=match,
+        mismatch=mismatch,
     )
 
     # Generate an alignment for each target
@@ -223,8 +240,8 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         models.format_vcf(collect)
     elif table:
         models.format_table(collect)
-    elif diff:
-        models.format_diffs(collect)
+    elif mut:
+        models.format_mutations(collect)
     elif fasta:
         models.format_fasta(collect)
     elif pile:
@@ -233,7 +250,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False,
         models.format_pairwise(collect, par=par)
 
     if count > 1 and not all_:
-        print(f"# {count} identically scoring alignments! Pass the flag -A to see them all", file=sys.stderr)
+        print(f"# {count+1} identically scoring alignments! Pass the flag -A to see them all", file=sys.stderr)
 
 if __name__ == '__main__':
 

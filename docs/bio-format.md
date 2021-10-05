@@ -35,7 +35,7 @@ shows the pairwise alignment:
 
 ## Show differences
 
-    cat aligned.fa | bio format --diff | head -5
+    cat aligned.fa | bio format --mut | head -5
 
 This output generates an easy-to-read output of the alignments:
 

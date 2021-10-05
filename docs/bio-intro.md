@@ -84,9 +84,9 @@ prints:
 	|||||||||||||||||||||||||||||||.|||||||||||||||||.|||||||||||||||||||||||||.||||| 81
 	MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
 
-### Show alignment as differences
+### Show alignment as mutations
 
-	cat genomes.gb | bio fasta --gene S --protein | bio align --diff | tail
+	cat genomes.gb | bio fasta --gene S --protein | bio align --mut | tail
 
 prints the type and variant at each location:
     

@@ -1,7 +1,7 @@
 
 # QHR63300.2 (3810) vs YP_009724390.1 (3822)
-# pident=92.9% len=3827 ident=3554 mis=251 del=5 ins=17
-# semiglobal: score=16694.0 gap open=11 extend=1  matrix=NUC.4.4
+# pident=92.9% len=3822 ident=3549 mis=261 del=0 ins=12
+# semiglobal: score=3005.0 match=1 mismatch=2 gapopen=11 gapextend=1
 
 ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCA
 ||||||||||||||||||||||||||||||||.||||||||||||||||||||.|||||.||||||||.|||||.||||||
