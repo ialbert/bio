@@ -99,14 +99,10 @@ If you clone the repository, we recommend that you install it as a development p
     
 ## Testing
 
-Testing uses the `pytest` framework:
+`bio` can test itself, to run all tests execute:
 
-    pip install pytest
+    bio test
 
-To run all tests, use:
-
-    make test
-    
 Tests are automatically built from a shell script that mimics real-life usage scenarios.
 
 * https://github.com/ialbert/bio/blob/master/test/usage.sh

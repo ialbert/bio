@@ -1,5 +1,7 @@
 # Welcome to bio {#bio-intro}
 
+`bio` wants to be a toy that you can play with. Like LEGO pieces that match one another `bio` aims to provide you with  commands that naturally fit together to let you express your intent in short and tight commands.
+
 If you've ever done bioinformatics you know how even seemingly straightforward tasks often require multiple steps, searching the web, reading documentation, clicking around various websites that all together can slow down your progress.
 
 Time and again, I found myself not pursuing ideas because getting to the fun part was too tedious. The `bio` package was designed  to solve that tedium by making bioinformatics explorations more enjoyable. The software lets users quickly answer questions such as:
@@ -53,24 +55,22 @@ the  `MN996532` that stores information on the most similar bat coronavirus. We 
 
     bio fetch MN996532 NC_045512 > genomes.gb
 
-### Convert to FASTA
+### Extract sequences of interest
 
-The command will convert *all* features into FASTA, here we are showing first 10 bases
+Look at the first 10 bases for the coding sequence of gene S:
 
-    bio fasta genomes.gb --end 10  | head
+    bio fasta genomes.gb --end 10  --gene S | head
 
 prints:
 
-    >NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome [1:10]
-    ATTAAAGGTT
-    >five_prime_UTR-1 five_prime_UTR  [1:10]
-    ATTAAAGGTT
-    >ORF1ab gene GU280_gp01 [1:10]
-    ATGGAGAGCC
+    >YP_009724390.1 CDS gene S, surface glycoprotein [1:10]
+    ATGTTTGTTT
+    >QHU36824.1 CDS gene S, surface glycoprotein [1:10]
+    ATGTTTGTTT
 
 ### Align sequences
 
-From the `genomes.gb` obtained above align the protein sequences for the `S` gene
+Let's align the protein sequences for the `S` gene
 
 	cat genomes.gb | bio fasta --gene S --protein | bio align | head
 
@@ -85,6 +85,8 @@ prints:
 	MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDN
 
 ### Show alignment as mutations
+
+Pairwise alignments can be overly verbose, let's look at mutations alone:
 
 	cat genomes.gb | bio fasta --gene S --protein | bio align --mut | tail
 
