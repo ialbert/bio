@@ -2,7 +2,12 @@
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
+`bio` is a bioinformatics toy to play with.
+
+Like LEGO pieces that match one another `bio` aims to provide you with commands that naturally fit together and let you express your intent with short, explicit and simple commands. It is a project in an exploratory phase, we'd welcome input and suggestions on what it should grow up into.
+
 ## What does this software do?
+
 
 If you've ever done bioinformatics, you know how even seemingly straightforward tasks require multiple steps, arcane incantations, and various other preparations that slow down progress. 
 
