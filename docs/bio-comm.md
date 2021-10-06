@@ -1,4 +1,4 @@
-# bio comm: find common values
+# bio comm: find common values {#bio-comm}
 
 The need to find identical elements within columns of different files is surprisingly common (pun intended).
 

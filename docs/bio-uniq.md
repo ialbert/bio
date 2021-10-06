@@ -1,4 +1,4 @@
-# bio uniq: find unique elements
+# bio uniq: find unique elements {#bio-uniq}
 
 The need to find unique elements within columns of different files is very common.
 
