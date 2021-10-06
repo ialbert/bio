@@ -121,6 +121,7 @@ def get_streams(fnames, dynamic=False):
         yield sys.stdin
 
     for fname in fnames:
+        fname = fname.strip()
         if os.path.isfile(fname):
             if fname.endswith(".gz"):
                 logger.debug(f"gzip open: {fname}")
@@ -136,7 +137,7 @@ def get_streams(fnames, dynamic=False):
             if fname.startswith("--"):
                 utils.error(f"invalid parameter: {fname}")
             else:
-                utils.error(f"file not found: {fname}")
+                utils.error(f"file not found: '{fname}'")
 
 
 def parse_stream(stream):
