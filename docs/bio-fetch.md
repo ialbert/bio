@@ -149,7 +149,6 @@ These commands fetch data in FASTA formats. For more information see the Ensembl
 And the [enaBrowserTools: interface with the ENA web services to download data from ENA][ena]
 
 
-
 ## Tools with similar utility {#fetch_similar}
 
 `bio fetch` is primarily a convenience function that simplifies the use of Entrez and ENA in certain simple and well defined cases.
@@ -159,6 +158,15 @@ See also the related tools that may have expanded functionality:
 * [Entrez Direct: E-utilities on the Unix Command Line][entrez-direct]
 * [enaBrowserTools: interface with the ENA web services to download data from ENA][ena]
 * [ffq: Fetch run information from the European Nucleotide Archive (ENA)][ffq]
+
+
+From https://www.biostars.org/p/9492531/#9492581 use the [ENA portal API](https://www.ebi.ac.uk/ena/portal/api/)
+
+    # Get information
+    curl -X GET "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA374918&fields=run_accession,library_name,library_layout,fastq_ftp&result=read_run"
+
+    # What fields are acceptable
+    curl -X GET "https://www.ebi.ac.uk/ena/portal/api/returnFields?dataPortal=ena&result=read_run"
 
 [ffq]: https://github.com/pachterlab/ffq
 [ena]: https://github.com/enasequence/enaBrowserTools

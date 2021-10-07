@@ -17,9 +17,10 @@ from biorun import VERSION
 #
 # Subcommand registration:
 #
-# name = (module.function, automatic_help_flag, list_command, command_help)
+# name = (module.function, help_flag, listing_flag, command_help)
 #
 SUB_COMMANDS = dict(
+    search=("biorun.search.run", True, False, "search for information"),
     fetch=("biorun.fetch.run", True, True, "download GenBank/ENSEMBL data"),
     fasta=("biorun.fasta.run", True, True, "convert to FASTA"),
     gff=("biorun.gff.run", True, True,"convert to GFF"),

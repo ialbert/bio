@@ -30,8 +30,11 @@ cat genomes.gb | bio fasta --end  10 > all_2.fa
 # No muterence between outputs.
 diff all_1.fa all_2.fa > nodiff.txt
 
-# Slice the genomes
-bio fasta genomes.gb --end 100 --genome --alias alias.txt > genomes.alias.fa
+# Renaming with patterns
+bio fasta genomes.gb --end 100 --genome --rename '{isolate}' > genomes.rename.fa
+
+# Renaming with a file
+bio fasta genomes.gb --end 100 --genome --rename alias.txt > genomes.alias.fa
 
 # Outputs overlapping features in FASTA
 cat genomes.gb | bio fasta --olap 29514 -e 10 --type CDS > olap_1.fa

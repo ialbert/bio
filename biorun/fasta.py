@@ -14,13 +14,13 @@ from biorun import convert
 @plac.flg("translate", "translate DNA ", abbrev='T')
 @plac.flg("genome", "extract genome only ", abbrev='G')
 @plac.flg("revcomp", "reverse complement DNA", abbrev='R')
-@plac.opt("alias", "remap sequence ids")
+@plac.opt("rename", "rename sequence ids")
 @plac.opt("olap", "overlap with coordinate")
 @plac.flg("size", "print accession and size only", abbrev='S')
 @plac.opt("frame", "reading frame", type=int, choices=[1,2,3,-1,-2,-3], abbrev='F')
 @plac.pos("fnames", "input files")
 def run(start='1', end='', type_='', id_='', match='', gene='',
-        alias='', protein=False, translate=False, revcomp=False, genome=False, olap='', size=False, frame=1, *fnames):
+        rename='', protein=False, translate=False, revcomp=False, genome=False, olap='', size=False, frame=1, *fnames):
 
     if frame > 1:
         start = frame
@@ -31,5 +31,5 @@ def run(start='1', end='', type_='', id_='', match='', gene='',
 
     convert.run(protein=protein, translate=translate, start=start, size=size,
                 end=end, type_=type_, id_=id_, revcomp=revcomp, genome=genome, olap=olap,
-                match=match, gene=gene, alias=alias, fasta=True, fnames=fnames)
+                match=match, gene=gene, rename=rename, fasta=True, fnames=fnames)
 

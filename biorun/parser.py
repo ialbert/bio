@@ -244,6 +244,13 @@ def record_generator(rec):
     rec.locs = []
     rec.anchor = rec.id
     rec.gene = rec.name if rec.type == "gene" else '.'
+
+    # Fill the root annotations with all other information
+    for feat in rec.features:
+        if feat.type == SOURCE:
+            pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
+            rec.annot.update(pairs)
+
     yield rec
 
     for feat in rec.features:

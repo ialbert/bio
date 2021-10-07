@@ -1,7 +1,7 @@
 """
 Converts across formats
 """
-import re
+import re, os
 import sys
 
 from biorun import utils, parser
@@ -73,8 +73,10 @@ def sequence_slicer(start=0, end=None):
 def true(x):
     return True
 
+
 def false(x):
     return True
+
 
 def overlap_selector(olap):
     olaps = set(olap.split(","))
@@ -144,6 +146,39 @@ def seqid_selector(seqid):
 
     def func(rec):
         return rec.id in targets if seqid else True
+
+    return func
+
+
+def rename_sequence(patt):
+    """
+    Renames records base on a formatting pattern such as {isolate} or by a file.
+    """
+    if os.path.isfile(patt):
+        # Renaming can be done from a file as well.
+        mapper = utils.parse_alias(patt)
+
+        def func(rec):
+            rec.id = mapper.get(rec.id) or rec.id
+            return rec
+    else:
+        # Pattern based renames.
+        def func(rec):
+
+            params = dict(
+                isolate=rec.annot.get("isolate", [rec.id])[0],
+                country=rec.annot.get("country", [rec.id])[0],
+                date=rec.annot.get("collection_date", [rec,id])[0],
+                pub_date=rec.annot.get("date"),
+                host=rec.annot.get("host", ['x'])[0],
+                id=rec.id,
+            )
+
+            rec.id = patt.format(**params)
+
+            rec.id = "_".join(rec.id.split())
+
+            return rec
 
     return func
 
@@ -288,14 +323,11 @@ def gff_formatter(rec):
 
 
 def run(features=False, protein=False, translate=False, fasta=False, revcomp=False, genome=False, olap='', size=False,
-        start='1', end=None, type_='', id_='', match='', gene='', alias=None, fnames=[]):
+        start='1', end=None, type_='', id_='', match='', gene='', rename=None, fnames=[]):
     """
     Converts data to different formats.
     """
     global ALIAS
-
-    # Generate the ALIAS remapping.
-    ALIAS = utils.parse_alias(alias) if alias else {}
 
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)
@@ -359,6 +391,10 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
 
     # Apply the translation
     recs = map(translate_recs(translate), recs)
+
+    # Apply a dynamic renaming
+    if rename:
+        recs = map(rename_sequence(rename), recs)
 
     # Select the formatter.
     if size:
