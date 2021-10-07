@@ -26,7 +26,7 @@ except ImportError as exc:
 
 
 def size_formatter(rec):
-    print(f"{rec.id}\t{rec.gene}\t{len(rec.seq)}")
+    print(f"{rec.id}\t{len(rec.seq)}\t{rec.gene}")
 
 
 def fasta_formatter(rec):
@@ -327,7 +327,7 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     """
     Converts data to different formats.
     """
-    global ALIAS
+
 
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)

@@ -243,7 +243,7 @@ def record_generator(rec):
     rec.start, rec.end = 1, len(rec.seq)
     rec.locs = []
     rec.anchor = rec.id
-    rec.gene = rec.name if rec.type == "gene" else '.'
+    rec.gene = rec.name if rec.type == "gene" else ''
 
     # Fill the root annotations with all other information
     for feat in rec.features:
@@ -272,7 +272,7 @@ def record_generator(rec):
 
         sub = SeqRecord(id=uid, name=name, description=desc, seq=seq)
 
-        sub.gene = first(annot, "gene", ".")
+        sub.gene = first(annot, "gene", "")
 
         sub.annot = annot
 
