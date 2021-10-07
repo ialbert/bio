@@ -253,6 +253,8 @@ def record_generator(rec):
 
     yield rec
 
+    parent_annot = rec.annot
+
     for feat in rec.features:
 
         # The source has already been generated as the first feature
@@ -266,7 +268,10 @@ def record_generator(rec):
 
         # Qualifiers are transformed into annotations.
         pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
-        annot = dict(pairs)
+
+        annot = dict(parent_annot)
+
+        annot.update(pairs)
 
         uid, name, desc = guess_name(ftype=feat.type, annot=annot)
 

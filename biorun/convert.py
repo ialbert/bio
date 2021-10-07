@@ -171,6 +171,7 @@ def rename_sequence(patt):
                 date=rec.annot.get("collection_date", [rec,id])[0],
                 pub_date=rec.annot.get("date"),
                 host=rec.annot.get("host", ['x'])[0],
+                gene=rec.gene or rec.id,
                 id=rec.id,
             )
 
