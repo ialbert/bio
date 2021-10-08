@@ -1,156 +1,156 @@
->NC_045512.2 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome [1:10]
+>NC_045512.2 {"title": "Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome", "type": "source", "gene": ""}
 ATTAAAGGTT
->five_prime_UTR-1 five_prime_UTR  [1:10]
+>five_prime_UTR-1 {"type": "five_prime_UTR", "gene": "", "product": ""}
 ATTAAAGGTT
->ORF1ab gene GU280_gp01 [1:10]
+>ORF1ab {"type": "gene", "gene": "ORF1ab", "product": ""}
 ATGGAGAGCC
->YP_009724389.1 CDS gene ORF1ab, ORF1ab polyprotein [1:10]
+>YP_009724389.1 {"type": "CDS", "gene": "ORF1ab", "product": "ORF1ab polyprotein"}
 ATGGAGAGCC
->mature_protein_region-1 mature_protein_region leader protein [1:10]
+>mature_protein_region-1 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "leader protein"}
 ATGGAGAGCC
->mature_protein_region-2 mature_protein_region nsp2 [1:10]
+>mature_protein_region-2 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp2"}
 GCATACACTC
->mature_protein_region-3 mature_protein_region nsp3 [1:10]
+>mature_protein_region-3 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp3"}
 GCACCAACAA
->mature_protein_region-4 mature_protein_region nsp4 [1:10]
+>mature_protein_region-4 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp4"}
 AAAATTGTTA
->mature_protein_region-5 mature_protein_region 3C-like proteinase [1:10]
+>mature_protein_region-5 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "3C-like proteinase"}
 AGTGGTTTTA
->mature_protein_region-6 mature_protein_region nsp6 [1:10]
+>mature_protein_region-6 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp6"}
 AGTGCAGTGA
->mature_protein_region-7 mature_protein_region nsp7 [1:10]
+>mature_protein_region-7 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp7"}
 TCTAAAATGT
->mature_protein_region-8 mature_protein_region nsp8 [1:10]
+>mature_protein_region-8 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp8"}
 GCTATAGCCT
->mature_protein_region-9 mature_protein_region nsp9 [1:10]
+>mature_protein_region-9 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp9"}
 AATAATGAGC
->mature_protein_region-10 mature_protein_region nsp10 [1:10]
+>mature_protein_region-10 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp10"}
 GCTGGTAATG
->mature_protein_region-11 mature_protein_region RNA-dependent RNA polymerase [1:10]
+>mature_protein_region-11 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "RNA-dependent RNA polymerase"}
 TCAGCTGATG
->mature_protein_region-12 mature_protein_region helicase [1:10]
+>mature_protein_region-12 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "helicase"}
 GCTGTTGGGG
->mature_protein_region-13 mature_protein_region 3'-to-5' exonuclease [1:10]
+>mature_protein_region-13 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "3'-to-5' exonuclease"}
 GCTGAAAATG
->mature_protein_region-14 mature_protein_region endoRNAse [1:10]
+>mature_protein_region-14 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "endoRNAse"}
 AGTTTAGAAA
->mature_protein_region-15 mature_protein_region 2'-O-ribose methyltransferase [1:10]
+>mature_protein_region-15 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "2'-O-ribose methyltransferase"}
 TCTAGTCAAG
->YP_009725295.1 CDS gene ORF1ab, ORF1a polyprotein [1:10]
+>YP_009725295.1 {"type": "CDS", "gene": "ORF1ab", "product": "ORF1a polyprotein"}
 ATGGAGAGCC
->mature_protein_region-16 mature_protein_region leader protein [1:10]
+>mature_protein_region-16 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "leader protein"}
 ATGGAGAGCC
->mature_protein_region-17 mature_protein_region nsp2 [1:10]
+>mature_protein_region-17 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp2"}
 GCATACACTC
->mature_protein_region-18 mature_protein_region nsp3 [1:10]
+>mature_protein_region-18 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp3"}
 GCACCAACAA
->mature_protein_region-19 mature_protein_region nsp4 [1:10]
+>mature_protein_region-19 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp4"}
 AAAATTGTTA
->mature_protein_region-20 mature_protein_region 3C-like proteinase [1:10]
+>mature_protein_region-20 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "3C-like proteinase"}
 AGTGGTTTTA
->mature_protein_region-21 mature_protein_region nsp6 [1:10]
+>mature_protein_region-21 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp6"}
 AGTGCAGTGA
->mature_protein_region-22 mature_protein_region nsp7 [1:10]
+>mature_protein_region-22 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp7"}
 TCTAAAATGT
->mature_protein_region-23 mature_protein_region nsp8 [1:10]
+>mature_protein_region-23 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp8"}
 GCTATAGCCT
->mature_protein_region-24 mature_protein_region nsp9 [1:10]
+>mature_protein_region-24 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp9"}
 AATAATGAGC
->mature_protein_region-25 mature_protein_region nsp10 [1:10]
+>mature_protein_region-25 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp10"}
 GCTGGTAATG
->mature_protein_region-26 mature_protein_region nsp11 [1:10]
+>mature_protein_region-26 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp11"}
 TCAGCTGATG
->stem_loop-1 stem_loop  [1:10]
+>stem_loop-1 {"type": "stem_loop", "gene": "ORF1ab", "product": ""}
 CGGTGTAAGT
->stem_loop-2 stem_loop  [1:10]
+>stem_loop-2 {"type": "stem_loop", "gene": "ORF1ab", "product": ""}
 AGCCCGTCTT
->S gene GU280_gp02 [1:10]
+>S {"type": "gene", "gene": "S", "product": ""}
 ATGTTTGTTT
->YP_009724390.1 CDS gene S, surface glycoprotein [1:10]
+>YP_009724390.1 {"type": "CDS", "gene": "S", "product": "surface glycoprotein"}
 ATGTTTGTTT
->ORF3a gene GU280_gp03 [1:10]
+>ORF3a {"type": "gene", "gene": "ORF3a", "product": ""}
 ATGGATTTGT
->YP_009724391.1 CDS gene ORF3a, ORF3a protein [1:10]
+>YP_009724391.1 {"type": "CDS", "gene": "ORF3a", "product": "ORF3a protein"}
 ATGGATTTGT
->E gene GU280_gp04 [1:10]
+>E {"type": "gene", "gene": "E", "product": ""}
 ATGTACTCAT
->YP_009724392.1 CDS gene E, envelope protein [1:10]
+>YP_009724392.1 {"type": "CDS", "gene": "E", "product": "envelope protein"}
 ATGTACTCAT
->M gene GU280_gp05 [1:10]
+>M {"type": "gene", "gene": "M", "product": ""}
 ATGGCAGATT
->YP_009724393.1 CDS gene M, membrane glycoprotein [1:10]
+>YP_009724393.1 {"type": "CDS", "gene": "M", "product": "membrane glycoprotein"}
 ATGGCAGATT
->ORF6 gene GU280_gp06 [1:10]
+>ORF6 {"type": "gene", "gene": "ORF6", "product": ""}
 ATGTTTCATC
->YP_009724394.1 CDS gene ORF6, ORF6 protein [1:10]
+>YP_009724394.1 {"type": "CDS", "gene": "ORF6", "product": "ORF6 protein"}
 ATGTTTCATC
->ORF7a gene GU280_gp07 [1:10]
+>ORF7a {"type": "gene", "gene": "ORF7a", "product": ""}
 ATGAAAATTA
->YP_009724395.1 CDS gene ORF7a, ORF7a protein [1:10]
+>YP_009724395.1 {"type": "CDS", "gene": "ORF7a", "product": "ORF7a protein"}
 ATGAAAATTA
->ORF7b gene GU280_gp08 [1:10]
+>ORF7b {"type": "gene", "gene": "ORF7b", "product": ""}
 ATGATTGAAC
->YP_009725318.1 CDS gene ORF7b, ORF7b [1:10]
+>YP_009725318.1 {"type": "CDS", "gene": "ORF7b", "product": "ORF7b"}
 ATGATTGAAC
->ORF8 gene GU280_gp09 [1:10]
+>ORF8 {"type": "gene", "gene": "ORF8", "product": ""}
 ATGAAATTTC
->YP_009724396.1 CDS gene ORF8, ORF8 protein [1:10]
+>YP_009724396.1 {"type": "CDS", "gene": "ORF8", "product": "ORF8 protein"}
 ATGAAATTTC
->N gene GU280_gp10 [1:10]
+>N {"type": "gene", "gene": "N", "product": ""}
 ATGTCTGATA
->YP_009724397.2 CDS gene N, nucleocapsid phosphoprotein [1:10]
+>YP_009724397.2 {"type": "CDS", "gene": "N", "product": "nucleocapsid phosphoprotein"}
 ATGTCTGATA
->ORF10 gene GU280_gp11 [1:10]
+>ORF10 {"type": "gene", "gene": "ORF10", "product": ""}
 ATGGGCTATA
->YP_009725255.1 CDS gene ORF10, ORF10 protein [1:10]
+>YP_009725255.1 {"type": "CDS", "gene": "ORF10", "product": "ORF10 protein"}
 ATGGGCTATA
->stem_loop-3 stem_loop  [1:10]
+>stem_loop-3 {"type": "stem_loop", "gene": "ORF10", "product": ""}
 TTGTGCAGAA
->stem_loop-4 stem_loop  [1:10]
+>stem_loop-4 {"type": "stem_loop", "gene": "ORF10", "product": ""}
 TAACTACATA
->three_prime_UTR-1 three_prime_UTR  [1:10]
+>three_prime_UTR-1 {"type": "three_prime_UTR", "gene": "", "product": ""}
 CAATCTTTAA
->stem_loop-5 stem_loop  [1:10]
+>stem_loop-5 {"type": "stem_loop", "gene": "", "product": ""}
 TTCACCGAGG
->MN996532.2 Bat coronavirus RaTG13, complete genome [1:10]
+>MN996532.2 {"title": "Bat coronavirus RaTG13, complete genome", "type": "source", "gene": ""}
 ATTAAAGGTT
->orf1ab gene  [1:10]
+>orf1ab {"type": "gene", "gene": "orf1ab", "product": ""}
 ATGGAGAGCC
->QHR63299.2 CDS gene orf1ab, orf1ab polyprotein [1:10]
+>QHR63299.2 {"type": "CDS", "gene": "orf1ab", "product": "orf1ab polyprotein"}
 ATGGAGAGCC
->S gene  [1:10]
+>S {"type": "gene", "gene": "S", "product": ""}
 ATGTTTGTTT
->QHR63300.2 CDS gene S, spike glycoprotein [1:10]
+>QHR63300.2 {"type": "CDS", "gene": "S", "product": "spike glycoprotein"}
 ATGTTTGTTT
->NS3 gene  [1:10]
+>NS3 {"type": "gene", "gene": "NS3", "product": ""}
 ATGGATTTGT
->QHR63301.1 CDS gene NS3, nonstructural protein NS3 [1:10]
+>QHR63301.1 {"type": "CDS", "gene": "NS3", "product": "nonstructural protein NS3"}
 ATGGATTTGT
->E gene  [1:10]
+>E {"type": "gene", "gene": "E", "product": ""}
 ATGTACTCAT
->QHR63302.1 CDS gene E, envelope protein [1:10]
+>QHR63302.1 {"type": "CDS", "gene": "E", "product": "envelope protein"}
 ATGTACTCAT
->M gene  [1:10]
+>M {"type": "gene", "gene": "M", "product": ""}
 ATGGCAGATA
->QHR63303.1 CDS gene M, membrane protein [1:10]
+>QHR63303.1 {"type": "CDS", "gene": "M", "product": "membrane protein"}
 ATGGCAGATA
->NS6 gene  [1:10]
+>NS6 {"type": "gene", "gene": "NS6", "product": ""}
 ATGTTTCATC
->QHR63304.1 CDS gene NS6, nonstructural protein NS6 [1:10]
+>QHR63304.1 {"type": "CDS", "gene": "NS6", "product": "nonstructural protein NS6"}
 ATGTTTCATC
->NS7a gene  [1:10]
+>NS7a {"type": "gene", "gene": "NS7a", "product": ""}
 ATGAAAATTA
->QHR63305.1 CDS gene NS7a, nonstructural protein NS7a [1:10]
+>QHR63305.1 {"type": "CDS", "gene": "NS7a", "product": "nonstructural protein NS7a"}
 ATGAAAATTA
->NS7b gene  [1:10]
+>NS7b {"type": "gene", "gene": "NS7b", "product": ""}
 ATGAGTGAAC
->QHR63306.1 CDS gene NS7b, nonstructural protein NS7b [1:10]
+>QHR63306.1 {"type": "CDS", "gene": "NS7b", "product": "nonstructural protein NS7b"}
 ATGAGTGAAC
->NS8 gene  [1:10]
+>NS8 {"type": "gene", "gene": "NS8", "product": ""}
 ATGAAACTTC
->QHR63307.1 CDS gene NS8, nonstructural protein NS8 [1:10]
+>QHR63307.1 {"type": "CDS", "gene": "NS8", "product": "nonstructural protein NS8"}
 ATGAAACTTC
->N gene  [1:10]
+>N {"type": "gene", "gene": "N", "product": ""}
 ATGTCTGATA
->QHR63308.1 CDS gene N, nucleocapsid protein [1:10]
+>QHR63308.1 {"type": "CDS", "gene": "N", "product": "nucleocapsid protein"}
 ATGTCTGATA

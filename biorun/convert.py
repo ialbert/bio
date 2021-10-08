@@ -61,18 +61,6 @@ def interval_selector(start=0, end=None):
 def sequence_slicer(start=0, end=None):
     def func(rec):
         if start or end:
-            seqlen = len(rec.seq)
-
-            endx = seqlen if end is None else end
-            endx = seqlen + endx if endx < 0 else endx
-
-            # Zero based shift
-            if start < 0:
-                startx = seqlen + start + 1
-            else:
-                startx = start + 1
-
-            rec.description = f"{rec.description} [{startx}:{endx}]"
             rec.seq = rec.seq[start:end]
         return rec
 
@@ -123,7 +111,7 @@ def gene_selector(name):
     genes = set(name.split(","))
 
     def func(rec):
-        return parser.first(rec.annot, "gene") in genes if name else True
+        return rec.gene in genes if name else True
 
     return func
 

@@ -1,44 +1,44 @@
->YP_009724389.1 CDS gene ORF1ab, ORF1ab polyprotein [1:10] [1:7]
+>YP_009724389.1 {"type": "CDS", "gene": "ORF1ab", "product": "ORF1ab polyprotein"}
 ATGGAGA
->YP_009725295.1 CDS gene ORF1ab, ORF1a polyprotein [1:10] [1:7]
+>YP_009725295.1 {"type": "CDS", "gene": "ORF1ab", "product": "ORF1a polyprotein"}
 ATGGAGA
->YP_009724390.1 CDS gene S, surface glycoprotein [1:10] [1:7]
+>YP_009724390.1 {"type": "CDS", "gene": "S", "product": "surface glycoprotein"}
 ATGTTTG
->YP_009724391.1 CDS gene ORF3a, ORF3a protein [1:10] [1:7]
+>YP_009724391.1 {"type": "CDS", "gene": "ORF3a", "product": "ORF3a protein"}
 ATGGATT
->YP_009724392.1 CDS gene E, envelope protein [1:10] [1:7]
+>YP_009724392.1 {"type": "CDS", "gene": "E", "product": "envelope protein"}
 ATGTACT
->YP_009724393.1 CDS gene M, membrane glycoprotein [1:10] [1:7]
+>YP_009724393.1 {"type": "CDS", "gene": "M", "product": "membrane glycoprotein"}
 ATGGCAG
->YP_009724394.1 CDS gene ORF6, ORF6 protein [1:10] [1:7]
+>YP_009724394.1 {"type": "CDS", "gene": "ORF6", "product": "ORF6 protein"}
 ATGTTTC
->YP_009724395.1 CDS gene ORF7a, ORF7a protein [1:10] [1:7]
+>YP_009724395.1 {"type": "CDS", "gene": "ORF7a", "product": "ORF7a protein"}
 ATGAAAA
->YP_009725318.1 CDS gene ORF7b, ORF7b [1:10] [1:7]
+>YP_009725318.1 {"type": "CDS", "gene": "ORF7b", "product": "ORF7b"}
 ATGATTG
->YP_009724396.1 CDS gene ORF8, ORF8 protein [1:10] [1:7]
+>YP_009724396.1 {"type": "CDS", "gene": "ORF8", "product": "ORF8 protein"}
 ATGAAAT
->YP_009724397.2 CDS gene N, nucleocapsid phosphoprotein [1:10] [1:7]
+>YP_009724397.2 {"type": "CDS", "gene": "N", "product": "nucleocapsid phosphoprotein"}
 ATGTCTG
->YP_009725255.1 CDS gene ORF10, ORF10 protein [1:10] [1:7]
+>YP_009725255.1 {"type": "CDS", "gene": "ORF10", "product": "ORF10 protein"}
 ATGGGCT
->QHR63299.2 CDS gene orf1ab, orf1ab polyprotein [1:10] [1:7]
+>QHR63299.2 {"type": "CDS", "gene": "orf1ab", "product": "orf1ab polyprotein"}
 ATGGAGA
->QHR63300.2 CDS gene S, spike glycoprotein [1:10] [1:7]
+>QHR63300.2 {"type": "CDS", "gene": "S", "product": "spike glycoprotein"}
 ATGTTTG
->QHR63301.1 CDS gene NS3, nonstructural protein NS3 [1:10] [1:7]
+>QHR63301.1 {"type": "CDS", "gene": "NS3", "product": "nonstructural protein NS3"}
 ATGGATT
->QHR63302.1 CDS gene E, envelope protein [1:10] [1:7]
+>QHR63302.1 {"type": "CDS", "gene": "E", "product": "envelope protein"}
 ATGTACT
->QHR63303.1 CDS gene M, membrane protein [1:10] [1:7]
+>QHR63303.1 {"type": "CDS", "gene": "M", "product": "membrane protein"}
 ATGGCAG
->QHR63304.1 CDS gene NS6, nonstructural protein NS6 [1:10] [1:7]
+>QHR63304.1 {"type": "CDS", "gene": "NS6", "product": "nonstructural protein NS6"}
 ATGTTTC
->QHR63305.1 CDS gene NS7a, nonstructural protein NS7a [1:10] [1:7]
+>QHR63305.1 {"type": "CDS", "gene": "NS7a", "product": "nonstructural protein NS7a"}
 ATGAAAA
->QHR63306.1 CDS gene NS7b, nonstructural protein NS7b [1:10] [1:7]
+>QHR63306.1 {"type": "CDS", "gene": "NS7b", "product": "nonstructural protein NS7b"}
 ATGAGTG
->QHR63307.1 CDS gene NS8, nonstructural protein NS8 [1:10] [1:7]
+>QHR63307.1 {"type": "CDS", "gene": "NS8", "product": "nonstructural protein NS8"}
 ATGAAAC
->QHR63308.1 CDS gene N, nucleocapsid protein [1:10] [1:7]
+>QHR63308.1 {"type": "CDS", "gene": "N", "product": "nucleocapsid protein"}
 ATGTCTG

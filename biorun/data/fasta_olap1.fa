@@ -1,4 +1,4 @@
->YP_009724397.2 CDS gene N, nucleocapsid phosphoprotein [1:10]
+>YP_009724397.2 {"type": "CDS", "gene": "N", "product": "nucleocapsid phosphoprotein"}
 ATGTCTGATA
->QHR63308.1 CDS gene N, nucleocapsid protein [1:10]
+>QHR63308.1 {"type": "CDS", "gene": "N", "product": "nucleocapsid protein"}
 ATGTCTGATA

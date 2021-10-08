@@ -1,4 +1,4 @@
->N gene GU280_gp10 [1:10]
+>N {"type": "gene", "gene": "N", "product": ""}
 ATGTCTGATA
->N gene  [1:10]
+>N {"type": "gene", "gene": "N", "product": ""}
 ATGTCTGATA

@@ -4,6 +4,7 @@ import operator
 import os
 import sys
 import gzip
+import json
 
 try:
     from Bio import SeqIO
@@ -112,7 +113,7 @@ class Peeker:
 
 def get_streams(fnames, dynamic=False):
     """
-    Returns peekable streams. Can also generate dynamic streams from text.
+    Yields streams. stdin is generated first
     """
     label = count(1)
 
@@ -156,8 +157,8 @@ def parse_stream(stream):
     else:
         format = 'genbank'
     logger.debug(f"parsing: {format}")
-    recs = SeqIO.parse(stream, format)
 
+    recs = SeqIO.parse(stream, format)
     return recs
 
 
@@ -202,31 +203,26 @@ def guess_name(ftype, annot):
     """
     Attempts to generate an unique id name for a BioPython feature
     """
-    uid = desc = ''
+    uid = ''
+
+    gene = first(annot, "gene")
+    prod = first(annot, "product")
+    data = dict(type=ftype, gene=gene, product=prod)
 
     if ftype == 'gene':
         name = first(annot, "gene")
-        desc = first(annot, "locus_tag")
     elif ftype == 'CDS':
         name = first(annot, "protein_id")
-        gene = first(annot, "gene")
-        prod = first(annot, "product")
-        desc = f"gene {gene}, {prod}"
     elif ftype == 'mRNA':
         name = first(annot, "transcript_id")
-        prod = first(annot, "product")
-        gene = first(annot, "gene")
-        desc = f"{gene}, {prod}"
     elif ftype == "exon":
         name = gene = first(annot, "gene")
-        number = first(annot, "number") or 1
-        uid = f"{gene}-{ftype}-{number}"
-        desc = f"{gene}"
+        uid = f"{gene}-{ftype}"
+        data['number'] = first(annot, "number") or 1
     else:
         name = next_count(ftype)
-        desc = first(annot, "product")
 
-    desc = f"{ftype} {desc}"
+    desc = json.dumps(data)
     name = name or next_count(f"unknown-{ftype}")
     uid = uid or name
     return uid, name, desc
@@ -237,13 +233,28 @@ def record_generator(rec):
     Returns a SeqRecord with additional attributes set.
     """
     pairs = [(k, json_ready(v)) for (k, v) in rec.annotations.items()]
+
     rec.annot = dict(pairs)
     rec.type = SOURCE
     rec.strand = None
     rec.start, rec.end = 1, len(rec.seq)
     rec.locs = []
     rec.anchor = rec.id
-    rec.gene = rec.name if rec.type == "gene" else ''
+
+    if not rec.annot:
+        try:
+            payload = rec.description.split(" ", maxsplit=1)[1]
+            rec.annot = json.loads(payload)
+            rec.type = rec.annot.get("type", SOURCE)
+            rec.gene = rec.annot.get("gene", "")
+        except Exception as exc:
+            #print(rec.id, exc)
+            pass
+    else:
+        rec.gene = rec.name if rec.type == "gene" else first(rec.annot, "gene")
+        rec.description = json.dumps(dict(title=rec.description, type=SOURCE, gene=rec.gene))
+
+    #print (rec.title)
 
     # Fill the root annotations with all other information
     for feat in rec.features:
