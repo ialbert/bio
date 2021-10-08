@@ -31,7 +31,7 @@ cat genomes.gb | bio fasta --end  10 > all_2.fa
 diff all_1.fa all_2.fa > nodiff.txt
 
 # Renaming with patterns
-bio fasta genomes.gb --end 100 --genome --rename '{isolate}' > genomes.rename.fa
+bio fasta genomes.gb --end 100 --genome --rename "{isolate}" > genomes.rename.fa
 
 # Renaming with a file
 bio fasta genomes.gb --end 100 --genome --rename alias.txt > genomes.alias.fa
