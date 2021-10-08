@@ -359,7 +359,7 @@ def gff_formatter(rec):
         print(line)
 
 
-def run(protein=False, translate=False, fasta=False, revcomp=False, genome=False, olap='', table=False, fields='',
+def run(protein=False, translate=False, fasta=False, revcomp=False, source=False, olap='', table=False, fields='',
         start='1', end=None, type_='', id_='', match='', gene='', rename=None, fnames=[]):
     """
     Converts data to different formats.
@@ -391,7 +391,7 @@ def run(protein=False, translate=False, fasta=False, revcomp=False, genome=False
     recs = map(remapper, recs)
 
     # Keep the genome only
-    if genome:
+    if source:
         recs = filter(source_only, recs)
 
     if seqid:

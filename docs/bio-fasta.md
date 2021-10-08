@@ -25,9 +25,9 @@ The default behavior is to convert all features of the GenBank file to FASTA (th
 
     bio fasta genomes.gb > all.fa
 
-to convert only the genome component pass the `--genome` flag:
+to convert only the genome component pass the `--source` flag:
 
-    bio fasta genomes.gb --genome > genomes.fa
+    bio fasta genomes.gb --source > genomes.fa
 
 ## Inputs
 
@@ -96,7 +96,7 @@ will convert to fasta the coding sequences alone.
 
 ## Manipulate a genomic subsequence
 
-    bio fasta genomes.gb --genome --start 100 --end 10kb
+    bio fasta genomes.gb --source --start 100 --end 10kb
 
 ## Extract the sequences for annotations of a certain type
 
