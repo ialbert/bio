@@ -232,11 +232,12 @@ def format_vcf(alns):
 
 def format_fasta(alns):
     for aln in alns:
-        SeqIO.write([aln.query, aln.target], sys.stdout, "fasta")
+        SeqIO.write([aln.target, aln.query], sys.stdout, "fasta")
 
 
 def format_table(alns, sep="\t"):
     header = "target query pident len match mism ins del"
+
     print("\t".join(header.split()))
 
     for aln in alns:

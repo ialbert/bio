@@ -1,4 +1,5 @@
 import sys
+from itertools import repeat
 
 from biorun import utils, models, parser
 from biorun.libs import placlib as plac
@@ -8,8 +9,10 @@ from biorun.libs import placlib as plac
 @plac.opt("start", "start coordinate")
 @plac.opt("end", "end coordinate")
 @plac.flg("diff", "output differences")
+@plac.flg("table", "output in tabular format", abbrev="T")
+@plac.flg("paired", "fasta input is pairwise", abbrev="p")
 @plac.flg("vcf", "output vcf")
-def run(start='', end='', diff=False, vcf=False, *fnames):
+def run(start='', end='', diff=False, vcf=False, table=False, paired=False, *fnames):
     # fname = '../test/data/mafft.fa'
 
     # Parse the input
@@ -17,14 +20,23 @@ def run(start='', end='', diff=False, vcf=False, *fnames):
 
     recs = iter(recs)
 
+    alns = []
     try:
-        target = next(recs)
 
-        for query in recs:
+        if paired:
+            # Sequences are target/query format
+            stream = zip(recs, recs)
+        else:
+            # First sequence compared to all others
+            targets = repeat(next(recs))
+            stream = zip(targets, recs)
+
+        for target, query in stream:
 
             # Sanity check.
             if len(target) != len(query):
-                utils.error(f"# length of query and target do not match: {len(query)}, {len(target)}")
+                utils.error(
+                    f"length of query and target do not match: {query.id}={len(query)}, {target.id}={len(target)}")
 
             # Parse start and end into user friendly numbers.
             if start or end:
@@ -35,22 +47,21 @@ def run(start='', end='', diff=False, vcf=False, *fnames):
 
             aln = models.Alignment(query=query, target=target)
 
-            alns = [aln]
+            alns.append(aln)
 
-            if vcf:
-                models.format_vcf(alns)
-            elif diff:
-                models.format_mutations(alns)
-            else:
-                models.format_pairwise(alns)
 
     except StopIteration as exc:
         utils.error(f'Input must have at least two FASTA sequences')
         sys.exit(1)
 
-
-
-
+    if vcf:
+        models.format_vcf(alns)
+    elif diff:
+        models.format_mutations(alns)
+    elif table:
+        models.format_table(alns)
+    else:
+        models.format_pairwise(alns)
 
 if __name__ == '__main__':
     plac.call(run)
