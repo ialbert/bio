@@ -178,7 +178,7 @@ def rename_sequence(patt):
             rec.id = patt.format(**params)
 
             rec.id = "_".join(rec.id.split())
-
+            rec.id = rec.id.replace(":", '')
             return rec
 
     return func
