@@ -1,14 +1,8 @@
 # bio fetch: download data {#bio-fetch}
 
-We have implemented the `bio fetch` command to facilitate data download from GenBank, Ensembl and other sources.  If you need additional functionality beyond of what `bio fetch` offers see the end of the page for a list of alternatives.
-
-For more information on data sources and representations consult [The Biostar Handbook][book] chapters on [Biological Data Sources][datasource]. To install `bio` use:
-
-[datasource]: https://www.biostarhandbook.com/biological-data-sources.html
-[book]: https://www.biostarhandbook.com
+We have implemented the `bio fetch` command to facilitate data download from GenBank, Ensembl and other sources.  If you need additional functionality beyond of what `bio fetch` offers see the end of the page for a list of alternatives. Install `bio` with:
 
     pip install bio --upgrade
-    bio --download
 
 The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 

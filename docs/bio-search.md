@@ -1,8 +1,11 @@
 # bio search: find information {#bio-search}
 
-`bio search` provides command line interface to SRA and MyGene. First install `bio` with:
+`bio search` provides command line interface to SRA and MyGene. Install `bio` with:
 
     pip install bio --upgrade
+
+The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
+
 
 ## Searching SRA (Short Read Archive)
 

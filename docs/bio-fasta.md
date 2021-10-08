@@ -1,11 +1,20 @@
 # bio fasta: convert to FASTA {#bio-fasta}
 
-A GenBank file represents sequence information in multiple sections:
+Install `bio` with:
+
+    pip install bio --upgrade
+
+The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
+
+## Rationale
+
+GenBank/EMBL files represents sequence information in multiple sections:
 
 1. Genomic sequences (the entire genomic sequence)
 1. Feature annotation (intervals relative to the genome)
 
-    
+`bio fasta` can operate on GenBank/EMBL files, filter and extract various subsets of the data.
+
 ## Get a GenBank file
 
     bio fetch NC_045512 MN996532 > genomes.gb

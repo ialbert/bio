@@ -1,9 +1,14 @@
 # bio align: perform alignments {#bio-align}
 
-**Note:** alignments in `bio` are primarily designed for exploratory use, for aligning relatively short (up to ~30Kb long sequences), visually investigating the alignments, interacting with the sequences before and after alignment.
+> **Note:** alignments in `bio` are primarily designed for exploratory use, for aligning relatively short (up to ~30Kb long sequences), visually investigating the alignments, interacting with the sequences before and after alignment.
+>
+> Use software that relies on heuristics when investigating large datasets. Specialized software will operate (many) orders of magnitude faster. Depending on your needs you may want to use: `blast`, `blat`, `mummer`, `minimap2`, `lastz`, `lastal`, `exonerate`, `vsearch`, `diamond`.
 
-Use software that relies on heuristics when investigating large datasets. Specialized software will operate (many) orders of magnitude faster. Depending on your needs you may want to use: `blast`, `blat`, `mummer`, `minimap2`, `lastz`, `lastal`, `exonerate`, `vsearch`, `diamond`.
+Install `bio` with:
 
+    pip install bio --upgrade
+
+The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 ## Quick start
 
