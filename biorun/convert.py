@@ -164,23 +164,26 @@ def rename_sequence(patt):
             return rec
     else:
 
+        # Allow controll characters.
+        patt = bytes(patt, "utf-8").decode("unicode_escape")
+
         # Pattern based renames.
         def func(rec):
 
             params = dict(
-                isolate=rec.annot.get("isolate", [rec.id])[0],
-                country=rec.annot.get("country", [rec.id])[0],
-                date=rec.annot.get("collection_date", [rec,id])[0],
-                pub_date=rec.annot.get("date"),
-                host=rec.annot.get("host", ['x'])[0],
-                gene=rec.gene or rec.id,
+                isolate=rec.annot.get("isolate", ['isolate'])[0],
+                country=rec.annot.get("country", ['country'])[0],
+                date=rec.annot.get("collection_date", ['0'])[0],
+                pub_date=rec.annot.get("date", '0') ,
+                host=rec.annot.get("host", ['nohost'])[0],
+                gene=rec.gene or 'nogene',
+                type=rec.type,
                 id=rec.id,
             )
 
-
             rec.id = patt.format(**params)
 
-            rec.id = "_".join(rec.id.split())
+            rec.id = "_".join(rec.id.split(" "))
 
             return rec
 
@@ -331,7 +334,6 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
     """
     Converts data to different formats.
     """
-
 
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)
