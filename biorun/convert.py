@@ -26,7 +26,7 @@ except ImportError as exc:
 
 
 def size_formatter(rec):
-    print(f"{rec.id}\t{len(rec.seq)}\t{rec.gene}")
+    print(f"{rec.id}\t{len(rec.seq)}")
 
 
 def fasta_formatter(rec):
@@ -154,6 +154,7 @@ def rename_sequence(patt):
     """
     Renames records base on a formatting pattern such as {isolate} or by a file.
     """
+
     if os.path.isfile(patt):
         # Renaming can be done from a file as well.
         mapper = utils.parse_alias(patt)
@@ -162,6 +163,7 @@ def rename_sequence(patt):
             rec.id = mapper.get(rec.id) or rec.id
             return rec
     else:
+
         # Pattern based renames.
         def func(rec):
 
@@ -174,6 +176,7 @@ def rename_sequence(patt):
                 gene=rec.gene or rec.id,
                 id=rec.id,
             )
+
 
             rec.id = patt.format(**params)
 
