@@ -61,7 +61,7 @@ the output is:
 ```{r, code=xfun::read_utf8('code/align5.txt'), eval=F}
 ```
 
-Available ptions are : `--global`, `-local`, `-semi-global`
+Available ptions are : `--global`, `--local`, `--semi-global`
 
 ## Align realistic data
 
@@ -107,10 +107,9 @@ that prints:
 ```{r, code=xfun::read_utf8('code/align7.txt'), eval=F}
 ```
 
-
 ## Alignment showing mutations
 
-    cat genomes.gb | bio fasta --gene S --protein | bio align --mut | tail -5
+    cat genomes.gb | bio fasta --gene S --protein | bio align --diff | tail -5
 
 prints the variations:
 
