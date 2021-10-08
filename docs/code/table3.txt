@@ -1,0 +1,5 @@
+QHR63299.2  orf1ab  RaTG13  China  24-Jul-2013
+QHR63300.2  S       RaTG13  China  24-Jul-2013
+QHR63301.1  NS3     RaTG13  China  24-Jul-2013
+QHR63302.1  E       RaTG13  China  24-Jul-2013
+QHR63303.1  M       RaTG13  China  24-Jul-2013

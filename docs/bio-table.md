@@ -1,0 +1,47 @@
+# bio table: convert to table {#bio-table}
+
+Converts input to tabular formats. Suppose you get the following data:
+
+    bio fetch NC_045512 MN996532 > genomes.gb
+
+To turn the GenBank into a table run:
+
+    cat genomes.gb | bio table | head
+
+by default prints ids and size (sequence lengths):
+
+```{r, code=xfun::read_utf8('code/table1.txt'), eval=F}
+```
+
+The input may be GENBANK, FASTA, EMBL or FASTQ.
+
+    bio fasta THISLINE ISALIGNED | bio table
+
+prints:
+
+    seq1	8
+    seq2	9
+
+## Additional fields
+
+the default behaviour is equivalent to:
+
+    cat genomes.gb | bio table --fields id,size
+
+a number of additional fields may be specified, for example:
+
+    cat genomes.gb | bio table --type CDS --fields id,gene,size | head
+
+connects protein ids to geners and sizes:
+
+```{r, code=xfun::read_utf8('code/table2.txt'), eval=F}
+```
+
+or to extract additional metadata:
+
+    cat genomes.gb | bio table --type CDS --fields id,gene,isolate,country,date | head
+
+prints:
+
+```{r, code=xfun::read_utf8('code/table3.txt'), eval=F}
+```

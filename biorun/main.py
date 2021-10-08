@@ -24,6 +24,7 @@ SUB_COMMANDS = dict(
     fetch=("biorun.fetch.run", True, True, "download GenBank/ENSEMBL data"),
     fasta=("biorun.fasta.run", True, True, "convert to FASTA"),
     gff=("biorun.gff.run", True, True,"convert to GFF"),
+    table=("biorun.table.run", True, True, "convert to table"),
     align=("biorun.align.run", True,True, "align sequences"),
     format=("biorun.format.run", True, True,"reformat aligned fasta"),
     taxon=("biorun.taxon.run", False, True,"operate on NCBI taxonomies"),

@@ -30,7 +30,9 @@ def is_srr(text):
     return bool(SRR.search(text))
 
 
-def get_srr(text, all=False, sep=False):
+# Documentation at https://www.ebi.ac.uk/ena/portal/api
+
+def get_srr(text, all=False, sep=False, limit=100):
     """
     Performs an SRR search
     """
@@ -63,6 +65,7 @@ def get_srr(text, all=False, sep=False):
         accession=text,
         fields=fields,
         result='read_run',
+        #limit=limit,
     )
     stream = get_request(url, params=params, sep="\t")
 
@@ -127,6 +130,8 @@ def is_genbank_protein(text):
 def get_request(url, params={}, sep=None, bulk=False):
     try:
 
+        #print (url, params, file=sys.stderr)
+
         r = requests.get(url, params=params)
 
         if not r.ok:
@@ -145,18 +150,54 @@ def get_request(url, params={}, sep=None, bulk=False):
         utils.error(f"Error for {url}, {params}: {exc}")
 
 
-def dispatch(word, all=False, sep=None):
+
+def search_mygene(query, fields, species='', scopes='', limit=5):
+    import mygene
+    from biorun import taxon
+
+    client = mygene.MyGeneInfo()
+
+    data = client.query(query, fields=fields, scopes=scopes, species=species, size=limit)
+
+    total = data.get('total', 0)
+
+    # Get rid of data we don't need
+    hits = data.get('hits', [])
+
+    # Fill in taxonomy name to the database
+    names, graph = taxon.get_data(strict=False)
+
+    # Fill the taxonmy name, get rid of fields we don't want.
+    for hit in hits:
+        del hit['_id']
+        del hit['_score']
+        hit['taxname'] = names.get(hit.get('taxid'), [''])[0]
+
+    text = json.dumps(hits, indent=4)
+
+    print(text)
+
+    if len(hits) < total:
+        print(f'#  showing {len(hits)} out of {total} results.', file=sys.stderr)
+
+
+def dispatch(word, all=False, sep=None, fields='', limit=5, species='', scopes=''):
 
     if is_srr(word) or is_bioproject(word):
         get_srr(word, all=all, sep=sep)
-
+    else:
+        fields = ",".join(['symbol', 'name', 'taxid', fields])
+        search_mygene(word, fields=fields, limit=limit, species=species, scopes=scopes)
 
 @plac.flg('csv', "produce comma separated output")
 @plac.flg('tab', "produce tab separated output")
 @plac.flg('all', "get all possible fields")
+@plac.opt('limit', "download limit", abbrev='l')
+@plac.opt('fields', "fields", abbrev='f')
+@plac.opt('species', "species", abbrev='s')
+@plac.opt('scopes', "scopes", abbrev='S')
 @plac.pos('query', "query terms")
-def run(all=False, csv=False, tab=False, *words):
-    url = ENA_FIELDS
+def run(all=False, csv=False, tab=False, species='', scopes='symbol', limit=5, fields='', *words):
 
     sep = None
 
@@ -165,10 +206,9 @@ def run(all=False, csv=False, tab=False, *words):
     sep = "\t" if tab else sep
 
     for word in words:
-        dispatch(word, all=all, sep=sep)
+        dispatch(word, all=all, sep=sep, limit=limit, fields=fields, species=species, scopes=scopes)
 
 
 # SRR5260547
-
 if __name__ == '__main__':
     plac.call(run)

@@ -37,11 +37,11 @@ prints:
 ```{r, code=xfun::read_utf8('code/align3.txt'), eval=F}
 ```
 
-## Alignment as mutations
+## Alignment as differences
 
-The output may be formatted in as mutations between the reference (second sequence) and the query (first sequence):
+The output may be formatted in as differences (mutations) between the reference (second sequence) and the query (first sequence):
 
-    bio align GATTACA GATCA --mut
+    bio align GATTACA GATCA --diff
 
 prints:
 

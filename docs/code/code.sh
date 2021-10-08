@@ -6,7 +6,7 @@ bio align GATTACA GATCA --table | column -t > align2.txt
 
 bio align GATTACA GATCA --vcf > align3.txt
 
-bio align GATTACA GATCA --mut | column -t > align4.txt
+bio align GATTACA GATCA --diff | column -t > align4.txt
 
 bio align GATTACA GATCA --global > align5.txt
 
@@ -14,7 +14,7 @@ bio align GATTACA GATCA --global > align5.txt
 
 cat genomes.gb | bio fasta --gene S | bio align | head -8> align6.txt
 
-cat genomes.gb | bio fasta --gene S --protein | bio align --mut | head -8 > align7.txt
+cat genomes.gb | bio fasta --gene S --protein | bio align --diff | head -8 > align7.txt
 
 cat genomes.gb | bio fasta --gene S --translate | bio align --table | column -t > align8.txt
 
@@ -29,3 +29,9 @@ cat aligned.fa | bio format | head -12  > format1.txt
 cat aligned.fa | bio format --mut | head -5 > format2.txt
 
 cat aligned.fa | bio format --vcf | head > format3.txt
+
+cat genomes.gb | bio table | head -5 | column -t > table1.txt
+
+cat genomes.gb | bio table --type CDS --fields id,gene,size | head -5 | column -t > table2.txt
+
+cat genomes.gb | bio table --type CDS --fields id,gene,isolate,country,date | head -5 | column -t > table3.txt

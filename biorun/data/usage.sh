@@ -13,109 +13,113 @@ set -uex
 bio fetch NC_045512 MN996532 > genomes.gb
 
 # Get a GFF from NCBI
-bio fetch NC_045512 --format gff > NC_045512.gff
+bio fetch NC_045512 --format gff > fetch_gff.gff
 
 # Get a protein.
-bio fetch YP_009724390 > prot.fa
+bio fetch YP_009724390 > fetch_prot.fa
+
 
 # Selecting by gene id
-bio fasta genomes.gb --type gene --id N --end 10 > ids.fa
+bio fasta genomes.gb --type gene --id N --end 10 > fasta_ids.fa
 
 # Last ten sequences of all entries.
-bio fasta genomes.gb -end 10 > all_1.fa
+bio fasta genomes.gb -end 10 > fasta_all1.fa
 
 # Should produce the same output as above
-cat genomes.gb | bio fasta --end  10 > all_2.fa
+cat genomes.gb | bio fasta --end  10 > fasta_all2.fa
 
 # No muterence between outputs.
-diff all_1.fa all_2.fa > nodiff.txt
+diff fasta_all1.fa fasta_all2.fa > nodiff.txt
 
 # Renaming with patterns
-bio fasta genomes.gb --end 100 --genome --rename '{isolate}' > genomes.rename.fa
+bio fasta genomes.gb --end 100 --genome --rename "{isolate}" > fasta_rename.fa
 
 # Renaming with a file
-bio fasta genomes.gb --end 100 --genome --rename alias.txt > genomes.alias.fa
+bio fasta genomes.gb --end 100 --genome --rename alias.txt > fasta_alias.fa
 
 # Outputs overlapping features in FASTA
-cat genomes.gb | bio fasta --olap 29514 -e 10 --type CDS > olap_1.fa
+cat genomes.gb | bio fasta --olap 29514 -e 10 --type CDS > fasta_olap1.fa
 
 # Outputs overlapping features as GFF
-cat genomes.gb | bio gff --olap 29514 > olap_2.gff
+cat genomes.gb | bio gff --olap 29514 > gff_olap1.gff
 
 # Compute sizes
-cat genomes.gb | bio fasta --type CDS --olap 3778,8388,8987  --size > size_1.txt
+cat genomes.gb | bio table --type CDS --olap 3778,8388,8987 --fields id,gene,size  > table_1.txt
 
 # Generate features only.
-bio fasta genomes.gb --end 10 --type CDS > cds.fa
+bio fasta genomes.gb --end 10 --type CDS > fasta_cds.fa
 
 # Translate the features.
-bio fasta genomes.gb --type CDS --translate > translate.fa
+bio fasta genomes.gb --type CDS --translate > fasta_translate.fa
 
 # Translate in a frame
-bio fasta GATTACA --frame -3 --translate > frame.fa
+bio fasta GATTACA --frame -3 --translate > fasta_frame.fa
 
 # Extract the proteins.
-bio fasta genomes.gb --protein > protein.fa
+bio fasta genomes.gb --protein > fasta_protein.fa
 
 # Start codons
-cat cds.fa | bio fasta -e -3 > start.fa
+cat cds.fa | bio fasta -e -3 > fasta_start.fa
 
 # Last codons
-cat cds.fa | bio fasta -s -3 > stop.fa
+cat cds.fa | bio fasta -s -3 > fasta_stop.fa
 
 # Default alignment.
-bio align GATTACA GATCA > gattaca1.txt
+bio align GATTACA GATCA > align_default.txt
 
 # Default alignment.
-bio align GATTACA GATCA --global > gattaca2.txt
+bio align GATTACA GATCA --global > align_global.txt
 
 # Default alignment.
-bio align GATTACA GATCA --local > gattaca3.txt
+bio align GATTACA GATCA --local > align_local.txt
 
 # Running variants.
-bio align GATTACA GATCA --vcf > gattaca.vcf
+bio align GATTACA GATCA --vcf > align_default.vcf
 
 # Running variants.
-bio align GATTACA GATCA --mut  > gattaca.mut.txt
+bio align GATTACA GATCA --diff  > align_default.diff
 
 # Running on FASTA files.
 bio align align_input.fa --vcf > align_input.vcf
 
 # Creating the pileup output.
-bio align GATTACA GTTAACA GTTTATA GTTT --pile > pile_1.txt
+bio fasta GATTACA GTTAACA GTTTATA GTTT > fasta_multi.fa
+
+# Creating the pileup output.
+bio align GATTACA GTTAACA GTTTATA GTTT --pile > align_pile1.txt
 
 # Format to pairwise
-bio format mafft.fa > mafft.txt
+bio format mafft.fa > format_mafft1.txt
 
 # Format to VCF
-bio format mafft.fa --vcf > mafft.vcf
+bio format mafft.fa --vcf > format_mafft1.vcf
 
-# Format to mut
-bio format mafft.fa --mut > mafft.mut.txt
+# Format to differences
+bio format mafft.fa --diff > format_mafft1.diff.txt
 
 # Select S proteins
-bio fasta --gene S --protein  genomes.gb > s.fa
+bio fasta --gene S --protein  genomes.gb > fasta_s.fa
 
 # Align proteins.
-bio align s.fa > align-s-pairwise.txt
+bio align s.fa > align_s.txt
 
 # Alignment as a table.
-bio align s.fa --table > align-s-table.txt
+bio align s.fa --table > align_s.tsv
 
 # Align as variants.
-bio align s.fa --vcf > align-s.vcf
+bio align s.fa --vcf > align_s.vcf
 
 # Convert genbank files to GFF
-bio gff genomes.gb > genomes.gff
+bio gff genomes.gb > gff_all.gff
 
 # Convert genbank files to GFF
-bio gff genomes.gb --type CDS > CDS.gff
+bio gff genomes.gb --type CDS > gff_CDS.gff
 
 # Slice the GFF file.
-bio gff -s 300 -e 10k genomes.gb > slice.gff
+bio gff -s 300 -e 10k genomes.gb > gff_slice.gff
 
 # Taxonomy listing.
-bio taxon 117565 -d 5 > taxonomy.txt
+bio taxon 117565 -d 5 > taxon1.txt
 
 # Taxonomy lineage. from file TODO
 # bio taxon genomes.gb --lineage > lineage.txt
@@ -124,13 +128,13 @@ bio taxon 117565 -d 5 > taxonomy.txt
 bio meta 11138 -H > meta.txt
 
 # Define exact SO term
-bio explain exon > so.txt
+bio explain exon > explain_exon.txt
 
 # Define exact SO term
-bio explain food vacuole > go.txt
+bio explain food vacuole > explain_food.txt
 
 # Search for terms
-bio explain neutral > search.txt
+bio explain neutral > explain_neutral.txt
 
 # Running comm.py
 bio comm file1.txt file2.txt > comm0.txt
@@ -143,10 +147,10 @@ cat file1.txt file2.txt | bio  uniq -f 2 > uniq1.txt
 cat file1.txt file2.txt | bio  uniq -c -f 2  > uniq3.txt
 
 # Get data from SRA (can be spotty)
-bio fetch SRR1972976 > srr.txt
+bio search SRR1972976 > search_srr.json
 
 # Get bioproject information
-bio fetch PRJNA257197 --limit 1 > prjn.txt
+bio search PRJNA661333 > search_prjn.json
 
 # Access a transcript from ensembl.
-bio fetch ENST00000288602  > enst.txt
+bio fetch ENST00000288602  > fetch_enst.txt

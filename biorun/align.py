@@ -142,7 +142,7 @@ def get_matrix(matrix, show=False):
 @plac.opt("matrix", "matrix default: NUC4.4. or BLOSUM62)", abbrev='M')
 @plac.flg("vcf", "output vcf file", abbrev='V')
 @plac.flg("table", "output in tabular format", abbrev="T")
-@plac.flg("mut", "output mutations", abbrev="u")
+@plac.flg("diff", "output mutations", abbrev="d")
 @plac.flg("pile", "output pileup", abbrev="p")
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.flg("fasta", "output variant columns", abbrev="F")
@@ -151,7 +151,7 @@ def get_matrix(matrix, show=False):
 @plac.flg("semiglobal", "local alignment", abbrev='S')
 @plac.flg("all_", "show all alignments", abbrev='A')
 def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mismatch=2,
-        semiglobal=False, vcf=False, table=False, mut=False, pile=False, fasta=False, all_=False, *sequences):
+        semiglobal=False, vcf=False, table=False, diff=False, pile=False, fasta=False, all_=False, *sequences):
 
     # Select alignment mode
     if global_:
@@ -240,7 +240,7 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mis
         models.format_vcf(collect)
     elif table:
         models.format_table(collect)
-    elif mut:
+    elif diff:
         models.format_mutations(collect)
     elif fasta:
         models.format_fasta(collect)

@@ -1,0 +1,18 @@
+[
+    {
+        "run_accession": "SRR1972976",
+        "sample_accession": "SAMN03253746",
+        "first_public": "2015-06-05",
+        "country": "Sierra Leone",
+        "sample_alias": "W220.0",
+        "read_count": "8345287",
+        "library_name": "W220.0.l1",
+        "library_strategy": "RNA-Seq",
+        "library_source": "TRANSCRIPTOMIC",
+        "library_layout": "PAIRED",
+        "instrument_platform": "ILLUMINA",
+        "instrument_model": "Illumina HiSeq 2500",
+        "study_title": "Zaire ebolavirus Genome sequencing",
+        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR197/006/SRR1972976/SRR1972976_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR197/006/SRR1972976/SRR1972976_2.fastq.gz"
+    }
+]

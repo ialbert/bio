@@ -3,6 +3,7 @@ Converts across formats
 """
 import re, os
 import sys
+import string
 
 from biorun import utils, parser
 
@@ -25,9 +26,17 @@ except ImportError as exc:
     sys.exit()
 
 
-def size_formatter(rec):
-    print(f"{rec.id}\t{len(rec.seq)}\t{rec.gene}")
+def table_formatter(fields):
 
+    coll = ["{%s}" % f for f in fields.split(",")]
+
+    patt = "\t".join(coll)
+
+    def func(rec):
+        param = get_params(rec)
+        print(patt.format(**param))
+
+    return func
 
 def fasta_formatter(rec):
     print(rec.format("fasta"), end='')
@@ -150,10 +159,38 @@ def seqid_selector(seqid):
     return func
 
 
+def ascii(text):
+    """
+    Removes punctuation from text
+    """
+    remove = r"!\"$%&',/:;<>?@\^`{}~"
+    table = str.maketrans('', '', remove)
+    text = text.translate(table)
+    return text
+
+def get_params(rec):
+    """
+    Makes a dictionary out of parameters.
+    """
+    params = dict(
+        isolate=rec.annot.get("isolate", ['.'])[0],
+        country=rec.annot.get("country", ['.'])[0],
+        date=rec.annot.get("collection_date", ['.'])[0],
+        pub_date=rec.annot.get("date", '.'),
+        host=rec.annot.get("host", ['.'])[0],
+        gene=rec.gene or '.',
+        type=rec.type,
+        size=len(rec.seq),
+        reference=rec.anchor,
+        id=rec.id,
+    )
+    return params
+
 def rename_sequence(patt):
     """
     Renames records base on a formatting pattern such as {isolate} or by a file.
     """
+
     if os.path.isfile(patt):
         # Renaming can be done from a file as well.
         mapper = utils.parse_alias(patt)
@@ -162,23 +199,22 @@ def rename_sequence(patt):
             rec.id = mapper.get(rec.id) or rec.id
             return rec
     else:
+
+        # Allow controll characters.
+        patt = bytes(patt, "utf-8").decode("unicode_escape")
+
         # Pattern based renames.
         def func(rec):
 
-            params = dict(
-                isolate=rec.annot.get("isolate", [rec.id])[0],
-                country=rec.annot.get("country", [rec.id])[0],
-                date=rec.annot.get("collection_date", [rec,id])[0],
-                pub_date=rec.annot.get("date"),
-                host=rec.annot.get("host", ['x'])[0],
-                gene=rec.gene or rec.id,
-                id=rec.id,
-            )
+            params = get_params(rec)
 
-            rec.id = patt.format(**params)
+            text = patt.format(**params)
+            text = "_".join(text.split())
 
-            rec.id = "_".join(rec.id.split())
-            rec.id = rec.id.replace(":", '')
+            #text = ascii(text)
+
+            rec.id = text
+
             return rec
 
     return func
@@ -323,12 +359,11 @@ def gff_formatter(rec):
         print(line)
 
 
-def run(features=False, protein=False, translate=False, fasta=False, revcomp=False, genome=False, olap='', size=False,
+def run(protein=False, translate=False, fasta=False, revcomp=False, genome=False, olap='', table=False, fields='',
         start='1', end=None, type_='', id_='', match='', gene='', rename=None, fnames=[]):
     """
     Converts data to different formats.
     """
-
 
     # Parse start and end into user friendly numbers.
     start = utils.parse_number(start)
@@ -398,8 +433,8 @@ def run(features=False, protein=False, translate=False, fasta=False, revcomp=Fal
         recs = map(rename_sequence(rename), recs)
 
     # Select the formatter.
-    if size:
-        formatter = size_formatter
+    if table:
+        formatter = table_formatter(fields)
     elif fasta:
         # Fasta formatter.
         formatter = fasta_formatter
