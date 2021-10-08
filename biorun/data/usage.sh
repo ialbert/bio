@@ -59,10 +59,10 @@ bio fasta GATTACA --frame -3 --translate > fasta_frame.fa
 bio fasta genomes.gb --protein > fasta_protein.fa
 
 # Start codons
-cat cds.fa | bio fasta -e -3 > fasta_start.fa
+cat fasta_cds.fa | bio fasta -e -3 > fasta_start.fa
 
 # Last codons
-cat cds.fa | bio fasta -s -3 > fasta_stop.fa
+cat fasta_cds.fa | bio fasta -s -3 > fasta_stop.fa
 
 # Default alignment.
 bio align GATTACA GATCA > align_default.txt
@@ -101,13 +101,13 @@ bio format mafft.fa --diff > format_mafft1.diff.txt
 bio fasta --gene S --protein  genomes.gb > fasta_s.fa
 
 # Align proteins.
-bio align s.fa > align_s.txt
+bio align fasta_s.fa > align_s.txt
 
 # Alignment as a table.
-bio align s.fa --table > align_s.tsv
+bio align fasta_s.fa --table > align_s.tsv
 
 # Align as variants.
-bio align s.fa --vcf > align_s.vcf
+bio align fasta_s.fa --vcf > align_s.vcf
 
 # Convert genbank files to GFF
 bio gff genomes.gb > gff_all.gff
