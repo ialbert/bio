@@ -45,7 +45,7 @@ class Alignment:
 
         # Compute alignment information.
         for a, b in zip(self.query, self.target):
-            if a == '-' and b == ' -':
+            if a == '-' and b == '-':
                 continue
             elif a == b:
                 self.ident += 1
