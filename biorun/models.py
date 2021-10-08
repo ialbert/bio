@@ -244,7 +244,7 @@ def format_table(alns, sep="\t"):
         data = [
             f"{aln.target.name}", f"{aln.query.name}",
             f"{aln.pident:0.1f}", f"{aln.alen}",
-            f"{aln.ident}", f"{aln.mis}", f"{aln.dels}", f"{aln.ins}"
+            f"{aln.ident}", f"{aln.mis}", f"{aln.ins}", f"{aln.dels}"
         ]
         line = sep.join(data)
         print(line)
