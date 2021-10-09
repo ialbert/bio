@@ -292,6 +292,7 @@ def record_generator(rec):
 
         sub.annot = annot
 
+        
         # Remap types to SO terms.
         sub.type = feat.type
 

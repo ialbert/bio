@@ -212,7 +212,13 @@ def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
 
     try:
         stream = Entrez.efetch(db=db, id=ids, rettype=rettype, retmode=retmode, retmax=limit)
-        stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5, leave=False)
+
+        try:
+            stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5, leave=False)
+        except Exception as exc:
+            # Older version of tqdm does not have the delay parameter.
+            stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, leave=False)
+
     except Exception as exc:
         utils.error(f"Error for {ids}, {db}, {rettype}, {retmode}: {exc}")
 
