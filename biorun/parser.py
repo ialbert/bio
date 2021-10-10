@@ -196,8 +196,8 @@ def next_count(ftype):
 
 def first(data, key, default=""):
     # First element of a list value that is stored in a dictionary by a key.
-    return data.get(key, [default])[0]
-
+    value = data.get(key) or [ default ]
+    return value[0]
 
 def guess_name(ftype, annot):
     """
@@ -225,7 +225,7 @@ def guess_name(ftype, annot):
         name = next_count(ftype)
 
     desc = json.dumps(data)
-    name = name or next_count(f"seq")
+    name = name or next_count(f"id")
     uid = uid or name
     return uid, name, desc
 
@@ -242,6 +242,7 @@ def record_generator(rec):
     rec.start, rec.end = 1, len(rec.seq)
     rec.locs = []
     rec.source = rec.id
+    rec.product = rec.gene = ''
 
     if not rec.annot:
         try:
@@ -249,15 +250,15 @@ def record_generator(rec):
             rec.annot = json.loads(payload)
             rec.type = rec.annot.get("type", SOURCE)
             rec.gene = rec.annot.get("gene", "")
+            rec.product = rec.annot.get("product", "")
         except Exception as exc:
             # Unable to parse JSON from fasta description
             #print(rec.id, exc)
             pass
     else:
+        rec.product = first(rec.annot, "product")
         rec.gene = rec.name if rec.type == "gene" else first(rec.annot, "gene")
         rec.description = json.dumps(dict(title=rec.description, type=SOURCE))
-
-    rec.product = first(rec.annot, "product")
 
     # Fill the root annotations with all other information
     for feat in rec.features:
@@ -292,6 +293,8 @@ def record_generator(rec):
         sub = SeqRecord(id=uid, name=name, description=desc, seq=seq)
 
         sub.gene = first(annot, "gene", "")
+
+        sub.product =  first(annot, "gene", "")
 
         sub.annot = annot
 

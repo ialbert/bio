@@ -1,11 +1,10 @@
-# seq1 vs seq2
-ggtttac1cc	SUB	1	ggtttac	cc
-g41a	SNP	41	g	a
-c47a	SNP	47	c	a
-t53a	SNP	53	t	a
-tt73tgtgg	SUB	73	tt	tgtgg
-tagg97tc	SUB	97	tagg	tc
-t104a	SNP	104	t	a
-t124g	SNP	124	t	g
-t125a	SNP	125	t	a
-g186gtttcg	INS	186	g	gtttcg
+ggtttac1cc	SUB	1	ggtttac	cc	seq1	seq2
+g41a	SNP	41	g	a	seq1	seq2
+c47a	SNP	47	c	a	seq1	seq2
+t53a	SNP	53	t	a	seq1	seq2
+tt73tgtgg	SUB	73	tt	tgtgg	seq1	seq2
+tagg97tc	SUB	97	tagg	tc	seq1	seq2
+t104a	SNP	104	t	a	seq1	seq2
+t124g	SNP	124	t	g	seq1	seq2
+t125a	SNP	125	t	a	seq1	seq2
+g186gtttcg	INS	186	g	gtttcg	seq1	seq2

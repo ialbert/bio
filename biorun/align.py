@@ -220,8 +220,8 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mis
             seq2 = Seq(seq2)
 
             # Wrap the resulting alignment into a sequence.
-            query_aln = SeqRecord(id=query.name, name=query.name, description='', seq=seq1)
-            target_aln = SeqRecord(id=target.name, name=target.name, description='', seq=seq2)
+            query_aln = SeqRecord(id=query.name, name=query.name, description=query.description, seq=seq1)
+            target_aln = SeqRecord(id=target.name, name=target.name, description=target.description, seq=seq2)
 
             # Pack all content into the representation.
             obj = models.Alignment(query=query_aln, target=target_aln, score=aln.score)

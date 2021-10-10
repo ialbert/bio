@@ -258,7 +258,7 @@ def format_mutations(alns):
 
         values = find_variants(query=aln.query, target=aln.target)
 
-        print(f"# {aln.target.name} vs {aln.query.name}")
+        #print(f"# {aln.target.name} vs {aln.query.name}")
 
         for elems in values:
             pos = elems[1]
@@ -269,7 +269,7 @@ def format_mutations(alns):
 
             # data = [short, pos, info, aln.target.name, f"{base}/{alt}", aln.query.name, ]
 
-            data = [short, info, pos, base, alt]
+            data = [short, info, pos, base, alt, aln.target.name, aln.query.name]
 
             print("\t".join(data))
 

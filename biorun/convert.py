@@ -163,7 +163,7 @@ def get_params(rec):
     ann = rec.annot
     first = parser.first
 
-    text = json.dumps(ann, indent=4)
+    #text = json.dumps(ann, indent=4)
     #print (text)
 
     params = dict(
@@ -171,7 +171,7 @@ def get_params(rec):
         country=first(ann, "country"),
         date=first(ann, "collection_date"),
         pub_date=rec.annot.get("date", '.'),
-        product =first(ann, "product"),
+        product = rec.product,
         host=first(ann, "host"),
         gene=rec.gene or '.',
         type=rec.type,
