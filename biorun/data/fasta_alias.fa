@@ -1,6 +1,6 @@
->Wuhan {"title": "Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome", "type": "source", "gene": ""}
+>Wuhan {"title": "Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome", "type": "source"}
 ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
 GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTC
->RaTG13 {"title": "Bat coronavirus RaTG13, complete genome", "type": "source", "gene": ""}
+>RaTG13 {"title": "Bat coronavirus RaTG13, complete genome", "type": "source"}
 ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCT
 GTTCTCTAAACGAACTTTAAAATCTGTGTGACTGTCACTC

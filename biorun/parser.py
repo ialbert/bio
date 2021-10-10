@@ -207,10 +207,12 @@ def guess_name(ftype, annot):
 
     gene = first(annot, "gene")
     prod = first(annot, "product")
-    data = dict(type=ftype, gene=gene, product=prod)
+    locus = first(annot, "locus_tag")
+    data = dict(type=ftype, gene=gene, product=prod, locus=locus)
 
     if ftype == 'gene':
-        name = first(annot, "gene")
+        name = first(annot, "gene") or locus
+
     elif ftype == 'CDS':
         name = first(annot, "protein_id")
     elif ftype == 'mRNA':
@@ -223,7 +225,7 @@ def guess_name(ftype, annot):
         name = next_count(ftype)
 
     desc = json.dumps(data)
-    name = name or next_count(f"unknown-{ftype}")
+    name = name or next_count(f"seq")
     uid = uid or name
     return uid, name, desc
 
@@ -239,7 +241,7 @@ def record_generator(rec):
     rec.strand = None
     rec.start, rec.end = 1, len(rec.seq)
     rec.locs = []
-    rec.anchor = rec.id
+    rec.source = rec.id
 
     if not rec.annot:
         try:
@@ -248,13 +250,14 @@ def record_generator(rec):
             rec.type = rec.annot.get("type", SOURCE)
             rec.gene = rec.annot.get("gene", "")
         except Exception as exc:
+            # Unable to parse JSON from fasta description
             #print(rec.id, exc)
             pass
     else:
         rec.gene = rec.name if rec.type == "gene" else first(rec.annot, "gene")
-        rec.description = json.dumps(dict(title=rec.description, type=SOURCE, gene=rec.gene))
+        rec.description = json.dumps(dict(title=rec.description, type=SOURCE))
 
-    #print (rec.title)
+    rec.product = first(rec.annot, "product")
 
     # Fill the root annotations with all other information
     for feat in rec.features:
@@ -292,12 +295,11 @@ def record_generator(rec):
 
         sub.annot = annot
 
-        
         # Remap types to SO terms.
         sub.type = feat.type
 
-        # The anchor for the sequence
-        sub.anchor = rec.id
+        # The source for the sequence
+        sub.source = rec.id
 
         # print (feat.type, sub.type)
 

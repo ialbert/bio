@@ -1,4 +1,4 @@
-biopython >= 1.78
+biopython >= 1.79
 requests
 tqdm
 pytest

@@ -6,7 +6,7 @@ import sys
 import string
 
 from biorun import utils, parser
-
+import json
 # Module level logger.
 logger = utils.logger
 
@@ -160,16 +160,23 @@ def get_params(rec):
     """
     Makes a dictionary out of parameters.
     """
+    ann = rec.annot
+    first = parser.first
+
+    text = json.dumps(ann, indent=4)
+    #print (text)
+
     params = dict(
-        isolate=rec.annot.get("isolate", ['.'])[0],
-        country=rec.annot.get("country", ['.'])[0],
-        date=rec.annot.get("collection_date", ['.'])[0],
+        isolate=first(ann, "isolate"),
+        country=first(ann, "country"),
+        date=first(ann, "collection_date"),
         pub_date=rec.annot.get("date", '.'),
-        host=rec.annot.get("host", ['.'])[0],
+        product =first(ann, "product"),
+        host=first(ann, "host"),
         gene=rec.gene or '.',
         type=rec.type,
         size=len(rec.seq),
-        reference=rec.anchor,
+        source=rec.source,
         id=rec.id,
     )
     return params
@@ -323,7 +330,7 @@ def gff_formatter(rec):
     data = feature2gff(start=rec.start, end=rec.end,
                        ftype=rec.type, uid=rec.id,
                        name=rec.name, strand=rec.strand,
-                       anchor=rec.anchor, pid=None)
+                       anchor=rec.source, pid=None)
 
     line = "\t".join(map(str, data))
 
@@ -342,7 +349,7 @@ def gff_formatter(rec):
         uid = next(parser.counter)
 
         data = feature2gff(start=start, end=end, ftype=ftype, uid=uid, name=name,
-                           strand=strand, anchor=rec.anchor, pid=rec.id)
+                           strand=strand, anchor=rec.source, pid=rec.id)
         line = "\t".join(map(str, data))
         print(line)
 
