@@ -18,7 +18,7 @@ def run(start='', end='', diff=False, vcf=False, table=False, paired=False, *fna
     # Parse the input
     recs = parser.get_records(fnames)
 
-    recs = iter(recs)
+    recs = map(parser.rec2seqrec, recs)
 
     alns = []
     try:
@@ -45,7 +45,7 @@ def run(start='', end='', diff=False, vcf=False, table=False, paired=False, *fna
                 query.seq = query.seq[start:end]
                 target.seq = target.seq[start:end]
 
-            aln = models.Alignment(query=query, target=target)
+            aln = models.Alignment(query=query, target=target,)
 
             alns.append(aln)
 

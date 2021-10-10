@@ -9,16 +9,6 @@
 # Stop on errors.
 set -uex
 
-# Get data from NCBI
-bio fetch NC_045512 MN996532 > genomes.gb
-
-# Get a GFF from NCBI
-bio fetch NC_045512 --format gff > fetch_gff.gff
-
-# Get a protein.
-bio fetch YP_009724390 > fetch_prot.fa
-
-
 # Selecting by gene id
 bio fasta genomes.gb --type gene --id N --end 10 > fasta_ids.fa
 
@@ -154,3 +144,12 @@ bio search PRJNA661333 > search_prjn.json
 
 # Access a transcript from ensembl.
 bio fetch ENST00000288602  > fetch_enst.txt
+
+# Get a GFF from NCBI
+bio fetch NC_045512 --format gff > fetch_gff.gff
+
+# Get a protein.
+bio fetch YP_009724390 > fetch_prot.fa
+
+# Get data from NCBI
+bio fetch NC_045512 MN996532 > genomes.gb

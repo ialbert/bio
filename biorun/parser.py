@@ -5,9 +5,11 @@ import os
 import sys
 import gzip
 import json
+from pprint import pprint
 
 try:
     from Bio import SeqIO
+    from Bio.Seq import Seq
     from Bio.SeqRecord import SeqRecord
     from Bio.SeqFeature import Reference, CompoundLocation, FeatureLocation
 except ImportError as exc:
@@ -196,8 +198,14 @@ def next_count(ftype):
 
 def first(data, key, default=""):
     # First element of a list value that is stored in a dictionary by a key.
-    value = data.get(key) or [ default ]
-    return value[0]
+    value = data.get(key)
+    if type(value) == list:
+        return value[0]
+    elif value:
+        return value
+    else:
+        return default
+
 
 def guess_name(ftype, annot):
     """
@@ -230,91 +238,141 @@ def guess_name(ftype, annot):
     return uid, name, desc
 
 
+def get_id(ftype, annot):
+    """
+    Attempts to generate an unique id name for a BioPython feature
+    """
+
+    gene = first(annot, "gene")
+    prod = first(annot, "product")
+    locus = first(annot, "locus_tag")
+
+    data = dict(type=ftype, gene=gene, product=prod, locus=locus)
+
+    if ftype == 'gene':
+        name = first(annot, "gene") or locus
+    elif ftype == 'CDS':
+        name = first(annot, "protein_id")
+    elif ftype == 'mRNA':
+        name = first(annot, "transcript_id")
+    else:
+        name = next_count(ftype)
+
+    desc = json.dumps(data)
+
+    return name, desc
+
+
+class BioRec:
+
+    def __init__(self, id, type=None, source=None, ann=None, parent=None, seq=None, desc=''):
+        self.id = self.name = id
+        self.type = type or SOURCE
+        self.source = source or self.id
+        self.strand = 0
+        self.parent = parent or {}
+        self.ann = ann or {}
+        self.seq = seq or Seq('')
+        self.start, self.end = 1, len(self.seq)
+        self.locs = []
+        self.gene = first(self.ann, "gene")
+        self.product = first(self.ann, "product")
+        self.desc = desc or ''
+
+    def parent_ann(self, name):
+        return first(self.parent, name)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(id={self.id})"
+
+    def __len__(self):
+        return len(self.seq)
+
+def parse_desc(srec):
+    """
+    Parses annotations from a sequence description
+    """
+    ann = {}
+    desc = srec.description
+
+    # Attempts to split the description for parsing into JSON
+    payload = srec.description.split(" ", maxsplit=1)
+    if len(payload) == 2:
+        try:
+            desc = payload[1]
+            ann = json.loads(desc)
+        except Exception:
+            # Not a valid
+            pass
+
+    return ann, desc
+
+
 def record_generator(rec):
     """
-    Returns a SeqRecord with additional attributes set.
+    Creates BioRec from SeqRec
     """
-    pairs = [(k, json_ready(v)) for (k, v) in rec.annotations.items()]
 
-    rec.annot = dict(pairs)
-    rec.type = SOURCE
-    rec.strand = None
-    rec.start, rec.end = 1, len(rec.seq)
-    rec.locs = []
-    rec.source = rec.id
-    rec.product = rec.gene = ''
+    # Handling single or nested records.
+    if not rec.features:
+        # Attempts to read annotations from description.
+        ann, desc = parse_desc(rec)
+        brec = BioRec(id=rec.id, ann=ann, parent=ann, type=SOURCE, seq=rec.seq, desc=desc)
+        yield brec
 
-    if not rec.annot:
-        try:
-            payload = rec.description.split(" ", maxsplit=1)[1]
-            rec.annot = json.loads(payload)
-            rec.type = rec.annot.get("type", SOURCE)
-            rec.gene = rec.annot.get("gene", "")
-            rec.product = rec.annot.get("product", "")
-        except Exception as exc:
-            # Unable to parse JSON from fasta description
-            #print(rec.id, exc)
-            pass
     else:
-        rec.product = first(rec.annot, "product")
-        rec.gene = rec.name if rec.type == "gene" else first(rec.annot, "gene")
-        rec.description = json.dumps(dict(title=rec.description, type=SOURCE))
+        # Reads annotations from the sequence record
+        pairs = [(k, json_ready(v)) for (k, v) in rec.annotations.items()]
 
-    # Fill the root annotations with all other information
-    for feat in rec.features:
-        if feat.type == SOURCE:
+        # These are the parent annotations that apply globally to all features.
+        parent_ann = dict(pairs)
+        
+        # Parent record
+        parent_rec = rec
+
+        # Yield a record for each feature.
+        for feat in rec.features:
+
+            # Extract feature qualifiers.
             pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
-            rec.annot.update(pairs)
+            ann = dict(pairs)
 
-    yield rec
+            # Remap types into standard naming.
+            feat.type = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
 
-    parent_annot = rec.annot
+            # Extract the sequence for the feature.
+            seq = feat.extract(rec.seq)
 
-    for feat in rec.features:
+            # The source annotations are global
+            if feat.type == SOURCE:
+                parent_ann.update(ann)
+                uid = parent_rec.id
+                #isolate = first(parent_ann, "isolate")
+                data = dict(title=parent_rec.description, type=SOURCE)
+                desc = json.dumps(data)
+            else:
+                # Find the unique id of the feature.
+                uid, desc = get_id(feat.type, ann)
 
-        # The source has already been generated as the first feature
-        if feat.type == SOURCE:
-            continue
+            # Create the BioRecord for the feature.
+            brec = BioRec(id=uid, ann=ann, parent=parent_ann, seq=seq, type=feat.type, desc=desc, source=parent_rec.id)
 
-        # Override the feature type.
-        feat.type = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
+            # Correct the feature coordinates.
+            brec.strand = feat.strand
 
-        seq = feat.extract(rec.seq)
+            brec.start, brec.end = int(feat.location.start) + 1, int(feat.location.end)
+            brec.locs = [(loc.start + 1, loc.end, loc.strand) for loc in
+                        feat.location.parts]
 
-        # Qualifiers are transformed into annotations.
-        pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
+            yield brec
 
-        annot = dict(parent_annot)
 
-        annot.update(pairs)
-
-        uid, name, desc = guess_name(ftype=feat.type, annot=annot)
-
-        sub = SeqRecord(id=uid, name=name, description=desc, seq=seq)
-
-        sub.gene = first(annot, "gene", "")
-
-        sub.product =  first(annot, "gene", "")
-
-        sub.annot = annot
-
-        # Remap types to SO terms.
-        sub.type = feat.type
-
-        # The source for the sequence
-        sub.source = rec.id
-
-        # print (feat.type, sub.type)
-
-        sub.strand = feat.strand
-
-        sub.start, sub.end = int(feat.location.start) + 1, int(feat.location.end)
-
-        # Store the locations.
-        sub.locs = [(loc.start + 1, loc.end, loc.strand) for loc in
-                    feat.location.parts] if feat is not None else []
-
-        yield sub
+def rec2seqrec(rec):
+    """
+    Creates Seqrecord from BioRec
+    """
+    srec = SeqRecord(id=rec.id, name=rec.id, description=rec.desc, seq=rec.seq)
+    return srec
 
 
 def get_records(fnames):
@@ -328,6 +386,7 @@ def get_records(fnames):
     recs = flatten(reader)
 
     recs = map(record_generator, recs)
+
     recs = flatten(recs)
 
     return recs

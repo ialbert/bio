@@ -39,7 +39,8 @@ def table_formatter(fields):
     return func
 
 def fasta_formatter(rec):
-    print(rec.format("fasta"), end='')
+    srec = parser.rec2seqrec(rec)
+    print(srec.format("fasta"), end='')
 
 
 def remapper(rec):
@@ -160,21 +161,19 @@ def get_params(rec):
     """
     Makes a dictionary out of parameters.
     """
-    ann = rec.annot
-    first = parser.first
 
     #text = json.dumps(ann, indent=4)
     #print (text)
 
     params = dict(
-        isolate=first(ann, "isolate"),
-        country=first(ann, "country"),
-        date=first(ann, "collection_date"),
-        pub_date=rec.annot.get("date", '.'),
-        product = rec.product,
-        host=first(ann, "host"),
-        gene=rec.gene or '.',
+        isolate=rec.parent_ann("isolate"),
+        country=rec.parent_ann("country"),
+        date=rec.parent_ann("collection_date"),
+        pub_date=rec.parent_ann("date"),
+        host=rec.parent_ann("host"),
+        gene=rec.gene,
         type=rec.type,
+        product=rec.product,
         size=len(rec.seq),
         source=rec.source,
         id=rec.id,
@@ -247,11 +246,12 @@ def remove_source(rec):
 
 
 def protein_filter(rec):
-    return "translation" in rec.annot
+    return "translation" in rec.ann
 
 
 def protein_extract(rec):
-    rec.seq = Seq(rec.annot.get("translation")[0])
+    trans = parser.first(rec.ann, "translation")
+    rec.seq = Seq(trans)
     return rec
 
 
@@ -288,7 +288,7 @@ COLOR_FOR_TYPE = {
 }
 
 
-def feature2gff(anchor, ftype, start, end, strand, uid, name, pid=None):
+def feature2gff(source, ftype, start, end, strand, uid, name, pid=None):
     """
     Returns a Record as an 11 element  GFF3 list .
     """
@@ -313,7 +313,7 @@ def feature2gff(anchor, ftype, start, end, strand, uid, name, pid=None):
     attr = ";".join(attr)
 
     # Create the GFF record.
-    data = [anchor, ".", ftype, start, end, ".", strand, phase, attr]
+    data = [source, ".", ftype, start, end, ".", strand, phase, attr]
 
     return data
 
@@ -329,8 +329,8 @@ def gff_formatter(rec):
     # Parent feature
     data = feature2gff(start=rec.start, end=rec.end,
                        ftype=rec.type, uid=rec.id,
-                       name=rec.name, strand=rec.strand,
-                       anchor=rec.source, pid=None)
+                       name=rec.id, strand=rec.strand,
+                       source=rec.source, pid=None)
 
     line = "\t".join(map(str, data))
 
@@ -345,11 +345,11 @@ def gff_formatter(rec):
 
     # Generate the locations
     for start, end, strand in rec.locs:
-        name = rec.name
+        name = rec.id
         uid = next(parser.counter)
 
         data = feature2gff(start=start, end=end, ftype=ftype, uid=uid, name=name,
-                           strand=strand, anchor=rec.source, pid=rec.id)
+                           strand=strand, source=rec.source, pid=rec.id)
         line = "\t".join(map(str, data))
         print(line)
 

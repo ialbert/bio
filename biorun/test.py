@@ -53,6 +53,7 @@ def shell(cmd):
 
 
 INIT = f"""    
+    ln -s '{FILE_DIR}/data/genomes.gb'
     ln -s '{FILE_DIR}/data/alias.txt'
     ln -s '{FILE_DIR}/data/align_input.fa'
     ln -s '{FILE_DIR}/data/mafft.fa'
