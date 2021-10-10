@@ -166,11 +166,11 @@ def get_params(rec):
     #print (text)
 
     params = dict(
-        isolate=rec.parent_ann("isolate"),
-        country=rec.parent_ann("country"),
-        date=rec.parent_ann("collection_date"),
-        pub_date=rec.parent_ann("date"),
-        host=rec.parent_ann("host"),
+        isolate=rec.get_parent_ann("isolate"),
+        country=rec.get_parent_ann("country"),
+        date=rec.get_parent_ann("collection_date"),
+        pub_date=rec.get_parent_ann("date"),
+        host=rec.get_parent_ann("host"),
         gene=rec.gene,
         type=rec.type,
         product=rec.product,

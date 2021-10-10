@@ -30,7 +30,9 @@ RNAS = set("AUGC" + 'augc')
 
 NUCLEOTIDE, PEPTIDE = "nucleotide", "peptide"
 
-SOURCE = "source"
+SOURCE, FEATURES, RECORD, ID = "source", "features", "record", "id",
+TYPE, ANNOTATIONS, LOCATIONS =  "type", "annotations", "locations"
+SEQUENCE = "sequence"
 
 SEQUENCE_ONTOLOGY = {
     "5'UTR": "five_prime_UTR",
@@ -85,7 +87,7 @@ class Peeker:
 
     def read(self, size=None):
         if size is None:
-            return self.buffer.read() + self.stream.read(size=size)
+            return self.buffer.read() + self.stream.read()
         content = self.buffer.read(size)
         if len(content) < size:
             content += self.stream.read(size - len(content))
@@ -142,6 +144,25 @@ def get_streams(fnames, dynamic=False):
             else:
                 utils.error(f"file not found: '{fname}'")
 
+def parse_json(stream):
+    text = stream.read()
+    data = json.loads(text)
+    for entry in data:
+        feats = entry[FEATURES]
+        parents = [f for f in feats if f[TYPE] == SOURCE]
+        if parents:
+            parent_ann = parents[0][ANNOTATIONS]
+        else:
+            parent_ann = {}
+
+        for feat in entry[FEATURES]:
+            uid = feat[ID]
+            ftype = feat[TYPE]
+            ann = feat[ANNOTATIONS]
+            desc = ""
+            seq = Seq("ATGC")
+            rec = BioRec(id=uid, ann=ann, parent=parent_ann, type=ftype, seq=seq, desc=desc)
+            yield rec
 
 def parse_stream(stream):
     """
@@ -156,11 +177,18 @@ def parse_stream(stream):
         format = 'fastq'
     elif first.startswith("ID "):
         format = 'embl'
+    elif start == '[':
+        format = 'json'
     else:
         format = 'genbank'
+
     logger.debug(f"parsing: {format}")
 
-    recs = SeqIO.parse(stream, format)
+    if format != 'json':
+        recs = SeqIO.parse(stream, format)
+    else:
+        recs = parse_json(stream)
+
     return recs
 
 
@@ -279,7 +307,10 @@ class BioRec:
         self.product = first(self.ann, "product")
         self.desc = desc or ''
 
-    def parent_ann(self, name):
+    def get_ann(self, name):
+        return first(self.ann, name)
+
+    def get_parent_ann(self, name):
         return first(self.parent, name)
 
     def __repr__(self):
@@ -313,6 +344,11 @@ def record_generator(rec):
     Creates BioRec from SeqRec
     """
 
+    # Already in the correct format
+    if isinstance(rec, BioRec):
+        yield rec
+        raise StopIteration
+
     # Handling single or nested records.
     if not rec.features:
         # Attempts to read annotations from description.
@@ -326,7 +362,7 @@ def record_generator(rec):
 
         # These are the parent annotations that apply globally to all features.
         parent_ann = dict(pairs)
-        
+
         # Parent record
         parent_rec = rec
 

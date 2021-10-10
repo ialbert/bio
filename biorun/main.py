@@ -17,29 +17,33 @@ from biorun import VERSION
 #
 # Subcommand registration:
 #
-# name = (module.function, help_flag, listing_flag, command_help)
+# name = (module.function, listing_flag, command_help)
 #
 SUB_COMMANDS = dict(
-    search=("biorun.search.run", True, False, "search for information"),
-    fetch=("biorun.fetch.run", True, True, "download GenBank/ENSEMBL data"),
-    fasta=("biorun.fasta.run", True, True, "convert to FASTA"),
-    gff=("biorun.gff.run", True, True,"convert to GFF"),
-    table=("biorun.table.run", True, True, "convert to table"),
-    align=("biorun.align.run", True,True, "align sequences"),
-    format=("biorun.format.run", True, True,"reformat aligned fasta"),
-    taxon=("biorun.taxon.run", False, True,"operate on NCBI taxonomies"),
-    explain=("biorun.ontology.run", False, True,"explain biological terms"),
-    meta=("biorun.meta.run", False, True,"download metadata by taxonomy ID"),
-    mygene=("biorun.mygene.run", False, True,"connect to mygene interface"),
-    comm=("biorun.comm.run", False, False, "find common elements"),
-    uniq=("biorun.uniq.run", False, False, "find unique elements"),
+    search=("biorun.search.run",  True, "search for information"),
+    fetch=("biorun.fetch.run", True, "download GenBank/ENSEMBL data"),
+    fasta=("biorun.fasta.run",  True, "convert to FASTA"),
+    gff=("biorun.gff.run",  True,"convert to GFF"),
+    table=("biorun.table.run",  True, "convert to table"),
+    align=("biorun.align.run", True, "align sequences"),
+    format=("biorun.format.run",  True,"reformat aligned fasta"),
+    taxon=("biorun.taxon.run",  True,"operate on NCBI taxonomies"),
+    explain=("biorun.ontology.run",  True,"explain biological terms"),
+    meta=("biorun.meta.run",  True,"download metadata by taxonomy ID"),
+    mygene=("biorun.mygene.run",  True,"connect to mygene interface"),
+
+    # will not show up in help
+    comm=("biorun.comm.run", False, "find common elements"),
+    uniq=("biorun.uniq.run", False, "find unique elements"),
+    json=("biorun.jsonrec.run", False, "convert to json format"),
+
 )
 
 
 DOWNLOAD_CMD = '--download'
 
 # Generates indented help for each subcommand
-block = [f"  bio {key:9} : {value[3]}" for (key, value) in SUB_COMMANDS.items() if value[2]]
+block = [f"  bio {key:9} : {value[-1]}" for (key, value) in SUB_COMMANDS.items() if value[1]]
 
 # Join help into a section.
 block = "\n".join(block)
@@ -162,10 +166,10 @@ def router():
     sys.argv = list(map(fix_parameter, sys.argv))
 
     # Delegate to the imported method
-    modfunc, flag, tmp, help = SUB_COMMANDS[cmd]
+    modfunc, flag, help = SUB_COMMANDS[cmd]
 
     # Add the help flag if no other information is present beyond command.
-    if sys.stdin.isatty() and flag and len(sys.argv) == 1:
+    if sys.stdin.isatty() and len(sys.argv) == 1:
         sys.argv.append("-h")
 
     # Format: module.function

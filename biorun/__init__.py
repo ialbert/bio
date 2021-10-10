@@ -3,10 +3,9 @@
 #
 # https://stackoverflow.com/questions/14207708/ioerror-errno-32-broken-pipe-python/30091579#30091579
 #
-import sys
 
 # Global package version
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 
 try:
     from signal import signal, SIGPIPE, SIG_DFL
