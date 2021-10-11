@@ -165,7 +165,9 @@ def parse_json(stream):
             ftype = feat[TYPE]
             ann = feat[ANNOTATIONS]
 
-            desc = source_description(title="AAA")
+
+            #desc = {DEFINITION: feat[DEFINITION]}
+            desc = {}
 
             seq = ''
             for start, end, strand in feat[LOCATIONS]:
@@ -249,16 +251,16 @@ def first(data, key, default=""):
         return default
 
 
-def source_description(description, ann={}):
-    # isolate = first(ann, "isolate")
-    data = {DEFINITION: description, 'type': SOURCE}
-    return data
-
-
-def generate_uid(ftype, ann):
+def generate_uid(ftype, ann, description='', uid=None):
     """
     Attempts to generate an unique id name for a BioPython feature
     """
+
+    if uid:
+        # isolate = first(ann, "isolate")
+        data = {DEFINITION: description, 'type': SOURCE}
+        return uid, data
+
 
     gene = first(ann, "gene")
     prod = first(ann, "product")
@@ -375,10 +377,11 @@ def record_generator(rec):
             if feat.type == SOURCE:
                 parent.update(ann)
                 uid = rec.id
-                desc = source_description(description=rec.description)
             else:
-                # Generate a unique id of the feature.
-                uid, desc = generate_uid(ftype=ftype, ann=ann)
+                uid = None
+
+            # Generate uid and description
+            uid, desc = generate_uid(ftype=ftype, ann=ann, description=rec.description, uid=uid)
 
             # Create the BioRecord for the feature.
             brec = BioRec(id=uid, ann=ann, parent=parent, seq=seq, type=ftype, desc=desc, source=rec.id)

@@ -8,13 +8,18 @@ from biorun.parser import LOCATIONS, SEQUENCE, DEFINITION
 
 
 def as_json(rec):
-
-
-
     data = {
-        ID: rec.id, TYPE: rec.type, DEFINITION:rec.desc,
-        ANNOTATIONS: rec.ann, LOCATIONS: rec.locs
+        ID: rec.id, TYPE: rec.type,
     }
+
+    data.update(rec.desc)
+
+    data.update(
+        {
+            ANNOTATIONS: rec.ann, LOCATIONS: rec.locs
+        }
+    )
+
     return data
 
 
@@ -33,7 +38,6 @@ def run(*fnames):
     for rec in recs:
 
         if rec.type == SOURCE:
-
             # Create a new entry
             entry = {RECORD: rec.parent, FEATURES: [], SOURCE: str(rec.seq)}
             data.append(entry)
