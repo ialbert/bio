@@ -39,8 +39,8 @@ def table_formatter(fields):
     return func
 
 def fasta_formatter(rec):
-    srec = parser.rec2seqrec(rec)
-    print(srec.format("fasta"), end='')
+    seqrec = parser.make_seqrec(rec)
+    print(seqrec.format("fasta"), end='')
 
 
 def remapper(rec):

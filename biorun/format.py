@@ -18,7 +18,7 @@ def run(start='', end='', diff=False, vcf=False, table=False, paired=False, *fna
     # Parse the input
     recs = parser.get_records(fnames)
 
-    recs = map(parser.rec2seqrec, recs)
+    recs = map(parser.make_seqrec, recs)
 
     alns = []
     try:

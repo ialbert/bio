@@ -1,14 +1,19 @@
 import sys, json
 from biorun.libs import placlib as plac
-
+from pprint import pprint
 from biorun import parser
 
-from biorun.parser import SOURCE, FEATURES, RECORD, ID, TYPE, ANNOTATIONS, LOCATIONS, SEQUENCE
+from biorun.parser import SOURCE, FEATURES, RECORD, ID, TYPE, ANNOTATIONS
+from biorun.parser import LOCATIONS, SEQUENCE, DEFINITION
 
 
 def as_json(rec):
+
+
+
     data = {
-        ID: rec.id, TYPE: rec.type, ANNOTATIONS: rec.ann, LOCATIONS: rec.locs
+        ID: rec.id, TYPE: rec.type, DEFINITION:rec.desc,
+        ANNOTATIONS: rec.ann, LOCATIONS: rec.locs
     }
     return data
 
@@ -29,20 +34,13 @@ def run(*fnames):
 
         if rec.type == SOURCE:
 
-            # Move the source to last
-            if last:
-                entry[FEATURES].append(last)
-
             # Create a new entry
             entry = {RECORD: rec.parent, FEATURES: [], SOURCE: str(rec.seq)}
             data.append(entry)
-            last = as_json(rec)
 
-        else:
-
-            target = entry.get(FEATURES, [])
-            row = as_json(rec)
-            target.append(row)
+        target = entry.get(FEATURES, [])
+        row = as_json(rec)
+        target.append(row)
 
     text = json.dumps(data, indent=4)
 
