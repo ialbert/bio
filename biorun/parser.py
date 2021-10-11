@@ -31,7 +31,7 @@ RNAS = set("AUGC" + 'augc')
 NUCLEOTIDE, PEPTIDE = "nucleotide", "peptide"
 
 SOURCE, FEATURES, RECORD, ID = "source", "features", "record", "id",
-TYPE, ANNOTATIONS, LOCATIONS =  "type", "annotations", "locations"
+TYPE, ANNOTATIONS, LOCATIONS = "type", "annotations", "locations"
 SEQUENCE, DEFINITION = "sequence", "title"
 
 SEQUENCE_ONTOLOGY = {
@@ -144,6 +144,7 @@ def get_streams(fnames, dynamic=False):
             else:
                 utils.error(f"file not found: '{fname}'")
 
+
 def parse_json(stream):
     text = stream.read()
     data = json.loads(text)
@@ -175,6 +176,7 @@ def parse_json(stream):
             seq = Seq(seq)
             rec = BioRec(id=uid, ann=ann, parent=parent, type=ftype, seq=seq, desc=desc)
             yield rec
+
 
 def parse_stream(stream):
     """
@@ -246,10 +248,12 @@ def first(data, key, default=""):
     else:
         return default
 
+
 def source_description(description, ann={}):
     # isolate = first(ann, "isolate")
-    data = {DEFINITION:description, 'type':SOURCE}
+    data = {DEFINITION: description, 'type': SOURCE}
     return data
+
 
 def generate_uid(ftype, ann):
     """
@@ -271,13 +275,12 @@ def generate_uid(ftype, ann):
     else:
         name = next_count(ftype)
 
-
     return name, data
 
 
 class BioRec:
 
-    def __init__(self, id, type=None, source=None, ann=None, parent=None, seq=None, desc=''):
+    def __init__(self, id, type=None, source=None, ann=None, parent=None, seq=None, desc=None):
         self.id = self.name = id
         self.type = type or SOURCE
         self.source = source or self.id
@@ -289,7 +292,7 @@ class BioRec:
         self.locs = []
         self.gene = first(self.ann, "gene")
         self.product = first(self.ann, "product")
-        self.desc = desc or ''
+        self.desc = desc
 
     def get_ann(self, name):
         return first(self.ann, name)
@@ -303,33 +306,32 @@ class BioRec:
     def __len__(self):
         return len(self.seq)
 
+
 def parse_desc(rec):
     """
     Parses annotations from a sequence description
     """
     ann = {}
 
-    if rec.id == rec.description:
-        return ann, ''
-
     desc = rec.description
+
+    # Nothing to parse.
+    if rec.id == desc:
+        return ann, ''
 
     # Attempts to split the description for parsing into JSON
     payload = rec.description.split(" ", maxsplit=1)
 
     if len(payload) == 2:
         try:
-            data = payload[1][DEFINITION]
-            ann = json.loads(data)
-            desc = data.get(DEFINITION)
-        except Exception as exc:
+            data = payload[1]
+            desc = json.loads(data)
+        except KeyError as exc:
             # Not a valid
-            #print (exc)
+            # print (exc, data)
             pass
 
     return ann, desc
-
-
 
 
 def record_generator(rec):
@@ -386,7 +388,7 @@ def record_generator(rec):
 
             brec.start, brec.end = int(feat.location.start) + 1, int(feat.location.end)
             brec.locs = [(loc.start + 1, loc.end, loc.strand) for loc in
-                        feat.location.parts]
+                         feat.location.parts]
 
             yield brec
 
@@ -395,7 +397,7 @@ def make_seqrec(rec):
     """
     Creates Seqrecord from BioRec
     """
-    desc = json.dumps(rec.desc)
+    desc = json.dumps(rec.desc) if rec.desc else ''
     seqrec = SeqRecord(id=rec.id, name=rec.id, description=desc, seq=rec.seq)
     return seqrec
 
