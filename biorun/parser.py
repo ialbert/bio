@@ -344,56 +344,57 @@ def record_generator(rec):
     # Already in the correct format
     if isinstance(rec, BioRec):
         yield rec
-        raise StopIteration
-
-    # Handling single or nested records.
-    if not rec.features:
-        # Attempts to read annotations from description.
-        ann, desc = parse_desc(rec)
-        brec = BioRec(id=rec.id, ann=ann, parent=ann, type=SOURCE, seq=rec.seq, desc=desc)
-        yield brec
 
     else:
-        # Reads annotations from the sequence record
-        pairs = [(k, json_ready(v)) for (k, v) in rec.annotations.items()]
 
-        # These are the parent annotations that apply globally to all features.
-        parent = dict(pairs)
-
-        # Yield a record for each feature.
-        for feat in rec.features:
-
-            # Extract feature qualifiers.
-            pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
-            ann = dict(pairs)
-
-            # Remap types into standard naming.
-            ftype = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
-
-            # Extract the sequence for the feature.
-            seq = feat.extract(rec.seq)
-
-            # The source annotations are global
-            if feat.type == SOURCE:
-                parent.update(ann)
-
-            # Generate uid and description
-            uid, desc = generate_uid(ftype=ftype, ann=ann, description=rec.description)
-
-            # Inherit from source
-            uid = uid or rec.id
-
-            # Create the BioRecord for the feature.
-            brec = BioRec(id=uid, ann=ann, parent=parent, seq=seq, type=ftype, desc=desc, source=rec.id)
-
-            # Correct the feature coordinates.
-            brec.strand = feat.strand
-
-            brec.start, brec.end = int(feat.location.start) + 1, int(feat.location.end)
-            brec.locs = [(loc.start + 1, loc.end, loc.strand) for loc in
-                         feat.location.parts]
-
+        # Handling single or nested records.
+        if not rec.features:
+            # Attempts to read annotations from description.
+            ann, desc = parse_desc(rec)
+            brec = BioRec(id=rec.id, ann=ann, parent=ann, type=SOURCE, seq=rec.seq, desc=desc)
             yield brec
+
+        else:
+            # Reads annotations from the sequence record
+            pairs = [(k, json_ready(v)) for (k, v) in rec.annotations.items()]
+
+            # These are the parent annotations that apply globally to all features.
+            parent = dict(pairs)
+
+            # Yield a record for each feature.
+            for feat in rec.features:
+
+                # Extract feature qualifiers.
+                pairs = [(k, json_ready(v)) for (k, v) in feat.qualifiers.items()]
+                ann = dict(pairs)
+
+                # Remap types into standard naming.
+                ftype = SEQUENCE_ONTOLOGY.get(feat.type, feat.type)
+
+                # Extract the sequence for the feature.
+                seq = feat.extract(rec.seq)
+
+                # The source annotations are global
+                if feat.type == SOURCE:
+                    parent.update(ann)
+
+                # Generate uid and description
+                uid, desc = generate_uid(ftype=ftype, ann=ann, description=rec.description)
+
+                # Inherit from source
+                uid = uid or rec.id
+
+                # Create the BioRecord for the feature.
+                brec = BioRec(id=uid, ann=ann, parent=parent, seq=seq, type=ftype, desc=desc, source=rec.id)
+
+                # Correct the feature coordinates.
+                brec.strand = feat.strand
+
+                brec.start, brec.end = int(feat.location.start) + 1, int(feat.location.end)
+                brec.locs = [(loc.start + 1, loc.end, loc.strand) for loc in
+                             feat.location.parts]
+
+                yield brec
 
 
 def make_seqrec(rec):
