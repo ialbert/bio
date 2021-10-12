@@ -24,6 +24,8 @@ def print_metadata(terms, limit=None, header=False):
         for line in lines:
             print(line)
 
+# https://api.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/
+
 def get_metadata(taxid, limit=None, complete=True):
     """
     Returns all accessions
