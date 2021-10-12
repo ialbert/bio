@@ -32,7 +32,7 @@ NUCLEOTIDE, PEPTIDE = "nucleotide", "peptide"
 
 SOURCE, FEATURES, RECORD, ID = "source", "features", "record", "id",
 TYPE, ANNOTATIONS, LOCATIONS = "type", "annotations", "locations"
-SEQUENCE, DEFINITION = "sequence", "title"
+SEQUENCE, TITLE = "sequence", "title"
 
 SEQUENCE_ONTOLOGY = {
     "5'UTR": "five_prime_UTR",
@@ -166,13 +166,13 @@ def parse_json(stream):
 
             ann = feat[ANNOTATIONS]
 
-            desc = ann.get(DEFINITION)
+            desc = feat.get(TITLE)
 
             tmp, desc = generate_uid(ftype=ftype, description=desc, ann=ann)
 
             seq = ''
             for start, end, strand in feat[LOCATIONS]:
-                sub = source[start:end]
+                sub = source[start-1:end]
                 sub = sub[::-1] if strand == -1 else sub
                 seq += sub
 
@@ -259,7 +259,7 @@ def generate_uid(ftype, ann, description=''):
 
     if ftype == SOURCE:
         # isolate = first(ann, "isolate")
-        data = {DEFINITION: description, 'type': SOURCE}
+        data = {TITLE: description, 'type': SOURCE}
         return None, data
 
     gene = first(ann, "gene")

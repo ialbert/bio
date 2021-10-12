@@ -4,7 +4,7 @@ from pprint import pprint
 from biorun import parser
 
 from biorun.parser import SOURCE, FEATURES, RECORD, ID, TYPE, ANNOTATIONS
-from biorun.parser import LOCATIONS, SEQUENCE, DEFINITION
+from biorun.parser import LOCATIONS, SEQUENCE, TITLE
 
 
 def as_json(rec):

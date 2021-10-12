@@ -1,0 +1,2493 @@
+[
+    {
+        "record": {
+            "molecule_type": "ss-RNA",
+            "topology": "linear",
+            "data_file_division": "VRL",
+            "date": "18-JUL-2020",
+            "accessions": [
+                "NC_045512"
+            ],
+            "sequence_version": 2,
+            "keywords": [
+                "RefSeq"
+            ],
+            "source": "Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2)",
+            "organism": [
+                "Severe acute respiratory syndrome coronavirus 2"
+            ],
+            "taxonomy": [
+                "Viruses",
+                "Riboviria",
+                "Orthornavirae",
+                "Pisuviricota",
+                "Pisoniviricetes",
+                "Nidovirales",
+                "Cornidovirineae",
+                "Coronaviridae",
+                "Orthocoronavirinae",
+                "Betacoronavirus",
+                "Sarbecovirus"
+            ],
+            "references": [
+                {
+                    "title": "A new coronavirus associated with human respiratory disease in China",
+                    "authors": "Wu,F., Zhao,S., Yu,B., Chen,Y.M., Wang,W., Song,Z.G., Hu,Y., Tao,Z.W., Tian,J.H., Pei,Y.Y., Yuan,M.L., Zhang,Y.L., Dai,F.H., Liu,Y., Wang,Q.M., Zheng,J.J., Xu,L., Holmes,E.C. and Zhang,Y.Z.",
+                    "journal": "Nature 579 (7798), 265-269 (2020)",
+                    "pubmed_id": "32015508"
+                },
+                {
+                    "title": "Programmed ribosomal frameshifting in decoding the SARS-CoV genome",
+                    "authors": "Baranov,P.V., Henderson,C.M., Anderson,C.B., Gesteland,R.F., Atkins,J.F. and Howard,M.T.",
+                    "journal": "Virology 332 (2), 498-510 (2005)",
+                    "pubmed_id": "15680415"
+                },
+                {
+                    "title": "The structure of a rigorously conserved RNA element within the SARS virus genome",
+                    "authors": "Robertson,M.P., Igel,H., Baertsch,R., Haussler,D., Ares,M. Jr. and Scott,W.G.",
+                    "journal": "PLoS Biol. 3 (1), e5 (2005)",
+                    "pubmed_id": "15630477"
+                },
+                {
+                    "title": "A phylogenetically conserved hairpin-type 3' untranslated region pseudoknot functions in coronavirus RNA replication",
+                    "authors": "Williams,G.D., Chang,R.Y. and Brian,D.A.",
+                    "journal": "J. Virol. 73 (10), 8349-8355 (1999)",
+                    "pubmed_id": "10482585"
+                },
+                {
+                    "title": "Direct Submission",
+                    "authors": "",
+                    "journal": "Submitted (17-JAN-2020) National Center for Biotechnology Information, NIH, Bethesda, MD 20894, USA",
+                    "pubmed_id": ""
+                },
+                {
+                    "title": "Direct Submission",
+                    "authors": "Wu,F., Zhao,S., Yu,B., Chen,Y.-M., Wang,W., Hu,Y., Song,Z.-G., Tao,Z.-W., Tian,J.-H., Pei,Y.-Y., Yuan,M.L., Zhang,Y.-L., Dai,F.-H., Liu,Y., Wang,Q.-M., Zheng,J.-J., Xu,L., Holmes,E.C. and Zhang,Y.-Z.",
+                    "journal": "Submitted (05-JAN-2020) Shanghai Public Health Clinical Center & School of Public Health, Fudan University, Shanghai, China",
+                    "pubmed_id": ""
+                }
+            ],
+            "comment": "REVIEWED REFSEQ: This record has been curated by NCBI staff. The\nreference sequence is identical to MN908947.\nOn Jan 17, 2020 this sequence version replaced NC_045512.1.\nAnnotation was added using homology to SARSr-CoV NC_004718.3. ###\nFormerly called 'Wuhan seafood market pneumonia virus.' If you have\nquestions or suggestions, please email us at info@ncbi.nlm.nih.gov\nand include the accession number NC_045512.### Protein structures\ncan be found at\nhttps://www.ncbi.nlm.nih.gov/structure/?term=sars-cov-2.### Find\nall other Severe acute respiratory syndrome coronavirus 2\n(SARS-CoV-2) sequences at\nhttps://www.ncbi.nlm.nih.gov/genbank/sars-cov-2-seqs/\nCOMPLETENESS: full length.",
+            "structured_comment": {
+                "Assembly-Data": {
+                    "Assembly Method": "Megahit v. V1.1.3",
+                    "Sequencing Technology": "Illumina"
+                }
+            },
+            "mol_type": [
+                "genomic RNA"
+            ],
+            "isolate": [
+                "Wuhan-Hu-1"
+            ],
+            "host": [
+                "Homo sapiens"
+            ],
+            "db_xref": [
+                "taxon:2697049"
+            ],
+            "country": [
+                "China"
+            ],
+            "collection_date": [
+                "Dec-2019"
+            ]
+        },
+        "features": [
+            {
+                "id": "NC_045512.2",
+                "type": "source",
+                "title": "Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome",
+                "annotations": {
+                    "organism": [
+                        "Severe acute respiratory syndrome coronavirus 2"
+                    ],
+                    "mol_type": [
+                        "genomic RNA"
+                    ],
+                    "isolate": [
+                        "Wuhan-Hu-1"
+                    ],
+                    "host": [
+                        "Homo sapiens"
+                    ],
+                    "db_xref": [
+                        "taxon:2697049"
+                    ],
+                    "country": [
+                        "China"
+                    ],
+                    "collection_date": [
+                        "Dec-2019"
+                    ]
+                },
+                "locations": [
+                    [
+                        1,
+                        29903,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "five_prime_UTR-1",
+                "type": "five_prime_UTR",
+                "gene": "",
+                "product": "",
+                "locus": "",
+                "annotations": {},
+                "locations": [
+                    [
+                        1,
+                        265,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "ORF1ab",
+                "type": "gene",
+                "gene": "ORF1ab",
+                "product": "",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740578"
+                    ]
+                },
+                "locations": [
+                    [
+                        266,
+                        21555,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724389.1",
+                "type": "CDS",
+                "gene": "ORF1ab",
+                "product": "ORF1ab polyprotein",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "ribosomal_slippage": [
+                        ""
+                    ],
+                    "note": [
+                        "pp1ab; translated by -1 ribosomal frameshift"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "ORF1ab polyprotein"
+                    ],
+                    "protein_id": [
+                        "YP_009724389.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740578"
+                    ],
+                    "translation": [
+                        "MESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQYGRSGETLGVLVPHVGEIPVAYRKVLLRKNGNKGAGGHSYGADLKSFDLGDELGTDPYEDFQENWNTKHSSGVTRELMRELNGGAYTRYVDNNFCGPDGYPLECIKDLLARAGKASCTLSEQLDFIDTKRGVYCCREHEHEIAWYTERSEKSYELQTPFEIKLAKKFDTFNGECPNFVFPLNSIIKTIQPRVEKKKLDGFMGRIRSVYPVASPNECNQMCLSTLMKCDHCGETSWQTGDFVKATCEFCGTENLTKEGATTCGYLPQNAVVKIYCPACHNSEVGPEHSLAEYHNESGLKTILRKGGRTIAFGGCVFSYVGCHNKCAYWVPRASANIGCNHTGVVGEGSEGLNDNLLEILQKEKVNINIVGDFKLNEEIAIILASFSASTSAFVETVKGLDYKAFKQIVESCGNFKVTKGKAKKGAWNIGEQKSILSPLYAFASEAARVVRSIFSRTLETAQNSVRVLQKAAITILDGISQYSLRLIDAMMFTSDLATNNLVVMAYITGGVVQLTSQWLTNIFGTVYEKLKPVLDWLEEKFKEGVEFLRDGWEIVKFISTCACEIVGGQIVTCAKEIKESVQTFFKLVNKFLALCADSIIIGGAKLKALNLGETFVTHSKGLYRKCVKSREETGLLMPLKAPKEIIFLEGETLPTEVLTEEVVLKTGDLQPLEQPTSEAVEAPLVGTPVCINGLMLLEIKDTEKYCALAPNMMVTNNTFTLKGGAPTKVTFGDDTVIEVQGYKSVNITFELDERIDKVLNEKCSAYTVELGTEVNEFACVVADAVIKTLQPVSELLTPLGIDLDEWSMATYYLFDESGEFKLASHMYCSFYPPDEDEEEGDCEEEEFEPSTQYEYGTEDDYQGKPLEFGATSAALQPEEEQEEDWLDDDSQQTVGQQDGSEDNQTTTIQTIVEVQPQLEMELTPVVQTIEVNSFSGYLKLTDNVYIKNADIVEEAKKVKPTVVVNAANVYLKHGGGVAGALNKATNNAMQVESDDYIATNGPLKVGGSCVLSGHNLAKHCLHVVGPNVNKGEDIQLLKSAYENFNQHEVLLAPLLSAGIFGADPIHSLRVCVDTVRTNVYLAVFDKNLYDKLVSSFLEMKSEKQVEQKIAEIPKEEVKPFITESKPSVEQRKQDDKKIKACVEEVTTTLEETKFLTENLLLYIDINGNLHPDSATLVSDIDITFLKKDAPYIVGDVVQEGVLTAVVIPTKKAGGTTEMLAKALRKVPTDNYITTYPGQGLNGYTVEEAKTVLKKCKSAFYILPSIISNEKQEILGTVSWNLREMLAHAEETRKLMPVCVETKAIVSTIQRKYKGIKIQEGVVDYGARFYFYTSKTTVASLINTLNDLNETLVTMPLGYVTHGLNLEEAARYMRSLKVPATVSVSSPDAVTAYNGYLTSSSKTPEEHFIETISLAGSYKDWSYSGQSTQLGIEFLKRGDKSVYYTSNPTTFHLDGEVITFDNLKTLLSLREVRTIKVFTTVDNINLHTQVVDMSMTYGQQFGPTYLDGADVTKIKPHNSHEGKTFYVLPNDDTLRVEAFEYYHTTDPSFLGRYMSALNHTKKWKYPQVNGLTSIKWADNNCYLATALLTLQQIELKFNPPALQDAYYRARAGEAANFCALILAYCNKTVGELGDVRETMSYLFQHANLDSCKRVLNVVCKTCGQQQTTLKGVEAVMYMGTLSYEQFKKGVQIPCTCGKQATKYLVQQESPFVMMSAPPAQYELKHGTFTCASEYTGNYQCGHYKHITSKETLYCIDGALLTKSSEYKGPITDVFYKENSYTTTIKPVTYKLDGVVCTEIDPKLDNYYKKDNSYFTEQPIDLVPNQPYPNASFDNFKFVCDNIKFADDLNQLTGYKKPASRELKVTFFPDLNGDVVAIDYKHYTPSFKKGAKLLHKPIVWHVNNATNKATYKPNTWCIRCLWSTKPVETSNSFDVLKSEDAQGMDNLACEDLKPVSEEVVENPTIQKDVLECNVKTTEVVGDIILKPANNSLKITEEVGHTDLMAAYVDNSSLTIKKPNELSRVLGLKTLATHGLAAVNSVPWDTIANYAKPFLNKVVSTTTNIVTRCLNRVCTNYMPYFFTLLLQLCTFTRSTNSRIKASMPTTIAKNTVKSVGKFCLEASFNYLKSPNFSKLINIIIWFLLLSVCLGSLIYSTAALGVLMSNLGMPSYCTGYREGYLNSTNVTIATYCTGSIPCSVCLSGLDSLDTYPSLETIQITISSFKWDLTAFGLVAEWFLAYILFTRFFYVLGLAAIMQLFFSYFAVHFISNSWLMWLIINLVQMAPISAMVRMYIFFASFYYVWKSYVHVVDGCNSSTCMMCYKRNRATRVECTTIVNGVRRSFYVYANGGKGFCKLHNWNCVNCDTFCAGSTFISDEVARDLSLQFKRPINPTDQSSYIVDSVTVKNGSIHLYFDKAGQKTYERHSLSHFVNLDNLRANNTKGSLPINVIVFDGKSKCEESSAKSASVYYSQLMCQPILLLDQALVSDVGDSAEVAVKMFDAYVNTFSSTFNVPMEKLKTLVATAEAELAKNVSLDNVLSTFISAARQGFVDSDVETKDVVECLKLSHQSDIEVTGDSCNNYMLTYNKVENMTPRDLGACIDCSARHINAQVAKSHNIALIWNVKDFMSLSEQLRKQIRSAAKKNNLPFKLTCATTRQVVNVVTTKIALKGGKIVNNWLKQLIKVTLVFLFVAAIFYLITPVHVMSKHTDFSSEIIGYKAIDGGVTRDIASTDTCFANKHADFDTWFSQRGGSYTNDKACPLIAAVITREVGFVVPGLPGTILRTTNGDFLHFLPRVFSAVGNICYTPSKLIEYTDFATSACVLAAECTIFKDASGKPVPYCYDTNVLEGSVAYESLRPDTRYVLMDGSIIQFPNTYLEGSVRVVTTFDSEYCRHGTCERSEAGVCVSTSGRWVLNNDYYRSLPGVFCGVDAVNLLTNMFTPLIQPIGALDISASIVAGGIVAIVVTCLAYYFMRFRRAFGEYSHVVAFNTLLFLMSFTVLCLTPVYSFLPGVYSVIYLYLTFYLTNDVSFLAHIQWMVMFTPLVPFWITIAYIICISTKHFYWFFSNYLKRRVVFNGVSFSTFEEAALCTFLLNKEMYLKLRSDVLLPLTQYNRYLALYNKYKYFSGAMDTTSYREAACCHLAKALNDFSNSGSDVLYQPPQTSITSAVLQSGFRKMAFPSGKVEGCMVQVTCGTTTLNGLWLDDVVYCPRHVICTSEDMLNPNYEDLLIRKSNHNFLVQAGNVQLRVIGHSMQNCVLKLKVDTANPKTPKYKFVRIQPGQTFSVLACYNGSPSGVYQCAMRPNFTIKGSFLNGSCGSVGFNIDYDCVSFCYMHHMELPTGVHAGTDLEGNFYGPFVDRQTAQAAGTDTTITVNVLAWLYAAVINGDRWFLNRFTTTLNDFNLVAMKYNYEPLTQDHVDILGPLSAQTGIAVLDMCASLKELLQNGMNGRTILGSALLEDEFTPFDVVRQCSGVTFQSAVKRTIKGTHHWLLLTILTSLLVLVQSTQWSLFFFLYENAFLPFAMGIIAMSAFAMMFVKHKHAFLCLFLLPSLATVAYFNMVYMPASWVMRIMTWLDMVDTSLSGFKLKDCVMYASAVVLLILMTARTVYDDGARRVWTLMNVLTLVYKVYYGNALDQAISMWALIISVTSNYSGVVTTVMFLARGIVFMCVEYCPIFFITGNTLQCIMLVYCFLGYFCTCYFGLFCLLNRYFRLTLGVYDYLVSTQEFRYMNSQGLLPPKNSIDAFKLNIKLLGVGGKPCIKVATVQSKMSDVKCTSVVLLSVLQQLRVESSSKLWAQCVQLHNDILLAKDTTEAFEKMVSLLSVLLSMQGAVDINKLCEEMLDNRATLQAIASEFSSLPSYAAFATAQEAYEQAVANGDSEVVLKKLKKSLNVAKSEFDRDAAMQRKLEKMADQAMTQMYKQARSEDKRAKVTSAMQTMLFTMLRKLDNDALNNIINNARDGCVPLNIIPLTTAAKLMVVIPDYNTYKNTCDGTTFTYASALWEIQQVVDADSKIVQLSEISMDNSPNLAWPLIVTALRANSAVKLQNNELSPVALRQMSCAAGTTQTACTDDNALAYYNTTKGGRFVLALLSDLQDLKWARFPKSDGTGTIYTELEPPCRFVTDTPKGPKVKYLYFIKGLNNLNRGMVLGSLAATVRLQAGNATEVPANSTVLSFCAFAVDAAKAYKDYLASGGQPITNCVKMLCTHTGTGQAITVTPEANMDQESFGGASCCLYCRCHIDHPNPKGFCDLKGKYVQIPTTCANDPVGFTLKNTVCTVCGMWKGYGCSCDQLREPMLQSADAQSFLNRVCGVSAARLTPCGTGTSTDVVYRAFDIYNDKVAGFAKFLKTNCCRFQEKDEDDNLIDSYFVVKRHTFSNYQHEETIYNLLKDCPAVAKHDFFKFRIDGDMVPHISRQRLTKYTMADLVYALRHFDEGNCDTLKEILVTYNCCDDDYFNKKDWYDFVENPDILRVYANLGERVRQALLKTVQFCDAMRNAGIVGVLTLDNQDLNGNWYDFGDFIQTTPGSGVPVVDSYYSLLMPILTLTRALTAESHVDTDLTKPYIKWDLLKYDFTEERLKLFDRYFKYWDQTYHPNCVNCLDDRCILHCANFNVLFSTVFPPTSFGPLVRKIFVDGVPFVVSTGYHFRELGVVHNQDVNLHSSRLSFKELLVYAADPAMHAASGNLLLDKRTTCFSVAALTNNVAFQTVKPGNFNKDFYDFAVSKGFFKEGSSVELKHFFFAQDGNAAISDYDYYRYNLPTMCDIRQLLFVVEVVDKYFDCYDGGCINANQVIVNNLDKSAGFPFNKWGKARLYYDSMSYEDQDALFAYTKRNVIPTITQMNLKYAISAKNRARTVAGVSICSTMTNRQFHQKLLKSIAATRGATVVIGTSKFYGGWHNMLKTVYSDVENPHLMGWDYPKCDRAMPNMLRIMASLVLARKHTTCCSLSHRFYRLANECAQVLSEMVMCGGSLYVKPGGTSSGDATTAYANSVFNICQAVTANVNALLSTDGNKIADKYVRNLQHRLYECLYRNRDVDTDFVNEFYAYLRKHFSMMILSDDAVVCFNSTYASQGLVASIKNFKSVLYYQNNVFMSEAKCWTETDLTKGPHEFCSQHTMLVKQGDDYVYLPYPDPSRILGAGCFVDDIVKTDGTLMIERFVSLAIDAYPLTKHPNQEYADVFHLYLQYIRKLHDELTGHMLDMYSVMLTNDNTSRYWEPEFYEAMYTPHTVLQAVGACVLCNSQTSLRCGACIRRPFLCCKCCYDHVISTSHKLVLSVNPYVCNAPGCDVTDVTQLYLGGMSYYCKSHKPPISFPLCANGQVFGLYKNTCVGSDNVTDFNAIATCDWTNAGDYILANTCTERLKLFAAETLKATEETFKLSYGIATVREVLSDRELHLSWEVGKPRPPLNRNYVFTGYRVTKNSKVQIGEYTFEKGDYGDAVVYRGTTTYKLNVGDYFVLTSHTVMPLSAPTLVPQEHYVRITGLYPTLNISDEFSSNVANYQKVGMQKYSTLQGPPGTGKSHFAIGLALYYPSARIVYTACSHAAVDALCEKALKYLPIDKCSRIIPARARVECFDKFKVNSTLEQYVFCTVNALPETTADIVVFDEISMATNYDLSVVNARLRAKHYVYIGDPAQLPAPRTLLTKGTLEPEYFNSVCRLMKTIGPDMFLGTCRRCPAEIVDTVSALVYDNKLKAHKDKSAQCFKMFYKGVITHDVSSAINRPQIGVVREFLTRNPAWRKAVFISPYNSQNAVASKILGLPTQTVDSSQGSEYDYVIFTQTTETAHSCNVNRFNVAITRAKVGILCIMSDRDLYDKLQFTSLEIPRRNVATLQAENVTGLFKDCSKVITGLHPTQAPTHLSVDTKFKTEGLCVDIPGIPKDMTYRRLISMMGFKMNYQVNGYPNMFITREEAIRHVRAWIGFDVEGCHATREAVGTNLPLQLGFSTGVNLVAVPTGYVDTPNNTDFSRVSAKPPPGDQFKHLIPLMYKGLPWNVVRIKIVQMLSDTLKNLSDRVVFVLWAHGFELTSMKYFVKIGPERTCCLCDRRATCFSTASDTYACWHHSIGFDYVYNPFMIDVQQWGFTGNLQSNHDLYCQVHGNAHVASCDAIMTRCLAVHECFVKRVDWTIEYPIIGDELKINAACRKVQHMVVKAALLADKFPVLHDIGNPKAIKCVPQADVEWKFYDAQPCSDKAYKIEELFYSYATHSDKFTDGVCLFWNCNVDRYPANSIVCRFDTRVLSNLNLPGCDGGSLYVNKHAFHTPAFDKSAFVNLKQLPFFYYSDSPCESHGKQVVSDIDYVPLKSATCITRCNLGGAVCRHHANEYRLYLDAYNMMISAGFSLWVYKQFDTYNLWNTFTRLQSLENVAFNVVNKGHFDGQQGEVPVSIINNTVYTKVDGVDVELFENKTTLPVNVAFELWAKRNIKPVPEVKILNNLGVDIAANTVIWDYKRDAPAHISTIGVCSMTDIAKKPTETICAPLTVFFDGRVDGQVDLFRNARNGVLITEGSVKGLQPSVGPKQASLNGVTLIGEAVKTQFNYYKKVDGVVQQLPETYFTQSRNLQEFKPRSQMEIDFLELAMDEFIERYKLEGYAFEHIVYGDFSHSQLGGLHLLIGLAKRFKESPFELEDFIPMDSTVKNYFITDAQTGSSKCVCSVIDLLLDDFVEIIKSQDLSVVSKVVKVTIDYTEISFMLWCKDGHVETFYPKLQSSQAWQPGVAMPNLYKMQRMLLEKCDLQNYGDSATLPKGIMMNVAKYTQLCQYLNTLTLAVPYNMRVIHFGAGSDKGVAPGTAVLRQWLPTGTLLVDSDLNDFVSDADSTLIGDCATVHTANKWDLIISDMYDPKTKNVTKENDSKEGFFTYICGFIQQKLALGGSVAIKITEHSWNADLYKLMGHFAWWTAFVTNVNASSSEAFLIGCNYLGKPREQIDGYVMHANYIFWRNTNPIQLSSYSLFDMSKFPLKLRGTAVMSLKEGQINDMILSLLSKGRLIIRENNRVVISSDVLVNN"
+                    ]
+                },
+                "locations": [
+                    [
+                        266,
+                        13468,
+                        1
+                    ],
+                    [
+                        13468,
+                        21555,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-1",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "leader protein",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "leader protein"
+                    ],
+                    "note": [
+                        "nsp1; produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725297.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        266,
+                        805,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-2",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp2",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp2"
+                    ],
+                    "note": [
+                        "produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725298.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        806,
+                        2719,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-3",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp3",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp3"
+                    ],
+                    "note": [
+                        "former nsp1; conserved domains are: N-terminal acidic (Ac), predicted phosphoesterase, papain-like proteinase, Y-domain, transmembrane domain 1 (TM1), adenosine diphosphate-ribose 1''-phosphatase (ADRP); produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725299.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        2720,
+                        8554,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-4",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp4",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp4"
+                    ],
+                    "note": [
+                        "nsp4B_TM; contains transmembrane domain 2 (TM2); produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725300.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        8555,
+                        10054,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-5",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "3C-like proteinase",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "3C-like proteinase"
+                    ],
+                    "note": [
+                        "nsp5A_3CLpro and nsp5B_3CLpro; main proteinase (Mpro); mediates cleavages downstream of nsp4. 3D structure of the SARSr-CoV homolog has been determined (Yang et al., 2003); produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725301.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        10055,
+                        10972,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-6",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp6",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp6"
+                    ],
+                    "note": [
+                        "nsp6_TM; putative transmembrane domain; produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725302.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        10973,
+                        11842,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-7",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp7",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp7"
+                    ],
+                    "note": [
+                        "produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725303.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        11843,
+                        12091,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-8",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp8",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp8"
+                    ],
+                    "note": [
+                        "produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725304.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        12092,
+                        12685,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-9",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp9",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp9"
+                    ],
+                    "note": [
+                        "ssRNA-binding protein; produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725305.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        12686,
+                        13024,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-10",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp10",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp10"
+                    ],
+                    "note": [
+                        "nsp10_CysHis; formerly known as growth-factor-like protein (GFL); produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009725306.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        13025,
+                        13441,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-11",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "RNA-dependent RNA polymerase",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "RNA-dependent RNA polymerase"
+                    ],
+                    "note": [
+                        "nsp12; NiRAN and RdRp; produced by pp1ab only"
+                    ],
+                    "protein_id": [
+                        "YP_009725307.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        13442,
+                        13468,
+                        1
+                    ],
+                    [
+                        13468,
+                        16236,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-12",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "helicase",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "helicase"
+                    ],
+                    "note": [
+                        "nsp13_ZBD, nsp13_TB, and nsp_HEL1core; zinc-binding domain (ZD), NTPase/helicase domain (HEL), RNA 5'-triphosphatase; produced by pp1ab only"
+                    ],
+                    "protein_id": [
+                        "YP_009725308.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        16237,
+                        18039,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-13",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "3'-to-5' exonuclease",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "3'-to-5' exonuclease"
+                    ],
+                    "note": [
+                        "nsp14A2_ExoN and nsp14B_NMT; produced by pp1ab only"
+                    ],
+                    "protein_id": [
+                        "YP_009725309.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        18040,
+                        19620,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-14",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "endoRNAse",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "endoRNAse"
+                    ],
+                    "note": [
+                        "nsp15-A1 and nsp15B-NendoU; produced by pp1ab only"
+                    ],
+                    "protein_id": [
+                        "YP_009725310.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        19621,
+                        20658,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-15",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "2'-O-ribose methyltransferase",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "2'-O-ribose methyltransferase"
+                    ],
+                    "note": [
+                        "nsp16_OMT; 2'-o-MT; produced by pp1ab only"
+                    ],
+                    "protein_id": [
+                        "YP_009725311.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        20659,
+                        21552,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009725295.1",
+                "type": "CDS",
+                "gene": "ORF1ab",
+                "product": "ORF1a polyprotein",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "note": [
+                        "pp1a"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "ORF1a polyprotein"
+                    ],
+                    "protein_id": [
+                        "YP_009725295.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740578"
+                    ],
+                    "translation": [
+                        "MESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQYGRSGETLGVLVPHVGEIPVAYRKVLLRKNGNKGAGGHSYGADLKSFDLGDELGTDPYEDFQENWNTKHSSGVTRELMRELNGGAYTRYVDNNFCGPDGYPLECIKDLLARAGKASCTLSEQLDFIDTKRGVYCCREHEHEIAWYTERSEKSYELQTPFEIKLAKKFDTFNGECPNFVFPLNSIIKTIQPRVEKKKLDGFMGRIRSVYPVASPNECNQMCLSTLMKCDHCGETSWQTGDFVKATCEFCGTENLTKEGATTCGYLPQNAVVKIYCPACHNSEVGPEHSLAEYHNESGLKTILRKGGRTIAFGGCVFSYVGCHNKCAYWVPRASANIGCNHTGVVGEGSEGLNDNLLEILQKEKVNINIVGDFKLNEEIAIILASFSASTSAFVETVKGLDYKAFKQIVESCGNFKVTKGKAKKGAWNIGEQKSILSPLYAFASEAARVVRSIFSRTLETAQNSVRVLQKAAITILDGISQYSLRLIDAMMFTSDLATNNLVVMAYITGGVVQLTSQWLTNIFGTVYEKLKPVLDWLEEKFKEGVEFLRDGWEIVKFISTCACEIVGGQIVTCAKEIKESVQTFFKLVNKFLALCADSIIIGGAKLKALNLGETFVTHSKGLYRKCVKSREETGLLMPLKAPKEIIFLEGETLPTEVLTEEVVLKTGDLQPLEQPTSEAVEAPLVGTPVCINGLMLLEIKDTEKYCALAPNMMVTNNTFTLKGGAPTKVTFGDDTVIEVQGYKSVNITFELDERIDKVLNEKCSAYTVELGTEVNEFACVVADAVIKTLQPVSELLTPLGIDLDEWSMATYYLFDESGEFKLASHMYCSFYPPDEDEEEGDCEEEEFEPSTQYEYGTEDDYQGKPLEFGATSAALQPEEEQEEDWLDDDSQQTVGQQDGSEDNQTTTIQTIVEVQPQLEMELTPVVQTIEVNSFSGYLKLTDNVYIKNADIVEEAKKVKPTVVVNAANVYLKHGGGVAGALNKATNNAMQVESDDYIATNGPLKVGGSCVLSGHNLAKHCLHVVGPNVNKGEDIQLLKSAYENFNQHEVLLAPLLSAGIFGADPIHSLRVCVDTVRTNVYLAVFDKNLYDKLVSSFLEMKSEKQVEQKIAEIPKEEVKPFITESKPSVEQRKQDDKKIKACVEEVTTTLEETKFLTENLLLYIDINGNLHPDSATLVSDIDITFLKKDAPYIVGDVVQEGVLTAVVIPTKKAGGTTEMLAKALRKVPTDNYITTYPGQGLNGYTVEEAKTVLKKCKSAFYILPSIISNEKQEILGTVSWNLREMLAHAEETRKLMPVCVETKAIVSTIQRKYKGIKIQEGVVDYGARFYFYTSKTTVASLINTLNDLNETLVTMPLGYVTHGLNLEEAARYMRSLKVPATVSVSSPDAVTAYNGYLTSSSKTPEEHFIETISLAGSYKDWSYSGQSTQLGIEFLKRGDKSVYYTSNPTTFHLDGEVITFDNLKTLLSLREVRTIKVFTTVDNINLHTQVVDMSMTYGQQFGPTYLDGADVTKIKPHNSHEGKTFYVLPNDDTLRVEAFEYYHTTDPSFLGRYMSALNHTKKWKYPQVNGLTSIKWADNNCYLATALLTLQQIELKFNPPALQDAYYRARAGEAANFCALILAYCNKTVGELGDVRETMSYLFQHANLDSCKRVLNVVCKTCGQQQTTLKGVEAVMYMGTLSYEQFKKGVQIPCTCGKQATKYLVQQESPFVMMSAPPAQYELKHGTFTCASEYTGNYQCGHYKHITSKETLYCIDGALLTKSSEYKGPITDVFYKENSYTTTIKPVTYKLDGVVCTEIDPKLDNYYKKDNSYFTEQPIDLVPNQPYPNASFDNFKFVCDNIKFADDLNQLTGYKKPASRELKVTFFPDLNGDVVAIDYKHYTPSFKKGAKLLHKPIVWHVNNATNKATYKPNTWCIRCLWSTKPVETSNSFDVLKSEDAQGMDNLACEDLKPVSEEVVENPTIQKDVLECNVKTTEVVGDIILKPANNSLKITEEVGHTDLMAAYVDNSSLTIKKPNELSRVLGLKTLATHGLAAVNSVPWDTIANYAKPFLNKVVSTTTNIVTRCLNRVCTNYMPYFFTLLLQLCTFTRSTNSRIKASMPTTIAKNTVKSVGKFCLEASFNYLKSPNFSKLINIIIWFLLLSVCLGSLIYSTAALGVLMSNLGMPSYCTGYREGYLNSTNVTIATYCTGSIPCSVCLSGLDSLDTYPSLETIQITISSFKWDLTAFGLVAEWFLAYILFTRFFYVLGLAAIMQLFFSYFAVHFISNSWLMWLIINLVQMAPISAMVRMYIFFASFYYVWKSYVHVVDGCNSSTCMMCYKRNRATRVECTTIVNGVRRSFYVYANGGKGFCKLHNWNCVNCDTFCAGSTFISDEVARDLSLQFKRPINPTDQSSYIVDSVTVKNGSIHLYFDKAGQKTYERHSLSHFVNLDNLRANNTKGSLPINVIVFDGKSKCEESSAKSASVYYSQLMCQPILLLDQALVSDVGDSAEVAVKMFDAYVNTFSSTFNVPMEKLKTLVATAEAELAKNVSLDNVLSTFISAARQGFVDSDVETKDVVECLKLSHQSDIEVTGDSCNNYMLTYNKVENMTPRDLGACIDCSARHINAQVAKSHNIALIWNVKDFMSLSEQLRKQIRSAAKKNNLPFKLTCATTRQVVNVVTTKIALKGGKIVNNWLKQLIKVTLVFLFVAAIFYLITPVHVMSKHTDFSSEIIGYKAIDGGVTRDIASTDTCFANKHADFDTWFSQRGGSYTNDKACPLIAAVITREVGFVVPGLPGTILRTTNGDFLHFLPRVFSAVGNICYTPSKLIEYTDFATSACVLAAECTIFKDASGKPVPYCYDTNVLEGSVAYESLRPDTRYVLMDGSIIQFPNTYLEGSVRVVTTFDSEYCRHGTCERSEAGVCVSTSGRWVLNNDYYRSLPGVFCGVDAVNLLTNMFTPLIQPIGALDISASIVAGGIVAIVVTCLAYYFMRFRRAFGEYSHVVAFNTLLFLMSFTVLCLTPVYSFLPGVYSVIYLYLTFYLTNDVSFLAHIQWMVMFTPLVPFWITIAYIICISTKHFYWFFSNYLKRRVVFNGVSFSTFEEAALCTFLLNKEMYLKLRSDVLLPLTQYNRYLALYNKYKYFSGAMDTTSYREAACCHLAKALNDFSNSGSDVLYQPPQTSITSAVLQSGFRKMAFPSGKVEGCMVQVTCGTTTLNGLWLDDVVYCPRHVICTSEDMLNPNYEDLLIRKSNHNFLVQAGNVQLRVIGHSMQNCVLKLKVDTANPKTPKYKFVRIQPGQTFSVLACYNGSPSGVYQCAMRPNFTIKGSFLNGSCGSVGFNIDYDCVSFCYMHHMELPTGVHAGTDLEGNFYGPFVDRQTAQAAGTDTTITVNVLAWLYAAVINGDRWFLNRFTTTLNDFNLVAMKYNYEPLTQDHVDILGPLSAQTGIAVLDMCASLKELLQNGMNGRTILGSALLEDEFTPFDVVRQCSGVTFQSAVKRTIKGTHHWLLLTILTSLLVLVQSTQWSLFFFLYENAFLPFAMGIIAMSAFAMMFVKHKHAFLCLFLLPSLATVAYFNMVYMPASWVMRIMTWLDMVDTSLSGFKLKDCVMYASAVVLLILMTARTVYDDGARRVWTLMNVLTLVYKVYYGNALDQAISMWALIISVTSNYSGVVTTVMFLARGIVFMCVEYCPIFFITGNTLQCIMLVYCFLGYFCTCYFGLFCLLNRYFRLTLGVYDYLVSTQEFRYMNSQGLLPPKNSIDAFKLNIKLLGVGGKPCIKVATVQSKMSDVKCTSVVLLSVLQQLRVESSSKLWAQCVQLHNDILLAKDTTEAFEKMVSLLSVLLSMQGAVDINKLCEEMLDNRATLQAIASEFSSLPSYAAFATAQEAYEQAVANGDSEVVLKKLKKSLNVAKSEFDRDAAMQRKLEKMADQAMTQMYKQARSEDKRAKVTSAMQTMLFTMLRKLDNDALNNIINNARDGCVPLNIIPLTTAAKLMVVIPDYNTYKNTCDGTTFTYASALWEIQQVVDADSKIVQLSEISMDNSPNLAWPLIVTALRANSAVKLQNNELSPVALRQMSCAAGTTQTACTDDNALAYYNTTKGGRFVLALLSDLQDLKWARFPKSDGTGTIYTELEPPCRFVTDTPKGPKVKYLYFIKGLNNLNRGMVLGSLAATVRLQAGNATEVPANSTVLSFCAFAVDAAKAYKDYLASGGQPITNCVKMLCTHTGTGQAITVTPEANMDQESFGGASCCLYCRCHIDHPNPKGFCDLKGKYVQIPTTCANDPVGFTLKNTVCTVCGMWKGYGCSCDQLREPMLQSADAQSFLNGFAV"
+                    ]
+                },
+                "locations": [
+                    [
+                        266,
+                        13483,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-16",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "leader protein",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "leader protein"
+                    ],
+                    "note": [
+                        "nsp1; produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742608.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        266,
+                        805,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-17",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp2",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp2"
+                    ],
+                    "note": [
+                        "produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742609.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        806,
+                        2719,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-18",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp3",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp3"
+                    ],
+                    "note": [
+                        "former nsp1; conserved domains are: N-terminal acidic (Ac), predicted phosphoesterase, papain-like proteinase, Y-domain, transmembrane domain 1 (TM1), adenosine diphosphate-ribose 1''-phosphatase (ADRP); produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742610.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        2720,
+                        8554,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-19",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp4",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp4"
+                    ],
+                    "note": [
+                        "nsp4B_TM; contains transmembrane domain 2 (TM2); produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742611.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        8555,
+                        10054,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-20",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "3C-like proteinase",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "3C-like proteinase"
+                    ],
+                    "note": [
+                        "nsp5A_3CLpro and nsp5B_3CLpro; main proteinase (Mpro); mediates cleavages downstream of nsp4. 3D structure of the SARSr-CoV homolog has been determined (Yang et al., 2003); produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742612.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        10055,
+                        10972,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-21",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp6",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp6"
+                    ],
+                    "note": [
+                        "nsp6_TM; putative transmembrane domain; produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742613.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        10973,
+                        11842,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-22",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp7",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp7"
+                    ],
+                    "note": [
+                        "produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742614.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        11843,
+                        12091,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-23",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp8",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp8"
+                    ],
+                    "note": [
+                        "produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742615.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        12092,
+                        12685,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-24",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp9",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp9"
+                    ],
+                    "note": [
+                        "ssRNA-binding protein; produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742616.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        12686,
+                        13024,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-25",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp10",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp10"
+                    ],
+                    "note": [
+                        "nsp10_CysHis; formerly known as growth-factor-like protein (GFL); produced by both pp1a and pp1ab"
+                    ],
+                    "protein_id": [
+                        "YP_009742617.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        13025,
+                        13441,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "mature_protein_region-26",
+                "type": "mature_protein_region",
+                "gene": "ORF1ab",
+                "product": "nsp11",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "product": [
+                        "nsp11"
+                    ],
+                    "note": [
+                        "produced by pp1a only"
+                    ],
+                    "protein_id": [
+                        "YP_009725312.1"
+                    ]
+                },
+                "locations": [
+                    [
+                        13442,
+                        13480,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "stem_loop-1",
+                "type": "stem_loop",
+                "gene": "ORF1ab",
+                "product": "",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "inference": [
+                        "COORDINATES: profile:Rfam-release-14.1:RF00507,Infernal:1.1.2"
+                    ],
+                    "function": [
+                        "Coronavirus frameshifting stimulation element stem-loop 1"
+                    ]
+                },
+                "locations": [
+                    [
+                        13476,
+                        13503,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "stem_loop-2",
+                "type": "stem_loop",
+                "gene": "ORF1ab",
+                "product": "",
+                "locus": "GU280_gp01",
+                "annotations": {
+                    "gene": [
+                        "ORF1ab"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp01"
+                    ],
+                    "inference": [
+                        "COORDINATES: profile:Rfam-release-14.1:RF00507,Infernal:1.1.2"
+                    ],
+                    "function": [
+                        "Coronavirus frameshifting stimulation element stem-loop 2"
+                    ]
+                },
+                "locations": [
+                    [
+                        13488,
+                        13542,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "S",
+                "type": "gene",
+                "gene": "S",
+                "product": "",
+                "locus": "GU280_gp02",
+                "annotations": {
+                    "gene": [
+                        "S"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp02"
+                    ],
+                    "gene_synonym": [
+                        "spike glycoprotein"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740568"
+                    ]
+                },
+                "locations": [
+                    [
+                        21563,
+                        25384,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724390.1",
+                "type": "CDS",
+                "gene": "S",
+                "product": "surface glycoprotein",
+                "locus": "GU280_gp02",
+                "annotations": {
+                    "gene": [
+                        "S"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp02"
+                    ],
+                    "gene_synonym": [
+                        "spike glycoprotein"
+                    ],
+                    "note": [
+                        "structural protein; spike protein"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "surface glycoprotein"
+                    ],
+                    "protein_id": [
+                        "YP_009724390.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740568"
+                    ],
+                    "translation": [
+                        "MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFDNPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVYSSANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGYFKIYSKHTPINLVRDLPQGFSALEPLVDLPIGINITRFQTLLALHRSYLTPGDSSSGWTAGAAAYYVGYLQPRTFLLKYNENGTITDAVDCALDPLSETKCTLKSFTVEKGIYQTSNFRVQPTESIVRFPNITNLCPFGEVFNATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSFVIRGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPCNGVEGFNCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNFNFNGLTGTGVLTESNKKFLPFQQFGRDIADTTDAVRDPQTLEILDITPCSFGGVSVITPGTNTSNQVAVLYQDVNCTEVPVAIHADQLTPTWRVYSTGSNVFQTRAGCLIGAEHVNNSYECDIPIGAGICASYQTQTNSPRRARSVASQSIIAYTMSLGAENSVAYSNNSIAIPTNFTISVTTEILPVSMTKTSVDCTMYICGDSTECSNLLLQYGSFCTQLNRALTGIAVEQDKNTQEVFAQVKQIYKTPPIKDFGGFNFSQILPDPSKPSKRSFIEDLLFNKVTLADAGFIKQYGDCLGDIAARDLICAQKFNGLTVLPPLLTDEMIAQYTSALLAGTITSGWTFGAGAALQIPFAMQMAYRFNGIGVTQNVLYENQKLIANQFNSAIGKIQDSLSSTASALGKLQDVVNQNAQALNTLVKQLSSNFGAISSVLNDILSRLDKVEAEVQIDRLITGRLQSLQTYVTQQLIRAAEIRASANLAATKMSECVLGQSKRVDFCGKGYHLMSFPQSAPHGVVFLHVTYVPAQEKNFTTAPAICHDGKAHFPREGVFVSNGTHWFVTQRNFYEPQIITTDNTFVSGNCDVVIGIVNNTVYDPLQPELDSFKEELDKYFKNHTSPDVDLGDISGINASVVNIQKEIDRLNEVAKNLNESLIDLQELGKYEQYIKWPWYIWLGFIAGLIAIVMVTIMLCCMTSCCSCLKGCCSCGSCCKFDEDDSEPVLKGVKLHYT"
+                    ]
+                },
+                "locations": [
+                    [
+                        21563,
+                        25384,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "ORF3a",
+                "type": "gene",
+                "gene": "ORF3a",
+                "product": "",
+                "locus": "GU280_gp03",
+                "annotations": {
+                    "gene": [
+                        "ORF3a"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp03"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740569"
+                    ]
+                },
+                "locations": [
+                    [
+                        25393,
+                        26220,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724391.1",
+                "type": "CDS",
+                "gene": "ORF3a",
+                "product": "ORF3a protein",
+                "locus": "GU280_gp03",
+                "annotations": {
+                    "gene": [
+                        "ORF3a"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp03"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "ORF3a protein"
+                    ],
+                    "protein_id": [
+                        "YP_009724391.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740569"
+                    ],
+                    "translation": [
+                        "MDLFMRIFTIGTVTLKQGEIKDATPSDFVRATATIPIQASLPFGWLIVGVALLAVFQSASKIITLKKRWQLALSKGVHFVCNLLLLFVTVYSHLLLVAAGLEAPFLYLYALVYFLQSINFVRIIMRLWLCWKCRSKNPLLYDANYFLCWHTNCYDYCIPYNSVTSSIVITSGDGTTSPISEHDYQIGGYTEKWESGVKDCVVLHSYFTSDYYQLYSTQLSTDTGVEHVTFFIYNKIVDEPEEHVQIHTIDGSSGVVNPVMEPIYDEPTTTTSVPL"
+                    ]
+                },
+                "locations": [
+                    [
+                        25393,
+                        26220,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "E",
+                "type": "gene",
+                "gene": "E",
+                "product": "",
+                "locus": "GU280_gp04",
+                "annotations": {
+                    "gene": [
+                        "E"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp04"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740570"
+                    ]
+                },
+                "locations": [
+                    [
+                        26245,
+                        26472,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724392.1",
+                "type": "CDS",
+                "gene": "E",
+                "product": "envelope protein",
+                "locus": "GU280_gp04",
+                "annotations": {
+                    "gene": [
+                        "E"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp04"
+                    ],
+                    "note": [
+                        "ORF4; structural protein; E protein"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "envelope protein"
+                    ],
+                    "protein_id": [
+                        "YP_009724392.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740570"
+                    ],
+                    "translation": [
+                        "MYSFVSEETGTLIVNSVLLFLAFVVFLLVTLAILTALRLCAYCCNIVNVSLVKPSFYVYSRVKNLNSSRVPDLLV"
+                    ]
+                },
+                "locations": [
+                    [
+                        26245,
+                        26472,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "M",
+                "type": "gene",
+                "gene": "M",
+                "product": "",
+                "locus": "GU280_gp05",
+                "annotations": {
+                    "gene": [
+                        "M"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp05"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740571"
+                    ]
+                },
+                "locations": [
+                    [
+                        26523,
+                        27191,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724393.1",
+                "type": "CDS",
+                "gene": "M",
+                "product": "membrane glycoprotein",
+                "locus": "GU280_gp05",
+                "annotations": {
+                    "gene": [
+                        "M"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp05"
+                    ],
+                    "note": [
+                        "ORF5; structural protein"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "membrane glycoprotein"
+                    ],
+                    "protein_id": [
+                        "YP_009724393.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740571"
+                    ],
+                    "translation": [
+                        "MADSNGTITVEELKKLLEQWNLVIGFLFLTWICLLQFAYANRNRFLYIIKLIFLWLLWPVTLACFVLAAVYRINWITGGIAIAMACLVGLMWLSYFIASFRLFARTRSMWSFNPETNILLNVPLHGTILTRPLLESELVIGAVILRGHLRIAGHHLGRCDIKDLPKEITVATSRTLSYYKLGASQRVAGDSGFAAYSRYRIGNYKLNTDHSSSSDNIALLVQ"
+                    ]
+                },
+                "locations": [
+                    [
+                        26523,
+                        27191,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "ORF6",
+                "type": "gene",
+                "gene": "ORF6",
+                "product": "",
+                "locus": "GU280_gp06",
+                "annotations": {
+                    "gene": [
+                        "ORF6"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp06"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740572"
+                    ]
+                },
+                "locations": [
+                    [
+                        27202,
+                        27387,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724394.1",
+                "type": "CDS",
+                "gene": "ORF6",
+                "product": "ORF6 protein",
+                "locus": "GU280_gp06",
+                "annotations": {
+                    "gene": [
+                        "ORF6"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp06"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "ORF6 protein"
+                    ],
+                    "protein_id": [
+                        "YP_009724394.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740572"
+                    ],
+                    "translation": [
+                        "MFHLVDFQVTIAEILLIIMRTFKVSIWNLDYIINLIIKNLSKSLTENKYSQLDEEQPMEID"
+                    ]
+                },
+                "locations": [
+                    [
+                        27202,
+                        27387,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "ORF7a",
+                "type": "gene",
+                "gene": "ORF7a",
+                "product": "",
+                "locus": "GU280_gp07",
+                "annotations": {
+                    "gene": [
+                        "ORF7a"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp07"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740573"
+                    ]
+                },
+                "locations": [
+                    [
+                        27394,
+                        27759,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724395.1",
+                "type": "CDS",
+                "gene": "ORF7a",
+                "product": "ORF7a protein",
+                "locus": "GU280_gp07",
+                "annotations": {
+                    "gene": [
+                        "ORF7a"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp07"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "ORF7a protein"
+                    ],
+                    "protein_id": [
+                        "YP_009724395.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740573"
+                    ],
+                    "translation": [
+                        "MKIILFLALITLATCELYHYQECVRGTTVLLKEPCSSGTYEGNSPFHPLADNKFALTCFSTQFAFACPDGVKHVYQLRARSVSPKLFIRQEEVQELYSPIFLIVAAIVFITLCFTLKRKTE"
+                    ]
+                },
+                "locations": [
+                    [
+                        27394,
+                        27759,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "ORF7b",
+                "type": "gene",
+                "gene": "ORF7b",
+                "product": "",
+                "locus": "GU280_gp08",
+                "annotations": {
+                    "gene": [
+                        "ORF7b"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp08"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740574"
+                    ]
+                },
+                "locations": [
+                    [
+                        27756,
+                        27887,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009725318.1",
+                "type": "CDS",
+                "gene": "ORF7b",
+                "product": "ORF7b",
+                "locus": "GU280_gp08",
+                "annotations": {
+                    "gene": [
+                        "ORF7b"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp08"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "ORF7b"
+                    ],
+                    "protein_id": [
+                        "YP_009725318.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740574"
+                    ],
+                    "translation": [
+                        "MIELSLIDFYLCFLAFLLFLVLIMLIIFWFSLELQDHNETCHA"
+                    ]
+                },
+                "locations": [
+                    [
+                        27756,
+                        27887,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "ORF8",
+                "type": "gene",
+                "gene": "ORF8",
+                "product": "",
+                "locus": "GU280_gp09",
+                "annotations": {
+                    "gene": [
+                        "ORF8"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp09"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740577"
+                    ]
+                },
+                "locations": [
+                    [
+                        27894,
+                        28259,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724396.1",
+                "type": "CDS",
+                "gene": "ORF8",
+                "product": "ORF8 protein",
+                "locus": "GU280_gp09",
+                "annotations": {
+                    "gene": [
+                        "ORF8"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp09"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "ORF8 protein"
+                    ],
+                    "protein_id": [
+                        "YP_009724396.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740577"
+                    ],
+                    "translation": [
+                        "MKFLVFLGIITTVAAFHQECSLQSCTQHQPYVVDDPCPIHFYSKWYIRVGARKSAPLIELCVDEAGSKSPIQYIDIGNYTVSCLPFTINCQEPKLGSLVVRCSFYEDFLEYHDVRVVLDFI"
+                    ]
+                },
+                "locations": [
+                    [
+                        27894,
+                        28259,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "N",
+                "type": "gene",
+                "gene": "N",
+                "product": "",
+                "locus": "GU280_gp10",
+                "annotations": {
+                    "gene": [
+                        "N"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp10"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740575"
+                    ]
+                },
+                "locations": [
+                    [
+                        28274,
+                        29533,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009724397.2",
+                "type": "CDS",
+                "gene": "N",
+                "product": "nucleocapsid phosphoprotein",
+                "locus": "GU280_gp10",
+                "annotations": {
+                    "gene": [
+                        "N"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp10"
+                    ],
+                    "note": [
+                        "ORF9; structural protein"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "nucleocapsid phosphoprotein"
+                    ],
+                    "protein_id": [
+                        "YP_009724397.2"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740575"
+                    ],
+                    "translation": [
+                        "MSDNGPQNQRNAPRITFGGPSDSTGSNQNGERSGARSKQRRPQGLPNNTASWFTALTQHGKEDLKFPRGQGVPINTNSSPDDQIGYYRRATRRIRGGDGKMKDLSPRWYFYYLGTGPEAGLPYGANKDGIIWVATEGALNTPKDHIGTRNPANNAAIVLQLPQGTTLPKGFYAEGSRGGSQASSRSSSRSRNSSRNSTPGSSRGTSPARMAGNGGDAALALLLLDRLNQLESKMSGKGQQQQGQTVTKKSAAEASKKPRQKRTATKAYNVTQAFGRRGPEQTQGNFGDQELIRQGTDYKHWPQIAQFAPSASAFFGMSRIGMEVTPSGTWLTYTGAIKLDDKDPNFKDQVILLNKHIDAYKTFPPTEPKKDKKKKADETQALPQRQKKQQTVTLLPAADLDDFSKQLQQSMSSADSTQA"
+                    ]
+                },
+                "locations": [
+                    [
+                        28274,
+                        29533,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "ORF10",
+                "type": "gene",
+                "gene": "ORF10",
+                "product": "",
+                "locus": "GU280_gp11",
+                "annotations": {
+                    "gene": [
+                        "ORF10"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp11"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740576"
+                    ]
+                },
+                "locations": [
+                    [
+                        29558,
+                        29674,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "YP_009725255.1",
+                "type": "CDS",
+                "gene": "ORF10",
+                "product": "ORF10 protein",
+                "locus": "GU280_gp11",
+                "annotations": {
+                    "gene": [
+                        "ORF10"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp11"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "ORF10 protein"
+                    ],
+                    "protein_id": [
+                        "YP_009725255.1"
+                    ],
+                    "db_xref": [
+                        "GeneID:43740576"
+                    ],
+                    "translation": [
+                        "MGYINVFAFPFTIYSLLLCRMNSRNYIAQVDVVNFNLT"
+                    ]
+                },
+                "locations": [
+                    [
+                        29558,
+                        29674,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "stem_loop-3",
+                "type": "stem_loop",
+                "gene": "ORF10",
+                "product": "",
+                "locus": "GU280_gp11",
+                "annotations": {
+                    "gene": [
+                        "ORF10"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp11"
+                    ],
+                    "inference": [
+                        "COORDINATES: profile::Rfam-release-14.1:RF00165,Infernal:1.1.2"
+                    ],
+                    "function": [
+                        "Coronavirus 3' UTR pseudoknot stem-loop 1"
+                    ]
+                },
+                "locations": [
+                    [
+                        29609,
+                        29644,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "stem_loop-4",
+                "type": "stem_loop",
+                "gene": "ORF10",
+                "product": "",
+                "locus": "GU280_gp11",
+                "annotations": {
+                    "gene": [
+                        "ORF10"
+                    ],
+                    "locus_tag": [
+                        "GU280_gp11"
+                    ],
+                    "inference": [
+                        "COORDINATES: profile::Rfam-release-14.1:RF00165,Infernal:1.1.2"
+                    ],
+                    "function": [
+                        "Coronavirus 3' UTR pseudoknot stem-loop 2"
+                    ]
+                },
+                "locations": [
+                    [
+                        29629,
+                        29657,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "three_prime_UTR-1",
+                "type": "three_prime_UTR",
+                "gene": "",
+                "product": "",
+                "locus": "",
+                "annotations": {},
+                "locations": [
+                    [
+                        29675,
+                        29903,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "stem_loop-5",
+                "type": "stem_loop",
+                "gene": "",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "inference": [
+                        "COORDINATES: profile:Rfam-release-14.1:RF00164,Infernal:1.1.2"
+                    ],
+                    "note": [
+                        "basepair exception: alignment to the Rfam model implies coordinates 29740:29758 form a noncanonical C:T basepair, but the homologous positions form a highly conserved C:G basepair in other viruses, including SARS (NC_004718.3)"
+                    ],
+                    "function": [
+                        "Coronavirus 3' stem-loop II-like motif (s2m)"
+                    ]
+                },
+                "locations": [
+                    [
+                        29728,
+                        29768,
+                        1
+                    ]
+                ]
+            }
+        ],
+        "source": "ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCGTCTATCTTCTGCAGGCTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTTCGTCCGGGTGTGACCGAAAGGTAAGATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTTTTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGTCTTATCAGAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGCGTTTTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCGGATGCTCGAACTGCACCTCATGGTCATGTTATGGTTGAGCTGGTAGCAGAACTCGAAGGCATTCAGTACGGTCGTAGTGGTGAGACACTTGGTGTCCTTGTCCCTCATGTGGGCGAAATACCAGTGGCTTACCGCAAGGTTCTTCTTCGTAAGAACGGTAATAAAGGAGCTGGTGGCCATAGTTACGGCGCCGATCTAAAGTCATTTGACTTAGGCGACGAGCTTGGCACTGATCCTTATGAAGATTTTCAAGAAAACTGGAACACTAAACATAGCAGTGGTGTTACCCGTGAACTCATGCGTGAGCTTAACGGAGGGGCATACACTCGCTATGTCGATAACAACTTCTGTGGCCCTGATGGCTACCCTCTTGAGTGCATTAAAGACCTTCTAGCACGTGCTGGTAAAGCTTCATGCACTTTGTCCGAACAACTGGACTTTATTGACACTAAGAGGGGTGTATACTGCTGCCGTGAACATGAGCATGAAATTGCTTGGTACACGGAACGTTCTGAAAAGAGCTATGAATTGCAGACACCTTTTGAAATTAAATTGGCAAAGAAATTTGACACCTTCAATGGGGAATGTCCAAATTTTGTATTTCCCTTAAATTCCATAATCAAGACTATTCAACCAAGGGTTGAAAAGAAAAAGCTTGATGGCTTTATGGGTAGAATTCGATCTGTCTATCCAGTTGCGTCACCAAATGAATGCAACCAAATGTGCCTTTCAACTCTCATGAAGTGTGATCATTGTGGTGAAACTTCATGGCAGACGGGCGATTTTGTTAAAGCCACTTGCGAATTTTGTGGCACTGAGAATTTGACTAAAGAAGGTGCCACTACTTGTGGTTACTTACCCCAAAATGCTGTTGTTAAAATTTATTGTCCAGCATGTCACAATTCAGAAGTAGGACCTGAGCATAGTCTTGCCGAATACCATAATGAATCTGGCTTGAAAACCATTCTTCGTAAGGGTGGTCGCACTATTGCCTTTGGAGGCTGTGTGTTCTCTTATGTTGGTTGCCATAACAAGTGTGCCTATTGGGTTCCACGTGCTAGCGCTAACATAGGTTGTAACCATACAGGTGTTGTTGGAGAAGGTTCCGAAGGTCTTAATGACAACCTTCTTGAAATACTCCAAAAAGAGAAAGTCAACATCAATATTGTTGGTGACTTTAAACTTAATGAAGAGATCGCCATTATTTTGGCATCTTTTTCTGCTTCCACAAGTGCTTTTGTGGAAACTGTGAAAGGTTTGGATTATAAAGCATTCAAACAAATTGTTGAATCCTGTGGTAATTTTAAAGTTACAAAAGGAAAAGCTAAAAAAGGTGCCTGGAATATTGGTGAACAGAAATCAATACTGAGTCCTCTTTATGCATTTGCATCAGAGGCTGCTCGTGTTGTACGATCAATTTTCTCCCGCACTCTTGAAACTGCTCAAAATTCTGTGCGTGTTTTACAGAAGGCCGCTATAACAATACTAGATGGAATTTCACAGTATTCACTGAGACTCATTGATGCTATGATGTTCACATCTGATTTGGCTACTAACAATCTAGTTGTAATGGCCTACATTACAGGTGGTGTTGTTCAGTTGACTTCGCAGTGGCTAACTAACATCTTTGGCACTGTTTATGAAAAACTCAAACCCGTCCTTGATTGGCTTGAAGAGAAGTTTAAGGAAGGTGTAGAGTTTCTTAGAGACGGTTGGGAAATTGTTAAATTTATCTCAACCTGTGCTTGTGAAATTGTCGGTGGACAAATTGTCACCTGTGCAAAGGAAATTAAGGAGAGTGTTCAGACATTCTTTAAGCTTGTAAATAAATTTTTGGCTTTGTGTGCTGACTCTATCATTATTGGTGGAGCTAAACTTAAAGCCTTGAATTTAGGTGAAACATTTGTCACGCACTCAAAGGGATTGTACAGAAAGTGTGTTAAATCCAGAGAAGAAACTGGCCTACTCATGCCTCTAAAAGCCCCAAAAGAAATTATCTTCTTAGAGGGAGAAACACTTCCCACAGAAGTGTTAACAGAGGAAGTTGTCTTGAAAACTGGTGATTTACAACCATTAGAACAACCTACTAGTGAAGCTGTTGAAGCTCCATTGGTTGGTACACCAGTTTGTATTAACGGGCTTATGTTGCTCGAAATCAAAGACACAGAAAAGTACTGTGCCCTTGCACCTAATATGATGGTAACAAACAATACCTTCACACTCAAAGGCGGTGCACCAACAAAGGTTACTTTTGGTGATGACACTGTGATAGAAGTGCAAGGTTACAAGAGTGTGAATATCACTTTTGAACTTGATGAAAGGATTGATAAAGTACTTAATGAGAAGTGCTCTGCCTATACAGTTGAACTCGGTACAGAAGTAAATGAGTTCGCCTGTGTTGTGGCAGATGCTGTCATAAAAACTTTGCAACCAGTATCTGAATTACTTACACCACTGGGCATTGATTTAGATGAGTGGAGTATGGCTACATACTACTTATTTGATGAGTCTGGTGAGTTTAAATTGGCTTCACATATGTATTGTTCTTTCTACCCTCCAGATGAGGATGAAGAAGAAGGTGATTGTGAAGAAGAAGAGTTTGAGCCATCAACTCAATATGAGTATGGTACTGAAGATGATTACCAAGGTAAACCTTTGGAATTTGGTGCCACTTCTGCTGCTCTTCAACCTGAAGAAGAGCAAGAAGAAGATTGGTTAGATGATGATAGTCAACAAACTGTTGGTCAACAAGACGGCAGTGAGGACAATCAGACAACTACTATTCAAACAATTGTTGAGGTTCAACCTCAATTAGAGATGGAACTTACACCAGTTGTTCAGACTATTGAAGTGAATAGTTTTAGTGGTTATTTAAAACTTACTGACAATGTATACATTAAAAATGCAGACATTGTGGAAGAAGCTAAAAAGGTAAAACCAACAGTGGTTGTTAATGCAGCCAATGTTTACCTTAAACATGGAGGAGGTGTTGCAGGAGCCTTAAATAAGGCTACTAACAATGCCATGCAAGTTGAATCTGATGATTACATAGCTACTAATGGACCACTTAAAGTGGGTGGTAGTTGTGTTTTAAGCGGACACAATCTTGCTAAACACTGTCTTCATGTTGTCGGCCCAAATGTTAACAAAGGTGAAGACATTCAACTTCTTAAGAGTGCTTATGAAAATTTTAATCAGCACGAAGTTCTACTTGCACCATTATTATCAGCTGGTATTTTTGGTGCTGACCCTATACATTCTTTAAGAGTTTGTGTAGATACTGTTCGCACAAATGTCTACTTAGCTGTCTTTGATAAAAATCTCTATGACAAACTTGTTTCAAGCTTTTTGGAAATGAAGAGTGAAAAGCAAGTTGAACAAAAGATCGCTGAGATTCCTAAAGAGGAAGTTAAGCCATTTATAACTGAAAGTAAACCTTCAGTTGAACAGAGAAAACAAGATGATAAGAAAATCAAAGCTTGTGTTGAAGAAGTTACAACAACTCTGGAAGAAACTAAGTTCCTCACAGAAAACTTGTTACTTTATATTGACATTAATGGCAATCTTCATCCAGATTCTGCCACTCTTGTTAGTGACATTGACATCACTTTCTTAAAGAAAGATGCTCCATATATAGTGGGTGATGTTGTTCAAGAGGGTGTTTTAACTGCTGTGGTTATACCTACTAAAAAGGCTGGTGGCACTACTGAAATGCTAGCGAAAGCTTTGAGAAAAGTGCCAACAGACAATTATATAACCACTTACCCGGGTCAGGGTTTAAATGGTTACACTGTAGAGGAGGCAAAGACAGTGCTTAAAAAGTGTAAAAGTGCCTTTTACATTCTACCATCTATTATCTCTAATGAGAAGCAAGAAATTCTTGGAACTGTTTCTTGGAATTTGCGAGAAATGCTTGCACATGCAGAAGAAACACGCAAATTAATGCCTGTCTGTGTGGAAACTAAAGCCATAGTTTCAACTATACAGCGTAAATATAAGGGTATTAAAATACAAGAGGGTGTGGTTGATTATGGTGCTAGATTTTACTTTTACACCAGTAAAACAACTGTAGCGTCACTTATCAACACACTTAACGATCTAAATGAAACTCTTGTTACAATGCCACTTGGCTATGTAACACATGGCTTAAATTTGGAAGAAGCTGCTCGGTATATGAGATCTCTCAAAGTGCCAGCTACAGTTTCTGTTTCTTCACCTGATGCTGTTACAGCGTATAATGGTTATCTTACTTCTTCTTCTAAAACACCTGAAGAACATTTTATTGAAACCATCTCACTTGCTGGTTCCTATAAAGATTGGTCCTATTCTGGACAATCTACACAACTAGGTATAGAATTTCTTAAGAGAGGTGATAAAAGTGTATATTACACTAGTAATCCTACCACATTCCACCTAGATGGTGAAGTTATCACCTTTGACAATCTTAAGACACTTCTTTCTTTGAGAGAAGTGAGGACTATTAAGGTGTTTACAACAGTAGACAACATTAACCTCCACACGCAAGTTGTGGACATGTCAATGACATATGGACAACAGTTTGGTCCAACTTATTTGGATGGAGCTGATGTTACTAAAATAAAACCTCATAATTCACATGAAGGTAAAACATTTTATGTTTTACCTAATGATGACACTCTACGTGTTGAGGCTTTTGAGTACTACCACACAACTGATCCTAGTTTTCTGGGTAGGTACATGTCAGCATTAAATCACACTAAAAAGTGGAAATACCCACAAGTTAATGGTTTAACTTCTATTAAATGGGCAGATAACAACTGTTATCTTGCCACTGCATTGTTAACACTCCAACAAATAGAGTTGAAGTTTAATCCACCTGCTCTACAAGATGCTTATTACAGAGCAAGGGCTGGTGAAGCTGCTAACTTTTGTGCACTTATCTTAGCCTACTGTAATAAGACAGTAGGTGAGTTAGGTGATGTTAGAGAAACAATGAGTTACTTGTTTCAACATGCCAATTTAGATTCTTGCAAAAGAGTCTTGAACGTGGTGTGTAAAACTTGTGGACAACAGCAGACAACCCTTAAGGGTGTAGAAGCTGTTATGTACATGGGCACACTTTCTTATGAACAATTTAAGAAAGGTGTTCAGATACCTTGTACGTGTGGTAAACAAGCTACAAAATATCTAGTACAACAGGAGTCACCTTTTGTTATGATGTCAGCACCACCTGCTCAGTATGAACTTAAGCATGGTACATTTACTTGTGCTAGTGAGTACACTGGTAATTACCAGTGTGGTCACTATAAACATATAACTTCTAAAGAAACTTTGTATTGCATAGACGGTGCTTTACTTACAAAGTCCTCAGAATACAAAGGTCCTATTACGGATGTTTTCTACAAAGAAAACAGTTACACAACAACCATAAAACCAGTTACTTATAAATTGGATGGTGTTGTTTGTACAGAAATTGACCCTAAGTTGGACAATTATTATAAGAAAGACAATTCTTATTTCACAGAGCAACCAATTGATCTTGTACCAAACCAACCATATCCAAACGCAAGCTTCGATAATTTTAAGTTTGTATGTGATAATATCAAATTTGCTGATGATTTAAACCAGTTAACTGGTTATAAGAAACCTGCTTCAAGAGAGCTTAAAGTTACATTTTTCCCTGACTTAAATGGTGATGTGGTGGCTATTGATTATAAACACTACACACCCTCTTTTAAGAAAGGAGCTAAATTGTTACATAAACCTATTGTTTGGCATGTTAACAATGCAACTAATAAAGCCACGTATAAACCAAATACCTGGTGTATACGTTGTCTTTGGAGCACAAAACCAGTTGAAACATCAAATTCGTTTGATGTACTGAAGTCAGAGGACGCGCAGGGAATGGATAATCTTGCCTGCGAAGATCTAAAACCAGTCTCTGAAGAAGTAGTGGAAAATCCTACCATACAGAAAGACGTTCTTGAGTGTAATGTGAAAACTACCGAAGTTGTAGGAGACATTATACTTAAACCAGCAAATAATAGTTTAAAAATTACAGAAGAGGTTGGCCACACAGATCTAATGGCTGCTTATGTAGACAATTCTAGTCTTACTATTAAGAAACCTAATGAATTATCTAGAGTATTAGGTTTGAAAACCCTTGCTACTCATGGTTTAGCTGCTGTTAATAGTGTCCCTTGGGATACTATAGCTAATTATGCTAAGCCTTTTCTTAACAAAGTTGTTAGTACAACTACTAACATAGTTACACGGTGTTTAAACCGTGTTTGTACTAATTATATGCCTTATTTCTTTACTTTATTGCTACAATTGTGTACTTTTACTAGAAGTACAAATTCTAGAATTAAAGCATCTATGCCGACTACTATAGCAAAGAATACTGTTAAGAGTGTCGGTAAATTTTGTCTAGAGGCTTCATTTAATTATTTGAAGTCACCTAATTTTTCTAAACTGATAAATATTATAATTTGGTTTTTACTATTAAGTGTTTGCCTAGGTTCTTTAATCTACTCAACCGCTGCTTTAGGTGTTTTAATGTCTAATTTAGGCATGCCTTCTTACTGTACTGGTTACAGAGAAGGCTATTTGAACTCTACTAATGTCACTATTGCAACCTACTGTACTGGTTCTATACCTTGTAGTGTTTGTCTTAGTGGTTTAGATTCTTTAGACACCTATCCTTCTTTAGAAACTATACAAATTACCATTTCATCTTTTAAATGGGATTTAACTGCTTTTGGCTTAGTTGCAGAGTGGTTTTTGGCATATATTCTTTTCACTAGGTTTTTCTATGTACTTGGATTGGCTGCAATCATGCAATTGTTTTTCAGCTATTTTGCAGTACATTTTATTAGTAATTCTTGGCTTATGTGGTTAATAATTAATCTTGTACAAATGGCCCCGATTTCAGCTATGGTTAGAATGTACATCTTCTTTGCATCATTTTATTATGTATGGAAAAGTTATGTGCATGTTGTAGACGGTTGTAATTCATCAACTTGTATGATGTGTTACAAACGTAATAGAGCAACAAGAGTCGAATGTACAACTATTGTTAATGGTGTTAGAAGGTCCTTTTATGTCTATGCTAATGGAGGTAAAGGCTTTTGCAAACTACACAATTGGAATTGTGTTAATTGTGATACATTCTGTGCTGGTAGTACATTTATTAGTGATGAAGTTGCGAGAGACTTGTCACTACAGTTTAAAAGACCAATAAATCCTACTGACCAGTCTTCTTACATCGTTGATAGTGTTACAGTGAAGAATGGTTCCATCCATCTTTACTTTGATAAAGCTGGTCAAAAGACTTATGAAAGACATTCTCTCTCTCATTTTGTTAACTTAGACAACCTGAGAGCTAATAACACTAAAGGTTCATTGCCTATTAATGTTATAGTTTTTGATGGTAAATCAAAATGTGAAGAATCATCTGCAAAATCAGCGTCTGTTTACTACAGTCAGCTTATGTGTCAACCTATACTGTTACTAGATCAGGCATTAGTGTCTGATGTTGGTGATAGTGCGGAAGTTGCAGTTAAAATGTTTGATGCTTACGTTAATACGTTTTCATCAACTTTTAACGTACCAATGGAAAAACTCAAAACACTAGTTGCAACTGCAGAAGCTGAACTTGCAAAGAATGTGTCCTTAGACAATGTCTTATCTACTTTTATTTCAGCAGCTCGGCAAGGGTTTGTTGATTCAGATGTAGAAACTAAAGATGTTGTTGAATGTCTTAAATTGTCACATCAATCTGACATAGAAGTTACTGGCGATAGTTGTAATAACTATATGCTCACCTATAACAAAGTTGAAAACATGACACCCCGTGACCTTGGTGCTTGTATTGACTGTAGTGCGCGTCATATTAATGCGCAGGTAGCAAAAAGTCACAACATTGCTTTGATATGGAACGTTAAAGATTTCATGTCATTGTCTGAACAACTACGAAAACAAATACGTAGTGCTGCTAAAAAGAATAACTTACCTTTTAAGTTGACATGTGCAACTACTAGACAAGTTGTTAATGTTGTAACAACAAAGATAGCACTTAAGGGTGGTAAAATTGTTAATAATTGGTTGAAGCAGTTAATTAAAGTTACACTTGTGTTCCTTTTTGTTGCTGCTATTTTCTATTTAATAACACCTGTTCATGTCATGTCTAAACATACTGACTTTTCAAGTGAAATCATAGGATACAAGGCTATTGATGGTGGTGTCACTCGTGACATAGCATCTACAGATACTTGTTTTGCTAACAAACATGCTGATTTTGACACATGGTTTAGCCAGCGTGGTGGTAGTTATACTAATGACAAAGCTTGCCCATTGATTGCTGCAGTCATAACAAGAGAAGTGGGTTTTGTCGTGCCTGGTTTGCCTGGCACGATATTACGCACAACTAATGGTGACTTTTTGCATTTCTTACCTAGAGTTTTTAGTGCAGTTGGTAACATCTGTTACACACCATCAAAACTTATAGAGTACACTGACTTTGCAACATCAGCTTGTGTTTTGGCTGCTGAATGTACAATTTTTAAAGATGCTTCTGGTAAGCCAGTACCATATTGTTATGATACCAATGTACTAGAAGGTTCTGTTGCTTATGAAAGTTTACGCCCTGACACACGTTATGTGCTCATGGATGGCTCTATTATTCAATTTCCTAACACCTACCTTGAAGGTTCTGTTAGAGTGGTAACAACTTTTGATTCTGAGTACTGTAGGCACGGCACTTGTGAAAGATCAGAAGCTGGTGTTTGTGTATCTACTAGTGGTAGATGGGTACTTAACAATGATTATTACAGATCTTTACCAGGAGTTTTCTGTGGTGTAGATGCTGTAAATTTACTTACTAATATGTTTACACCACTAATTCAACCTATTGGTGCTTTGGACATATCAGCATCTATAGTAGCTGGTGGTATTGTAGCTATCGTAGTAACATGCCTTGCCTACTATTTTATGAGGTTTAGAAGAGCTTTTGGTGAATACAGTCATGTAGTTGCCTTTAATACTTTACTATTCCTTATGTCATTCACTGTACTCTGTTTAACACCAGTTTACTCATTCTTACCTGGTGTTTATTCTGTTATTTACTTGTACTTGACATTTTATCTTACTAATGATGTTTCTTTTTTAGCACATATTCAGTGGATGGTTATGTTCACACCTTTAGTACCTTTCTGGATAACAATTGCTTATATCATTTGTATTTCCACAAAGCATTTCTATTGGTTCTTTAGTAATTACCTAAAGAGACGTGTAGTCTTTAATGGTGTTTCCTTTAGTACTTTTGAAGAAGCTGCGCTGTGCACCTTTTTGTTAAATAAAGAAATGTATCTAAAGTTGCGTAGTGATGTGCTATTACCTCTTACGCAATATAATAGATACTTAGCTCTTTATAATAAGTACAAGTATTTTAGTGGAGCAATGGATACAACTAGCTACAGAGAAGCTGCTTGTTGTCATCTCGCAAAGGCTCTCAATGACTTCAGTAACTCAGGTTCTGATGTTCTTTACCAACCACCACAAACCTCTATCACCTCAGCTGTTTTGCAGAGTGGTTTTAGAAAAATGGCATTCCCATCTGGTAAAGTTGAGGGTTGTATGGTACAAGTAACTTGTGGTACAACTACACTTAACGGTCTTTGGCTTGATGACGTAGTTTACTGTCCAAGACATGTGATCTGCACCTCTGAAGACATGCTTAACCCTAATTATGAAGATTTACTCATTCGTAAGTCTAATCATAATTTCTTGGTACAGGCTGGTAATGTTCAACTCAGGGTTATTGGACATTCTATGCAAAATTGTGTACTTAAGCTTAAGGTTGATACAGCCAATCCTAAGACACCTAAGTATAAGTTTGTTCGCATTCAACCAGGACAGACTTTTTCAGTGTTAGCTTGTTACAATGGTTCACCATCTGGTGTTTACCAATGTGCTATGAGGCCCAATTTCACTATTAAGGGTTCATTCCTTAATGGTTCATGTGGTAGTGTTGGTTTTAACATAGATTATGACTGTGTCTCTTTTTGTTACATGCACCATATGGAATTACCAACTGGAGTTCATGCTGGCACAGACTTAGAAGGTAACTTTTATGGACCTTTTGTTGACAGGCAAACAGCACAAGCAGCTGGTACGGACACAACTATTACAGTTAATGTTTTAGCTTGGTTGTACGCTGCTGTTATAAATGGAGACAGGTGGTTTCTCAATCGATTTACCACAACTCTTAATGACTTTAACCTTGTGGCTATGAAGTACAATTATGAACCTCTAACACAAGACCATGTTGACATACTAGGACCTCTTTCTGCTCAAACTGGAATTGCCGTTTTAGATATGTGTGCTTCATTAAAAGAATTACTGCAAAATGGTATGAATGGACGTACCATATTGGGTAGTGCTTTATTAGAAGATGAATTTACACCTTTTGATGTTGTTAGACAATGCTCAGGTGTTACTTTCCAAAGTGCAGTGAAAAGAACAATCAAGGGTACACACCACTGGTTGTTACTCACAATTTTGACTTCACTTTTAGTTTTAGTCCAGAGTACTCAATGGTCTTTGTTCTTTTTTTTGTATGAAAATGCCTTTTTACCTTTTGCTATGGGTATTATTGCTATGTCTGCTTTTGCAATGATGTTTGTCAAACATAAGCATGCATTTCTCTGTTTGTTTTTGTTACCTTCTCTTGCCACTGTAGCTTATTTTAATATGGTCTATATGCCTGCTAGTTGGGTGATGCGTATTATGACATGGTTGGATATGGTTGATACTAGTTTGTCTGGTTTTAAGCTAAAAGACTGTGTTATGTATGCATCAGCTGTAGTGTTACTAATCCTTATGACAGCAAGAACTGTGTATGATGATGGTGCTAGGAGAGTGTGGACACTTATGAATGTCTTGACACTCGTTTATAAAGTTTATTATGGTAATGCTTTAGATCAAGCCATTTCCATGTGGGCTCTTATAATCTCTGTTACTTCTAACTACTCAGGTGTAGTTACAACTGTCATGTTTTTGGCCAGAGGTATTGTTTTTATGTGTGTTGAGTATTGCCCTATTTTCTTCATAACTGGTAATACACTTCAGTGTATAATGCTAGTTTATTGTTTCTTAGGCTATTTTTGTACTTGTTACTTTGGCCTCTTTTGTTTACTCAACCGCTACTTTAGACTGACTCTTGGTGTTTATGATTACTTAGTTTCTACACAGGAGTTTAGATATATGAATTCACAGGGACTACTCCCACCCAAGAATAGCATAGATGCCTTCAAACTCAACATTAAATTGTTGGGTGTTGGTGGCAAACCTTGTATCAAAGTAGCCACTGTACAGTCTAAAATGTCAGATGTAAAGTGCACATCAGTAGTCTTACTCTCAGTTTTGCAACAACTCAGAGTAGAATCATCATCTAAATTGTGGGCTCAATGTGTCCAGTTACACAATGACATTCTCTTAGCTAAAGATACTACTGAAGCCTTTGAAAAAATGGTTTCACTACTTTCTGTTTTGCTTTCCATGCAGGGTGCTGTAGACATAAACAAGCTTTGTGAAGAAATGCTGGACAACAGGGCAACCTTACAAGCTATAGCCTCAGAGTTTAGTTCCCTTCCATCATATGCAGCTTTTGCTACTGCTCAAGAAGCTTATGAGCAGGCTGTTGCTAATGGTGATTCTGAAGTTGTTCTTAAAAAGTTGAAGAAGTCTTTGAATGTGGCTAAATCTGAATTTGACCGTGATGCAGCCATGCAACGTAAGTTGGAAAAGATGGCTGATCAAGCTATGACCCAAATGTATAAACAGGCTAGATCTGAGGACAAGAGGGCAAAAGTTACTAGTGCTATGCAGACAATGCTTTTCACTATGCTTAGAAAGTTGGATAATGATGCACTCAACAACATTATCAACAATGCAAGAGATGGTTGTGTTCCCTTGAACATAATACCTCTTACAACAGCAGCCAAACTAATGGTTGTCATACCAGACTATAACACATATAAAAATACGTGTGATGGTACAACATTTACTTATGCATCAGCATTGTGGGAAATCCAACAGGTTGTAGATGCAGATAGTAAAATTGTTCAACTTAGTGAAATTAGTATGGACAATTCACCTAATTTAGCATGGCCTCTTATTGTAACAGCTTTAAGGGCCAATTCTGCTGTCAAATTACAGAATAATGAGCTTAGTCCTGTTGCACTACGACAGATGTCTTGTGCTGCCGGTACTACACAAACTGCTTGCACTGATGACAATGCGTTAGCTTACTACAACACAACAAAGGGAGGTAGGTTTGTACTTGCACTGTTATCCGATTTACAGGATTTGAAATGGGCTAGATTCCCTAAGAGTGATGGAACTGGTACTATCTATACAGAACTGGAACCACCTTGTAGGTTTGTTACAGACACACCTAAAGGTCCTAAAGTGAAGTATTTATACTTTATTAAAGGATTAAACAACCTAAATAGAGGTATGGTACTTGGTAGTTTAGCTGCCACAGTACGTCTACAAGCTGGTAATGCAACAGAAGTGCCTGCCAATTCAACTGTATTATCTTTCTGTGCTTTTGCTGTAGATGCTGCTAAAGCTTACAAAGATTATCTAGCTAGTGGGGGACAACCAATCACTAATTGTGTTAAGATGTTGTGTACACACACTGGTACTGGTCAGGCAATAACAGTTACACCGGAAGCCAATATGGATCAAGAATCCTTTGGTGGTGCATCGTGTTGTCTGTACTGCCGTTGCCACATAGATCATCCAAATCCTAAAGGATTTTGTGACTTAAAAGGTAAGTATGTACAAATACCTACAACTTGTGCTAATGACCCTGTGGGTTTTACACTTAAAAACACAGTCTGTACCGTCTGCGGTATGTGGAAAGGTTATGGCTGTAGTTGTGATCAACTCCGCGAACCCATGCTTCAGTCAGCTGATGCACAATCGTTTTTAAACGGGTTTGCGGTGTAAGTGCAGCCCGTCTTACACCGTGCGGCACAGGCACTAGTACTGATGTCGTATACAGGGCTTTTGACATCTACAATGATAAAGTAGCTGGTTTTGCTAAATTCCTAAAAACTAATTGTTGTCGCTTCCAAGAAAAGGACGAAGATGACAATTTAATTGATTCTTACTTTGTAGTTAAGAGACACACTTTCTCTAACTACCAACATGAAGAAACAATTTATAATTTACTTAAGGATTGTCCAGCTGTTGCTAAACATGACTTCTTTAAGTTTAGAATAGACGGTGACATGGTACCACATATATCACGTCAACGTCTTACTAAATACACAATGGCAGACCTCGTCTATGCTTTAAGGCATTTTGATGAAGGTAATTGTGACACATTAAAAGAAATACTTGTCACATACAATTGTTGTGATGATGATTATTTCAATAAAAAGGACTGGTATGATTTTGTAGAAAACCCAGATATATTACGCGTATACGCCAACTTAGGTGAACGTGTACGCCAAGCTTTGTTAAAAACAGTACAATTCTGTGATGCCATGCGAAATGCTGGTATTGTTGGTGTACTGACATTAGATAATCAAGATCTCAATGGTAACTGGTATGATTTCGGTGATTTCATACAAACCACGCCAGGTAGTGGAGTTCCTGTTGTAGATTCTTATTATTCATTGTTAATGCCTATATTAACCTTGACCAGGGCTTTAACTGCAGAGTCACATGTTGACACTGACTTAACAAAGCCTTACATTAAGTGGGATTTGTTAAAATATGACTTCACGGAAGAGAGGTTAAAACTCTTTGACCGTTATTTTAAATATTGGGATCAGACATACCACCCAAATTGTGTTAACTGTTTGGATGACAGATGCATTCTGCATTGTGCAAACTTTAATGTTTTATTCTCTACAGTGTTCCCACCTACAAGTTTTGGACCACTAGTGAGAAAAATATTTGTTGATGGTGTTCCATTTGTAGTTTCAACTGGATACCACTTCAGAGAGCTAGGTGTTGTACATAATCAGGATGTAAACTTACATAGCTCTAGACTTAGTTTTAAGGAATTACTTGTGTATGCTGCTGACCCTGCTATGCACGCTGCTTCTGGTAATCTATTACTAGATAAACGCACTACGTGCTTTTCAGTAGCTGCACTTACTAACAATGTTGCTTTTCAAACTGTCAAACCCGGTAATTTTAACAAAGACTTCTATGACTTTGCTGTGTCTAAGGGTTTCTTTAAGGAAGGAAGTTCTGTTGAATTAAAACACTTCTTCTTTGCTCAGGATGGTAATGCTGCTATCAGCGATTATGACTACTATCGTTATAATCTACCAACAATGTGTGATATCAGACAACTACTATTTGTAGTTGAAGTTGTTGATAAGTACTTTGATTGTTACGATGGTGGCTGTATTAATGCTAACCAAGTCATCGTCAACAACCTAGACAAATCAGCTGGTTTTCCATTTAATAAATGGGGTAAGGCTAGACTTTATTATGATTCAATGAGTTATGAGGATCAAGATGCACTTTTCGCATATACAAAACGTAATGTCATCCCTACTATAACTCAAATGAATCTTAAGTATGCCATTAGTGCAAAGAATAGAGCTCGCACCGTAGCTGGTGTCTCTATCTGTAGTACTATGACCAATAGACAGTTTCATCAAAAATTATTGAAATCAATAGCCGCCACTAGAGGAGCTACTGTAGTAATTGGAACAAGCAAATTCTATGGTGGTTGGCACAACATGTTAAAAACTGTTTATAGTGATGTAGAAAACCCTCACCTTATGGGTTGGGATTATCCTAAATGTGATAGAGCCATGCCTAACATGCTTAGAATTATGGCCTCACTTGTTCTTGCTCGCAAACATACAACGTGTTGTAGCTTGTCACACCGTTTCTATAGATTAGCTAATGAGTGTGCTCAAGTATTGAGTGAAATGGTCATGTGTGGCGGTTCACTATATGTTAAACCAGGTGGAACCTCATCAGGAGATGCCACAACTGCTTATGCTAATAGTGTTTTTAACATTTGTCAAGCTGTCACGGCCAATGTTAATGCACTTTTATCTACTGATGGTAACAAAATTGCCGATAAGTATGTCCGCAATTTACAACACAGACTTTATGAGTGTCTCTATAGAAATAGAGATGTTGACACAGACTTTGTGAATGAGTTTTACGCATATTTGCGTAAACATTTCTCAATGATGATACTCTCTGACGATGCTGTTGTGTGTTTCAATAGCACTTATGCATCTCAAGGTCTAGTGGCTAGCATAAAGAACTTTAAGTCAGTTCTTTATTATCAAAACAATGTTTTTATGTCTGAAGCAAAATGTTGGACTGAGACTGACCTTACTAAAGGACCTCATGAATTTTGCTCTCAACATACAATGCTAGTTAAACAGGGTGATGATTATGTGTACCTTCCTTACCCAGATCCATCAAGAATCCTAGGGGCCGGCTGTTTTGTAGATGATATCGTAAAAACAGATGGTACACTTATGATTGAACGGTTCGTGTCTTTAGCTATAGATGCTTACCCACTTACTAAACATCCTAATCAGGAGTATGCTGATGTCTTTCATTTGTACTTACAATACATAAGAAAGCTACATGATGAGTTAACAGGACACATGTTAGACATGTATTCTGTTATGCTTACTAATGATAACACTTCAAGGTATTGGGAACCTGAGTTTTATGAGGCTATGTACACACCGCATACAGTCTTACAGGCTGTTGGGGCTTGTGTTCTTTGCAATTCACAGACTTCATTAAGATGTGGTGCTTGCATACGTAGACCATTCTTATGTTGTAAATGCTGTTACGACCATGTCATATCAACATCACATAAATTAGTCTTGTCTGTTAATCCGTATGTTTGCAATGCTCCAGGTTGTGATGTCACAGATGTGACTCAACTTTACTTAGGAGGTATGAGCTATTATTGTAAATCACATAAACCACCCATTAGTTTTCCATTGTGTGCTAATGGACAAGTTTTTGGTTTATATAAAAATACATGTGTTGGTAGCGATAATGTTACTGACTTTAATGCAATTGCAACATGTGACTGGACAAATGCTGGTGATTACATTTTAGCTAACACCTGTACTGAAAGACTCAAGCTTTTTGCAGCAGAAACGCTCAAAGCTACTGAGGAGACATTTAAACTGTCTTATGGTATTGCTACTGTACGTGAAGTGCTGTCTGACAGAGAATTACATCTTTCATGGGAAGTTGGTAAACCTAGACCACCACTTAACCGAAATTATGTCTTTACTGGTTATCGTGTAACTAAAAACAGTAAAGTACAAATAGGAGAGTACACCTTTGAAAAAGGTGACTATGGTGATGCTGTTGTTTACCGAGGTACAACAACTTACAAATTAAATGTTGGTGATTATTTTGTGCTGACATCACATACAGTAATGCCATTAAGTGCACCTACACTAGTGCCACAAGAGCACTATGTTAGAATTACTGGCTTATACCCAACACTCAATATCTCAGATGAGTTTTCTAGCAATGTTGCAAATTATCAAAAGGTTGGTATGCAAAAGTATTCTACACTCCAGGGACCACCTGGTACTGGTAAGAGTCATTTTGCTATTGGCCTAGCTCTCTACTACCCTTCTGCTCGCATAGTGTATACAGCTTGCTCTCATGCCGCTGTTGATGCACTATGTGAGAAGGCATTAAAATATTTGCCTATAGATAAATGTAGTAGAATTATACCTGCACGTGCTCGTGTAGAGTGTTTTGATAAATTCAAAGTGAATTCAACATTAGAACAGTATGTCTTTTGTACTGTAAATGCATTGCCTGAGACGACAGCAGATATAGTTGTCTTTGATGAAATTTCAATGGCCACAAATTATGATTTGAGTGTTGTCAATGCCAGATTACGTGCTAAGCACTATGTGTACATTGGCGACCCTGCTCAATTACCTGCACCACGCACATTGCTAACTAAGGGCACACTAGAACCAGAATATTTCAATTCAGTGTGTAGACTTATGAAAACTATAGGTCCAGACATGTTCCTCGGAACTTGTCGGCGTTGTCCTGCTGAAATTGTTGACACTGTGAGTGCTTTGGTTTATGATAATAAGCTTAAAGCACATAAAGACAAATCAGCTCAATGCTTTAAAATGTTTTATAAGGGTGTTATCACGCATGATGTTTCATCTGCAATTAACAGGCCACAAATAGGCGTGGTAAGAGAATTCCTTACACGTAACCCTGCTTGGAGAAAAGCTGTCTTTATTTCACCTTATAATTCACAGAATGCTGTAGCCTCAAAGATTTTGGGACTACCAACTCAAACTGTTGATTCATCACAGGGCTCAGAATATGACTATGTCATATTCACTCAAACCACTGAAACAGCTCACTCTTGTAATGTAAACAGATTTAATGTTGCTATTACCAGAGCAAAAGTAGGCATACTTTGCATAATGTCTGATAGAGACCTTTATGACAAGTTGCAATTTACAAGTCTTGAAATTCCACGTAGGAATGTGGCAACTTTACAAGCTGAAAATGTAACAGGACTCTTTAAAGATTGTAGTAAGGTAATCACTGGGTTACATCCTACACAGGCACCTACACACCTCAGTGTTGACACTAAATTCAAAACTGAAGGTTTATGTGTTGACATACCTGGCATACCTAAGGACATGACCTATAGAAGACTCATCTCTATGATGGGTTTTAAAATGAATTATCAAGTTAATGGTTACCCTAACATGTTTATCACCCGCGAAGAAGCTATAAGACATGTACGTGCATGGATTGGCTTCGATGTCGAGGGGTGTCATGCTACTAGAGAAGCTGTTGGTACCAATTTACCTTTACAGCTAGGTTTTTCTACAGGTGTTAACCTAGTTGCTGTACCTACAGGTTATGTTGATACACCTAATAATACAGATTTTTCCAGAGTTAGTGCTAAACCACCGCCTGGAGATCAATTTAAACACCTCATACCACTTATGTACAAAGGACTTCCTTGGAATGTAGTGCGTATAAAGATTGTACAAATGTTAAGTGACACACTTAAAAATCTCTCTGACAGAGTCGTATTTGTCTTATGGGCACATGGCTTTGAGTTGACATCTATGAAGTATTTTGTGAAAATAGGACCTGAGCGCACCTGTTGTCTATGTGATAGACGTGCCACATGCTTTTCCACTGCTTCAGACACTTATGCCTGTTGGCATCATTCTATTGGATTTGATTACGTCTATAATCCGTTTATGATTGATGTTCAACAATGGGGTTTTACAGGTAACCTACAAAGCAACCATGATCTGTATTGTCAAGTCCATGGTAATGCACATGTAGCTAGTTGTGATGCAATCATGACTAGGTGTCTAGCTGTCCACGAGTGCTTTGTTAAGCGTGTTGACTGGACTATTGAATATCCTATAATTGGTGATGAACTGAAGATTAATGCGGCTTGTAGAAAGGTTCAACACATGGTTGTTAAAGCTGCATTATTAGCAGACAAATTCCCAGTTCTTCACGACATTGGTAACCCTAAAGCTATTAAGTGTGTACCTCAAGCTGATGTAGAATGGAAGTTCTATGATGCACAGCCTTGTAGTGACAAAGCTTATAAAATAGAAGAATTATTCTATTCTTATGCCACACATTCTGACAAATTCACAGATGGTGTATGCCTATTTTGGAATTGCAATGTCGATAGATATCCTGCTAATTCCATTGTTTGTAGATTTGACACTAGAGTGCTATCTAACCTTAACTTGCCTGGTTGTGATGGTGGCAGTTTGTATGTAAATAAACATGCATTCCACACACCAGCTTTTGATAAAAGTGCTTTTGTTAATTTAAAACAATTACCATTTTTCTATTACTCTGACAGTCCATGTGAGTCTCATGGAAAACAAGTAGTGTCAGATATAGATTATGTACCACTAAAGTCTGCTACGTGTATAACACGTTGCAATTTAGGTGGTGCTGTCTGTAGACATCATGCTAATGAGTACAGATTGTATCTCGATGCTTATAACATGATGATCTCAGCTGGCTTTAGCTTGTGGGTTTACAAACAATTTGATACTTATAACCTCTGGAACACTTTTACAAGACTTCAGAGTTTAGAAAATGTGGCTTTTAATGTTGTAAATAAGGGACACTTTGATGGACAACAGGGTGAAGTACCAGTTTCTATCATTAATAACACTGTTTACACAAAAGTTGATGGTGTTGATGTAGAATTGTTTGAAAATAAAACAACATTACCTGTTAATGTAGCATTTGAGCTTTGGGCTAAGCGCAACATTAAACCAGTACCAGAGGTGAAAATACTCAATAATTTGGGTGTGGACATTGCTGCTAATACTGTGATCTGGGACTACAAAAGAGATGCTCCAGCACATATATCTACTATTGGTGTTTGTTCTATGACTGACATAGCCAAGAAACCAACTGAAACGATTTGTGCACCACTCACTGTCTTTTTTGATGGTAGAGTTGATGGTCAAGTAGACTTATTTAGAAATGCCCGTAATGGTGTTCTTATTACAGAAGGTAGTGTTAAAGGTTTACAACCATCTGTAGGTCCCAAACAAGCTAGTCTTAATGGAGTCACATTAATTGGAGAAGCCGTAAAAACACAGTTCAATTATTATAAGAAAGTTGATGGTGTTGTCCAACAATTACCTGAAACTTACTTTACTCAGAGTAGAAATTTACAAGAATTTAAACCCAGGAGTCAAATGGAAATTGATTTCTTAGAATTAGCTATGGATGAATTCATTGAACGGTATAAATTAGAAGGCTATGCCTTCGAACATATCGTTTATGGAGATTTTAGTCATAGTCAGTTAGGTGGTTTACATCTACTGATTGGACTAGCTAAACGTTTTAAGGAATCACCTTTTGAATTAGAAGATTTTATTCCTATGGACAGTACAGTTAAAAACTATTTCATAACAGATGCGCAAACAGGTTCATCTAAGTGTGTGTGTTCTGTTATTGATTTATTACTTGATGATTTTGTTGAAATAATAAAATCCCAAGATTTATCTGTAGTTTCTAAGGTTGTCAAAGTGACTATTGACTATACAGAAATTTCATTTATGCTTTGGTGTAAAGATGGCCATGTAGAAACATTTTACCCAAAATTACAATCTAGTCAAGCGTGGCAACCGGGTGTTGCTATGCCTAATCTTTACAAAATGCAAAGAATGCTATTAGAAAAGTGTGACCTTCAAAATTATGGTGATAGTGCAACATTACCTAAAGGCATAATGATGAATGTCGCAAAATATACTCAACTGTGTCAATATTTAAACACATTAACATTAGCTGTACCCTATAATATGAGAGTTATACATTTTGGTGCTGGTTCTGATAAAGGAGTTGCACCAGGTACAGCTGTTTTAAGACAGTGGTTGCCTACGGGTACGCTGCTTGTCGATTCAGATCTTAATGACTTTGTCTCTGATGCAGATTCAACTTTGATTGGTGATTGTGCAACTGTACATACAGCTAATAAATGGGATCTCATTATTAGTGATATGTACGACCCTAAGACTAAAAATGTTACAAAAGAAAATGACTCTAAAGAGGGTTTTTTCACTTACATTTGTGGGTTTATACAACAAAAGCTAGCTCTTGGAGGTTCCGTGGCTATAAAGATAACAGAACATTCTTGGAATGCTGATCTTTATAAGCTCATGGGACACTTCGCATGGTGGACAGCCTTTGTTACTAATGTGAATGCGTCATCATCTGAAGCATTTTTAATTGGATGTAATTATCTTGGCAAACCACGCGAACAAATAGATGGTTATGTCATGCATGCAAATTACATATTTTGGAGGAATACAAATCCAATTCAGTTGTCTTCCTATTCTTTATTTGACATGAGTAAATTTCCCCTTAAATTAAGGGGTACTGCTGTTATGTCTTTAAAAGAAGGTCAAATCAATGATATGATTTTATCTCTTCTTAGTAAAGGTAGACTTATAATTAGAGAAAACAACAGAGTTGTTATTTCTAGTGATGTTCTTGTTAACAACTAAACGAACAATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACCAGAACTCAATTACCCCCTGCATACACTAATTCTTTCACACGTGGTGTTTATTACCCTGACAAAGTTTTCAGATCCTCAGTTTTACATTCAACTCAGGACTTGTTCTTACCTTTCTTTTCCAATGTTACTTGGTTCCATGCTATACATGTCTCTGGGACCAATGGTACTAAGAGGTTTGATAACCCTGTCCTACCATTTAATGATGGTGTTTATTTTGCTTCCACTGAGAAGTCTAACATAATAAGAGGCTGGATTTTTGGTACTACTTTAGATTCGAAGACCCAGTCCCTACTTATTGTTAATAACGCTACTAATGTTGTTATTAAAGTCTGTGAATTTCAATTTTGTAATGATCCATTTTTGGGTGTTTATTACCACAAAAACAACAAAAGTTGGATGGAAAGTGAGTTCAGAGTTTATTCTAGTGCGAATAATTGCACTTTTGAATATGTCTCTCAGCCTTTTCTTATGGACCTTGAAGGAAAACAGGGTAATTTCAAAAATCTTAGGGAATTTGTGTTTAAGAATATTGATGGTTATTTTAAAATATATTCTAAGCACACGCCTATTAATTTAGTGCGTGATCTCCCTCAGGGTTTTTCGGCTTTAGAACCATTGGTAGATTTGCCAATAGGTATTAACATCACTAGGTTTCAAACTTTACTTGCTTTACATAGAAGTTATTTGACTCCTGGTGATTCTTCTTCAGGTTGGACAGCTGGTGCTGCAGCTTATTATGTGGGTTATCTTCAACCTAGGACTTTTCTATTAAAATATAATGAAAATGGAACCATTACAGATGCTGTAGACTGTGCACTTGACCCTCTCTCAGAAACAAAGTGTACGTTGAAATCCTTCACTGTAGAAAAAGGAATCTATCAAACTTCTAACTTTAGAGTCCAACCAACAGAATCTATTGTTAGATTTCCTAATATTACAAACTTGTGCCCTTTTGGTGAAGTTTTTAACGCCACCAGATTTGCATCTGTTTATGCTTGGAACAGGAAGAGAATCAGCAACTGTGTTGCTGATTATTCTGTCCTATATAATTCCGCATCATTTTCCACTTTTAAGTGTTATGGAGTGTCTCCTACTAAATTAAATGATCTCTGCTTTACTAATGTCTATGCAGATTCATTTGTAATTAGAGGTGATGAAGTCAGACAAATCGCTCCAGGGCAAACTGGAAAGATTGCTGATTATAATTATAAATTACCAGATGATTTTACAGGCTGCGTTATAGCTTGGAATTCTAACAATCTTGATTCTAAGGTTGGTGGTAATTATAATTACCTGTATAGATTGTTTAGGAAGTCTAATCTCAAACCTTTTGAGAGAGATATTTCAACTGAAATCTATCAGGCCGGTAGCACACCTTGTAATGGTGTTGAAGGTTTTAATTGTTACTTTCCTTTACAATCATATGGTTTCCAACCCACTAATGGTGTTGGTTACCAACCATACAGAGTAGTAGTACTTTCTTTTGAACTTCTACATGCACCAGCAACTGTTTGTGGACCTAAAAAGTCTACTAATTTGGTTAAAAACAAATGTGTCAATTTCAACTTCAATGGTTTAACAGGCACAGGTGTTCTTACTGAGTCTAACAAAAAGTTTCTGCCTTTCCAACAATTTGGCAGAGACATTGCTGACACTACTGATGCTGTCCGTGATCCACAGACACTTGAGATTCTTGACATTACACCATGTTCTTTTGGTGGTGTCAGTGTTATAACACCAGGAACAAATACTTCTAACCAGGTTGCTGTTCTTTATCAGGATGTTAACTGCACAGAAGTCCCTGTTGCTATTCATGCAGATCAACTTACTCCTACTTGGCGTGTTTATTCTACAGGTTCTAATGTTTTTCAAACACGTGCAGGCTGTTTAATAGGGGCTGAACATGTCAACAACTCATATGAGTGTGACATACCCATTGGTGCAGGTATATGCGCTAGTTATCAGACTCAGACTAATTCTCCTCGGCGGGCACGTAGTGTAGCTAGTCAATCCATCATTGCCTACACTATGTCACTTGGTGCAGAAAATTCAGTTGCTTACTCTAATAACTCTATTGCCATACCCACAAATTTTACTATTAGTGTTACCACAGAAATTCTACCAGTGTCTATGACCAAGACATCAGTAGATTGTACAATGTACATTTGTGGTGATTCAACTGAATGCAGCAATCTTTTGTTGCAATATGGCAGTTTTTGTACACAATTAAACCGTGCTTTAACTGGAATAGCTGTTGAACAAGACAAAAACACCCAAGAAGTTTTTGCACAAGTCAAACAAATTTACAAAACACCACCAATTAAAGATTTTGGTGGTTTTAATTTTTCACAAATATTACCAGATCCATCAAAACCAAGCAAGAGGTCATTTATTGAAGATCTACTTTTCAACAAAGTGACACTTGCAGATGCTGGCTTCATCAAACAATATGGTGATTGCCTTGGTGATATTGCTGCTAGAGACCTCATTTGTGCACAAAAGTTTAACGGCCTTACTGTTTTGCCACCTTTGCTCACAGATGAAATGATTGCTCAATACACTTCTGCACTGTTAGCGGGTACAATCACTTCTGGTTGGACCTTTGGTGCAGGTGCTGCATTACAAATACCATTTGCTATGCAAATGGCTTATAGGTTTAATGGTATTGGAGTTACACAGAATGTTCTCTATGAGAACCAAAAATTGATTGCCAACCAATTTAATAGTGCTATTGGCAAAATTCAAGACTCACTTTCTTCCACAGCAAGTGCACTTGGAAAACTTCAAGATGTGGTCAACCAAAATGCACAAGCTTTAAACACGCTTGTTAAACAACTTAGCTCCAATTTTGGTGCAATTTCAAGTGTTTTAAATGATATCCTTTCACGTCTTGACAAAGTTGAGGCTGAAGTGCAAATTGATAGGTTGATCACAGGCAGACTTCAAAGTTTGCAGACATATGTGACTCAACAATTAATTAGAGCTGCAGAAATCAGAGCTTCTGCTAATCTTGCTGCTACTAAAATGTCAGAGTGTGTACTTGGACAATCAAAAAGAGTTGATTTTTGTGGAAAGGGCTATCATCTTATGTCCTTCCCTCAGTCAGCACCTCATGGTGTAGTCTTCTTGCATGTGACTTATGTCCCTGCACAAGAAAAGAACTTCACAACTGCTCCTGCCATTTGTCATGATGGAAAAGCACACTTTCCTCGTGAAGGTGTCTTTGTTTCAAATGGCACACACTGGTTTGTAACACAAAGGAATTTTTATGAACCACAAATCATTACTACAGACAACACATTTGTGTCTGGTAACTGTGATGTTGTAATAGGAATTGTCAACAACACAGTTTATGATCCTTTGCAACCTGAATTAGACTCATTCAAGGAGGAGTTAGATAAATATTTTAAGAATCATACATCACCAGATGTTGATTTAGGTGACATCTCTGGCATTAATGCTTCAGTTGTAAACATTCAAAAAGAAATTGACCGCCTCAATGAGGTTGCCAAGAATTTAAATGAATCTCTCATCGATCTCCAAGAACTTGGAAAGTATGAGCAGTATATAAAATGGCCATGGTACATTTGGCTAGGTTTTATAGCTGGCTTGATTGCCATAGTAATGGTGACAATTATGCTTTGCTGTATGACCAGTTGCTGTAGTTGTCTCAAGGGCTGTTGTTCTTGTGGATCCTGCTGCAAATTTGATGAAGACGACTCTGAGCCAGTGCTCAAAGGAGTCAAATTACATTACACATAAACGAACTTATGGATTTGTTTATGAGAATCTTCACAATTGGAACTGTAACTTTGAAGCAAGGTGAAATCAAGGATGCTACTCCTTCAGATTTTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCACTCCCTTTCGGATGGCTTATTGTTGGCGTTGCACTTCTTGCTGTTTTTCAGAGCGCTTCCAAAATCATAACCCTCAAAAAGAGATGGCAACTAGCACTCTCCAAGGGTGTTCACTTTGTTTGCAACTTGCTGTTGTTGTTTGTAACAGTTTACTCACACCTTTTGCTCGTTGCTGCTGGCCTTGAAGCCCCTTTTCTCTATCTTTATGCTTTAGTCTACTTCTTGCAGAGTATAAACTTTGTAAGAATAATAATGAGGCTTTGGCTTTGCTGGAAATGCCGTTCCAAAAACCCATTACTTTATGATGCCAACTATTTTCTTTGCTGGCATACTAATTGTTACGACTATTGTATACCTTACAATAGTGTAACTTCTTCAATTGTCATTACTTCAGGTGATGGCACAACAAGTCCTATTTCTGAACATGACTACCAGATTGGTGGTTATACTGAAAAATGGGAATCTGGAGTAAAAGACTGTGTTGTATTACACAGTTACTTCACTTCAGACTATTACCAGCTGTACTCAACTCAATTGAGTACAGACACTGGTGTTGAACATGTTACCTTCTTCATCTACAATAAAATTGTTGATGAGCCTGAAGAACATGTCCAAATTCACACAATCGACGGTTCATCCGGAGTTGTTAATCCAGTAATGGAACCAATTTATGATGAACCGACGACGACTACTAGCGTGCCTTTGTAAGCACAAGCTGATGAGTACGAACTTATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAATAGCGTACTTCTTTTTCTTGCTTTCGTGGTATTCTTGCTAGTTACACTAGCCATCCTTACTGCGCTTCGATTGTGTGCGTACTGCTGCAATATTGTTAACGTGAGTCTTGTAAAACCTTCTTTTTACGTTTACTCTCGTGTTAAAAATCTGAATTCTTCTAGAGTTCCTGATCTTCTGGTCTAAACGAACTAAATATTATATTAGTTTTTCTGTTTGGAACTTTAATTTTAGCCATGGCAGATTCCAACGGTACTATTACCGTTGAAGAGCTTAAAAAGCTCCTTGAACAATGGAACCTAGTAATAGGTTTCCTATTCCTTACATGGATTTGTCTTCTACAATTTGCCTATGCCAACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGTTATGGCCAGTAACTTTAGCTTGTTTTGTGCTTGCTGCTGTTTACAGAATAAATTGGATCACCGGTGGAATTGCTATCGCAATGGCTTGTCTTGTAGGCTTGATGTGGCTCAGCTACTTCATTGCTTCTTTCAGACTGTTTGCGCGTACGCGTTCCATGTGGTCATTCAATCCAGAAACTAACATTCTTCTCAACGTGCCACTCCATGGCACTATTCTGACCAGACCGCTTCTAGAAAGTGAACTCGTAATCGGAGCTGTGATCCTTCGTGGACATCTTCGTATTGCTGGACACCATCTAGGACGCTGTGACATCAAGGACCTGCCTAAAGAAATCACTGTTGCTACATCACGAACGCTTTCTTATTACAAATTGGGAGCTTCGCAGCGTGTAGCAGGTGACTCAGGTTTTGCTGCATACAGTCGCTACAGGATTGGCAACTATAAATTAAACACAGACCATTCCAGTAGCAGTGACAATATTGCTTTGCTTGTACAGTAAGTGACAACAGATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGGACTTTTAAAGTTTCCATTTGGAATCTTGATTACATCATAAACCTCATAATTAAAAATTTATCTAAGTCACTAACTGAGAATAAATATTCTCAATTAGATGAAGAGCAACCAATGGAGATTGATTAAACGAACATGAAAATTATTCTTTTCTTGGCACTGATAACACTCGCTACTTGTGAGCTTTATCACTACCAAGAGTGTGTTAGAGGTACAACAGTACTTTTAAAAGAACCTTGCTCTTCTGGAACATACGAGGGCAATTCACCATTTCATCCTCTAGCTGATAACAAATTTGCACTGACTTGCTTTAGCACTCAATTTGCTTTTGCTTGTCCTGACGGCGTAAAACACGTCTATCAGTTACGTGCCAGATCAGTTTCACCTAAACTGTTCATCAGACAAGAGGAAGTTCAAGAACTTTACTCTCCAATTTTTCTTATTGTTGCGGCAATAGTGTTTATAACACTTTGCTTCACACTCAAAAGAAAGACAGAATGATTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTTGTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTGCAAGATCATAATGAAACTTGTCACGCCTAAACGAACATGAAATTTCTTGTTTTCTTAGGAATCATCACAACTGTAGCTGCATTTCACCAAGAATGTAGTTTACAGTCATGTACTCAACATCAACCATATGTAGTTGATGACCCGTGTCCTATTCACTTCTATTCTAAATGGTATATTAGAGTAGGAGCTAGAAAATCAGCACCTTTAATTGAATTGTGCGTGGATGAGGCTGGTTCTAAATCACCCATTCAGTACATCGATATCGGTAATTATACAGTTTCCTGTTTACCTTTTACAATTAATTGCCAGGAACCTAAATTGGGTAGTCTTGTAGTGCGTTGTTCGTTCTATGAAGACTTTTTAGAGTATCATGACGTTCGTGTTGTTTTAGATTTCATCTAAACGAACAAACTAAAATGTCTGATAATGGACCCCAAAATCAGCGAAATGCACCCCGCATTACGTTTGGTGGACCCTCAGATTCAACTGGCAGTAACCAGAATGGAGAACGCAGTGGGGCGCGATCAAAACAACGTCGGCCCCAAGGTTTACCCAATAATACTGCGTCTTGGTTCACCGCTCTCACTCAACATGGCAAGGAAGACCTTAAATTCCCTCGAGGACAAGGCGTTCCAATTAACACCAATAGCAGTCCAGATGACCAAATTGGCTACTACCGAAGAGCTACCAGACGAATTCGTGGTGGTGACGGTAAAATGAAAGATCTCAGTCCAAGATGGTATTTCTACTACCTAGGAACTGGGCCAGAAGCTGGACTTCCCTATGGTGCTAACAAAGACGGCATCATATGGGTTGCAACTGAGGGAGCCTTGAATACACCAAAAGATCACATTGGCACCCGCAATCCTGCTAACAATGCTGCAATCGTGCTACAACTTCCTCAAGGAACAACATTGCCAAAAGGCTTCTACGCAGAAGGGAGCAGAGGCGGCAGTCAAGCCTCTTCTCGTTCCTCATCACGTAGTCGCAACAGTTCAAGAAATTCAACTCCAGGCAGCAGTAGGGGAACTTCTCCTGCTAGAATGGCTGGCAATGGCGGTGATGCTGCTCTTGCTTTGCTGCTGCTTGACAGATTGAACCAGCTTGAGAGCAAAATGTCTGGTAAAGGCCAACAACAACAAGGCCAAACTGTCACTAAGAAATCTGCTGCTGAGGCTTCTAAGAAGCCTCGGCAAAAACGTACTGCCACTAAAGCATACAATGTAACACAAGCTTTCGGCAGACGTGGTCCAGAACAAACCCAAGGAAATTTTGGGGACCAGGAACTAATCAGACAAGGAACTGATTACAAACATTGGCCGCAAATTGCACAATTTGCCCCCAGCGCTTCAGCGTTCTTCGGAATGTCGCGCATTGGCATGGAAGTCACACCTTCGGGAACGTGGTTGACCTACACAGGTGCCATCAAATTGGATGACAAAGATCCAAATTTCAAAGATCAAGTCATTTTGCTGAATAAGCATATTGACGCATACAAAACATTCCCACCAACAGAGCCTAAAAAGGACAAAAAGAAGAAGGCTGATGAAACTCAAGCCTTACCGCAGAGACAGAAGAAACAGCAAACTGTGACTCTTCTTCCTGCTGCAGATTTGGATGATTTCTCCAAACAATTGCAACAATCCATGAGCAGTGCTGACTCAACTCAGGCCTAAACTCATGCAGACCACACAAGGCAGATGGGCTATATAAACGTTTTCGCTTTTCCGTTTACGATATATAGTCTACTCTTGTGCAGAATGAATTCTCGTAACTACATAGCACAAGTAGATGTAGTTAACTTTAATCTCACATAGCAATCTTTAATCAGTGTGTAACATTAGGGAGGACTTGAAAGAGCCACCACATTTTCACCGAGGCCACGCGGAGTACGATCGAGTGTACAGTGAACAATGCTAGGGAGAGCTGCCTATATGGAAGAGCCCTAATGTGTAAAATTAATTTTAGTAGTGCTATCCCCATGTGATTTTAATAGCTTCTTAGGAGAATGACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    {
+        "record": {
+            "molecule_type": "RNA",
+            "topology": "linear",
+            "data_file_division": "VRL",
+            "date": "24-NOV-2020",
+            "accessions": [
+                "MN996532"
+            ],
+            "sequence_version": 2,
+            "keywords": [
+                ""
+            ],
+            "source": "Bat coronavirus RaTG13",
+            "organism": [
+                "Bat coronavirus RaTG13"
+            ],
+            "taxonomy": [
+                "Viruses",
+                "Riboviria",
+                "Orthornavirae",
+                "Pisuviricota",
+                "Pisoniviricetes",
+                "Nidovirales",
+                "Cornidovirineae",
+                "Coronaviridae",
+                "Orthocoronavirinae",
+                "Betacoronavirus",
+                "Sarbecovirus"
+            ],
+            "references": [
+                {
+                    "title": "A pneumonia outbreak associated with a new coronavirus of probable bat origin",
+                    "authors": "Zhou,P., Yang,X.-L., Wang,X.-G., Hu,B., Zhang,L., Zhang,W., Si,H.-R., Zhu,Y., Li,B., Huang,C.-L., Chen,H.-D., Chen,J., Luo,Y., Guo,H., Jiang,R.-D., Liu,M.-Q., Chen,Y., Shen,X.-R., Wang,X., Zheng,X.-S., Zhao,K., Chen,Q.-J., Deng,F., Liu,L.-L., Yan,B., Zhan,F.-X., Wang,Y.-Y., Xiao,G.-F. and Shi,Z.-L.",
+                    "journal": "Nature 579 (7798), 270-273 (2020)",
+                    "pubmed_id": ""
+                },
+                {
+                    "title": "Direct Submission",
+                    "authors": "Zhu,Y., Yu,P., Li,B., Hu,B., Si,H.R., Yang,X.L., Zhou,P. and Shi,Z.L.",
+                    "journal": "Submitted (27-JAN-2020) CAS Key Laboratory of Special Pathogens, Wuhan Institute of Virology, Center for Biosafety Mega-Science, Chinese Academy of Sciences, No. 44 Xiao Hong Shan, Wuhan, Hubei 430071, China",
+                    "pubmed_id": ""
+                }
+            ],
+            "comment": "On Oct 13, 2020 this sequence version replaced MN996532.1.",
+            "structured_comment": {
+                "Assembly-Data": {
+                    "Assembly Method": "CLC Genomics Workbench v. 12.0",
+                    "Sequencing Technology": "Illumina"
+                }
+            },
+            "mol_type": [
+                "genomic RNA"
+            ],
+            "isolate": [
+                "RaTG13"
+            ],
+            "isolation_source": [
+                "fecal swab"
+            ],
+            "host": [
+                "Rhinolophus affinis"
+            ],
+            "db_xref": [
+                "taxon:2709072"
+            ],
+            "country": [
+                "China"
+            ],
+            "collection_date": [
+                "24-Jul-2013"
+            ],
+            "note": [
+                "former lab designation: Bat coronavirus Ra4991"
+            ]
+        },
+        "features": [
+            {
+                "id": "MN996532.2",
+                "type": "source",
+                "title": "Bat coronavirus RaTG13, complete genome",
+                "annotations": {
+                    "organism": [
+                        "Bat coronavirus RaTG13"
+                    ],
+                    "mol_type": [
+                        "genomic RNA"
+                    ],
+                    "isolate": [
+                        "RaTG13"
+                    ],
+                    "isolation_source": [
+                        "fecal swab"
+                    ],
+                    "host": [
+                        "Rhinolophus affinis"
+                    ],
+                    "db_xref": [
+                        "taxon:2709072"
+                    ],
+                    "country": [
+                        "China"
+                    ],
+                    "collection_date": [
+                        "24-Jul-2013"
+                    ],
+                    "note": [
+                        "former lab designation: Bat coronavirus Ra4991"
+                    ]
+                },
+                "locations": [
+                    [
+                        1,
+                        29855,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "orf1ab",
+                "type": "gene",
+                "gene": "orf1ab",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "orf1ab"
+                    ]
+                },
+                "locations": [
+                    [
+                        266,
+                        21552,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63299.2",
+                "type": "CDS",
+                "gene": "orf1ab",
+                "product": "orf1ab polyprotein",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "orf1ab"
+                    ],
+                    "ribosomal_slippage": [
+                        ""
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "orf1ab polyprotein"
+                    ],
+                    "protein_id": [
+                        "QHR63299.2"
+                    ],
+                    "translation": [
+                        "MESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEALSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELNGIQYGRSGETLGVLVPYVGETPVVYRKVLLRKNGNKGAGGHSYGADLKSFDLGDELGTDPYEDFQENWNTKHSSGVTRDLMRELNGGAYTRYVDNNFCGPDGYPLECIKDLLARAGKASCTLSEQLDFIDTKRGVYCCREHEHEIAWYTERSEKSYELQTPFEIKLAKKFDTFNGECPNFVFPLNSTIKTIQPRVEKKKLDGFMGRIRSVYPVASPNECNQMCLSTLMKCDHCGETSWQTGDFVKATCEFCGTENLTKEGATTCGYLPQNAVVKIYCPACHNPEVGPEHSLAEYHNESGLKPILRKGGRTIAFGGCVFSYVGCYNKCAYWIPRASANIGCNHTGVVGEGSEGLNDNLLEILQKEKVNINIVGDFKLNEEIAIILASFSASTSAFVETVKGLDYKTFKQIVESCGNFKVTKGKAKKGAWNIGEQKSILSPLYAFASEAARVVRSIFSRTLETAQNSVRALQKAAITILDGISQYSLRLIDAMMFTSDLVTNNLVVMAYITGGVVQLTSQWLTNIFGTVYEKLKPVLDWLEEKFKEGVEFLRDGWEIVKFISTCACEIVGGQIVTCAKEIKESVQTFFKLVNKFLALCADSIIIGGAKLKALNLGETFVTHSKGLYRKCVKPKEETGLLMPLKAPKEIIFLEGETLPTEVLTEEVVLKTGDLQPLEQPTSEAVEAPLVGTPVCINGLMLLEIKDTEKYCALAPNMMVTNNTFTLKGGAPTKVTFGDDTVIEVQGYKSVNITFELDERIDKVLNEKCSTYTVELGTEVNEFACVVADAVIKTLQPVSELLIPLGIDLDEWGMATYYLFDESGEFKLASHMYCSFYPPDEDEEEGDCEEEDFEPPTQYEYGTEDDYQGKSLEFGATSVTPQPEEELEEDWLDDDSQQTVVQEDDSEVNQTTITQSIAEVQPQLEMEPTPVVQTEVNSFSGYLKLTDNVYIKNADIVEEAKKVKPTIVVNAANVYLKHGGGVAGALNKATNNAMQVESDHYIATNGPLKVGGGCVLSGHNLAKNCLHVVGPNVNRGEDIQLLKSAYENFNQHDVLLAPLLSAGIFGADPVHSLRVCVDTVRTNVYLAVFDKNLYDKLVSSFLEMKSEKQVEQKTAEIPKEEVKSSITESKLSVEQRQQVDKKIKACVEEVTTTLEETKFLTENLLLYIDINGNLHPDSATLVNDIDITFLKKDAPYIVGDVVQEGVLTAVVIPTKKAGGTTEMLTKALRKVPTDNYITTYPGQGLNGYTVEEARTVLKKCKSAFYILPSIISNEKQEILGTVSWNLREMLAHAEETRKLMPVCMETKAIVSTIQRKYKGIKIQEGVVDYGARFYFYTSKTTVASLINTLNDLNETLVTMPLGYVTHGLNLEEAARYMRSLKVPATVSVSSPDAVTAYNGYLTSSSKTPEEHFIETISLAGSYKDWSYSGQSTQLGIEFLKRGDKSVYYTSNPITFHLDGEVITFDNLKILLSLKEVRTIKVFTTVDNINLHTQVVDMSMTYGQQFGPTYLDGADVTKIKPHNSHEGKTFYVLPNDDTLRAEAFEYYHTTDPSFLGRYMSALNHTKKWKYPQVNGLTSIKWADNNCYLATALLTLQQIELKFNPPALQDAYYRARAGEAANFCALILAYCNKTVGELGDVRETMNYLFQHANLDSCKRVLNVVCKTCGQQQTTLKGVEAVMYMGTLSYEQLKKGVQIPCTCGKQATQYLVQQESPFVMMSAPPAQYELKHGTFICASEYTGNYQCGHYKHITSKETLYCIDGALLTKSSEYKGPITDIFYKENSYITTIKPVIYKLDGVVCTEIDPKLDNYYKKDNSYFTEQPIDLVPNQPYPNASFDNFKFVCDNIKLADDLNQLTGYKKPASREFKVTFFPDLNGDVVAIDYKHYTPSFKKGAKLLHKPIVWHVNNATNKATYKPNTWCIRCLWNTKPVETSNSFDVLKSEDTQGMDNLACEDLKPVSEEVVENPTIQKDILECNVKTTEVVGDIILKPANDGLKITEEVGHTDLMAAYVDNSSLTIKKPNELSRVLGLKTLVTHGLAAVNSVPWDTIANYAKPFLNKVVSTTTNIVTRCLNRVCTNYMPYFFTLLLQLCTFTRSTNSRIKASMPTTIAKNTVKSVGKFCLEASFNYLKSPNFFKLINIIIWFLLLSVCLGSLIYSTAALGVLMSNLGMPSYCTGYREGYLNSTNVTTAIYCTGSIPCSVCLSGLDSLDTYPSLETIQITISSFKWDLTAFGLVAEWFLAYILFTRFFYVLGLAAIMQLFFSYFAVHFISNSWLMWLIINLVQMAPISAMVRMYIFFASFYYVWKSYVHVVDGCTSSTCMMCYKRNRATRVECTTIVNGVRRSFYVYANGGKGFCKLHNWNCVNCDTFCAGSTFISDEVARDLSLQFKRPINPTDQSSYIVDSVTVKNGSIHLYFDKAGQKTYERHSLSHFVNLDNLRASNTKGSLPINVIVFDGKSKCEESSAKSASVYYSQLMCQPILLLDQALVSDVGDSTEVAVKMFDAYVNTFSSTFNVPMEKLKTLVATAEAELAKNVSLDNVLSTFISAARQGFVDSDVETKDVVECLKLSHQSDIEVTGDSCNNYMLTYNKVENMTPRDLGACIDCSARHINAQVAKSHNIALIWNVKDFMSLSEQLRKQIRSAAKKNNLPFKLTCATTRQVVNVVTTKIALKGGKIVNNWLKQLIKVTLVFLFVAAIFYLITPVHVMSKHTDFSSEIIGYKAIDGGVTRDIASTDTCFANKHADFDTWFSQRGGSYTNDKACPLIAAVITREVGFVVPGLPGTILRTTNGDFLHFLPRVFSAVGNICYTPSKLIEYTDFATSACVLAAECTIFKDASGKPVPYCYDTNVLEGSVAYESLRPDTRYVLMDGSIIQFPNTYLEGSVRVVTTFDSEYCRHGTCERSEAGVCVSTSGRWVLNNDYYRSLPGVFCGVDAVNLLTNMFTPLIQPIGALDISASIVAGGIVAIVVTCLAYYFMRFRRAFGEYSHVVAFNTLLFLMSFTVLCLTPVYSFLPGVYSVIYLYLTFYLTNDVSFLAHIQWMVMFTPLVPFWITIVYVICISTKHFYWFFSNYLKRRVVFNGVSFSTFEEAALCTFLLNKEMYLKLRSDVLLPLTQYNRYLALYNKYKYFSGAMDTTSYREAACCHLAKALNDFSNSGSDVLYQPPQTSITSAVLQSGFRKMAFPSGKVEGCMVQVTCGTTTLNGLWLDDVVYCPRHVICTSEDMLNPNYEDLLIRKSNHNFLVQAGNVQLRVIGHSMQNCVLKLKVDTANTKTPKYKFVRIQPGQTFSVLACYNGSPSGVYQCAMRPNFTIKGSFLNGSCGSVGFNIDYDCVSFCYMHHMELPTGVHAGTDLEGTFYGPFVDRQTAQAAGTDTTITVNVLAWLYAAVINGDRWFLNRFTTTLNDFNLVAMKYNYEPLTQDHVDILGPLSAQTGIAVLDMCASLKELLQNGMNGRTILGSALLEDEFTPFDVVRQCSGVTFQSAVKRTIKGTHHWLLLTILTSLLVLVQSTQWSLFFFVYENAFLPFAMGIIAMSAFAMMFVKHKHAFLCLFLLPSLATVAYFNMVYMPASWVMRIMTWLDMVDTSLSGFKLKDCVMYASAVVLLILMTARTVYDDGARRVWTLMNVLTLVYKVYYGNALDQAISMWALIISVTSNYSGVVTTVMFLARGIVFMCVEYCPIFFITGNTLQCIMLVYCFLGYFCTCYFGLFCLLNRYFRLTLGVYDYLVSTQEFRYMNSQGLLPPKNSIDAFKLNIKLLGVGGKPCIKVATVQSKMSDVKCTSVVLLSVLQQLRVESSSKLWAQCVQLHNDILLAKDTTEAFEKMVSLLSVLLSMQGAVDINKLCEEMLDNRATLQAIASEFSSLPSYAAFATAQEAYEQAVANGDSEVVLKKLKKSLNVAKSEFDRDAAMQRKLEKMADQAMTQMYKQARSEDKRAKVTSAMQTMLFTMLRKLDNDALNNIINNARDGCVPLNIIPLTTAAKLMVVIPDYNTYKNTCDGTTFTYASALWEIQQVVDADSKIVQLSEISMDNSPNLAWPLIVTALRANSAVKLQNNELSPVALRQMSCAAGTTQTACTDDNALAYYNTTKGGRFVLALLSDLQDLKWARFPKSDGTGTIYTELEPPCRFVTDTPKGPKVKYLYFIKGLNNLNRGMVLGSLAATVRLQAGNATEVPANSTVLSFCAFAVDAAKAYKDYLASGGQPITNCVKMLCTHTGTGQAITVTPEANMDQESFGGASCCLYCRCHIDHPNPKGFCDLKGKYVQIPTTCANDPVGFTLKNTVCTVCGMWKGYGCSCDQLREPMLQSADAQSFLNRVCGVSAARLTPCGTGTSTDVVYRAFDIYNDKVAGFAKFLKTNCCRFQEKDEDDNLIDSYFVVKRHTFSNYQHEETIYNLLKDCPAVAKHDFFKFRIDGDMVPHISRQRLTKYTMADLVYALRHFDEGNCDTLREILVTYNCCDDDYFNKKDWYDFVENPDILRVYANLGERVRQALLKTVQFCDAMRDAGIVGVLTLDNQDLNGNWYDFGDFIQTTPGSGVPIVDSYYSLLMPILTLTRALTAESHVDTDLTKPYIKWDLLKYDFTEERLKLFDRYFKYWDQTYHPNCVNCLDDRCILHCANFNVLFSTVFPPTSFGPLVRKIFVDGVPFVVSTGYHFRELGVVHNQDVNLHSSRLSFKELLVYAADPAMHAASGNLLLDKRTTCFSVAALTNNVAFQTVKPGNFNKDFYDFAVSKGFFKEGSSVELKHFFFAQDGNAAISDYDYYRYNLPTMCDIRQLLFVVEVVDKYFDCYDGGCINANQVIVNNLDKSAGFPFNKWGKARLYYDSMSYEDQDALFAYTKRNVIPTITQMNLKYAISAKNRARTVAGVSICSTMTNRQFHQKLLKSIAATRGATVVIGTSKFYGGWHNMLKTVYSDVENPHLMGWDYPKCDRAMPNMLRIMASLVLARKHTTCCSLSHRFYRLANECAQVLSEMVMCGGSLYVKPGGTSSGDATTAYANSVFNICQAVTANVNALLSTDGNKIADKHVRNLQHRLYECLYRNRDVDTDFVNEFYAYLRKHFSMMILSDDAVVCFNSTYASQGLVASIKNFKSVLYYQNNVFMSEAKCWTETDLTKGPHEFCSQHTMLVKQGDDYVYLPYPDPSRILGAGCFVDDIVKTDGTLMIERFVSLAIDAYPLTKHPNQEYADVFHLYLQYIRKLHDELTGHMLDMYSVMLTNDNTSRYWEPEFYEAMYTPHTVLQAVGACVLCNSQTSLRCGACIRRPFLCCKCCYDHVISTSHKLVLSVNPYVCNAPGCDVTDVTQLYLGGMSYYCKSHKPPISFPLCANGQVFGLYKNTCVGSDNVTDFNAIATCDWTNAGDYILANTCTERLKLFAAETLKATEETFKLSYGIATVREVLSDRELHLSWEVGKPRPPLNRNYVFTGYRVTKNSKVQIGEYTFEKGDYGDAVVYRGTTTYKLNVGDYFVLTSHTVMPLSAPTLVPQEHYVRITGLYPTLNISDEFSSNVANYQKVGMQKYSTLQGPPGTGKSHFAIGLALYYPSARIVYTACSHAAVDALCEKALKYLPIDKCSRIIPARARVECFDKFKVNSTLEQYVFCTVNALPETTADIVVFDEISMATNYDLSVVNARLRAKHYVYIGDPAQLPAPRTLLTKGTLEPEYFNSVCRLMKTIGPDMFLGTCRRCPAEIVDTVSALVYDNKLKAHKDKSAQCFKMFYKGVITHDVSSAINRPQIGVVREFLTRNPTWRKAVFISPYNSQNAVASKILGLPTQTVDSSQGSEYDYVIFTQTTETAHSCNVNRFNVAITRAKVGILCIMSDRDLYDKLQFTSLEIPRRNVATLQAENVTGLFKDCSKVITGLHPTQAPTHLSVDTKFKTEGLCVDIPGIPKDMTYRRLISMMGFKMNYQVNGYPNMFITREEAVRHVRAWIGFDVEGCHATREAIGTNLPLQLGFSTGVNLVAVPTGYVDTPNNTDFSRVSAKPPPGDQFKHLIPLMYKGLPWNVVRIKIVQMLSDTLKNLSDRVVFVLWAHGFELTSMKYFVKIGPERTCCLCDKRATCFSTASDTYACWHHSIGFDYVYNPFMIDVQQWGFTGNLQSNHDLYCQVHGNAHVASCDAIMTRCLAVHECFVKRVDWTIEYPIIGDELKINAACRKVQHMVVKAALLADKFPVLHDIGNPKAIKCVPQADVEWKFYDAQPCSDKAYKIEELFYSYATHSDKFTDGVCLFWNCNVDRYPANSIVCRFDTRVLSNLNLPGCDGGSLYVNKHAFHTPAFDKSAFVNLKQLPFFYYSDSPCESHGKQVVSDIDYVPLKSATCITRCNLGGAVCRHHANEYRLYLDAYNMMISAGFSLWVYKQFDTYNLWNTFTRLQSLENVAFNVVNKGHFDGQQGEVPVSIINNTVYTKVDGVDVELFENKTTLPVNVAFELWAKRNIKPVPEVKILNNLGVDIAANTVIWDYKRDAPAHISTIGVCSMTDIAKKPTENICAPLTVFFDGRVNGQVDLFRNARNGVLITEGSVKGLQPSVGPKQASLNGVTLIGEALKTQFNYYKKVNGVVQQLPETYFTQSRNLKEFKPRSQMEIDFLELAMDEFIERYKLEGYAFEHIVYGDFSHRQLGGLHLLIGLAKRSKESPLELEDFIPMDSTVKNYFITDAQTGSSKCVCSVIDLLLDDFVEIIKSQDLSVVSKVVKVTIDYTEISFMLWCKDGHVETFYPKLQSSQAWQPGVAMPNLYKMQRMLLEKCDLQNYGDSATLPKGIMMNVAKYTQLCQYLNTLTLAVPYNMRVIHFGAGSDKGVAPGTAVLRQWLPTGTLLVDSDLNDFVSDADSTLIGDCATVHTANKWDLIISDMYDPKTKNVTKENDSKEGFFTYICGFIQQKLALGGSVAIKITEHSWNADLYKLMGHFAWWTAFVTNVNASSSEAFLIGCNYLGKPREQIDGYVMHANYIFWRNTNPIQLSSYSLFDMSKFPLKLRGTAVMSLKEGQINDMILSLLSKGRLIIRENNRVVISSDVLVNN"
+                    ]
+                },
+                "locations": [
+                    [
+                        266,
+                        13465,
+                        1
+                    ],
+                    [
+                        13465,
+                        21552,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "S",
+                "type": "gene",
+                "gene": "S",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "S"
+                    ]
+                },
+                "locations": [
+                    [
+                        21560,
+                        25369,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63300.2",
+                "type": "CDS",
+                "gene": "S",
+                "product": "spike glycoprotein",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "S"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "spike glycoprotein"
+                    ],
+                    "protein_id": [
+                        "QHR63300.2"
+                    ],
+                    "translation": [
+                        "MFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSSTRGVYYPDKVFRSSVLHLTQDLFLPFFSNVTWFHAIHVSGTNGIKRFDNPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVYSSANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGYFKIYSKHTPINLVRDLPPGFSALEPLVDLPIGINITRFQTLLALHRSYLTPGDSSSGWTAGAAAYYVGYLQPRTFLLKYNENGTITDAVDCALDPLSETKCTLKSFTVEKGIYQTSNFRVQPTDSIVRFPNITNLCPFGEVFNATTFASVYAWNRKRISNCVADYSVLYNSTSFSTFKCYGVSPTKLNDLCFTNVYADSFVITGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSKHIDAKEGGNFNYLYRLFRKANLKPFERDISTEIYQAGSKPCNGQTGLNCYYPLYRYGFYPTDGVGHQPYRVVVLSFELLNAPATVCGPKKSTNLVKNKCVNFNFNGLTGTGVLTESNKKFLPFQQFGRDIADTTDAVRDPQTLEILDITPCSFGGVSVITPGTNASNQVAVLYQDVNCTEVPVAIHADQLTPTWRVYSTGSNVFQTRAGCLIGAEHVNNSYECDIPIGAGICASYQTQTNSRSVASQSIIAYTMSLGAENSVAYSNNSIAIPTNFTISVTTEILPVSMTKTSVDCTMYICGDSTECSNLLLQYGSFCTQLNRALTGIAVEQDKNTQEVFAQVKQIYKTPPIKDFGGFNFSQILPDPSKPSKRSFIEDLLFNKVTLADAGFIKQYGDCLGDIAARDLICAQKFNGLTVLPPLLTDEMIAQYTSALLAGTITSGWTFGAGAALQIPFAMQMAYRFNGIGVTQNVLYENQKLIANQFNSAIGKIQDSLSSTASALGKLQDVVNQNAQALNTLVKQLSSNFGAISSVLNDILSRLDKVEAEVQIDRLITGRLQSLQTYVTQQLIRAAEIRASANLAATKMSECVLGQSKRVDFCGKGYHLMSFPQSAPHGVVFLHVTYVPAQEKNFTTAPAICHDGKAHFPREGVFVSNGTHWFVTQRNFYEPQIITTDNTFVSGSCDVVIGIVNNTVYDPLQPELDSFKEELDKYFKNHTSPDVDLGDISGINASVVNIQKEIDRLNEVAKNLNESLIDLQELGKYEQYIKWPWYIWLGFIAGLIAIIMVTIMLCCMTSCCSCLKGCCSCGSCCKFDEDDSEPVLKGVKLHYT"
+                    ]
+                },
+                "locations": [
+                    [
+                        21560,
+                        25369,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "NS3",
+                "type": "gene",
+                "gene": "NS3",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS3"
+                    ]
+                },
+                "locations": [
+                    [
+                        25378,
+                        26205,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63301.1",
+                "type": "CDS",
+                "gene": "NS3",
+                "product": "nonstructural protein NS3",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS3"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "nonstructural protein NS3"
+                    ],
+                    "protein_id": [
+                        "QHR63301.1"
+                    ],
+                    "translation": [
+                        "MDLFMRIFTLGTVTLKQGEIKDATPSDSVRATATIPIQASLPFGWLIVGVAFLAVFQSASKIITLKKRWQLALSKGIHFICNLLLLFVTVYSHLLLVAAGLEAPFLYLYALVYFLQSINFVRIIMRLWLCWKCRSKNPLLYDANYFLCWHTNCYDYCIPYNSVTSSIVITSGDGTTSPISEHDYQIGGYTEKWESGVKDCVVLHSYFTSDYYQLYSTQLSTDTGVEHVTFFIYNKIVDEPEEHVQIHTIDGSSGVVNPAMEPIYDEPTTTTSVPL"
+                    ]
+                },
+                "locations": [
+                    [
+                        25378,
+                        26205,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "E",
+                "type": "gene",
+                "gene": "E",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "E"
+                    ]
+                },
+                "locations": [
+                    [
+                        26230,
+                        26457,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63302.1",
+                "type": "CDS",
+                "gene": "E",
+                "product": "envelope protein",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "E"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "envelope protein"
+                    ],
+                    "protein_id": [
+                        "QHR63302.1"
+                    ],
+                    "translation": [
+                        "MYSFVSEETGTLIVNSVLLFLAFVVFLLVTLAILTALRLCAYCCNIVNVSLVKPSFYVYSRVKNLNSSRVPDLLV"
+                    ]
+                },
+                "locations": [
+                    [
+                        26230,
+                        26457,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "M",
+                "type": "gene",
+                "gene": "M",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "M"
+                    ]
+                },
+                "locations": [
+                    [
+                        26508,
+                        27173,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63303.1",
+                "type": "CDS",
+                "gene": "M",
+                "product": "membrane protein",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "M"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "membrane protein"
+                    ],
+                    "protein_id": [
+                        "QHR63303.1"
+                    ],
+                    "translation": [
+                        "MADNGTITVEELKKLLEQWNLVIGFLFLTWICLLQFAYANRNRFLYIIKLIFLWLLWPVTLACFVLAAVYRINWITGGIAIAMACLVGLMWLSYFIASFRLFARTRSMWSFNPETNILLNVPLHGTILTRPLLESELVIGAVILRGHLRIAGHHLGRCDIKDLPKEITVATSRTLSYYKLGASQRVAGDSGFAAYSRYRIGNYKLNTDHSSSSDNIALLVQ"
+                    ]
+                },
+                "locations": [
+                    [
+                        26508,
+                        27173,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "NS6",
+                "type": "gene",
+                "gene": "NS6",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS6"
+                    ]
+                },
+                "locations": [
+                    [
+                        27184,
+                        27369,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63304.1",
+                "type": "CDS",
+                "gene": "NS6",
+                "product": "nonstructural protein NS6",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS6"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "nonstructural protein NS6"
+                    ],
+                    "protein_id": [
+                        "QHR63304.1"
+                    ],
+                    "translation": [
+                        "MFHLVDFQVTIAEILLIIMRTFKVSIWNLDYIINLIIKNLSKSLTENKYSQLDEEQPMEID"
+                    ]
+                },
+                "locations": [
+                    [
+                        27184,
+                        27369,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "NS7a",
+                "type": "gene",
+                "gene": "NS7a",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS7a"
+                    ]
+                },
+                "locations": [
+                    [
+                        27375,
+                        27740,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63305.1",
+                "type": "CDS",
+                "gene": "NS7a",
+                "product": "nonstructural protein NS7a",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS7a"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "nonstructural protein NS7a"
+                    ],
+                    "protein_id": [
+                        "QHR63305.1"
+                    ],
+                    "translation": [
+                        "MKIILFLVLVTLATCELYHYQECVRGTTVLLKEPCSSGTYEGNSPFHPLADNKFALTCFSTQFAFACPDGVKHVYQLRARSVSPKLFIRQEEVQELYSPIFLIIAAIVFITLCFTLKRKTE"
+                    ]
+                },
+                "locations": [
+                    [
+                        27375,
+                        27740,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "NS7b",
+                "type": "gene",
+                "gene": "NS7b",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS7b"
+                    ]
+                },
+                "locations": [
+                    [
+                        27737,
+                        27868,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63306.1",
+                "type": "CDS",
+                "gene": "NS7b",
+                "product": "nonstructural protein NS7b",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS7b"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "nonstructural protein NS7b"
+                    ],
+                    "protein_id": [
+                        "QHR63306.1"
+                    ],
+                    "translation": [
+                        "MSELSLIDFYLCFLAFLLFLVLIMLIIFWFSLELQDHNETCHA"
+                    ]
+                },
+                "locations": [
+                    [
+                        27737,
+                        27868,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "NS8",
+                "type": "gene",
+                "gene": "NS8",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS8"
+                    ]
+                },
+                "locations": [
+                    [
+                        27875,
+                        28240,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63307.1",
+                "type": "CDS",
+                "gene": "NS8",
+                "product": "nonstructural protein NS8",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "NS8"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "nonstructural protein NS8"
+                    ],
+                    "protein_id": [
+                        "QHR63307.1"
+                    ],
+                    "translation": [
+                        "MKLLVFLGILTTVTAFHQECSLQSCAQHQPYVVDDPCPIHFYSKWYIRVGARKSAPLIELCVDEVGSKSPIQYIDIGNYTVSCSPFTINCQEPKLGSLVVRCSFYEDFLEYHDVRVVLDFI"
+                    ]
+                },
+                "locations": [
+                    [
+                        27875,
+                        28240,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "N",
+                "type": "gene",
+                "gene": "N",
+                "product": "",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "N"
+                    ]
+                },
+                "locations": [
+                    [
+                        28255,
+                        29514,
+                        1
+                    ]
+                ]
+            },
+            {
+                "id": "QHR63308.1",
+                "type": "CDS",
+                "gene": "N",
+                "product": "nucleocapsid protein",
+                "locus": "",
+                "annotations": {
+                    "gene": [
+                        "N"
+                    ],
+                    "codon_start": [
+                        "1"
+                    ],
+                    "product": [
+                        "nucleocapsid protein"
+                    ],
+                    "protein_id": [
+                        "QHR63308.1"
+                    ],
+                    "translation": [
+                        "MSDNGPQNQRNAPRITFGGPSDSTGSNQNGERSGARPKQRRPQGLPNNTASWFTALTQHGKEDLKFPRGQGVPINTNSSPDDQIGYYRRATRRIRGGDGKMKDLSPRWYFYYLGTGPEAGLPYGANKDGIIWVATEGALNTPKDHIGTRNPANNAAIVLQLPQGTTLPKGFYAEGSRGGSQASSRSSSRSRNSSRNSTPGSSRGTSPARMAGNGSDAALALLLLDRLNQLESKMSGKGQQQQSQTVTKKSAAEASKKPRQKRTATKQYNVTQAFGRRGPEQTQGNFGDQELIRQGTDYKHWPQIAQFAPSASAFFGMSRIGMEVTPSGTWLTYTGAIKLDDKDPNFKDQVILLNKHIDAYKTFPPTEPKKDKKKKADETQALPQRQKKQQTVTLLPAADLDDFSKQLQQSMSSADSTQA"
+                    ]
+                },
+                "locations": [
+                    [
+                        28255,
+                        29514,
+                        1
+                    ]
+                ]
+            }
+        ],
+        "source": "ATTAAAGGTTTATACCTTTCCAGGTAACAAACCAACGAACTCTCGATCTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGTGTGACTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAACTAATTACTGTCGTTGACAGGACACGAGTAACTCATCTATCTTCTGCAGGTTGCTTACGGTTTCGTCCGTGTTGCAGCCGATCATCAGCACATCTAGGTTTCGTCCGGGTGTGACCGAAAGGTAAGATGGAGAGCCTTGTCCCTGGTTTCAACGAGAAAACACACGTCCAACTCAGTTTGCCTGTCTTACAGGTTCGCGACGTGCTCGTACGTGGCTTTGGAGACTCCGTGGAGGAGGCTTTATCAGAGGCACGTCAACATCTTAAAGATGGCACTTGTGGCTTAGTAGAAGTTGAAAAAGGTGTTTTGCCTCAACTTGAACAGCCCTATGTGTTCATCAAACGTTCTGATGCTCGAACTGCACCTCATGGCCATGTTATGGTTGAGCTGGTAGCAGAACTTAATGGCATTCAGTATGGTCGTAGTGGTGAGACACTCGGTGTCCTTGTCCCTTATGTGGGCGAAACACCAGTGGTTTACCGCAAGGTTCTTCTTCGTAAGAACGGTAATAAAGGAGCTGGTGGCCATAGTTACGGCGCTGATCTAAAGTCGTTTGACTTAGGCGACGAGCTTGGCACTGATCCTTATGAAGATTTTCAAGAAAACTGGAACACTAAACATAGCAGTGGTGTCACCCGTGATCTCATGCGTGAGCTTAATGGAGGAGCATACACTCGCTATGTCGATAACAACTTCTGTGGCCCTGATGGCTACCCTCTTGAGTGCATTAAAGACCTTCTAGCTCGTGCTGGTAAAGCTTCATGCACTTTGTCCGAACAACTGGACTTTATTGACACTAAAAGAGGTGTATACTGCTGTCGTGAACATGAGCATGAGATTGCTTGGTACACGGAACGTTCTGAAAAGAGCTATGAATTGCAGACACCTTTTGAAATTAAATTGGCAAAGAAATTTGACACATTTAATGGGGAATGTCCAAATTTTGTATTCCCCCTAAATTCCACAATCAAGACTATTCAACCAAGGGTTGAAAAGAAAAAGCTTGATGGCTTTATGGGTAGAATTCGATCTGTCTATCCAGTTGCTTCACCAAATGAATGCAACCAAATGTGCCTTTCAACTCTCATGAAGTGTGATCATTGTGGTGAAACTTCATGGCAGACAGGCGATTTTGTTAAAGCCACTTGTGAATTTTGTGGCACTGAAAATTTGACTAAAGAGGGTGCCACTACTTGTGGTTACCTACCCCAAAATGCTGTTGTCAAAATTTATTGTCCAGCATGTCATAATCCAGAAGTAGGACCTGAGCATAGTCTTGCTGAATATCATAATGAATCTGGCTTGAAACCCATTCTTCGTAAGGGTGGTCGCACTATTGCTTTTGGAGGCTGTGTGTTCTCCTATGTTGGTTGCTACAATAAGTGTGCCTATTGGATTCCACGTGCTAGCGCCAACATAGGTTGCAATCATACAGGTGTTGTTGGAGAAGGTTCTGAAGGTCTTAATGATAACCTTCTTGAAATACTTCAAAAAGAGAAAGTCAACATCAATATTGTTGGTGACTTTAAACTTAATGAAGAGATCGCCATTATTTTGGCATCTTTTTCTGCTTCTACAAGTGCTTTTGTGGAAACTGTGAAAGGTTTGGATTATAAAACATTCAAACAAATTGTTGAATCCTGCGGTAACTTTAAAGTTACAAAGGGGAAGGCAAAGAAAGGTGCTTGGAACATTGGTGAACAAAAATCAATATTGAGTCCTCTTTATGCATTTGCGTCAGAGGCTGCTCGTGTTGTTCGATCAATTTTCTCCCGCACTCTTGAAACTGCTCAAAATTCCGTGCGTGCCTTACAGAAGGCCGCTATAACAATACTAGATGGAATTTCACAGTACTCACTGAGACTCATTGATGCTATGATGTTCACATCTGATTTGGTTACTAACAATCTGGTTGTAATGGCTTACATTACAGGTGGTGTTGTTCAGTTGACTTCACAGTGGCTAACAAATATCTTTGGCACTGTTTATGAGAAACTCAAACCTGTTCTTGATTGGCTCGAAGAGAAATTCAAGGAAGGTGTAGAGTTTCTTAGAGATGGTTGGGAAATTGTTAAATTTATCTCAACTTGTGCTTGTGAAATTGTCGGTGGACAAATTGTCACCTGTGCAAAGGAAATTAAAGAGAGTGTTCAGACATTCTTTAAGCTTGTAAACAAATTTTTGGCTTTATGTGCTGACTCCATCATCATTGGTGGAGCTAAACTTAAAGCCTTGAATTTAGGTGAAACATTTGTCACACACTCAAAGGGATTGTATAGAAAGTGTGTTAAACCCAAAGAAGAAACTGGCTTACTCATGCCTCTGAAAGCTCCAAAAGAAATTATTTTCTTAGAGGGAGAAACACTTCCTACAGAAGTGTTAACAGAGGAAGTTGTCTTGAAAACTGGTGATTTACAACCATTAGAACAACCTACTAGTGAAGCTGTTGAAGCCCCATTGGTTGGTACACCAGTTTGCATTAACGGGCTCATGTTGCTCGAAATTAAAGACACAGAAAAGTACTGTGCCCTTGCACCTAATATGATGGTAACAAACAATACCTTCACACTTAAAGGCGGTGCACCAACAAAAGTTACTTTTGGTGATGACACTGTGATTGAAGTGCAAGGTTATAAGAGTGTGAATATCACTTTTGAACTTGACGAAAGGATTGATAAGGTACTTAACGAGAAGTGCTCTACCTATACAGTTGAACTCGGTACAGAAGTAAATGAGTTTGCTTGTGTTGTAGCAGATGCTGTCATAAAAACTTTACAACCAGTATCTGAATTACTTATACCACTGGGCATTGATTTAGATGAGTGGGGTATGGCTACATACTACTTATTTGATGAGTCTGGTGAATTTAAATTGGCTTCACATATGTACTGTTCTTTTTATCCTCCAGATGAGGATGAGGAAGAAGGTGATTGTGAAGAAGAAGATTTTGAACCACCAACTCAATATGAGTATGGTACTGAAGATGATTACCAAGGTAAATCTTTGGAATTTGGTGCCACTTCTGTCACTCCTCAACCTGAAGAAGAGCTAGAAGAAGATTGGTTAGATGATGATAGTCAACAAACTGTCGTTCAAGAAGATGACAGTGAAGTTAATCAGACAACTATCACTCAATCAATTGCTGAGGTTCAACCTCAGTTAGAGATGGAACCTACACCAGTTGTTCAGACTGAAGTGAATAGCTTTAGTGGTTATTTAAAACTTACTGACAATGTATACATTAAAAATGCAGACATTGTGGAAGAAGCTAAAAAGGTAAAACCAACAATAGTTGTCAACGCAGCCAATGTTTACCTTAAACATGGAGGAGGTGTTGCGGGAGCTTTAAATAAGGCTACTAATAATGCCATGCAAGTTGAATCAGATCATTACATAGCCACCAATGGACCACTTAAAGTGGGTGGTGGCTGTGTTTTGAGTGGACACAATCTTGCTAAAAACTGTCTTCATGTTGTTGGTCCAAATGTTAACAGAGGTGAAGATATTCAACTTCTTAAGAGTGCTTATGAAAATTTTAATCAGCACGATGTTCTACTCGCACCACTATTATCAGCCGGTATTTTTGGTGCTGACCCTGTACATTCTTTAAGAGTTTGTGTAGACACTGTTCGCACAAATGTCTACCTAGCTGTCTTTGATAAAAATCTCTATGACAAACTTGTTTCAAGCTTTTTAGAAATGAAGAGTGAAAAGCAAGTTGAACAAAAGACTGCTGAAATTCCTAAAGAGGAAGTTAAGTCATCTATTACTGAAAGTAAACTTTCAGTTGAGCAGAGACAACAAGTTGATAAGAAAATCAAAGCTTGTGTTGAAGAAGTTACAACAACTCTGGAAGAAACTAAGTTTCTCACAGAAAATTTGTTACTCTATATTGACATTAATGGCAATCTTCATCCAGATTCTGCCACTCTTGTTAATGACATTGACATCACTTTCTTAAAGAAAGATGCTCCCTATATAGTGGGTGATGTTGTTCAAGAGGGTGTTTTAACTGCTGTAGTTATACCTACTAAAAAGGCTGGTGGTACTACTGAAATGCTAACGAAAGCCTTGAGAAAAGTGCCAACAGATAACTATATAACCACTTACCCAGGCCAGGGTTTAAATGGTTATACTGTAGAAGAGGCAAGGACAGTGCTTAAAAAGTGTAAAAGTGCCTTTTACATTCTACCATCTATTATCTCTAATGAGAAGCAAGAAATTCTTGGAACTGTTTCTTGGAATTTGCGAGAAATGCTTGCACATGCAGAGGAAACTCGTAAATTAATGCCTGTCTGTATGGAAACTAAAGCTATAGTTTCAACTATACAGCGTAAATACAAGGGTATTAAAATACAAGAGGGTGTGGTTGATTATGGTGCCAGATTTTACTTTTATACCAGTAAAACAACTGTAGCATCACTTATCAATACACTCAACGATCTAAATGAGACTCTTGTTACAATGCCACTTGGCTATGTAACACATGGTTTAAATTTGGAAGAAGCTGCTCGGTATATGAGATCTCTCAAAGTGCCAGCTACAGTTTCTGTTTCTTCACCTGATGCTGTTACAGCGTATAATGGTTACCTTACTTCTTCTTCTAAAACACCTGAAGAACATTTTATTGAAACCATCTCACTTGCTGGCTCTTACAAAGATTGGTCCTATTCTGGACAGTCTACACAACTAGGTATAGAATTTCTTAAGAGAGGTGATAAAAGTGTGTATTACACTAGTAACCCTATTACATTTCACCTAGATGGTGAAGTTATCACCTTTGACAATCTTAAGATACTTCTCTCTTTGAAAGAAGTTAGGACTATTAAGGTGTTTACAACAGTAGACAACATTAACCTTCACACGCAAGTTGTGGACATGTCAATGACATATGGACAACAGTTTGGCCCAACTTATTTGGATGGAGCTGATGTTACTAAAATAAAACCTCATAATTCACATGAAGGTAAAACGTTTTATGTTTTGCCTAATGATGACACTTTACGTGCTGAGGCTTTTGAGTACTACCACACAACTGATCCTAGTTTTCTGGGTAGGTACATGTCAGCATTAAATCACACTAAAAAGTGGAAATACCCACAAGTCAATGGTTTAACTTCTATTAAATGGGCAGATAACAACTGTTATCTTGCCACTGCATTATTAACACTACAGCAAATAGAGTTGAAATTTAACCCACCTGCTTTACAAGATGCCTACTACAGGGCAAGAGCTGGTGAAGCTGCTAATTTTTGTGCACTTATCTTAGCCTACTGTAACAAGACAGTAGGTGAGTTAGGTGATGTTAGAGAAACAATGAATTATTTGTTTCAACATGCCAATTTAGATTCTTGCAAAAGAGTCTTGAATGTGGTGTGTAAAACTTGTGGACAACAGCAGACTACTCTTAAGGGTGTAGAAGCTGTTATGTACATGGGCACACTTTCTTATGAACAACTTAAGAAGGGTGTTCAGATACCTTGTACTTGTGGTAAACAAGCTACACAATATCTAGTACAACAAGAGTCACCTTTTGTTATGATGTCGGCACCACCTGCTCAGTATGAACTTAAGCATGGTACATTTATTTGTGCTAGTGAGTACACTGGTAATTACCAGTGTGGTCACTATAAACATATAACTTCTAAAGAAACTTTGTATTGCATAGACGGTGCTTTACTTACAAAGTCCTCTGAGTACAAAGGTCCTATTACGGATATTTTCTACAAAGAAAATAGCTATATAACAACCATAAAACCAGTTATTTATAAATTGGATGGTGTTGTTTGTACAGAAATTGATCCTAAGTTGGACAATTATTATAAGAAAGACAATTCTTATTTCACAGAGCAACCAATTGATCTTGTGCCAAACCAACCTTATCCGAATGCAAGCTTCGATAATTTCAAGTTTGTATGTGATAACATCAAACTTGCTGATGATTTAAACCAGTTAACTGGTTACAAGAAACCTGCTTCAAGAGAGTTTAAAGTTACATTCTTCCCTGACTTAAATGGTGATGTGGTGGCTATTGATTATAAACACTACACACCTTCTTTTAAGAAAGGAGCTAAATTGTTACATAAACCTATTGTCTGGCATGTTAACAATGCAACTAACAAAGCTACGTATAAACCAAACACTTGGTGTATACGCTGTCTTTGGAACACAAAACCAGTTGAAACATCAAACTCTTTTGATGTACTGAAATCAGAGGACACGCAGGGAATGGATAATCTTGCCTGCGAAGATCTAAAACCAGTCTCTGAAGAAGTAGTGGAAAATCCTACCATACAGAAAGACATTCTTGAGTGTAATGTGAAAACTACCGAAGTTGTAGGAGACATTATACTTAAACCAGCAAATGATGGTTTGAAAATTACAGAGGAGGTTGGTCACACAGATCTAATGGCTGCTTATGTAGACAATTCTAGTCTTACTATTAAGAAACCTAATGAATTATCTAGAGTACTAGGTTTGAAAACCCTTGTTACTCATGGTTTAGCTGCTGTTAATAGTGTTCCGTGGGATACTATAGCTAATTATGCTAAGCCTTTTCTTAATAAAGTTGTTAGCACAACTACTAATATAGTCACACGGTGTTTAAACCGTGTTTGTACTAATTATATGCCTTATTTCTTTACTTTATTGCTACAATTGTGTACTTTTACTAGAAGTACAAATTCTAGAATTAAAGCATCTATGCCGACTACTATAGCAAAGAATACTGTTAAGAGTGTTGGTAAATTTTGCCTAGAGGCTTCATTTAATTACCTGAAGTCACCTAATTTTTTTAAATTGATTAATATTATAATTTGGTTTTTACTATTAAGTGTTTGTTTAGGTTCTTTAATCTACTCAACCGCTGCTCTAGGTGTTTTAATGTCTAATTTAGGCATGCCTTCTTACTGTACTGGCTACAGAGAAGGCTATTTGAACTCTACTAATGTCACTACAGCAATCTACTGTACTGGTTCTATACCTTGTAGTGTTTGTCTTAGTGGTTTAGATTCTTTAGATACCTATCCTTCTTTAGAAACTATACAAATTACCATTTCATCTTTTAAATGGGATTTAACTGCTTTTGGCTTAGTTGCAGAGTGGTTTTTGGCATATATTCTTTTTACTAGGTTCTTCTATGTACTTGGATTGGCTGCAATTATGCAATTGTTTTTCAGCTATTTTGCAGTACATTTTATTAGTAATTCTTGGCTTATGTGGTTAATAATTAATCTTGTACAAATGGCCCCAATTTCAGCTATGGTTAGGATGTACATTTTCTTTGCATCATTTTATTATGTATGGAAAAGTTATGTGCATGTTGTAGATGGTTGTACTTCATCAACTTGTATGATGTGTTACAAACGTAATAGAGCAACAAGAGTTGAATGTACAACTATTGTTAATGGTGTTAGAAGGTCCTTTTATGTCTATGCTAATGGAGGTAAAGGCTTTTGCAAACTACATAATTGGAATTGTGTTAATTGTGACACATTCTGTGCTGGTAGTACATTTATTAGTGATGAAGTTGCGAGAGACTTGTCACTACAGTTTAAAAGACCAATAAATCCTACTGACCAGTCTTCCTACATTGTTGACAGTGTTACAGTGAAGAATGGTTCCATCCATCTTTACTTTGATAAAGCTGGTCAAAAGACTTATGAAAGACATTCTCTCTCTCATTTTGTTAACTTAGACAATTTGAGAGCTAGTAACACTAAAGGTTCATTGCCTATTAATGTTATAGTTTTTGATGGTAAATCAAAATGTGAAGAATCATCTGCAAAATCAGCGTCTGTTTATTACAGTCAGCTTATGTGTCAACCTATACTGTTACTAGATCAGGCATTAGTGTCTGATGTTGGTGATAGTACAGAAGTTGCAGTTAAAATGTTTGATGCTTACGTTAATACGTTTTCATCAACTTTTAACGTTCCAATGGAAAAACTAAAAACACTAGTTGCAACTGCAGAAGCTGAACTTGCAAAGAATGTGTCCTTAGACAATGTCTTATCCACCTTTATTTCAGCAGCTCGGCAAGGGTTTGTTGATTCAGATGTAGAAACTAAAGATGTTGTTGAATGTCTTAAATTGTCACATCAATCTGACATAGAAGTTACTGGTGATAGTTGTAATAACTATATGCTCACCTATAACAAAGTTGAAAACATGACACCTCGTGACCTTGGTGCTTGTATTGACTGTAGTGCGCGTCATATTAATGCGCAGGTAGCAAAAAGTCACAATATTGCGTTGATATGGAACGTTAAAGATTTTATGTCACTGTCTGAACAACTACGAAAACAAATACGTAGTGCTGCCAAAAAGAACAACTTGCCTTTCAAGTTGACATGTGCAACTACTAGACAAGTTGTTAATGTTGTAACAACAAAAATAGCACTTAAGGGTGGTAAAATTGTTAATAATTGGTTGAAGCAGTTAATTAAAGTTACACTCGTGTTCCTTTTTGTTGCTGCTATCTTCTATTTAATAACACCTGTTCATGTCATGTCTAAACATACTGACTTTTCAAGTGAAATTATAGGGTACAAGGCTATCGATGGTGGTGTCACTCGTGACATAGCATCTACAGATACTTGTTTTGCTAACAAACATGCTGATTTTGACACATGGTTTAGTCAGCGTGGTGGTAGTTATACTAATGACAAAGCTTGTCCATTGATTGCTGCAGTCATAACAAGAGAAGTGGGTTTTGTCGTGCCTGGTCTTCCTGGTACGATATTACGCACAACTAATGGTGACTTTTTGCATTTCTTACCTAGAGTTTTTAGTGCAGTTGGTAACATCTGCTATACACCATCAAAACTTATAGAGTACACTGACTTTGCAACTTCAGCTTGTGTTTTGGCTGCTGAATGTACAATTTTTAAAGATGCTTCTGGTAAGCCAGTACCATATTGTTATGATACTAATGTACTAGAAGGTTCTGTTGCATATGAAAGTCTACGTCCTGATACACGTTATGTACTCATGGATGGCTCTATTATTCAATTTCCTAACACCTACCTTGAAGGTTCTGTTAGAGTGGTAACAACTTTTGATTCTGAGTATTGTAGACACGGTACTTGTGAAAGATCAGAAGCTGGTGTTTGTGTATCTACTAGTGGTAGATGGGTACTTAATAATGATTATTACAGATCTTTACCAGGAGTTTTTTGTGGTGTAGATGCTGTAAATTTACTTACTAATATGTTCACACCACTAATTCAACCTATCGGTGCTTTGGACATATCAGCATCTATTGTAGCCGGCGGTATTGTTGCTATCGTAGTAACATGCCTTGCCTACTACTTTATGAGGTTTAGAAGAGCTTTTGGTGAATACAGCCATGTAGTTGCCTTTAATACTTTACTATTCCTTATGTCATTCACTGTACTCTGTTTAACACCAGTTTACTCATTTTTACCTGGCGTTTATTCTGTTATTTACTTGTACTTGACATTTTATCTTACTAATGATGTTTCTTTCTTAGCACATATCCAGTGGATGGTTATGTTCACACCTTTAGTACCTTTCTGGATAACAATTGTTTATGTCATTTGTATTTCCACAAAGCATTTTTACTGGTTCTTTAGTAACTACCTAAAAAGGCGTGTAGTCTTTAATGGTGTTTCCTTTAGTACTTTTGAAGAAGCTGCGTTATGCACTTTCTTATTAAATAAGGAAATGTATCTAAAATTGCGTAGTGATGTACTTCTACCTCTTACGCAATATAATAGATATTTAGCCCTTTATAATAAGTACAAGTATTTTAGTGGAGCCATGGATACAACTAGCTACAGAGAAGCTGCTTGTTGTCATCTTGCAAAAGCTCTCAATGATTTCAGTAATTCAGGTTCTGATGTTCTTTATCAACCACCACAAACCTCTATCACCTCGGCTGTTTTGCAGAGTGGTTTTAGAAAAATGGCATTCCCATCAGGTAAAGTTGAGGGTTGCATGGTACAAGTTACTTGTGGTACAACCACACTTAATGGTCTTTGGCTTGATGATGTAGTCTACTGTCCAAGACATGTGATCTGCACCTCTGAAGACATGCTTAATCCTAATTATGAAGACTTACTTATCCGCAAGTCTAATCATAATTTCTTGGTACAGGCTGGTAATGTCCAACTTAGAGTTATTGGACATTCTATGCAAAATTGTGTGCTTAAGCTTAAGGTAGATACTGCCAATACTAAGACGCCTAAGTATAAGTTTGTTCGCATTCAACCTGGACAGACTTTTTCAGTGTTAGCTTGTTACAATGGTTCACCATCTGGTGTTTACCAGTGTGCTATGAGACCTAACTTTACAATTAAGGGTTCATTCCTTAATGGTTCTTGTGGTAGTGTTGGTTTTAACATAGATTATGACTGTGTCTCTTTTTGTTACATGCACCATATGGAATTACCAACTGGAGTTCATGCTGGCACAGACTTAGAAGGTACCTTCTATGGACCTTTTGTTGACAGACAAACAGCACAAGCAGCTGGTACGGACACAACTATCACAGTCAATGTTTTAGCTTGGTTGTACGCTGCTGTTATAAATGGAGACAGGTGGTTTCTCAATCGATTTACCACAACTCTTAATGATTTTAACCTCGTGGCTATGAAGTACAATTATGAACCTCTAACACAGGACCATGTTGACATACTAGGACCTCTTTCTGCTCAAACCGGAATTGCCGTTTTAGATATGTGTGCTTCACTAAAAGAATTACTGCAAAATGGTATGAATGGACGTACCATATTGGGTAGTGCTTTATTAGAAGATGAATTTACACCTTTTGATGTTGTTAGACAATGCTCAGGTGTTACTTTCCAAAGTGCAGTAAAAAGAACAATCAAGGGCACACACCATTGGTTGTTACTTACAATTTTGACTTCACTTTTAGTTTTAGTCCAGAGTACTCAATGGTCTTTGTTCTTTTTTGTGTATGAAAATGCCTTTTTGCCTTTTGCTATGGGTATTATTGCTATGTCTGCTTTTGCAATGATGTTTGTTAAACATAAGCATGCATTCCTCTGTTTGTTCTTGTTACCTTCTCTTGCTACTGTAGCTTACTTTAATATGGTCTATATGCCTGCTAGTTGGGTGATGCGCATTATGACATGGTTGGATATGGTTGATACTAGTTTGTCTGGTTTCAAGCTAAAAGACTGTGTTATGTATGCATCAGCCGTAGTGTTACTAATCCTTATGACAGCAAGAACTGTGTATGATGATGGTGCTAGGAGGGTGTGGACACTTATGAATGTCTTGACACTCGTCTATAAAGTTTATTATGGTAATGCTTTAGATCAAGCTATTTCCATGTGGGCTCTTATAATCTCTGTTACTTCTAACTACTCGGGTGTAGTTACAACTGTCATGTTCTTGGCCAGAGGTATTGTTTTTATGTGTGTTGAGTATTGCCCTATTTTCTTCATAACTGGTAATACACTTCAGTGTATAATGCTAGTTTATTGTTTCTTAGGCTATTTCTGTACTTGTTACTTTGGTCTCTTTTGTTTACTCAACCGTTACTTTAGACTGACTCTTGGTGTTTATGATTATTTGGTTTCCACACAAGAGTTTAGGTATATGAATTCACAGGGATTGCTCCCACCAAAGAATAGCATAGATGCCTTTAAACTCAACATCAAATTGTTGGGTGTTGGAGGTAAACCTTGTATTAAAGTAGCCACTGTACAGTCTAAAATGTCAGATGTAAAGTGCACGTCAGTAGTCTTACTCTCAGTTTTGCAACAACTTAGAGTAGAATCATCATCTAAATTGTGGGCTCAATGTGTTCAGTTACACAATGACATACTCTTAGCTAAAGATACTACTGAAGCCTTTGAAAAAATGGTTTCACTACTTTCTGTCTTGCTTTCCATGCAGGGTGCTGTAGACATAAACAAGCTTTGTGAAGAAATGCTTGACAACAGGGCAACCTTACAAGCTATAGCCTCAGAGTTTAGTTCTCTTCCATCATATGCAGCTTTTGCTACCGCTCAAGAAGCTTATGAGCAGGCTGTTGCTAATGGTGACTCTGAAGTTGTCCTTAAAAAGTTGAAGAAGTCTTTGAATGTGGCTAAATCTGAATTTGACCGTGATGCAGCCATGCAACGCAAGTTGGAAAAGATGGCTGATCAAGCTATGACCCAAATGTATAAACAGGCTAGATCTGAAGACAAGAGGGCAAAAGTTACTAGTGCTATGCAGACAATGCTTTTCACTATGCTTAGAAAGTTGGATAATGATGCACTCAACAACATTATCAACAATGCAAGAGATGGTTGTGTTCCATTGAACATAATACCTCTTACAACAGCAGCCAAATTAATGGTTGTCATACCAGACTATAACACATATAAAAATACGTGTGATGGTACAACATTTACTTATGCATCGGCATTGTGGGAAATCCAACAGGTTGTTGATGCAGATAGTAAAATTGTTCAACTTAGTGAAATTAGCATGGACAATTCACCTAATTTAGCATGGCCTCTTATTGTAACAGCTTTAAGGGCCAATTCTGCTGTCAAATTACAGAATAATGAGCTTAGTCCTGTTGCACTACGACAGATGTCTTGTGCTGCCGGTACTACACAAACTGCTTGCACTGATGACAATGCGTTAGCTTACTACAACACAACAAAGGGAGGTAGGTTTGTACTTGCATTGTTATCCGATTTACAGGATTTGAAATGGGCTAGATTCCCTAAGAGTGATGGAACTGGTACTATCTATACAGAACTGGAACCACCTTGTAGGTTTGTTACAGACACACCTAAAGGTCCTAAAGTGAAGTATTTATACTTTATTAAAGGATTAAACAATCTAAATAGAGGTATGGTACTTGGTAGTTTAGCTGCTACAGTACGTTTACAAGCTGGTAATGCAACAGAAGTGCCTGCCAATTCAACTGTACTATCTTTCTGTGCTTTTGCTGTAGATGCCGCTAAAGCGTACAAAGACTATCTAGCTAGTGGGGGACAACCAATCACTAATTGTGTTAAGATGTTGTGTACACACACTGGTACTGGTCAGGCAATAACAGTTACACCAGAAGCCAATATGGATCAAGAATCCTTTGGTGGTGCATCGTGTTGTCTGTACTGTCGTTGCCACATAGATCATCCAAATCCTAAAGGATTTTGTGACTTAAAAGGTAAGTATGTACAAATACCTACGACTTGTGCTAATGACCCTGTGGGTTTTACACTTAAAAACACAGTCTGTACCGTCTGCGGTATGTGGAAAGGTTATGGCTGTAGTTGTGATCAACTCCGCGAACCCATGCTTCAGTCAGCTGATGCACAATCGTTTTTAAACGGGTTTGCGGTGTAAGTGCAGCCCGTCTTACACCGTGCGGCACAGGCACTAGCACTGATGTCGTGTACAGGGCTTTTGACATCTACAATGATAAAGTAGCTGGTTTTGCTAAATTCTTAAAAACTAATTGTTGTCGCTTCCAAGAAAAAGACGAGGATGACAATTTAATTGATTCTTACTTTGTAGTTAAGAGACACACTTTCTCTAACTACCAACATGAAGAAACAATTTATAATTTACTTAAGGATTGTCCAGCTGTTGCTAAACACGACTTCTTTAAGTTTAGAATAGACGGTGACATGGTACCACATATATCACGTCAACGTCTTACTAAATACACAATGGCAGACCTCGTCTATGCTTTAAGGCATTTTGACGAAGGCAATTGTGATACATTAAGAGAAATACTTGTCACATACAATTGTTGTGACGATGATTATTTCAATAAAAAAGACTGGTATGATTTTGTAGAAAACCCAGATATATTACGCGTATACGCCAACTTAGGTGAACGTGTACGCCAAGCTTTGTTAAAAACAGTACAATTCTGTGATGCCATGCGAGATGCTGGTATTGTAGGTGTACTAACATTAGATAATCAAGATCTCAATGGTAACTGGTATGATTTCGGTGACTTCATACAAACCACTCCAGGTAGTGGAGTTCCTATTGTAGATTCTTATTATTCATTGTTAATGCCTATACTAACTTTAACTAGGGCATTAACTGCAGAGTCACATGTTGACACTGACTTAACAAAGCCCTACATTAAGTGGGATTTGTTAAAATATGACTTTACGGAAGAGAGGTTAAAACTCTTTGACCGTTATTTTAAATATTGGGATCAGACATACCACCCAAATTGTGTTAACTGTTTGGATGACAGATGCATTCTGCATTGTGCAAACTTTAACGTTTTATTCTCTACAGTGTTCCCACCTACAAGTTTTGGACCTCTAGTGAGAAAAATATTTGTTGATGGTGTTCCATTTGTAGTTTCAACTGGATACCACTTCAGGGAGCTAGGTGTTGTACATAATCAGGATGTAAACTTACATAGCTCTAGACTTAGTTTTAAGGAATTACTTGTGTATGCTGCTGACCCTGCTATGCACGCTGCTTCTGGTAATTTATTACTAGATAAACGCACTACGTGCTTCTCAGTAGCTGCACTTACTAACAATGTTGCTTTTCAAACTGTCAAACCCGGTAATTTTAACAAAGACTTCTATGACTTTGCTGTGTCTAAGGGTTTCTTTAAGGAAGGAAGTTCTGTTGAATTAAAACACTTCTTCTTTGCTCAGGATGGTAATGCTGCCATCAGCGATTATGACTACTATCGTTATAATCTACCAACAATGTGTGATATCAGACAACTCCTATTTGTAGTTGAAGTTGTTGATAAGTACTTTGATTGTTACGATGGTGGCTGTATTAATGCTAACCAAGTCATCGTCAACAACCTAGACAAATCAGCTGGTTTTCCATTTAATAAATGGGGTAAGGCTAGACTCTATTACGATTCAATGAGTTACGAGGATCAAGATGCACTTTTCGCATATACAAAACGTAATGTCATCCCTACTATAACTCAAATGAATCTTAAGTATGCCATTAGTGCAAAGAATAGAGCTCGCACCGTAGCTGGTGTCTCTATCTGTAGTACTATGACCAATAGACAGTTTCATCAAAAATTATTGAAATCAATAGCCGCCACTAGAGGAGCTACTGTAGTAATCGGAACAAGCAAATTTTATGGTGGTTGGCATAACATGTTAAAAACTGTTTACAGTGATGTAGAAAACCCTCATCTTATGGGTTGGGATTACCCTAAATGTGATAGAGCCATGCCTAACATGCTTAGAATTATGGCCTCACTTGTTCTTGCTCGCAAACATACAACGTGCTGTAGCTTGTCACACCGTTTCTATAGATTAGCTAATGAGTGTGCTCAAGTATTGAGTGAAATGGTCATGTGTGGCGGTTCACTATATGTTAAACCAGGTGGAACCTCATCAGGAGATGCCACAACTGCTTATGCTAATAGTGTCTTTAACATTTGTCAAGCTGTTACGGCCAATGTTAATGCACTTTTATCTACTGATGGTAACAAAATTGCCGATAAGCACGTCCGCAATTTACAACACAGACTTTATGAGTGTCTCTATAGAAATAGAGATGTTGACACAGACTTTGTGAATGAGTTTTACGCATATTTGCGTAAACATTTCTCAATGATGATACTTTCTGATGATGCTGTTGTGTGTTTCAATAGCACTTATGCATCTCAAGGTCTAGTGGCTAGCATAAAGAACTTTAAATCAGTTCTTTACTATCAAAACAACGTTTTTATGTCTGAAGCAAAATGTTGGACTGAGACTGACCTTACTAAAGGACCTCATGAATTTTGCTCTCAACATACAATGCTAGTTAAACAGGGTGATGATTATGTGTACCTCCCTTACCCGGATCCATCACGAATCTTAGGGGCTGGCTGTTTTGTAGATGATATCGTAAAAACAGATGGTACACTGATGATTGAACGGTTTGTGTCTTTAGCTATAGATGCTTACCCACTTACTAAACATCCTAATCAGGAGTATGCTGATGTCTTTCACTTGTACTTACAATACATAAGAAAGTTACATGATGAGTTAACAGGACATATGTTAGACATGTATTCTGTTATGCTTACTAATGATAACACTTCAAGGTATTGGGAACCTGAGTTTTATGAGGCTATGTACACACCGCATACAGTCTTACAGGCTGTTGGGGCTTGTGTTCTTTGCAATTCACAGACTTCATTAAGATGTGGTGCTTGCATACGTAGACCATTCTTATGCTGTAAATGCTGTTACGACCACGTCATATCTACATCACATAAATTAGTCTTGTCTGTTAATCCGTATGTTTGCAATGCTCCAGGTTGTGATGTCACAGATGTGACTCAACTTTACTTAGGAGGTATGAGCTATTATTGTAAATCACATAAACCACCCATTAGTTTTCCGTTGTGTGCTAATGGACAAGTTTTTGGTTTATATAAGAATACATGTGTTGGTAGCGATAATGTTACTGACTTTAACGCAATTGCAACATGTGATTGGACAAATGCTGGTGATTACATTTTAGCTAACACCTGTACTGAAAGACTCAAGCTTTTCGCAGCAGAAACGCTCAAAGCTACTGAGGAGACATTTAAACTGTCTTATGGTATTGCCACTGTACGTGAAGTGCTGTCTGACAGAGAATTGCATCTTTCATGGGAAGTTGGTAAACCTAGACCACCACTTAACCGAAATTATGTCTTTACTGGTTATCGTGTAACTAAAAACAGTAAAGTACAAATAGGAGAGTACACCTTTGAAAAAGGTGACTATGGTGATGCTGTTGTCTACCGAGGTACAACAACTTACAAACTAAATGTTGGTGACTATTTTGTGCTGACATCACATACAGTAATGCCATTAAGTGCACCTACACTAGTGCCACAAGAGCACTATGTTAGAATTACTGGCTTATACCCAACACTCAATATTTCAGATGAGTTTTCTAGCAATGTTGCAAATTATCAAAAGGTTGGTATGCAAAAGTATTCTACACTCCAAGGACCACCTGGTACTGGTAAGAGTCATTTTGCTATTGGCTTAGCTCTCTACTACCCTTCTGCTCGCATAGTGTACACAGCTTGCTCTCATGCCGCTGTTGATGCACTATGTGAGAAGGCATTAAAATATTTGCCTATAGATAAATGTAGTAGAATTATACCTGCACGTGCTCGTGTAGAGTGTTTTGATAAATTCAAAGTGAATTCAACATTAGAACAGTACGTCTTTTGTACTGTAAATGCATTGCCTGAGACGACTGCAGATATAGTTGTCTTTGATGAAATTTCAATGGCTACAAATTATGATTTGAGTGTTGTCAATGCTAGATTACGTGCTAAGCACTATGTGTACATTGGCGACCCTGCTCAATTACCAGCACCACGCACATTGCTAACTAAGGGCACACTAGAACCAGAATATTTCAATTCAGTGTGTAGACTCATGAAAACTATAGGTCCAGACATGTTCCTTGGAACTTGTCGGCGTTGTCCTGCTGAAATTGTTGACACTGTGAGTGCTTTGGTTTATGATAATAAGCTGAAAGCACATAAAGACAAATCAGCTCAATGCTTTAAAATGTTTTATAAGGGTGTTATTACTCATGATGTTTCATCTGCAATTAACAGGCCACAAATAGGCGTGGTAAGAGAATTTCTTACACGTAATCCTACTTGGAGAAAAGCTGTCTTCATTTCACCTTATAATTCACAGAATGCTGTAGCCTCAAAGATTTTGGGACTACCAACTCAAACTGTTGATTCATCACAGGGTTCAGAATATGACTATGTCATATTCACTCAAACCACTGAGACAGCTCACTCTTGTAATGTAAACAGATTTAATGTTGCTATTACTAGAGCAAAAGTAGGCATACTTTGCATAATGTCTGATAGAGACCTTTATGACAAGTTGCAATTTACAAGTCTTGAGATTCCACGTAGGAATGTGGCAACTTTACAAGCTGAAAATGTAACAGGACTTTTTAAGGATTGTAGTAAGGTAATCACTGGGTTACACCCAACACAGGCACCTACACACCTCAGTGTTGACACTAAATTCAAAACTGAAGGTTTATGTGTTGACATACCTGGTATACCTAAGGACATGACCTATAGAAGACTCATCTCTATGATGGGTTTCAAAATGAATTACCAAGTTAATGGTTACCCTAATATGTTTATCACCCGTGAGGAAGCCGTAAGACATGTACGTGCATGGATTGGCTTTGATGTCGAGGGGTGTCATGCTACTAGAGAAGCTATTGGTACTAATTTACCTTTACAGCTAGGCTTTTCTACAGGTGTTAACCTAGTTGCTGTACCTACAGGCTATGTTGATACACCTAATAATACAGATTTTTCCAGAGTTAGTGCTAAACCACCACCTGGAGATCAGTTTAAACATCTTATACCACTTATGTATAAAGGACTTCCTTGGAATGTAGTGCGTATAAAGATTGTACAAATGTTAAGTGATACACTTAAAAATCTCTCTGACAGAGTCGTGTTTGTCTTATGGGCACATGGCTTTGAATTAACATCTATGAAGTATTTTGTGAAAATAGGACCTGAGCGCACTTGTTGTCTATGTGATAAACGTGCCACATGCTTTTCCACTGCTTCAGACACTTATGCCTGTTGGCATCATTCTATTGGATTTGATTATGTCTATAATCCGTTTATGATTGATGTTCAACAATGGGGTTTTACAGGTAACCTACAAAGCAACCATGATCTGTATTGTCAGGTTCATGGTAATGCACATGTAGCTAGTTGTGATGCAATCATGACTAGATGTCTAGCTGTCCACGAGTGCTTTGTTAAGCGTGTTGACTGGACTATTGAATACCCTATAATTGGTGATGAACTGAAGATTAATGCGGCTTGTAGAAAGGTTCAACACATGGTTGTTAAAGCTGCATTATTAGCAGACAAATTTCCAGTTCTTCATGACATTGGTAACCCTAAAGCTATTAAGTGTGTACCTCAAGCTGATGTAGAATGGAAGTTCTATGACGCACAGCCTTGTAGTGACAAAGCTTATAAAATAGAAGAATTATTCTATTCTTATGCCACACATTCTGACAAATTCACAGATGGTGTATGCCTATTTTGGAATTGCAATGTCGATAGATATCCTGCTAATTCCATTGTTTGTAGATTTGACACTAGAGTGCTATCTAACCTTAACTTGCCTGGTTGTGATGGTGGCAGTTTGTATGTAAATAAACATGCATTCCACACACCAGCTTTTGATAAAAGTGCTTTTGTTAATTTAAAACAATTACCATTTTTCTATTACTCTGACAGTCCATGTGAGTCTCATGGAAAACAAGTAGTGTCAGATATAGACTATGTACCACTAAAGTCTGCTACGTGCATAACACGTTGCAATTTAGGTGGTGCTGTCTGTAGACATCATGCTAATGAGTACAGATTGTATCTTGATGCTTACAACATGATGATCTCAGCTGGCTTTAGCTTGTGGGTTTACAAACAATTTGATACTTACAACCTCTGGAATACTTTTACAAGACTTCAGAGTTTAGAAAATGTGGCTTTTAATGTTGTAAATAAAGGACACTTTGATGGACAACAGGGTGAAGTACCAGTTTCCATCATTAATAACACTGTTTACACAAAAGTTGATGGTGTTGATGTAGAACTATTTGAAAATAAAACAACATTACCTGTTAATGTAGCATTTGAGCTCTGGGCTAAGCGCAATATTAAACCAGTACCAGAGGTGAAAATACTCAATAATTTGGGTGTGGACATTGCTGCTAATACTGTGATTTGGGACTACAAAAGAGATGCTCCAGCACATATATCTACTATTGGTGTTTGTTCTATGACTGACATAGCCAAGAAACCAACTGAAAATATTTGTGCACCACTCACTGTCTTTTTCGATGGTAGAGTCAATGGTCAAGTAGACTTGTTTAGAAATGCCCGTAATGGTGTTCTTATTACAGAAGGTAGTGTTAAAGGTTTACAACCATCTGTAGGTCCTAAACAAGCCAGTCTTAATGGAGTCACATTGATTGGAGAAGCCTTAAAAACACAGTTCAATTATTACAAGAAAGTTAATGGTGTTGTTCAACAACTACCTGAAACTTACTTTACCCAAAGTAGAAATTTAAAAGAATTCAAACCCAGGAGTCAAATGGAAATTGATTTCTTAGAATTAGCTATGGATGAATTCATTGAACGGTATAAACTAGAAGGTTATGCCTTCGAACATATCGTCTATGGAGATTTTAGTCATAGGCAGTTAGGTGGTTTACATCTACTGATTGGACTAGCTAAACGTTCTAAGGAATCACCTCTTGAATTAGAAGATTTTATTCCTATGGACAGTACAGTTAAAAATTACTTCATAACAGATGCGCAAACAGGTTCATCTAAGTGTGTGTGTTCTGTTATTGATTTATTACTTGATGATTTTGTTGAAATAATAAAATCGCAGGATTTATCTGTAGTTTCTAAGGTGGTCAAAGTGACCATTGACTATACAGAAATTTCATTTATGCTTTGGTGTAAAGATGGACATGTTGAAACATTTTACCCAAAATTACAATCTAGTCAAGCGTGGCAACCGGGTGTTGCTATGCCTAATCTCTACAAAATGCAAAGAATGTTACTAGAAAAGTGTGACCTTCAAAATTATGGTGATAGTGCAACATTACCTAAAGGCATAATGATGAATGTCGCAAAATATACTCAACTGTGTCAGTATTTAAATACACTTACTTTAGCTGTACCCTATAATATGAGGGTTATACATTTTGGTGCTGGTTCTGATAAAGGAGTTGCACCTGGTACAGCTGTTTTAAGACAGTGGTTGCCTACGGGTACACTACTTGTCGATTCAGATCTTAATGACTTTGTCTCTGATGCAGATTCAACTTTGATTGGTGATTGTGCAACTGTACATACAGCTAATAAATGGGATCTCATTATTAGTGATATGTACGATCCTAAGACTAAAAATGTTACAAAAGAAAATGATTCCAAAGAGGGATTTTTCACTTACATTTGTGGATTTATACAACAAAAGCTAGCCCTTGGAGGTTCTGTAGCTATAAAGATAACAGAGCATTCTTGGAATGCCGATCTTTATAAGCTTATGGGACATTTCGCATGGTGGACTGCTTTTGTTACTAATGTAAATGCATCTTCATCTGAAGCATTTTTAATTGGGTGTAATTACCTTGGCAAACCGCGTGAACAGATAGATGGTTATGTCATGCATGCAAATTACATATTTTGGAGGAATACAAACCCAATTCAGTTGTCTTCCTATTCTTTATTTGACATGAGTAAATTCCCCCTTAAATTAAGGGGTACTGCAGTTATGTCTTTGAAAGAAGGTCAAATCAATGATATGATTTTATCTCTTCTTAGTAAAGGTAGACTTATAATTAGAGAAAACAATAGAGTTGTTATTTCTAGTGATGTTCTTGTTAACAACTAAACGAACCATGTTTGTTTTTCTTGTTTTATTGCCACTAGTTTCTAGTCAGTGTGTTAATCTAACAACTAGAACTCAGTTACCTCCTGCATACACCAACTCATCCACCCGTGGTGTCTATTACCCTGACAAAGTTTTCAGATCTTCAGTTTTACATTTAACTCAGGATTTGTTTTTACCTTTCTTCTCCAATGTGACCTGGTTCCATGCTATACATGTTTCAGGGACCAATGGTATTAAAAGGTTTGATAACCCAGTTCTGCCATTCAACGATGGCGTCTATTTTGCTTCCACTGAGAAGTCTAATATAATAAGAGGATGGATTTTTGGTACTACCTTAGATTCGAAGACCCAGTCTCTACTTATTGTTAATAACGCTACTAATGTTGTTATTAAAGTCTGTGAATTTCAATTTTGTAATGATCCATTTTTGGGTGTTTATTACCACAAAAACAACAAAAGTTGGATGGAAAGTGAGTTCAGAGTTTACTCTAGTGCGAATAATTGCACTTTTGAGTATGTCTCTCAGCCTTTTCTTATGGACCTTGAAGGAAAACAGGGTAATTTCAAAAATCTTAGGGAATTCGTGTTTAAGAATATTGATGGTTATTTCAAAATATATTCTAAACATACGCCTATTAATTTAGTGCGTGATCTTCCCCCTGGTTTTTCAGCTTTAGAACCATTGGTAGATCTGCCAATAGGTATTAACATCACTAGGTTTCAAACTTTACTTGCTTTACATAGAAGCTATTTGACTCCTGGTGATTCTTCTTCAGGTTGGACAGCTGGTGCTGCAGCTTATTATGTGGGTTATCTTCAACCAAGGACTTTTCTACTAAAATATAATGAGAATGGAACCATTACAGATGCTGTAGACTGTGCACTTGACCCTCTTTCAGAAACAAAGTGTACGTTAAAATCCTTCACTGTTGAAAAAGGAATTTATCAAACCTCTAACTTTAGAGTCCAACCAACAGATTCTATTGTTAGATTCCCAAATATTACAAACTTATGTCCTTTTGGTGAAGTTTTTAACGCCACCACATTCGCATCAGTTTATGCTTGGAACAGAAAGAGAATTAGCAACTGTGTTGCTGATTACTCTGTCCTATATAATTCCACTTCATTTTCTACCTTTAAATGTTATGGAGTGTCTCCTACTAAATTAAATGATCTCTGCTTTACTAATGTTTATGCAGACTCATTTGTGATTACAGGTGATGAAGTCAGACAAATTGCGCCAGGACAAACTGGAAAGATTGCTGACTACAATTATAAACTACCAGATGATTTTACTGGTTGTGTTATAGCTTGGAATTCTAAGCATATTGATGCAAAAGAGGGCGGTAATTTTAACTATCTTTACCGTCTCTTTAGAAAAGCTAATCTTAAACCCTTTGAGAGGGATATCTCAACTGAAATTTACCAAGCAGGCAGCAAACCTTGTAATGGTCAAACTGGTCTAAATTGCTACTACCCACTTTATAGATATGGATTTTACCCTACTGATGGTGTTGGTCACCAACCTTATAGGGTAGTAGTACTTTCTTTTGAACTTCTAAATGCACCAGCAACTGTTTGTGGACCTAAGAAGTCTACTAACTTGGTTAAAAATAAATGTGTCAATTTCAACTTTAATGGTTTAACTGGCACAGGTGTCCTCACAGAGTCTAATAAAAAGTTTCTACCTTTCCAACAATTTGGTAGAGACATTGCAGACACTACTGATGCCGTCCGTGATCCACAGACACTTGAGATTCTTGACATTACACCATGTTCTTTTGGTGGTGTCAGTGTTATAACACCTGGAACAAATGCCTCTAACCAGGTTGCTGTTCTTTATCAGGATGTTAACTGCACAGAAGTCCCTGTTGCTATCCATGCAGACCAACTTACTCCCACTTGGCGTGTTTACTCCACAGGTTCTAATGTTTTTCAAACACGTGCAGGTTGTTTAATAGGGGCTGAACATGTCAATAACTCGTATGAGTGTGACATACCTATTGGTGCAGGAATATGCGCCAGTTATCAGACTCAAACTAATTCACGTAGTGTGGCCAGTCAATCTATTATTGCCTACACTATGTCACTTGGTGCAGAAAATTCAGTTGCTTATTCTAATAACTCTATTGCCATACCTACAAATTTTACTATTAGTGTGACCACTGAAATTCTACCTGTGTCTATGACAAAGACATCGGTAGACTGTACAATGTATATTTGTGGTGATTCAACTGAGTGCAGCAACCTTTTGTTGCAATATGGTAGTTTTTGCACACAATTAAATCGTGCTTTAACTGGAATAGCTGTTGAACAGGACAAAAATACTCAAGAAGTTTTTGCTCAAGTTAAACAAATTTATAAGACACCACCAATTAAAGATTTTGGTGGTTTCAATTTTTCACAAATATTACCAGATCCATCAAAACCAAGCAAGAGGTCATTTATTGAGGATTTACTTTTCAATAAAGTGACACTTGCTGATGCTGGCTTCATCAAACAATATGGTGATTGCCTTGGTGATATTGCTGCTAGGGATCTTATTTGTGCTCAAAAGTTCAATGGCCTTACTGTTCTGCCACCTTTGCTCACAGATGAAATGATCGCTCAATACACTTCTGCACTATTAGCAGGTACAATCACTTCTGGTTGGACTTTTGGTGCAGGTGCTGCTTTACAAATACCATTTGCCATGCAAATGGCTTATAGGTTTAATGGTATTGGAGTTACACAGAATGTTCTCTATGAGAACCAAAAATTGATTGCCAACCAGTTTAATAGTGCTATTGGCAAAATTCAAGACTCACTTTCTTCTACAGCAAGTGCACTTGGAAAACTTCAAGATGTTGTCAACCAAAATGCACAAGCTTTAAACACGCTTGTTAAACAACTTAGCTCCAATTTTGGAGCTATTTCTAGCGTGTTAAATGATATCCTTTCACGTCTCGACAAAGTTGAGGCTGAAGTGCAGATTGACAGGTTGATCACAGGCAGACTTCAAAGCTTGCAGACATATGTGACTCAACAATTAATTAGAGCTGCAGAAATCAGAGCTTCTGCCAATCTTGCTGCTACTAAAATGTCAGAGTGTGTACTCGGACAATCAAAAAGAGTTGATTTTTGTGGAAAAGGCTATCATCTTATGTCTTTCCCTCAGTCAGCACCTCATGGTGTAGTCTTCTTGCATGTGACATATGTCCCTGCACAAGAAAAGAACTTCACAACTGCTCCTGCCATTTGTCATGATGGAAAAGCACACTTTCCACGTGAAGGTGTTTTCGTTTCAAATGGCACACACTGGTTTGTTACACAAAGGAATTTTTATGAACCACAAATTATTACAACAGACAACACATTTGTCTCTGGTAGCTGTGATGTTGTAATAGGAATTGTCAACAACACAGTTTATGATCCTTTGCAACCAGAACTTGATTCATTCAAGGAGGAGTTGGATAAATACTTTAAAAATCATACATCACCTGATGTAGATTTAGGTGACATTTCTGGCATTAATGCTTCAGTTGTCAATATTCAAAAGGAAATTGACCGCCTCAATGAGGTTGCCAAAAATCTAAATGAATCTCTCATCGATCTCCAAGAACTTGGAAAGTATGAACAGTATATAAAATGGCCATGGTACATTTGGCTAGGTTTTATAGCTGGCTTGATTGCCATAATAATGGTCACGATTATGCTTTGCTGTATGACCAGTTGCTGCAGTTGTCTCAAGGGCTGTTGTTCTTGCGGATCTTGCTGCAAATTTGATGAAGACGACTCTGAGCCAGTGCTCAAAGGAGTCAAATTACATTACACATAAACGAACTTATGGATTTGTTTATGAGAATTTTCACACTTGGAACTGTAACTTTGAAACAAGGTGAAATTAAGGATGCTACTCCTTCAGATTCTGTTCGCGCTACTGCAACGATACCGATACAAGCCTCACTCCCTTTCGGATGGCTTATTGTTGGCGTTGCATTTCTTGCTGTTTTTCAAAGCGCTTCCAAGATCATAACCCTTAAAAAGAGATGGCAACTAGCACTCTCTAAGGGTATTCACTTTATTTGCAACTTGCTGCTGCTGTTTGTAACAGTTTACTCACATCTTTTGCTCGTTGCTGCTGGTCTTGAAGCCCCATTCCTCTACCTCTACGCTTTAGTCTACTTCTTGCAGAGTATAAACTTTGTAAGAATAATAATGAGGCTTTGGCTTTGCTGGAAATGCCGTTCCAAAAACCCATTACTCTATGATGCTAACTACTTCCTTTGTTGGCATACTAATTGTTATGACTATTGTATACCTTACAATAGTGTAACTTCTTCAATTGTCATTACTTCAGGTGATGGCACAACAAGTCCTATTTCTGAACATGACTACCAGATTGGTGGTTATACTGAAAAATGGGAGTCTGGAGTAAAAGACTGTGTTGTATTACACAGTTACTTCACTTCAGATTATTACCAGCTGTACTCAACTCAATTGAGCACAGACACTGGTGTTGAACATGTTACCTTCTTCATCTACAATAAAATTGTTGATGAGCCTGAAGAACATGTCCAAATTCACACAATCGACGGTTCATCCGGAGTTGTTAATCCAGCAATGGAACCAATTTATGATGAACCGACGACGACTACTAGCGTGCCTTTGTAAGCACAAGCTGATGAGTACGAACTTATGTACTCATTCGTTTCGGAAGAGACAGGTACGTTAATAGTTAATAGCGTACTTCTTTTTCTTGCTTTCGTGGTATTCTTGCTAGTCACACTAGCCATCCTTACTGCGCTTCGATTGTGTGCGTACTGCTGCAATATTGTTAACGTGAGTCTTGTAAAACCTTCTTTTTACGTTTACTCTCGTGTTAAAAATCTGAATTCTTCTAGAGTTCCTGATCTTCTGGTCTAAACGAACTAAATATTATATTAGTTTTTCTGTTTGGAACTTTAATTTTAGCCATGGCAGATAACGGTACTATTACCGTTGAAGAGCTGAAAAAGCTCCTTGAACAGTGGAATCTAGTAATAGGATTCCTATTTCTTACATGGATTTGTCTTCTACAATTTGCCTATGCCAACAGGAATAGGTTTTTGTATATAATTAAGTTAATTTTCCTCTGGCTGCTTTGGCCAGTAACTTTAGCCTGCTTTGTGCTTGCTGCTGTTTACAGAATAAATTGGATCACTGGAGGAATCGCTATCGCAATGGCTTGTCTTGTAGGCTTGATGTGGCTGAGCTACTTCATTGCTTCTTTCAGGCTATTTGCACGTACGCGTTCCATGTGGTCATTCAATCCAGAAACTAACATTTTGCTCAACGTGCCACTCCATGGCACTATTTTGACCAGACCGCTTCTAGAGAGTGAACTTGTAATCGGAGCTGTCATCCTTCGTGGACATCTTCGTATTGCTGGACACCATCTAGGACGCTGTGACATCAAGGACCTGCCCAAAGAAATCACTGTTGCTACATCACGAACGCTTTCTTATTACAAATTGGGAGCTTCACAGCGTGTAGCAGGTGATTCAGGTTTTGCTGCATACAGTCGCTACAGGATTGGAAACTACAAATTAAACACAGACCATTCCAGTAGCAGTGACAATATTGCTTTGCTTGTACAGTAAGTGACAACAGATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGGACTTTCAAAGTTTCCATTTGGAACCTTGATTACATCATAAACCTTATAATTAAAAATTTATCTAAGTCACTAACTGAGAATAAATATTCTCAATTAGATGAAGAGCAACCAATGGAGATTGATTAACGAACATGAAAATTATTCTTTTCTTGGTACTGGTAACACTTGCTACTTGTGAGCTTTATCACTACCAAGAGTGTGTTAGAGGTACAACAGTACTTCTAAAAGAACCTTGCTCTTCTGGAACGTATGAAGGCAATTCACCATTCCATCCTCTAGCTGATAATAAATTTGCACTGACTTGCTTTAGCACTCAATTTGCTTTTGCTTGTCCTGACGGCGTGAAACACGTCTATCAGTTACGTGCCAGATCAGTTTCACCCAAACTGTTCATCAGACAAGAGGAAGTTCAAGAACTTTACTCACCAATTTTTCTTATCATTGCAGCAATAGTGTTTATAACACTTTGCTTCACACTCAAAAGAAAAACAGAATGAGTGAACTTTCATTAATTGACTTCTATTTGTGCTTTTTAGCCTTTCTGCTATTCCTTGTTTTAATTATGCTTATTATCTTTTGGTTCTCACTTGAACTGCAAGATCATAATGAAACTTGTCACGCCTAAACGAACATGAAACTTCTTGTTTTCTTAGGAATCCTCACAACAGTAACTGCATTTCACCAAGAATGTAGTTTACAGTCATGTGCTCAACACCAACCATATGTAGTTGATGACCCGTGTCCTATTCACTTCTATTCTAAATGGTACATTAGAGTAGGAGCTAGAAAATCAGCACCTTTAATTGAATTGTGCGTGGATGAGGTTGGTTCTAAATCACCCATTCAGTACATCGATATCGGCAATTATACAGTTTCCTGTTCACCTTTTACAATTAATTGCCAGGAGCCTAAATTGGGTAGTCTTGTAGTGCGTTGTTCGTTCTATGAAGACTTTTTAGAGTATCATGACGTTCGTGTTGTTTTAGATTTCATCTAAACGAACAAACTAAAATGTCTGATAATGGACCCCAAAACCAACGAAATGCACCCCGCATTACGTTTGGTGGACCCTCAGATTCAACTGGCAGTAACCAGAATGGAGAACGCAGTGGAGCACGACCAAAACAACGTCGGCCTCAAGGTTTACCCAATAATACTGCGTCTTGGTTCACCGCTCTCACTCAACATGGCAAGGAAGACCTTAAATTCCCTCGAGGACAAGGCGTTCCGATTAATACCAATAGCAGTCCAGATGACCAAATTGGCTACTACCGAAGAGCTACCAGACGAATTCGTGGTGGTGACGGTAAAATGAAAGATCTCAGTCCAAGATGGTACTTTTACTACCTAGGAACTGGGCCAGAAGCTGGACTTCCCTATGGTGCTAACAAAGACGGCATCATATGGGTTGCAACTGAGGGAGCCTTGAATACACCAAAAGATCACATTGGCACCCGCAATCCTGCTAACAATGCTGCAATCGTGCTACAACTTCCTCAAGGAACAACATTGCCAAAAGGCTTCTACGCAGAAGGGAGCAGAGGTGGCAGTCAAGCTTCTTCTCGCTCTTCATCACGTAGTCGCAACAGTTCAAGAAACTCAACTCCAGGCAGCAGTAGGGGAACTTCCCCTGCTAGGATGGCTGGCAATGGCAGTGATGCTGCTCTTGCTTTGCTGCTGCTTGACAGATTGAACCAGCTTGAGAGCAAAATGTCTGGTAAAGGCCAACAACAACAGAGCCAAACTGTCACTAAGAAATCTGCTGCAGAGGCTTCTAAGAAACCTCGGCAAAAACGTACTGCCACCAAACAATACAATGTAACACAAGCTTTTGGCAGACGTGGTCCAGAACAAACCCAAGGAAACTTTGGGGATCAAGAACTAATCAGGCAAGGAACTGATTACAAACATTGGCCGCAAATTGCACAATTCGCTCCCAGCGCTTCAGCATTCTTCGGAATGTCGCGCATTGGCATGGAAGTCACACCTTCGGGAACGTGGTTGACCTATACAGGTGCCATTAAATTGGATGACAAAGATCCAAATTTCAAAGATCAAGTCATTTTGCTGAATAAGCACATTGACGCATACAAAACATTCCCACCAACAGAGCCTAAAAAGGACAAAAAGAAAAAGGCTGATGAAACTCAAGCCTTACCGCAGAGACAGAAGAAACAGCAAACTGTGACTCTTCTTCCTGCTGCAGATTTGGATGACTTCTCCAAACAATTGCAACAATCCATGAGCAGTGCTGATTCAACTCAGGCCTAAACTCATGCAGACCACACAAGGCAGATGGGCTATATAAACGTTTTCGCTTTTCCGTTTACGATATATAGTCTACTCTTGTGCAGAATGAATTCTCGTAACTACATAGCACAAGTAGATGTAGTTAACCTTAATCTCACATAGCAATCTTTAATCAGTGTGTAACATTAGGGAGGACTTGAAAGAGCCACCACATTTTCACCGAGGCCACGCGGAGTACGATCGAGGGTACAGTGAATAATGCTAGGGAGAGCTGCCTATATGGAAGAGCCCTAATGTGTAAAATTAATTTTAGTAGTGCTATCCCATGTGATTTTAATAGCTTCTTAGGAGAATGACAAAAA"
+    }
+]
