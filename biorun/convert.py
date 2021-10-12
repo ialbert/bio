@@ -4,7 +4,7 @@ Converts across formats
 import re, os
 import sys
 import string
-
+from itertools import count
 from biorun import utils, parser
 import json
 # Module level logger.
@@ -157,6 +157,8 @@ def ascii(text):
     text = text.translate(table)
     return text
 
+COUNTER = count(1)
+
 def get_params(rec):
     """
     Makes a dictionary out of parameters.
@@ -177,6 +179,7 @@ def get_params(rec):
         size=len(rec.seq),
         source=rec.source,
         id=rec.id,
+        count=next(COUNTER),
     )
     return params
 

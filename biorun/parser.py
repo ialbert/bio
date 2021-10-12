@@ -328,7 +328,7 @@ def parse_desc(rec):
         try:
             data = payload[1]
             desc = json.loads(data)
-        except KeyError as exc:
+        except Exception as exc:
             # Not a valid
             # print (exc, data)
             pass
