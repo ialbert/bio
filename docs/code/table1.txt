@@ -1,5 +1,5 @@
-MN996532.2  29855
-orf1ab      21287
-QHR63299.2  21288
-S           3810
-QHR63300.2  3810
+MN996532.2  29855  source
+orf1ab      21287  gene    orf1ab
+QHR63299.2  21288  CDS     orf1ab  orf1ab  polyprotein
+S           3810   gene    S
+QHR63300.2  3810   CDS     S       spike   glycoprotein
