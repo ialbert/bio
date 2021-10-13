@@ -39,6 +39,6 @@ cat aligned.fa | bio format --vcf | head > format3.txt
 #
 cat genomes.gb | bio table | head -5 | column -t > table1.txt
 
-cat genomes.gb | bio table --type CDS --fields id,gene | head -5 | column -t > table2.txt
+cat genomes.gb | bio table --fields id,type,size,gene | head -5 | column -t > table2.txt
 
 cat genomes.gb | bio table --type CDS --fields id,gene,isolate,country,date | head -5 | column -t > table3.txt

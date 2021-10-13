@@ -1,5 +1,5 @@
-QHR63299.2  orf1ab
-QHR63300.2  S
-QHR63301.1  NS3
-QHR63302.1  E
-QHR63303.1  M
+MN996532.2  source  29855
+orf1ab      gene    21287  orf1ab
+QHR63299.2  CDS     21288  orf1ab
+S           gene    3810   S
+QHR63300.2  CDS     3810   S

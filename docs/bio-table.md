@@ -8,36 +8,25 @@ To turn the GenBank into a table run:
 
     cat genomes.gb | bio table | head
 
-by default it prints the id, size, type and gene associated with each sequence:
+by default it prints the id, size associated with each sequence:
 
 ```{r, code=xfun::read_utf8('code/table1.txt'), eval=F}
 ```
 
-The input may be GENBANK, FASTA, EMBL or FASTQ.
-
-    bio fasta THISLINE ISALIGNED | bio table
-
-prints:
-
-    seq1    8       source
-    seq2    9       source
-
-
-## Additional fields
-
-
-For a simple enumeration of of the sequence ids and their sizes:
-
-    cat genomes.gb | bio table --fields id,size
-
 a number of additional fields may be specified, for example:
 
-    cat genomes.gb | bio table --type CDS --fields id,gene | head
+    cat genomes.gb | bio table --fields id,type,size,gene | head
 
 connects protein ids to genes:
 
 ```{r, code=xfun::read_utf8('code/table2.txt'), eval=F}
 ```
+
+## Additional fields
+
+For a simple enumeration of of the sequence ids and their sizes:
+
+    cat genomes.gb | bio table --fields id,size
 
 or to extract additional metadata:
 

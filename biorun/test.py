@@ -52,20 +52,10 @@ def shell(cmd):
     return proc
 
 
-INIT = f"""    
-    ln -s '{FILE_DIR}/data/genomes.gb'
-    ln -s '{FILE_DIR}/data/alias.txt'
-    ln -s '{FILE_DIR}/data/align_input.fa'
-    ln -s '{FILE_DIR}/data/mafft.fa'
-    ln -s '{FILE_DIR}/data/file1.txt'
-    ln -s '{FILE_DIR}/data/file2.txt'
-"""
-
-
 def test_setup():
 
     names = [
-        'alias.txt', 'align_input.fa', 'mafft.fa', 'file1.txt', 'file2.txt'
+        'genomes.gb', 'alias.txt', 'align_input.fa', 'mafft.fa', 'file1.txt', 'file2.txt'
     ]
     for name in names:
         src = f'{FILE_DIR}/data/{name}'

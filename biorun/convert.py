@@ -7,6 +7,7 @@ import string
 from itertools import count
 from biorun import utils, parser
 import json
+
 # Module level logger.
 logger = utils.logger
 
@@ -27,16 +28,19 @@ except ImportError as exc:
 
 
 def table_formatter(fields):
+    fields = fields.split(",")
+    hasN = 'N' in fields
 
-    coll = ["{%s}" % f for f in fields.split(",")]
+    coll = ["{%s}" % f for f in fields]
 
     patt = "\t".join(coll)
 
     def func(rec):
-        param = get_params(rec)
+        param = get_params(rec, hasN=hasN)
         print(patt.format(**param))
 
     return func
+
 
 def fasta_formatter(rec):
     seqrec = parser.make_seqrec(rec)
@@ -157,15 +161,21 @@ def ascii(text):
     text = text.translate(table)
     return text
 
+
 COUNTER = count(1)
 
-def get_params(rec):
+
+def get_params(rec, hasN=False):
     """
     Makes a dictionary out of parameters.
     """
 
-    #text = json.dumps(ann, indent=4)
-    #print (text)
+    # text = json.dumps(ann, indent=4)
+    # print (text)
+    if hasN:
+        nfunc = lambda rec: rec.seq.count('N')
+    else:
+        nfunc = lambda rec: 0
 
     params = dict(
         isolate=rec.get_parent_ann("isolate"),
@@ -180,8 +190,10 @@ def get_params(rec):
         source=rec.source,
         id=rec.id,
         count=next(COUNTER),
+        N=nfunc(rec),
     )
     return params
+
 
 def rename_sequence(patt):
     """
@@ -208,7 +220,7 @@ def rename_sequence(patt):
             text = patt.format(**params)
             text = "_".join(text.split())
 
-            #text = ascii(text)
+            # text = ascii(text)
 
             rec.id = text
 
