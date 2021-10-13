@@ -1,11 +1,9 @@
 import os
-import string
 import sys
 from itertools import *
 
-from biorun.libs import placlib as plac
 from biorun import parser
-
+from biorun.libs import placlib as plac
 from . import models
 
 try:
@@ -51,7 +49,6 @@ def all_nuc(text, limit=1000):
     return all(map(is_nuc, subs))
 
 
-
 def safe_abs(value):
     try:
         return abs(float(value))
@@ -73,7 +70,7 @@ def align(target, query, par: models.Param):
         aligner.mode = 'global'
 
     # Recognize a few shorter matrix names.
-    par.matrix = 'NUC.4.4' if par.matrix in('DNA', 'EDNAFULL') else par.matrix
+    par.matrix = 'NUC.4.4' if par.matrix in ('DNA', 'EDNAFULL') else par.matrix
     par.matrix = 'BLOSUM62' if par.matrix in ('PROT', 'PEP') else par.matrix
 
     # Automatic detection of nucleotide vs peptide
@@ -90,7 +87,6 @@ def align(target, query, par: models.Param):
         # Nucleotide defaults.
         aligner.match_score = safe_abs(par.match)
         aligner.mismatch_score = -safe_abs(par.mismatch)
-
 
     # Internal gap scoring.
     aligner.open_gap_score = -safe_abs(par.gap_open)
@@ -152,7 +148,6 @@ def get_matrix(matrix, show=False):
 @plac.flg("all_", "show all alignments", abbrev='A')
 def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mismatch=2,
         semiglobal=False, vcf=False, table=False, diff=False, pile=False, fasta=False, all_=False, *sequences):
-
     # Select alignment mode
     if global_:
         mode = GLOBAL_ALIGN
@@ -175,13 +170,6 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mis
     if len(recs) < 2:
         utils.error("Need at least two sequences to align")
 
-    # Keeping people from accidentally running alignments that are too large.
-    MAXLEN = 50000
-    for rec in recs:
-        if len(rec.seq) > MAXLEN:
-            utils.error(f"Sequence {rec.id} is too long: {len(rec)} > {MAXLEN:,}", stop=False)
-            utils.error("We recommend that you use a different software.")
-
     # The first sequence is the query
     target = recs[0]
 
@@ -197,8 +185,15 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mis
         mismatch=mismatch,
     )
 
+    # Keeping people from accidentally running alignments that are too large.
+    MAXLEN = 50000
+
     # Generate an alignment for each target
     for query in recs[1:]:
+
+        if (len(query.seq) > MAXLEN) and (len(target.seq) > MAXLEN):
+            utils.error(f"Both sequences {query.id} and {target.id} appear to be longer than {MAXLEN:,} bases.", stop=False)
+            utils.error("We recommend that you use a different software.")
 
         alns = align(query, target, par=par)
 
@@ -251,10 +246,10 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mis
         models.format_pairwise(collect, par=par)
 
     if count > 1 and not all_:
-        print(f"# {count+1} identically scoring alignments! Pass the flag -A to see them all", file=sys.stderr)
+        print(f"# {count + 1} identically scoring alignments! Pass the flag -A to see them all", file=sys.stderr)
+
 
 if __name__ == '__main__':
-
     # Identically scoring alignments
     # bio align TGCGGGGGAAA GACGTGTGTCGTG - A - -fasta
 
