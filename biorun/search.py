@@ -23,7 +23,7 @@ ENA_FIELDS = f"{ENA_API}/returnFields"
 ENA_REPORT = f"{ENA_API}/filereport"
 
 
-def is_srr(text):
+def match_srr(text):
     """
     Pattern for SRR numbers.
     """
@@ -31,17 +31,56 @@ def is_srr(text):
 
 
 # Documentation at https://www.ebi.ac.uk/ena/portal/api
-
-def get_srr(text, all=False, sep=False, limit=100):
+def get_ena_fields(db='ena'):
     """
-    Performs an SRR search
+    Returns all valid ENA fields for a database
+    """
+    params = dict(dataPortal=db, result='read_run')
+    stream = get_request(url=ENA_FIELDS, params=params, sep="\t")
+    fields = [r['columnId'] for r in stream]
+    fields.sort()
+    return fields
+
+
+def get_ncbi(text, db="protein", format="json"):
+    drops = "statistics properties oslt".split()
+    url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
+    params = dict(db=db, format=format, id=text)
+
+    stream = get_request(url, params=params, bulk=True)
+
+
+    data = json.loads(stream)
+
+    data = data.get("result", {})
+
+    collect = []
+    for key in data:
+        if key == 'uids':
+            continue
+
+        entry = data[key]
+        for drop in drops:
+            if drop in entry:
+                del entry[drop]
+
+        res = {}
+        for key in sorted(entry.keys()):
+            res[key] = entry[key]
+        collect.append(res)
+
+    if not collect:
+        collect = [ dict(error="invalid genbank id", db=db, value=f"{text}")]
+    return collect, None
+
+
+def get_srr(text, all=False, sep=None):
+    """
+    Returns a list of SRR data.
     """
     url = ENA_REPORT
     if all:
-        params = dict(dataPortal='ena', result='read_run')
-        stream = get_request(ENA_FIELDS, params=params, sep="\t")
-        fields = [r['columnId'] for r in stream]
-        fields.sort()
+        fields = get_ena_fields()
     else:
         fields = [
             'run_accession',
@@ -49,6 +88,7 @@ def get_srr(text, all=False, sep=False, limit=100):
             'first_public',
             'country',
             'sample_alias',
+            'fastq_bytes',
             'read_count',
             'library_name',
             "library_strategy",
@@ -65,21 +105,14 @@ def get_srr(text, all=False, sep=False, limit=100):
         accession=text,
         fields=fields,
         result='read_run',
-        #limit=limit,
     )
-    stream = get_request(url, params=params, sep="\t")
 
-    if sep:
+    stream = get_request(url, params=params, sep=sep)
 
-        wrt = csv.DictWriter(sys.stdout, fieldnames=stream.fieldnames, delimiter=sep)
-        wrt.writerows(stream)
-    else:
-        stream = list(stream)
-        text = json.dumps(stream, indent=4)
-        print(text)
+    return stream, None
 
 
-def is_bioproject(text):
+def match_bioproject(text):
     """
     Pattern for project numbers.
     """
@@ -101,7 +134,7 @@ def parse_genbank(text):
 #
 # https://www.ncbi.nlm.nih.gov/genbank/acc_prefix/
 #
-def is_genbank_nucleotide(text):
+def match_genbank_nucleotide(text):
     """
     Returns true if text matches NCBI nucleotides.
     """
@@ -114,7 +147,7 @@ def is_genbank_nucleotide(text):
     return cond
 
 
-def is_genbank_protein(text):
+def match_genbank_protein(text):
     """
     Returns true if text matches NCBI protein sequences
     """
@@ -127,10 +160,17 @@ def is_genbank_protein(text):
     return cond
 
 
+def dictreader(stream, sep=None):
+    """
+    Function to wrap a stream into a DictReader.
+    """
+    return csv.DictReader(stream, delimiter=sep)
+
+
 def get_request(url, params={}, sep=None, bulk=False):
     try:
 
-        #print (url, params, file=sys.stderr)
+        # print (url, params, file=sys.stderr)
 
         r = requests.get(url, params=params)
 
@@ -142,13 +182,11 @@ def get_request(url, params={}, sep=None, bulk=False):
             return r.text
         else:
             stream = r.iter_lines(decode_unicode=True)
-            if sep:
-                stream = csv.DictReader(stream, delimiter=sep)
+            stream = dictreader(stream, sep=sep) if sep else stream
             return stream
 
     except Exception as exc:
         utils.error(f"Error for {url}, {params}: {exc}")
-
 
 
 def search_mygene(query, fields, species='', scopes='', limit=5):
@@ -173,40 +211,73 @@ def search_mygene(query, fields, species='', scopes='', limit=5):
         del hit['_score']
         hit['taxname'] = names.get(hit.get('taxid'), [''])[0]
 
-    text = json.dumps(hits, indent=4)
-
-    print(text)
-
     if len(hits) < total:
-        print(f'#  showing {len(hits)} out of {total} results.', file=sys.stderr)
+        warn = f'#  showing {len(hits)} out of {total} results.'
+    else:
+        warn = None
+
+    return hits, warn
 
 
-def dispatch(word, all=False, sep=None, fields='', limit=5, species='', scopes=''):
+def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
+    if match_srr(word) or match_bioproject(word):
+        values, warn = get_srr(word, all=all, sep="\t")
 
-    if is_srr(word) or is_bioproject(word):
-        get_srr(word, all=all, sep=sep)
+    elif match_genbank_nucleotide(word):
+        values, warn = get_ncbi(word, db="nuccore")
+
+    elif match_genbank_protein(word):
+        values, warn = get_ncbi(word, db="protein")
+
     else:
         fields = ",".join(['symbol', 'name', 'taxid', fields])
-        search_mygene(word, fields=fields, limit=limit, species=species, scopes=scopes)
+        values, warn = search_mygene(word, fields=fields, limit=limit, species=species, scopes=scopes)
 
-@plac.flg('csv', "produce comma separated output")
+    return values, warn
+
+
+@plac.flg('csv_', "produce comma separated output")
 @plac.flg('tab', "produce tab separated output")
 @plac.flg('all', "get all possible fields")
+@plac.flg('header', "show headers", abbrev="H")
 @plac.opt('limit', "download limit", abbrev='l')
 @plac.opt('fields', "fields", abbrev='f')
 @plac.opt('species', "species", abbrev='s')
 @plac.opt('scopes', "scopes", abbrev='S')
 @plac.pos('query', "query terms")
-def run(all=False, csv=False, tab=False, species='', scopes='symbol', limit=5, fields='', *words):
+def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symbol', limit=5, fields='', *words):
+
 
     sep = None
 
-    sep = "," if csv else sep
+    sep = "," if csv_ else sep
 
     sep = "\t" if tab else sep
 
+    collect = []
+    warns = []
     for word in words:
-        dispatch(word, all=all, sep=sep, limit=limit, fields=fields, species=species, scopes=scopes)
+        values, warn = dispatch(word, all=all, limit=limit, fields=fields, species=species, scopes=scopes)
+
+        collect.extend(values)
+        warns.append(warn)
+
+    if sep:
+        fields = collect[0].keys()
+        wrt = csv.writer(sys.stdout, delimiter=sep)
+        stream = [ x.values() for x in collect]
+        keys = [ x.keys() for x in collect]
+        if header:
+            wrt.writerow(keys[0])
+        wrt.writerows(stream)
+    else:
+        text = json.dumps(collect, indent=4)
+        print(text)
+
+    # Show collected warnings at the end where it is not so easy to miss.
+    warns = filter(None, warns)
+    for warn in warns:
+        print(warn, file=sys.stderr)
 
 
 # SRR5260547

@@ -5,6 +5,7 @@
         "first_public": "2015-06-05",
         "country": "Sierra Leone",
         "sample_alias": "W220.0",
+        "fastq_bytes": "699204879;605646780",
         "read_count": "8345287",
         "library_name": "W220.0.l1",
         "library_strategy": "RNA-Seq",
