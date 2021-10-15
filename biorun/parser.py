@@ -147,21 +147,23 @@ def get_streams(fnames, dynamic=False):
 
 def parse_json(stream):
     text = stream.read()
-    data = json.loads(text)
+    json_list = json.loads(text)
 
-    for entry in data:
+    for record in json_list:
 
-        feats = entry[FEATURES]
-        source = entry[SOURCE]
-        parents = [f for f in feats if f[TYPE] == SOURCE]
+        # The features in the record
+        features = record[FEATURES]
 
-        if parents:
-            parent = parents[0][ANNOTATIONS]
-        else:
-            parent = {}
+        # The source (sequence) for the record.
+        sequence = record[SOURCE]
 
-        for feat in entry[FEATURES]:
+        # Parent annotations (at source feature level)
+        parent = features[0][ANNOTATIONS] if features else {}
+
+        for feat in features:
+
             uid = feat[ID]
+
             ftype = feat[TYPE]
 
             ann = feat[ANNOTATIONS]
@@ -172,7 +174,7 @@ def parse_json(stream):
 
             seq = ''
             for start, end, strand in feat[LOCATIONS]:
-                sub = source[start-1:end]
+                sub = sequence[start-1:end]
                 sub = sub[::-1] if strand == -1 else sub
                 seq += sub
 
@@ -327,11 +329,13 @@ def parse_desc(rec):
     if len(payload) == 2:
         try:
             data = payload[1]
-            desc = json.loads(data)
+            ann = json.loads(data)
         except Exception as exc:
             # Not a valid
-            # print (exc, data)
+            #print (exc, data)
             pass
+    else:
+        desc = dict(desc=rec.description)
 
     return ann, desc
 
@@ -351,7 +355,7 @@ def record_generator(rec):
         if not rec.features:
             # Attempts to read annotations from description.
             ann, desc = parse_desc(rec)
-            brec = BioRec(id=rec.id, ann=ann, parent=ann, type=SOURCE, seq=rec.seq, desc=desc)
+            brec = BioRec(id=rec.id, ann=ann, parent=ann, type=SOURCE, seq=rec.seq, desc=ann)
             yield brec
 
         else:
