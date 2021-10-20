@@ -12,11 +12,15 @@ set -uex
 # Selecting by gene id
 bio fasta genomes.gb --type gene --id N --end 10 > fasta_ids.fa
 
+
+# Match with regular expression
+cat genomes.gb | bio fasta -m glyco -end 10 > fasta_match.fa
+
 # Last ten sequences of all entries.
-bio fasta genomes.gb -end 10 > fasta_all1.fa
+bio fasta genomes.gb -end 10 --features > fasta_all1.fa
 
 # Should produce the same output as above
-cat genomes.gb | bio fasta --end  10 > fasta_all2.fa
+cat genomes.gb | bio fasta --end  10 --features > fasta_all2.fa
 
 # No muterence between outputs.
 diff fasta_all1.fa fasta_all2.fa > nodiff.txt
@@ -25,19 +29,19 @@ diff fasta_all1.fa fasta_all2.fa > nodiff.txt
 cat genomes.gb | bio json > genomes.json
 
 # Last ten sequences of all entries.
-cat genomes.json | bio fasta -end 10 > fasta_all3.fa
+cat genomes.json | bio fasta -end 10  --features > fasta_all3.fa
 
 # No muterence between outputs.
 diff fasta_all1.fa fasta_all3.fa > nodiff.txt
 
 # Renaming with patterns
-bio fasta genomes.gb --end 100 --source --rename {isolate} > fasta_rename1.fa
+bio fasta genomes.gb --end 100  --rename {isolate} > fasta_rename1.fa
 
 # Renaming with a file
-bio fasta genomes.gb --end 100 --source --rename alias.txt > fasta_alias1.fa
+bio fasta genomes.gb --end 100  --rename alias.txt > fasta_alias1.fa
 
 # Outputs overlapping features in FASTA
-cat genomes.gb | bio fasta --olap 29514 -e 10 --type CDS > fasta_olap1.fa
+cat genomes.gb | bio fasta --features --olap 29514 -e 10 --type CDS > fasta_olap1.fa
 
 # Outputs overlapping features as GFF
 cat genomes.gb | bio gff --olap 29514 > gff_olap1.gff

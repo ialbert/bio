@@ -1,0 +1,6 @@
+>YP_009724390.1 {"type": "CDS", "gene": "S", "product": "surface glycoprotein", "locus": "GU280_gp02"}
+ATGTTTGTTT
+>YP_009724393.1 {"type": "CDS", "gene": "M", "product": "membrane glycoprotein", "locus": "GU280_gp05"}
+ATGGCAGATT
+>QHR63300.2 {"type": "CDS", "gene": "S", "product": "spike glycoprotein", "locus": ""}
+ATGTTTGTTT

@@ -21,13 +21,13 @@ GenBank/EMBL files represents sequence information in multiple sections:
 
 ## Convert to FASTA
 
-The default behavior is to convert all features of the GenBank file to FASTA (this includes both the genome and all features).
+The default behavior is to convert the genome the GenBank file to FASTA:
 
-    bio fasta genomes.gb > all.fa
+    bio fasta genomes.gb > genomes.fa
 
-to convert only the genome component pass the `--source` flag:
+to convert the features  component pass the `--features` flag or use any of `--type`, `--gene` or other feature specific selectors.
 
-    bio fasta genomes.gb --source > genomes.fa
+    bio fasta genomes.gb --features > features.fa
 
 ## Inputs
 
@@ -37,7 +37,7 @@ The input may be GENBANK, FASTA, EMBL or FASTQ.
 
 GenBank and EMBL files contain both genomes and features all features are extracted.
 
-    cat genomes.gb | bio fasta > all.fa
+    cat genomes.gb | bio fasta > genomes.fa
 
 pass any feature matcher to limit to certain types:
 
@@ -45,9 +45,9 @@ pass any feature matcher to limit to certain types:
 
 prints:
 
-    >YP_009724389.1 CDS gene ORF1ab, ORF1ab polyprotein [1:10]
+    >YP_009724389.1 {"type": "CDS", "gene": "ORF1ab", "product": "ORF1ab polyprotein", "locus": "GU280_gp01"}
     ATGGAGAGCC
-    >YP_009725295.1 CDS gene ORF1ab, ORF1a polyprotein [1:10]
+    >YP_009725295.1 {"type": "CDS", "gene": "ORF1ab", "product": "ORF1a polyprotein", "locus": "GU280_gp01"}
     ATGGAGAGCC
 
 ## Select by name
@@ -58,12 +58,9 @@ prints:
 
 prints:
 
-    >YP_009724390.1 CDS gene S, surface glycoprotein [1:10]
+    >YP_009724390.1 {"type": "CDS", "gene": "S", "product": "surface glycoprotein", "locus": "GU280_gp02"}
     ATGTTTGTTT
-    >YP_009724393.1 CDS gene M, membrane glycoprotein [1:10]
-    ATGGCAGATT
-    >QHR63300.2 CDS gene S, spike glycoprotein [1:10]
-    ATGTTTGTTT
+    >YP_009724393.1 {"type": "CDS", "gene": "M", "product": "membrane glycoprotein", "locus": "GU280_gp05"}T
 
 `-i` or `--id` performs an exact match on sequence ids:
 
@@ -71,7 +68,7 @@ prints:
 
 prints:
 
-    >YP_009724390.1 CDS gene S, surface glycoprotein [1:10]
+    >YP_009724390.1 {"type": "CDS", "gene": "S", "product": "surface glycoprotein", "locus": "GU280_gp02"}
     ATGTTTGTTT
 
 pass multiple ids to match multiple sequences:
@@ -80,9 +77,9 @@ pass multiple ids to match multiple sequences:
 
 prints:
 
-    >YP_009724390.1 CDS gene S, surface glycoprotein [1:10]
+    >YP_009724390.1 {"type": "CDS", "gene": "S", "product": "surface glycoprotein", "locus": "GU280_gp02"}
     ATGTTTGTTT
-    >QHR63300.2 CDS gene S, spike glycoprotein [1:10]
+    >QHR63300.2 {"type": "CDS", "gene": "S", "product": "spike glycoprotein", "locus": ""}
     ATGTTTGTTT
 
 ## Selecting features
@@ -96,7 +93,7 @@ will convert to fasta the coding sequences alone.
 
 ## Manipulate a genomic subsequence
 
-    bio fasta genomes.gb --source --start 100 --end 10kb
+    bio fasta genomes.gb --start 100 --end 10kb
 
 ## Extract the sequences for annotations of a certain type
 

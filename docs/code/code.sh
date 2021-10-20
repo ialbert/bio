@@ -22,7 +22,7 @@ cat genomes.gb | bio fasta --gene S --protein | bio align --diff | tail -5 | col
 
 cat genomes.gb | bio fasta --gene S --translate | bio align --matrix PAM30 | head -8 > align10.txt
 
-cat genomes.gb | bio fasta --source > genomes.fa
+cat genomes.gb | bio fasta > genomes.fa
 
 # Alignments
 

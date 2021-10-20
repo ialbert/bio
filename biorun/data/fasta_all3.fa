@@ -1,5 +1,3 @@
->NC_045512.2 {"title": "Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1, complete genome", "type": "source"}
-ATTAAAGGTT
 >five_prime_UTR-1 {"type": "five_prime_UTR", "gene": "", "product": "", "locus": ""}
 ATTAAAGGTT
 >ORF1ab {"type": "gene", "gene": "ORF1ab", "product": "", "locus": "GU280_gp01"}
@@ -112,8 +110,6 @@ TAACTACATA
 CAATCTTTAA
 >stem_loop-5 {"type": "stem_loop", "gene": "", "product": "", "locus": ""}
 TTCACCGAGG
->MN996532.2 {"title": "Bat coronavirus RaTG13, complete genome", "type": "source"}
-ATTAAAGGTT
 >orf1ab {"type": "gene", "gene": "orf1ab", "product": "", "locus": ""}
 ATGGAGAGCC
 >QHR63299.2 {"type": "CDS", "gene": "orf1ab", "product": "orf1ab polyprotein", "locus": ""}

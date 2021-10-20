@@ -135,7 +135,7 @@ def regex_selector(patt):
 
     def func(rec):
         if patt:
-            cond = cpatt.search(rec.id) or cpatt.search(rec.description)
+            cond = cpatt.search(rec.id) or cpatt.search(str(rec.desc))
             return cond
         else:
             return True
@@ -256,7 +256,7 @@ def source_only(rec):
     return rec.type == parser.SOURCE
 
 
-def remove_source(rec):
+def features_only(rec):
     return rec.type != parser.SOURCE
 
 
@@ -369,7 +369,7 @@ def gff_formatter(rec):
         print(line)
 
 
-def run(protein=False, translate=False, fasta=False, revcomp=False, source=False, olap='', table=False, fields='',
+def run(protein=False, translate=False, fasta=False, revcomp=False, features=False, olap='', table=False, fields='',
         start='1', end=None, type_='', id_='', match='', gene='', rename=None, fnames=[]):
     """
     Converts data to different formats.
@@ -400,9 +400,20 @@ def run(protein=False, translate=False, fasta=False, revcomp=False, source=False
 
     recs = map(remapper, recs)
 
-    # Keep the genome only
-    if source:
-        recs = filter(source_only, recs)
+    # When to produce tabular output
+    gff = not fasta
+
+    # When are we producing features
+    keepall = seqid or match
+
+    features = features or gene or type_ or protein or gff
+
+    # Keep the features or the sources only
+    if not keepall:
+        if features:
+            recs = filter(features_only, recs)
+        else:
+            recs = filter(source_only, recs)
 
     if seqid:
         # Filter by seqid.

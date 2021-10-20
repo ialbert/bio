@@ -12,14 +12,14 @@ from biorun import convert
 @plac.opt("gene", "filter for a gene name", abbrev='g')
 @plac.flg("protein", "operate on the protein sequences", abbrev='p')
 @plac.flg("translate", "translate DNA ", abbrev='T')
-@plac.flg("source", "extract source (genome) only ", abbrev='G')
+@plac.flg("features", "extract the fasta for the features", abbrev='G')
 @plac.flg("revcomp", "reverse complement DNA", abbrev='R')
 @plac.opt("rename", "rename sequence ids")
 @plac.opt("olap", "overlap with coordinate")
 @plac.opt("frame", "reading frame", type=int, choices=[1,2,3,-1,-2,-3], abbrev='F')
 @plac.pos("fnames", "input files")
 def run(start='1', end='', type_='', id_='', match='', gene='',
-        rename='', protein=False, translate=False, revcomp=False, source=False, olap='', frame=1, *fnames):
+        rename='', protein=False, translate=False, revcomp=False, features=False, olap='', frame=1, *fnames):
 
     if frame > 1:
         start = frame
@@ -29,6 +29,6 @@ def run(start='1', end='', type_='', id_='', match='', gene='',
         revcomp = True
 
     convert.run(protein=protein, translate=translate, start=start,
-                end=end, type_=type_, id_=id_, revcomp=revcomp, source=source, olap=olap,
+                end=end, type_=type_, id_=id_, revcomp=revcomp, features=features, olap=olap,
                 match=match, gene=gene, rename=rename, fasta=True, fnames=fnames)
 
