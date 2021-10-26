@@ -188,7 +188,7 @@ def search_assemblies(word):
         sys.exit()
 
     patt = re.compile(word, flags=re.IGNORECASE)
-    stream = open(ASSEMBLY_SUMMARY_PATH)
+    stream = open(ASSEMBLY_SUMMARY_PATH, encoding="utf-8")
     stream = filter(lambda x: not x.startswith("#"), stream)
     stream = filter(lambda x: x.strip(), stream)
     coll = []
