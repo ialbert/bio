@@ -25,6 +25,12 @@ ENA_FIELDS = f"{ENA_API}/returnFields"
 ENA_REPORT = f"{ENA_API}/filereport"
 
 
+# The assembly summary file
+ASSEMBLY_SUMMARY_URL = 'https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt'
+ASSEMBLY_SUMMARY_PATH = "assembly_summary_genbank.txt"
+ASSEMBLY_SUMMARY_PATH = utils.cache_path(ASSEMBLY_SUMMARY_PATH)
+
+
 def match_srr(text):
     """
     Pattern for SRR numbers.
@@ -161,11 +167,6 @@ VALID_NUC = {
 VALID_PROT = {
     (3, 5), (3, 7)
 }
-
-# The assembly summary file
-ASSEMBLY_SUMMARY_URL = 'https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt'
-ASSEMBLY_SUMMARY_PATH = "assembly_summary_genbank.txt"
-ASSEMBLY_SUMMARY_PATH = utils.cache_path(ASSEMBLY_SUMMARY_PATH)
 
 
 def update_assembly_stats():

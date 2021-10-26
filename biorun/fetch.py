@@ -10,6 +10,8 @@ except ImportError as exc:
     print(f"# Install: conda install -y biopython>=1.79", file=sys.stderr)
     sys.exit(-1)
 
+from biorun import search
+
 from biorun.libs import placlib as plac
 from tqdm import tqdm
 from biorun import utils
@@ -55,6 +57,12 @@ def parse_ncbi(text):
 def is_srr(text):
     patt = re.compile("(S|E)RR\d+")
     return bool(patt.search(text))
+
+
+def is_GCF(text):
+    patt = text.split("_")[0]
+    cond = patt in ("GCA", "GCF")
+    return cond
 
 
 def is_bioproject(text):
@@ -214,7 +222,8 @@ def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
         stream = Entrez.efetch(db=db, id=ids, rettype=rettype, retmode=retmode, retmax=limit)
 
         try:
-            stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5, leave=False)
+            stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5,
+                          leave=False)
         except Exception as exc:
             # Older version of tqdm does not have the delay parameter.
             stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, leave=False)
@@ -226,6 +235,40 @@ def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
         print(line, end='')
         stream.update(len(line))
     stream.close()
+
+
+def fetch_gcf(ids, format_=''):
+    import gzip
+
+    coll = []
+    for value in ids:
+        data, warn = search.search_assemblies(value)
+        coll.extend(data)
+
+    # Maps file extensions to formats
+    EXTMAP = dict(
+        gff="gff",
+        gtf="gtf",
+        fasta="fna",
+        prot="prot",
+    )
+
+    ext = EXTMAP.get(format_) or "gbff"
+
+    for elem in coll:
+        url = elem.get("ftp_path")
+        name = url.split("/")[-1]
+
+        url = f"{url}/{name}_genomic.{ext}.gz"
+
+        try:
+            r = requests.get(url, stream=True)
+            f = gzip.GzipFile(fileobj=r.raw)
+            for row in f.readlines():
+                text = row.decode("utf8")
+                print(text, end='')
+        except Exception as exc:
+            utils.error(f"Error for {url}: {exc}")
 
 
 def fetch_ensembl(ids, ftype='genomic'):
@@ -248,6 +291,7 @@ def fetch_ensembl(ids, ftype='genomic'):
     except Exception as exc:
         utils.error(f"Error for {ids}, {ftype}: {exc}")
 
+
 @plac.pos("acc", "accession numbers")
 @plac.opt("db", "database", choices=["nuccore", "protein"])
 @plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default", "gff"])
@@ -262,29 +306,16 @@ def run(db="", type_='', format_='', limit=None, *acc):
         lines = utils.read_lines(sys.stdin, sep=None)
         ids.extend(lines)
 
-    # Dealing with SRR numbers
-    srr = list(map(is_srr, ids))
-    if all(srr):
-        # Default output is text format.
-        ftype = format_ or 'text'
-        stream = efetch(ids=ids, db='sra', rettype='runinfo', retmode='csv', limit=limit)
-        format_runinfo(stream, ftype=ftype)
-        return
-
-    # Dealing with PRJN numbers
-    prn = list(map(is_bioproject, ids))
-    if all(prn):
-        for term in ids:
-            # Default is CSV
-            ftype = format_ or 'csv'
-            stream = esearch_and_efetch(term=term, db='sra', rettype='runinfo', retmode='csv', limit=limit)
-            format_runinfo(stream, ftype=ftype)
-        return
-
     # Dealing with Ensembl
     ensmbl = list(map(is_ensembl, ids))
     if all(ensmbl):
         fetch_ensembl(ids=ids, ftype=type_)
+        return
+
+    # Downloads GCF data
+    gcfs = list(map(is_GCF, ids))
+    if all(gcfs):
+        fetch_gcf(ids=ids, format_=format_)
         return
 
     # Detects nucleotides

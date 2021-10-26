@@ -2,17 +2,17 @@
 
 `bio search` provides command line interface to SRA and MyGene. Install `bio` with:
 
+    # Install the package
     pip install bio --upgrade
+
+    # Update the database
+    bio --download
 
 The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
 ## How does this tool work?
 
-`bio search` attempts to recognize the search words with bioinformatics signficance (like accession numbers) and attempts to look them up in the most appropriate database.
-
-If the search term does not match any known format, it searches the GenBank assemblies for regular expression matches. First install the downloadable database withL
-
-    bio --download
+`bio search` attempts to recognize the search words with bioinformatics signficance (like accession numbers) and attempts to look them up in the most appropriate database. If the search term does not match any known format, it searches the GenBank assemblies for regular expression matches. First install the downloadable database withL
 
 Then start searching for information:
 
@@ -55,11 +55,26 @@ will produce the output:
         }
     ]
 
+You may also turn the output into comma separated or tab delimited formats:
 
-whereas
+    bio search AF086833 --csv
+
+produces CSV files:
+
+    AF086833.2,,,cRNA,,AF086833,complete,1999/02/10,gi|10141003|gb|AF086833.2|,,1,,10141003,rna,"Ebola virus - Mayinga, Zaire, 1976",0,,18959,insd,Mayinga,,Mayinga|EBOV-May,strain|gb_acronym,128952,,10141003,"Ebola virus - Mayinga, Zaire, 1976, complete genome",linear,10141003,2012/02/13
+
+whereas to produce tab delimited formats use:
+
+    bio search AF086833 --tab
+
+prints:
+
+    AF086833.2  cRNA  AF086833  complete  1999/02/10  gi|10141003|gb|AF086833.2|  1  10141003  rna  Ebola  virus  -  Mayinga,  Zaire,  1976  0  18959  insd  Mayinga  Mayinga|EBOV-May  strain|gb_acronym  128952  10141003  Ebola  virus  -  Mayinga,  Zaire,  1976,  complete  genome  linear  10141003  2012/02/13
+
+
+## Search of SRR numbers
 
     bio search SRR14575325
-
 
 produces:
 

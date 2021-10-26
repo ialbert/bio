@@ -49,7 +49,6 @@ returns a FASTA file:
     ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCTGTTCTCTAAA
     CGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACTCACGCAGTATAATTAATAAC
 
-
 whereas:
 
     bio fetch NC_045512 --format gff  | head -3
@@ -60,62 +59,18 @@ returns a GFF file:
     ##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2697049
     NC_045512.2	RefSeq	region	1	29903	.	+	.	ID=NC_045512.2:1..29903;Dbxref=taxon:2697049;collection-date=Dec-2019;country=China;gb-acronym=SARS-CoV-2;gbkey=Src;genome=genomic;isolate=Wuhan-Hu-1;mol_type=genomic RNA;nat-host=Homo sapiens;old-name=Wuhan seafood market pneumonia virus
 
-## Fetch SRA run information
+## Fetching genome assemblies
 
-[sra]:https://www.ncbi.nlm.nih.gov/sra
+Genome assemblies at NCBI are also accessible with:
 
-The following command retrieves JSON data that describes sequencing data deposited at the [Short Read Archive][sra]
+    # Produces a GenBank file
+    bio search GCA_000006155
 
-    bio fetch SRR1972976
+    # Produces a FASTA file
+    bio search GCA_000006155 --format fasta
 
-produces:
-
-    Project PRJNA257197
-    Run	    SRR1972976
-    Library PAIRED, TRANSCRIPTOMIC, RNA-Seq
-    Origin  Zaire ebolavirus (186538)
-    Reads   8,345,287 (avgLength=202)
-    Size    997MB
-    Instr   ILLUMINA (Illumina HiSeq 2500)
-    Date    2015-04-14 13:48:38
-    Path	https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-6/SRR1972976/SRR1972976.1
-
-Other usecases:
-
-    # Get multiple SRR numbers.
-    bio fetch SRR14575325 SRR1972919
-
-    # Comma or tab separated output.
-    bio fetch SRR1972976 --format csv
-
-    # Tab separated output.
-    bio fetch SRR1972976 --format tsv
-
-## Fetch run information from BioProject id
-
-[PRJNA257197]:https://www.ncbi.nlm.nih.gov/bioproject/PRJNA257197/
-
-The following command produces a comma separated run information associated with a bioproject id, for example take [BioProject:PRJNA257197]:
-
-    bio fetch PRJNA257197 --limit 1
-
-will produce the comma separated output with multiple columns:
-
-    Run,ReleaseDate,LoadDate,spots,bases,spots_with_mates,avgLength,size_MB,AssemblyName,download_path,Experiment,LibraryName,LibraryStrategy,LibrarySelection,LibrarySource,LibraryLayout,InsertSize,InsertDev,Platform,Model,SRAStudy,BioProject,Study_Pubmed_id,ProjectID,Sample,BioSample,SampleType,TaxID,ScientificName,SampleName,g1k_pop_code,source,g1k_analysis_group,Subject_ID,Sex,Disease,Tumor,Affection_Status,Analyte_Type,Histological_Type,Body_Site,CenterName,Submission,dbgap_study_accession,Consent,RunHash,ReadHash
-    SRR1972976,2015-04-14 13:53:37,2015-04-14 13:48:38,8345287,1685747974,8345287,202,997,,https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-6/SRR1972976/SRR1972976.1,SRX994253,W220.0.l1,RNA-Seq,cDNA,TRANSCRIPTOMIC,PAIRED,0,0,ILLUMINA,Illumina HiSeq 2500,SRP045416,PRJNA257197,2,257197,SRS908478,SAMN03253746,simple,186538,Zaire ebolavirus,W220.0,,,,,,,no,,,,,BI,SRA178666,,public,6A26DBAB1096535FCB94FCE9E1AE8AD8,FB20A0391119E532EA03F374A16EB508
-
-Use `csvcut` to select columns of interest:
-
-    bio fetch PRJNA257197 --limit 1 | csvcut -c Run,Platform,spots,avgLength
-
-prints:
-
-    Run,Platform,spots,avgLength
-    SRR1972976,ILLUMINA,8345287,202
-
-The `bio fetch PRJNA257197 --limit 1` command is equivalent to running `entrez-direct` construct:
-
-    esearch -db sra -query PRJNA257197 | efetch -stop 1 -format runinfo
+    # Produces a GFF file.
+    bio search GCA_000006155 --format gff
 
 ## Fetch data from Ensembl
 
