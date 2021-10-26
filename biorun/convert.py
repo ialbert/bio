@@ -404,7 +404,7 @@ def run(protein=False, translate=False, fasta=False, revcomp=False, features=Fal
     gff = not fasta
 
     # When are we producing features
-    keepall = seqid or match
+    keepall = seqid or match or table
 
     features = features or gene or type_ or protein or gff
 

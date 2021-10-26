@@ -8,6 +8,8 @@ import requests
 from biorun import utils
 from biorun.libs import placlib as plac
 
+logger = utils.logger
+
 # SRR numbers: SRR5260547
 SRR = re.compile(r'(ERR|SRR)\d+')
 
@@ -44,11 +46,14 @@ def get_ena_fields(db='ena'):
 
 def get_ncbi(text, db="protein", format="json"):
     drops = "statistics properties oslt".split()
+
     url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
+
     params = dict(db=db, format=format, id=text)
 
     stream = get_request(url, params=params, bulk=True)
 
+    logger.info(f"searching ncbi db={db} for {text}")
 
     data = json.loads(stream)
 
@@ -70,7 +75,7 @@ def get_ncbi(text, db="protein", format="json"):
         collect.append(res)
 
     if not collect:
-        collect = [ dict(error="invalid genbank id", db=db, value=f"{text}")]
+        collect = [dict(error="invalid genbank id", db=db, value=f"{text}")]
     return collect, None
 
 
@@ -78,6 +83,9 @@ def get_srr(text, all=False, sep=None):
     """
     Returns a list of SRR data.
     """
+
+    logger.info(f"searching ENA for {text}")
+
     url = ENA_REPORT
     if all:
         fields = get_ena_fields()
@@ -134,16 +142,28 @@ def parse_genbank(text):
 #
 # https://www.ncbi.nlm.nih.gov/genbank/acc_prefix/
 #
+
+# Lengths of digits and letters for GenBank numbers
+VALID_NUC = {
+    (1, 5), (2, 5), (2, 6), (3, 8), (4, 8)
+}
+
+VALID_PROT = {
+    (3, 5), (3, 7)
+}
+
+
 def match_genbank_nucleotide(text):
     """
     Returns true if text matches NCBI nucleotides.
     """
     code, digits, refseq, version = parse_genbank(text)
     if refseq:
-        cond = code in ["AC", "NC", "NG", "NT", "NW", "NZ", "NM", "XM", "XR"]
+        cond = code in ["AC", "NC", "NG", "NT", "NW", "NZ", "NM", "XM", "XR", "NR"]
     else:
         num1, num2 = len(code), len(digits)
-        cond = (num1 == 1 and num2 == 5) or (num1 == 2 and num2 == 6) or (num1 == 3 and num2 == 8)
+        cond = (num1, num2) in VALID_NUC
+
     return cond
 
 
@@ -156,7 +176,7 @@ def match_genbank_protein(text):
         cond = code in ["AP", "NP", "YP", "XP", "WP"]
     else:
         num1, num2 = len(code), len(digits)
-        cond = (num1 == 3 and num2 == 5) or (num1 == 3 and num2 == 7)
+        cond = (num1, num2) in VALID_PROT
     return cond
 
 
@@ -192,6 +212,8 @@ def get_request(url, params={}, sep=None, bulk=False):
 def search_mygene(query, fields, species='', scopes='', limit=5):
     import mygene
     from biorun import taxon
+
+    logger.info(f"searching mygene for {query}")
 
     client = mygene.MyGeneInfo()
 
@@ -246,8 +268,6 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
 @plac.opt('scopes', "scopes", abbrev='S')
 @plac.pos('query', "query terms")
 def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symbol', limit=5, fields='', *words):
-
-
     sep = None
 
     sep = "," if csv_ else sep
@@ -265,8 +285,8 @@ def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symb
     if sep:
         fields = collect[0].keys()
         wrt = csv.writer(sys.stdout, delimiter=sep)
-        stream = [ x.values() for x in collect]
-        keys = [ x.keys() for x in collect]
+        stream = [x.values() for x in collect]
+        keys = [x.keys() for x in collect]
         if header:
             wrt.writerow(keys[0])
         wrt.writerows(stream)

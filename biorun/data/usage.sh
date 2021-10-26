@@ -49,6 +49,9 @@ cat genomes.gb | bio gff --olap 29514 > gff_olap1.gff
 # Compute sizes
 cat genomes.gb | bio table --type CDS --olap 3778,8388,8987 --fields id,gene,size  > table_1.txt
 
+# Generate default table.
+cat genomes.gb | bio table > table_2.txt
+
 # Generate features only.
 bio fasta genomes.gb --end 10 --type CDS > fasta_cds.fa
 

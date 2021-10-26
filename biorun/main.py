@@ -131,7 +131,7 @@ def router():
         sys.exit(0)
 
     # More verbose messages
-    debug_flag = "--debug"
+    debug_flag = "--verbose"
     if debug_flag in sys.argv:
         sys.argv.remove(debug_flag)
         utils.logger = utils.apply_debug_logger()
