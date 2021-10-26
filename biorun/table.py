@@ -14,7 +14,7 @@ from biorun import convert
 @plac.opt("olap", "overlap with coordinate")
 @plac.pos("fnames", "input files")
 def run(start='1', end='', type_='', id_='', match='', gene='',
-        rename='', olap='', fields="id,size",  *fnames):
+        rename='', olap='', fields="id,type,size",  *fnames):
     """
     Generates tabular output from data.
     """

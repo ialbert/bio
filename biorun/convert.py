@@ -37,7 +37,12 @@ def table_formatter(fields):
 
     def func(rec):
         param = get_params(rec, hasN=hasN)
-        print(patt.format(**param))
+        try:
+            print(patt.format(**param))
+        except KeyError as exc:
+            valid = ",".join(list(param.keys()))
+            utils.error(f"Invalid formatter: {exc}", stop=False)
+            utils.error(f"Valid values: {valid}")
 
     return func
 
