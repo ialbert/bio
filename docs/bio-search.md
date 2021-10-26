@@ -6,14 +6,62 @@
 
 The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
+## How does this tool work?
 
-## Searching SRA (Short Read Archive)
+`bio search` attempts to recognize the search words with bioinformatics signficance (like accession numbers) and attempts to look them up in the most appropriate database.
 
-SRA stores information by SRA accession numbers. Once you know the accession use it like so:
+If the search term does not match any known format, it searches the GenBank assemblies for regular expression matches. First install the downloadable database withL
+
+    bio --download
+
+Then start searching for information:
+
+    bio search AF086833
+
+will produce the output:
+
+    [
+        {
+            "accessionversion": "AF086833.2",
+            "assemblyacc": "",
+            "assemblygi": "",
+            "biomol": "cRNA",
+            "biosample": "",
+            "caption": "AF086833",
+            "completeness": "complete",
+            "createdate": "1999/02/10",
+            "extra": "gi|10141003|gb|AF086833.2|",
+            "flags": "",
+            "geneticcode": "1",
+            "genome": "",
+            "gi": 10141003,
+            "moltype": "rna",
+            "organism": "Ebola virus - Mayinga, Zaire, 1976",
+            "projectid": "0",
+            "segsetsize": "",
+            "slen": 18959,
+            "sourcedb": "insd",
+            "strain": "Mayinga",
+            "strand": "",
+            "subname": "Mayinga|EBOV-May",
+            "subtype": "strain|gb_acronym",
+            "taxid": 128952,
+            "tech": "",
+            "term": "10141003",
+            "title": "Ebola virus - Mayinga, Zaire, 1976, complete genome",
+            "topology": "linear",
+            "uid": "10141003",
+            "updatedate": "2012/02/13"
+        }
+    ]
+
+
+whereas
 
     bio search SRR14575325
 
-prints:
+
+produces:
 
     [
         {
@@ -22,6 +70,7 @@ prints:
             "first_public": "2021-05-20",
             "country": "",
             "sample_alias": "GSM5320434",
+            "fastq_bytes": "612817621",
             "read_count": "19439295",
             "library_name": "",
             "library_strategy": "miRNA-Seq",
@@ -34,19 +83,86 @@ prints:
         }
     ]
 
-## Search BioProjects
+To search the MyGene interface add a type to the word:
 
-    bio search PRJNA257197 > data.json
+    bio search symbol:HBB --limit 1
 
-generates a file with 891 SRR runs.
+it will print:
 
-## How to change JSON into simpler formats
+    [
+        {
+            "name": "hemoglobin subunit beta",
+            "refseq": {
+                "genomic": [
+                    "NC_000011.10",
+                    "NG_000007.3",
+                    "NG_059281.1"
+                ],
+                "protein": "NP_000509.1",
+                "rna": "NM_000518.5",
+                "translation": {
+                    "protein": "NP_000509.1",
+                    "rna": "NM_000518.5"
+                }
+            },
+            "symbol": "HBB",
+            "taxid": 9606,
+            "taxname": "Homo sapiens"
+        }
+    ]
+    #  showing 1 out of 30 results.
 
-The output of the `bio search` command is in the JSON (JavaScript Object Notation) format.  JSON is not biology specific, instead, you can think of it as a generic, lightweight, human readable approach to represent diverse and hierarchical information.
+If the query word does not seem to match any known format a regular expression search will applied on the GenBank assembly reports:
+
+    bio search plasmodium
+
+prints:
+
+    [
+        {
+            "assembly_accession": "GCA_000002415.2",
+            "bioproject": "PRJNA150",
+            "biosample": "SAMN02953638",
+            "wgs_master": "AAKM00000000.1",
+            "refseq_category": "representative genome",
+            "taxid": "5855",
+            "species_taxid": "5855",
+            "organism_name": "Plasmodium vivax",
+            "infraspecific_name": "",
+            "isolate": "Salvador I",
+            "version_status": "latest",
+            "assembly_level": "Chromosome",
+            "release_type": "Minor",
+            "genome_rep": "Full",
+            "seq_rel_date": "2009/05/06",
+            "asm_name": "ASM241v2",
+            "submitter": "TIGR",
+            "gbrs_paired_asm": "GCF_000002415.2",
+            "paired_asm_comp": "different",
+            "ftp_path": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/002/415/GCA_000002415.2_ASM241v2",
+            "excluded_from_refseq": "",
+            "relation_to_type_materialasm_not_live_date": ""
+        },
+        ...
+    ]
+
+## Other outputs
+
+The output may be set to comma separated values or tab delimited values
+
+    bio search plasmodium --csv
+
+    bio search plasmodium --tab
+
+## How to transform JSON into other formats
+
+Our tabular formats may be insufficient when to content is nested. In those cases you will need to transform the JSON into other formats.
+
+The output of the `bio search` command is produced the so called JSON (JavaScript Object Notation) format.  JSON is not biology specific, instead, you can think of it as a generic, lightweight, human readable approach to represent diverse and hierarchical information.
 
 * https://en.wikipedia.org/wiki/JSON
 
-A tool called `jq` may be used to extract information from JSON data.
+A tool called `jq` may be used to extract information from JSON data in various ways.
 
     mamba install jq
 
@@ -59,6 +175,10 @@ We build the extraction command left to right, matching various aspects of it. S
 
 For example, the pattern  `.[].run_accession` instructs `jq` to fetch the list for the root key `.[]`, then visit each element and extract the value for the key named `run_accession`. Use the pattern it like so:
 
+    # Produce a JSON output.
+    bio search PRJNA257197 > data.json
+
+    # Extract information from the JSON.
     cat data.json | jq -r .[].run_accession | head -5
 
 prints the accession numbers:

@@ -61,7 +61,7 @@ pypi: test build
 
 # Upload prebuilt data to distribution site.
 upload:
-	(cd ~/.bio && GZIP=-9 && tar czvf biodata.tar.gz taxdump.tar.gz *.json *.sqlite)
+	(cd ~/.bio && GZIP=-9 && tar czvf biodata.tar.gz taxdump.tar.gz *.json *.sqlite assembly_summary_genbank.txt)
 	rsync -avz --progress ~/.bio/biodata.tar.gz ${REMOTE}data
 
 

@@ -1,0 +1,67 @@
+[
+    {
+        "symbol": "HAD",
+        "taxid": 280463,
+        "taxname": "Emiliania huxleyi CCMP1516"
+    },
+    {
+        "name": "putative haloacid dehalogenase-like hydrolase",
+        "refseq": {
+            "genomic": "NW_008705561.1",
+            "protein": "XP_009032183.1",
+            "rna": "XM_009033935.1",
+            "translation": {
+                "protein": "XP_009032183.1",
+                "rna": "XM_009033935.1"
+            }
+        },
+        "symbol": "HAD",
+        "taxid": 44056,
+        "taxname": "Aureococcus anophagefferens"
+    },
+    {
+        "name": "2-haloalkanoic acid dehalogenase",
+        "refseq": {
+            "genomic": "NW_023501017.1",
+            "protein": "XP_036496621.1",
+            "rna": "XM_036638819.1",
+            "translation": {
+                "protein": "XP_036496621.1",
+                "rna": "XM_036638819.1"
+            }
+        },
+        "symbol": "HAD",
+        "taxid": 690259,
+        "taxname": "Colletotrichum siamense"
+    },
+    {
+        "name": "putative histone deacetylase HD6",
+        "refseq": {
+            "genomic": "NW_005201259.1",
+            "protein": "XP_005788694.1",
+            "rna": "XM_005788637.1",
+            "translation": {
+                "protein": "XP_005788694.1",
+                "rna": "XM_005788637.1"
+            }
+        },
+        "symbol": "HAD",
+        "taxid": 280463,
+        "taxname": "Emiliania huxleyi CCMP1516"
+    },
+    {
+        "name": "2-haloalkanoic acid dehalogenase",
+        "refseq": {
+            "genomic": "NW_022157117.1",
+            "protein": "XP_031009656.1",
+            "rna": "XM_031145776.1",
+            "translation": {
+                "protein": "XP_031009656.1",
+                "rna": "XM_031145776.1"
+            }
+        },
+        "symbol": "HAD",
+        "taxid": 1316788,
+        "taxname": "Lachnellula hyalina"
+    }
+]

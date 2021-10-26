@@ -1,7 +1,7 @@
 import csv
 import json
 import re
-import sys
+import sys, os
 
 import requests
 
@@ -44,6 +44,7 @@ def get_ena_fields(db='ena'):
     return fields
 
 
+
 def get_ncbi(text, db="protein", format="json"):
     drops = "statistics properties oslt".split()
 
@@ -53,7 +54,7 @@ def get_ncbi(text, db="protein", format="json"):
 
     stream = get_request(url, params=params, bulk=True)
 
-    logger.info(f"searching ncbi db={db} for {text}")
+    logger.info(f"esummary ncbi db={db} for {text}")
 
     data = json.loads(stream)
 
@@ -127,6 +128,15 @@ def match_bioproject(text):
     return bool(PRJ.search(text))
 
 
+def match_ncbi_assembly(text):
+    """
+    Pattern for NCBI assembly numbers
+    """
+    pieces = text.split("_")
+    cond = pieces[0] == 'GCF' if len(pieces) > 1 else False
+    return cond
+
+
 def parse_genbank(text):
     """
     Attempts to parse text into a NCBI structure.
@@ -152,6 +162,43 @@ VALID_PROT = {
     (3, 5), (3, 7)
 }
 
+# The assembly summary file
+ASSEMBLY_SUMMARY_URL = 'https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt'
+ASSEMBLY_SUMMARY_PATH = "assembly_summary_genbank.txt"
+ASSEMBLY_SUMMARY_PATH = utils.cache_path(ASSEMBLY_SUMMARY_PATH)
+
+
+def update_assembly_stats():
+    """
+    Downloads the latest assembly summary file
+    """
+    utils.download(url=ASSEMBLY_SUMMARY_URL, fname=ASSEMBLY_SUMMARY_PATH)
+
+
+def search_assemblies(word):
+    headers = ["assembly_accession", "bioproject", "biosample", "wgs_master", "refseq_category",
+               "taxid", "species_taxid", "organism_name", "infraspecific_name", "isolate", "version_status",
+               "assembly_level", "release_type", "genome_rep", "seq_rel_date", "asm_name", "submitter",
+               "gbrs_paired_asm", "paired_asm_comp", "ftp_path", "excluded_from_refseq",
+               "relation_to_type_material" "asm_not_live_date",
+               ]
+    if not os.path.isfile(ASSEMBLY_SUMMARY_PATH):
+        utils.error(f"Data not found: {ASSEMBLY_SUMMARY_PATH} ", stop=False)
+        utils.error("Run: bio --download ")
+        sys.exit()
+
+    patt = re.compile(word, flags=re.IGNORECASE)
+    stream = open(ASSEMBLY_SUMMARY_PATH)
+    stream = filter(lambda x: not x.startswith("#"), stream)
+    stream = filter(lambda x: x.strip(), stream)
+    coll = []
+    for line in stream:
+        if patt.search(line):
+            elems = line.split("\t")
+            data = dict(zip(headers, elems))
+            coll.append(data)
+
+    return coll, None
 
 def match_genbank_nucleotide(text):
     """
@@ -177,6 +224,15 @@ def match_genbank_protein(text):
     else:
         num1, num2 = len(code), len(digits)
         cond = (num1, num2) in VALID_PROT
+    return cond
+
+
+def match_mygene(text):
+    """
+    Returns true if text matches NCBI protein sequences
+    """
+    pieces = text.split(":")
+    cond = len(pieces) == 2
     return cond
 
 
@@ -241,6 +297,9 @@ def search_mygene(query, fields, species='', scopes='', limit=5):
     return hits, warn
 
 
+
+
+
 def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
     if match_srr(word) or match_bioproject(word):
         values, warn = get_srr(word, all=all, sep="\t")
@@ -251,9 +310,11 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
     elif match_genbank_protein(word):
         values, warn = get_ncbi(word, db="protein")
 
-    else:
+    elif match_mygene(word):
         fields = ",".join(['symbol', 'name', 'taxid', fields])
         values, warn = search_mygene(word, fields=fields, limit=limit, species=species, scopes=scopes)
+    else:
+        values, warn = search_assemblies(word)
 
     return values, warn
 
@@ -267,7 +328,13 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
 @plac.opt('species', "species", abbrev='s')
 @plac.opt('scopes', "scopes", abbrev='S')
 @plac.pos('query', "query terms")
-def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symbol', limit=5, fields='', *words):
+@plac.flg('update', "download the latest assebmly summary")
+def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symbol', update=False, limit=5,
+        fields='refseq', *words):
+    if update:
+        update_assembly_stats()
+        return
+
     sep = None
 
     sep = "," if csv_ else sep
@@ -276,15 +343,16 @@ def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symb
 
     collect = []
     warns = []
+
     for word in words:
         values, warn = dispatch(word, all=all, limit=limit, fields=fields, species=species, scopes=scopes)
-
         collect.extend(values)
         warns.append(warn)
 
     if sep:
         fields = collect[0].keys()
         wrt = csv.writer(sys.stdout, delimiter=sep)
+        #wrt.writerow(fields)
         stream = [x.values() for x in collect]
         keys = [x.keys() for x in collect]
         if header:

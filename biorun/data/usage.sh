@@ -158,6 +158,12 @@ bio search SRR1972976 > search_srr.json
 # Get bioproject information
 bio search PRJNA661333 > search_prjn.json
 
+# Get assembly information
+bio search GCF_000003085 > search_assembly.json
+
+# Search mygene info
+bio search symbol:HAD > search_mygene.json
+
 # Access a transcript from ensembl.
 bio fetch ENST00000288602  > fetch_enst.txt
 
