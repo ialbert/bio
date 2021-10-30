@@ -1,4 +1,5 @@
 biopython >= 1.79
+more-itertools
 requests
 tqdm
 pytest
