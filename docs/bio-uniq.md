@@ -52,7 +52,7 @@ the problem with the above is that the columns it prints are not tab separated. 
 but for that `entrez-direct` must be installed.
 
 
-In addition `bio uniq` can read different columns of a file plus the delimiter may be changed as well. To find the unique elements listed in the seecond column of three comma separated files:
+In addition `bio uniq` can read different columns of a file plus the delimiter may be changed as well. To find the unique elements listed in the second column of three comma separated files:
 
     bio uniq -c -d , -f 2  file1 file2 file3
 
