@@ -14,7 +14,7 @@ Time and again, I found myself not pursuing ideas because getting to the fun par
 - What is the taxid for SARS-COV-2?  `bio taxon sars2`
 - What is the lineage of SARS-COV-2? `bio taxon 2697049 --lineage`
 - At what date were viral samples collected? `bio data 2697049 | head`
-- What is a  microsatellites? `bio explain microsatellite`
+- What is a  microsatellite? `bio explain microsatellite`
 - What genes match the word `HBB`? `bio search HBB --species human`
 
 `bio` combines data from different sources: [GenBank][genbank],[Ensembl][ensembl],[Gene Ontology][go],[Sequence Ontology][so],
@@ -51,7 +51,7 @@ Install `bio`:
 ## Usage examples
 
 Suppose we found the accession number to data of interest: `NC_045512` representing the Wuhan-Hu-1 isolate of the coronavirus and
-the  `MN996532` that stores information on the most similar bat coronavirus. We would like to investigate the differences in the S protein betweeen the two organisms. Here is how you could do it with `bio`:
+`MN996532` that stores information on the most similar bat coronavirus. We would like to investigate the differences in the S protein betweeen the two organisms. Here is how you could do it with `bio`:
 
 ### Fetch data
 
@@ -105,7 +105,7 @@ prints the type and variant at each location:
     S1121N  SNP     1121    S       N
     I1224V  SNP     1224    I       V
 
-It shows that at position `680` the coronavirus has an four aminoacid insertion `PRRA`, the so called furin-cleavage.
+It shows that at position `680` the coronavirus has a four aminoacid insertion `PRRA`, the so called furin-cleavage.
 
 ### Visualize the genome data
 
