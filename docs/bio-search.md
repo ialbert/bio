@@ -10,6 +10,40 @@
 
 The full documentation for `bio` is maintained at <https://www.bioinfo.help/>.
 
+## Quick start
+
+The `search` command attempts to provide a unified interface into a multitude of data source:
+
+    # Search nucleotide GenBank
+    bio search AF086833
+
+    # Search protein GenBank
+    bio search NP_000509
+
+    # Search SRA for a bioproject information
+    # Return max of 10 rows in tab delimited format
+    bio search  PRJNA257197 --limit 10 -tab
+
+    # Search SRA for a run information
+    bio search SRR14575325
+
+    # Search SRR and format output as comma separated values
+    bio search SRR14575325 --csv
+
+    # Search MyGene for gene symbol.
+    bio search symbol:HBB --limit 1
+
+    # Search MyGene and annotate with Ensembly ids.
+    bio search symbol:HBB --species human --fields ensembl
+
+    # Search the NCBI assemblies by a genome build number
+    bio search GCA_000002415
+
+    # Search the NCBI assemblies by an organism name, return tab delimited results.
+    bio search yoelii -tab
+
+The returned value will be in JSON.  For some searches it may also be comma separated values (`-csv`) or tab separated values (`-tab`)
+
 ## How does this tool work?
 
 `bio search` attempts to recognize the search words with bioinformatics signficance (like accession numbers) and attempts to look them up in the most appropriate database. If the search term does not match any known format, it searches the GenBank assemblies for regular expression matches. First install the downloadable database withL

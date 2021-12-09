@@ -2,7 +2,7 @@ import os
 import sys
 from itertools import *
 
-from biorun import parser
+from biorun import parser, convert
 from biorun.libs import placlib as plac
 from . import models
 
@@ -158,8 +158,13 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mis
     else:
         mode = SEMIGLOBAL_ALIGN
 
+    recs = parser.get_records(sequences)
+
+    # Keep only source annotated sequences (genome level)
+    recs = filter(convert.source_only, recs)
+
     # Get the sequence records.
-    recs = list(parser.get_records(sequences))
+    recs = list(recs)
 
     # If only matrix is specified print it to the screen.
     if matrix and len(recs) == 0:

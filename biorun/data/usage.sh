@@ -12,7 +12,6 @@ set -uex
 # Selecting by gene id
 bio fasta genomes.gb --type gene --id N --end 10 > fasta_ids.fa
 
-
 # Match with regular expression
 cat genomes.gb | bio fasta -m glyco -end 10 > fasta_match.fa
 
@@ -162,7 +161,7 @@ bio search PRJNA661333 > search_prjn.json
 bio search GCF_000003085 > search_assembly.json
 
 # Search mygene info
-bio search symbol:HAD > search_mygene.json
+bio search symbol:HAD --species 1316788 > search_mygene.json
 
 # Access a transcript from ensembl.
 bio fetch ENST00000288602  > fetch_enst.txt
