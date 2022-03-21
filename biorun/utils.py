@@ -22,7 +22,11 @@ __CURR_DIR = os.path.dirname(__file__)
 # The default path to templates.
 __TMPL_DIR = os.path.join(__CURR_DIR, "templates")
 
-DATADIR = os.path.join(expanduser("~"), ".bio")
+# Allow overriding the default data directory.
+BIO_DIR = os.getenv('BIO_DIR') or '~/.bio'
+
+# The data directory for bio
+DATADIR = expanduser(BIO_DIR)
 
 # Create the cache directory
 os.makedirs(DATADIR, exist_ok=True)
