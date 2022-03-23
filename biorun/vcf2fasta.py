@@ -61,9 +61,10 @@ def parse_json(fname, patt="collection_date:sample_alias", key_name="run_accessi
 @plac.opt('json_', "json file to rename the sequences")
 @plac.opt('chrom', "chromomosome to process (default: first sequence)")
 @plac.opt('limit', "how many variants to process (0=no limit)", type=int)
-@plac.opt('key', "renaming key (advanced use only)",)
-@plac.opt('patt', "renaming pattern (advanced use only)",)
-def run(fname, json_="", chrom="", limit=0, key="", patt=""):
+@plac.opt('key', "renaming key (advanced use only)")
+@plac.opt('patt', "renaming pattern (advanced use only)")
+@plac.flg('ref', "generate a reference as well")
+def run(fname, json_="", chrom="", limit=0, key="", patt="", ref=False):
     """
     Creates a FASTA representation from a multisample VCF file where each sample corresponds to a FASTA
     record containing the first ALT if present otherwise the REF.
@@ -73,7 +74,7 @@ def run(fname, json_="", chrom="", limit=0, key="", patt=""):
     key_name= key or "run_accession"
 
     # Renaming pattern
-    patt = patt or "collection_date:sample_alias"
+    patt = patt or "collection_date:sample_alias:run_accession"
 
     # Parse the VCF file.
     vcf = VCF(fname, strict_gt=True)
@@ -91,7 +92,7 @@ def run(fname, json_="", chrom="", limit=0, key="", patt=""):
     # Iterate over the VCF records.
 
     # Stores the reference sequence
-    ref = []
+    refseq = []
 
     # Stores the sequences for each sample.
     store = []
@@ -107,6 +108,9 @@ def run(fname, json_="", chrom="", limit=0, key="", patt=""):
     # Used during debugging mostly.
     stream = islice(vcf, limit)
 
+    # Apply the chromosome filter.
+    stream = filter(chrom_filter, stream)
+
     # Process each variant
     for v in stream:
 
@@ -116,9 +120,8 @@ def run(fname, json_="", chrom="", limit=0, key="", patt=""):
         # All valid bases at the current index
         bases = [v.REF] + v.ALT
 
-
         # Collect the reference sequence.
-        ref.append(v.REF)
+        refseq.append(v.REF)
 
         # Select the first ALT in each genoytpe.
         for ((key, values), gtypes) in combined:
@@ -128,8 +131,9 @@ def run(fname, json_="", chrom="", limit=0, key="", patt=""):
             values.append(base)
 
     # Print the reference sequence.
-    seq = "".join(ref)
-    print(f">reference\n{seq}")
+    if ref:
+        seq = "".join(refseq)
+        print(f">reference\n{seq}")
 
     # Output each individual sequence.
     for (key, values) in store:
