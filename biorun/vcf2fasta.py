@@ -15,8 +15,6 @@ from itertools import *
 
 LIMIT = None
 
-def get(adict, key):
-    return adi
 
 def parse_json(fname, patt="collection_date:sample_alias", key_name="run_accession"):
 
