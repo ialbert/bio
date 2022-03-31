@@ -274,7 +274,12 @@ def protein_extract(rec):
     rec.seq = Seq(trans)
     return rec
 
-
+def trim_maker(base):
+    def trim_func(rec):
+        rec.seq = rec.seq.rstrip(base)
+        rec.seq = rec.seq.strip('N')
+        return rec
+    return trim_func
 #
 # The GFF attributes generated for a source type.
 #
@@ -374,7 +379,7 @@ def gff_formatter(rec):
         print(line)
 
 
-def run(protein=False, translate=False, fasta=False, revcomp=False, features=False, olap='', table=False, fields='',
+def run(protein=False, translate=False, fasta=False, revcomp=False, features=False, trim=False, olap='', table=False, fields='',
         start='1', end=None, type_='', id_='', match='', gene='', rename=None, fnames=[]):
     """
     Converts data to different formats.
@@ -428,6 +433,12 @@ def run(protein=False, translate=False, fasta=False, revcomp=False, features=Fal
         # Apply regular expression match.
         recs = filter(regex_selector(match), recs)
 
+    if trim:
+        # Get the trimming function.
+        trim_func = trim_maker(trim)
+        # Apply the trimming function.
+        recs = map(trim_func, recs)
+
     # Select by overlap
     recs = filter(overlap_selector(olap), recs)
 
@@ -468,6 +479,7 @@ def run(protein=False, translate=False, fasta=False, revcomp=False, features=Fal
         # GFF formatter.
         print("##gff-version 3")
         formatter = gff_formatter
+
 
     # Display the results.
     for rec in recs:
