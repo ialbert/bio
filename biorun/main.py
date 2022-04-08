@@ -36,7 +36,7 @@ SUB_COMMANDS = dict(
     comm=("biorun.comm.run", False, "find common elements"),
     uniq=("biorun.uniq.run", False, "find unique elements"),
     json=("biorun.jsonrec.run", False, "convert to json format"),
-
+    combine=("biorun.combine.run", False, "combines kallisto and salmon outputs"),
 )
 
 
