@@ -267,6 +267,7 @@ def generate_uid(ftype, ann, description=''):
     gene = first(ann, "gene")
     prod = first(ann, "product")
     locus = first(ann, "locus_tag")
+    name = ""
 
     data = dict(type=ftype, gene=gene, product=prod, locus=locus)
 
@@ -275,9 +276,9 @@ def generate_uid(ftype, ann, description=''):
     elif ftype == 'CDS':
         name = first(ann, "protein_id")
     elif ftype == 'mRNA':
-        name = first(ann, "transcript_id")
-    else:
-        name = next_count(ftype)
+        name = first(ann, "transcript_id") or first(ann, "gene") or ''
+
+    name = name or next_count(ftype)
 
     return name, data
 
