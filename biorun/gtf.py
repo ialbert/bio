@@ -23,31 +23,41 @@ def parse(ftype, source, target, limit):
 
     ftype = '' if ftype == 'all' else ftype
 
+    # Valid GFF files have 9 columns
     def valid(x):
         return len(x) == 9
 
+    # Filter for features of a given type.
     def keeper():
-        def func(x):
+
+        def typer(x):
             return x[2] == ftype
 
+        def ident(x):
+            return True
+
+        func = typer if ftype else ident
         return func
 
-    def splitter(elems):
+    # Split and process attributes.
+    def split_attrs(elems):
         attrs = elems[8].strip(' ;')
         attrs = attrs.split(";")
         attrs = [field.split() for field in attrs]
         attrs = [(field[0], field[1].strip(' "')) for field in attrs ]
         return attrs
 
+    # Build the
     stream = sys.stdin
     stream = csv.reader(stream, delimiter="\t")
     stream = islice(stream, limit)
     stream = filter(valid, stream)
-    if ftype:
-        stream = filter(keeper(), stream)
-    stream = map(splitter, stream)
+    stream = filter(keeper(), stream)
+    stream = map(split_attrs, stream)
+
+    # Extract mapping for each feature
     for index, elems in enumerate(stream):
-        #print (elems)
+
         row = dict(elems)
         try:
             source_id = row[source]
