@@ -31,10 +31,11 @@ SUB_COMMANDS = dict(
     explain=("biorun.ontology.run",  True,"explain biological terms"),
     meta=("biorun.meta.run",  True,"download metadata by taxonomy ID"),
     mygene=("biorun.mygene.run",  True,"connect to mygene interface"),
+    gtf=("biorun.gtf.run", True, "parse GTF to create mappings"),
+    comm=("biorun.comm.run", True, "find common elements"),
+    uniq=("biorun.uniq.run", True, "find unique elements"),
 
-    # will not show up in help
-    comm=("biorun.comm.run", False, "find common elements"),
-    uniq=("biorun.uniq.run", False, "find unique elements"),
+    # Will not show up in help
     json=("biorun.jsonrec.run", False, "convert to json format"),
     combine=("biorun.combine.run", False, "combines kallisto and salmon outputs"),
 )
@@ -53,6 +54,8 @@ USAGE = f"""
 bio: making bioinformatics fun again 
 
 {block}
+
+Run each command for more help.
 
 Examples:
 
@@ -181,7 +184,6 @@ def router():
 
     # Get the function of the module
     func = getattr(mod, func_name)
-
 
     # Execute the function with plac.
     plac.call(func)
