@@ -2,7 +2,7 @@
 
 `bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem.
 
-# Contact information
+## Contact information
 
 If you are reporting a bug please open an issue below:
 
