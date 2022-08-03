@@ -1,7 +1,6 @@
 accession,species,host,date,location,isolate,species_name
 NC_048217.1,11138,,,,,Murine hepatitis virus
 NC_001846.1,11138,,,,,Murine hepatitis virus
-AC_000192.1,11144,,,,,Murine hepatitis virus strain JHM
 JQ173883.1,1163669,,,,,Murine hepatitis virus strain S/3239-17
 AY700211.1,11138,,,,,Murine hepatitis virus
 AF208067.1,11138,,,,,Murine hepatitis virus

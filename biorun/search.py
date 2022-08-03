@@ -352,7 +352,7 @@ def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symb
 
     if sep:
         fields = collect[0].keys()
-        wrt = csv.writer(sys.stdout, delimiter=sep)
+        wrt = csv.writer(sys.stdout, delimiter=sep, lineterminator=os.linesep)
         #wrt.writerow(fields)
         stream = [x.values() for x in collect]
         keys = [x.keys() for x in collect]
