@@ -30,7 +30,7 @@ def parse(dirname):
     Returns a generator over a file
     """
 
-    cands = ["abundances.tsv", "quant.sf"]
+    cands = ["abundance.tsv", "quant.sf"]
     cands = list(map(lambda x: os.path.join(dirname, x), cands))
     exist = list(map(os.path.isfile, cands))
 
