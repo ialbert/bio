@@ -34,6 +34,7 @@ SUB_COMMANDS = dict(
     gtf=("biorun.gtf.run", True, "parse GTF to create mappings"),
     comm=("biorun.comm.run", True, "find common elements"),
     uniq=("biorun.uniq.run", True, "find unique elements"),
+    mart=("biorun.mart.run", True, "interface to Biomart"),
 
     # Will not show up in help
     json=("biorun.jsonrec.run", False, "convert to json format"),
