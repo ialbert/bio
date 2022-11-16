@@ -70,7 +70,8 @@ FEATURES             Location/Qualifiers
                      coronavirus and related betacoronaviruses in the B
                      lineage; cd21624"
                      /db_xref="CDD:394950"
-     Site            order(38,41..45,47,167,198..199,224,230,232,234,282)
+     Site            order(38,41..44,113,115,167,198..200,225,228,230..234,
+                     281..283)
                      /site_type="other"
                      /note="trimer interface [polypeptide binding]"
                      /db_xref="CDD:394950"
@@ -80,17 +81,22 @@ FEATURES             Location/Qualifiers
                      acute respiratory syndrome coronavirus 2 Spike (S)
                      protein; cd21480"
                      /db_xref="CDD:394827"
-     Site            order(355,374..377,381..384,386,390,396,405..406,408,
-                     414..415,417,424,427,514,516..517,519)
+     Site            order(319,321,357,381..383,386,390,394,396,413,516..517,
+                     521)
                      /site_type="other"
                      /note="trimer interface [polypeptide binding]"
                      /db_xref="CDD:394827"
-     Site            order(406,409,417,449,453,455..456,489,491,493)
+     Site            order(369..370,372,374,376..378,380,382,384..386,389..390,
+                     392,428..430,515,517,519)
                      /site_type="other"
-                     /note="putative receptor binding site [polypeptide
-                     binding]"
+                     /note="cryptic epitope [polypeptide binding]"
                      /db_xref="CDD:394827"
-     Site            order(438,447..456,489..495,507..508)
+     Site            order(417,446,449,453,455..456,475,486..487,489,493,496,
+                     498,500..502,505)
+                     /site_type="other"
+                     /note="receptor binding site [polypeptide binding]"
+                     /db_xref="CDD:394827"
+     Site            438..508
                      /site_type="other"
                      /note="receptor binding motif"
                      /db_xref="CDD:394827"
@@ -101,11 +107,21 @@ FEATURES             Location/Qualifiers
                      glycoprotein from SARS-CoV-2 (COVID-19) and related
                      betacoronaviruses in the B lineage; cd22378"
                      /db_xref="CDD:411965"
-     Site            order(672,694..699,709)
+     Site            order(603,616,657,709,717,801,1074,1098,1134,1158,1173,
+                     1194)
+                     /site_type="other"
+                     /note="N-linked glycosylation sites [posttranslational
+                     modification]"
+                     /db_xref="CDD:411965"
+     Site            order(672..676,678,683..688,690..709)
                      /site_type="other"
                      /note="S1/S2 cleavage region"
                      /db_xref="CDD:411965"
-     Site            798..806
+     Site            685..686
+                     /site_type="other"
+                     /note="S1/S2 furin cleavage site"
+                     /db_xref="CDD:411965"
+     Site            788..806
                      /site_type="other"
                      /note="fusion peptide"
                      /db_xref="CDD:411965"
@@ -121,11 +137,6 @@ FEATURES             Location/Qualifiers
                      /region_name="heptad repeat 2"
                      /note="heptad repeat 2 [structural motif]"
                      /db_xref="CDD:411965"
-     Region          1233..1273
-                     /region_name="CoV_S2_C"
-                     /note="Coronavirus spike glycoprotein S2, intravirion;
-                     pfam19214"
-                     /db_xref="CDD:408983"
      CDS             1..1273
                      /gene="S"
                      /locus_tag="GU280_gp02"

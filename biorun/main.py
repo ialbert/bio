@@ -20,27 +20,31 @@ from biorun import VERSION
 # name = (module.function, listing_flag, command_help)
 #
 SUB_COMMANDS = dict(
-    search=("biorun.search.run",  True, "search for information"),
+    search=("biorun.search.run", True, "search for information"),
     fetch=("biorun.fetch.run", True, "download GenBank/ENSEMBL data"),
-    fasta=("biorun.fasta.run",  True, "convert to FASTA"),
-    gff=("biorun.gff.run",  True,"convert to GFF"),
-    table=("biorun.table.run",  True, "convert to table"),
+    fasta=("biorun.fasta.run", True, "convert to FASTA"),
+    gff=("biorun.gff.run", True, "convert to GFF"),
+    table=("biorun.table.run", True, "convert to table"),
     align=("biorun.align.run", True, "align sequences"),
-    format=("biorun.format.run",  True,"reformat aligned fasta"),
-    taxon=("biorun.taxon.run",  True,"operate on NCBI taxonomies"),
-    explain=("biorun.ontology.run",  True,"explain biological terms"),
-    meta=("biorun.meta.run",  True,"download metadata by taxonomy ID"),
-    mygene=("biorun.mygene.run",  True,"connect to mygene interface"),
-    gtf=("biorun.gtf.run", True, "parse GTF to create mappings"),
+    format=("biorun.format.run", True, "reformat aligned fasta"),
+    taxon=("biorun.taxon.run", True, "operate on NCBI taxonomies"),
+    explain=("biorun.ontology.run", True, "explain biological terms"),
+    meta=("biorun.meta.run", True, "download metadata by taxonomy ID"),
+    mygene=("biorun.mygene.run", True, "connect to mygene interface"),
     comm=("biorun.comm.run", True, "find common elements"),
     uniq=("biorun.uniq.run", True, "find unique elements"),
-    mart=("biorun.mart.run", True, "interface to Biomart"),
+    code=("biorun.code.run", True, "downloads the Biostar Handbook code"),
 
-    # Will not show up in help
+    # Features not yet implemented/under testing.
+    gtf=("biorun.gtf.run", False, "parse GTF to create mappings"),
+    mart=("biorun.mart.run", False, "interface to Biomart"),
     json=("biorun.jsonrec.run", False, "convert to json format"),
     combine=("biorun.combine.run", False, "combines kallisto and salmon outputs"),
+
 )
 
+# Commands that do not trigger help automatically.
+NO_AUTO_HELP = ['code']
 
 DOWNLOAD_CMD = '--download'
 
@@ -173,7 +177,7 @@ def router():
     modfunc, flag, help = SUB_COMMANDS[cmd]
 
     # Add the help flag if no other information is present beyond command.
-    if sys.stdin.isatty() and len(sys.argv) == 1:
+    if sys.stdin.isatty() and len(sys.argv) == 1 and cmd not in NO_AUTO_HELP:
         sys.argv.append("-h")
 
     # Format: module.function
