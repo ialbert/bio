@@ -53,6 +53,7 @@ REFERENCE   6  (bases 1 to 29903)
             School of Public Health, Fudan University, Shanghai, China
 COMMENT     REVIEWED REFSEQ: This record has been curated by NCBI staff. The
             reference sequence is identical to MN908947.
+            
             On Jan 17, 2020 this sequence version replaced NC_045512.1.
             Annotation was added using homology to SARSr-CoV NC_004718.3. ###
             Formerly called 'Wuhan seafood market pneumonia virus.' If you have
