@@ -297,10 +297,6 @@ def search_mygene(query, fields, species='', scopes='', limit=5):
 
     return hits, warn
 
-
-
-
-
 def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
     if match_srr(word) or match_bioproject(word):
         values, warn = get_srr(word, all=all, sep="\t")
@@ -332,6 +328,7 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
 @plac.flg('update', "download the latest assebmly summary")
 def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symbol', update=False, limit=5,
         fields='refseq', *words):
+
     if update:
         update_assembly_stats()
         return

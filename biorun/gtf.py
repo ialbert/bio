@@ -1,4 +1,6 @@
 """
+TODO:
+
 Generates tab delimited files that represent mappings between attributes of a GTF file.
 
 For example:
@@ -70,14 +72,18 @@ def parse(ftype, source, target, limit):
 
         target_id = row.get(target, "Unknown")
         data = [source_id, target_id]
-        print("\t".join(data))
 
+        yield data
+
+def combine():
+    pass
 
 @plac.opt('type_', "GTF type filter", abbrev="T", type=str)
 @plac.opt('source', "source attribute", abbrev="s", type=str)
 @plac.opt('target', "target attribute", abbrev="t", type=str)
 @plac.opt('limit', "how many lines to parse", abbrev="l", type=int)
-def run(type_='transcript', source="transcript_id", target="gene_id", limit=None):
+@plac.flg('collate', "how many lines to parse", abbrev="l", type=int)
+def run(type_='transcript', source="transcript_id", target="gene_id", limit=None, collate=False):
     """
     cat genes.gtf | bio gtf
 
@@ -86,7 +92,13 @@ def run(type_='transcript', source="transcript_id", target="gene_id", limit=None
     cat genes.gtf | bio gtf --type gene
 
     """
-    parse(ftype=type_, source=source, target=target, limit=limit)
+    stream = parse(ftype=type_, source=source, target=target, limit=limit)
+
+    if collate:
+        pass
+
+    for row in stream:
+        print("\t".join(row))
 
 def main():
     """

@@ -53,7 +53,7 @@ def run(update=False):
             print(f"# Use -u to update existing files.")
         else:
             print(f"# Updated {len(found)} files.")
-
+    print("# Biostar Workflows: https://www.biostarhandbook.com/")
 
 def main():
     """
