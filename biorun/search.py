@@ -11,7 +11,7 @@ from biorun.libs import placlib as plac
 logger = utils.logger
 
 # SRR numbers: SRR5260547
-SRR = re.compile(r'(ERR|SRR|DRR)\d+')
+SRR = re.compile(r'(ERR|SRR|DRR|SRP|ERP)\d+')
 
 # Bioproject numbers: PRJNA374918
 PRJ = re.compile(r'PRJ([A-Z])+\d+')
