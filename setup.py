@@ -23,7 +23,7 @@ setup(
     ],
 
     install_requires=[
-        'biopython == 1.79',
+        'biopython >= 1.80',
         'requests',
         'tqdm',
         'mygene',

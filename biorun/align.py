@@ -207,20 +207,9 @@ def run(open_=11, extend=1, matrix='', local_=False, global_=False, match=1, mis
         for aln in alns:
 
             # Unpack a BioPython pairwise result.
-            seq1, trace, seq2 = format(aln).splitlines()
-
-            if par.mode == LOCAL_ALIGN:
-                # Local alignment have traces with white space padding
-                start = len(trace) - len(trace.lstrip())
-                end = start + len(trace.strip())
-                seq1 = seq1[start:end]
-                seq2 = seq2[start:end]
-
-            seq1 = Seq(seq1)
-            seq2 = Seq(seq2)
+            seq1, seq2 = Seq(aln[0]), Seq(aln[1])
 
             # Wrap the resulting alignment into a sequence.
-
             query_aln = SeqRecord(id=query.id, name=query.name, description='', seq=seq1)
             target_aln = SeqRecord(id=target.id, name=target.name, description='', seq=seq2)
 
