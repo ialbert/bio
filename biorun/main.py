@@ -32,7 +32,11 @@ SUB_COMMANDS = dict(
     meta=("biorun.meta.run", True, "download metadata by taxonomy ID"),
     mygene=("biorun.mygene.run", True, "connect to mygene interface"),
 
-    profile=("biorun.gprof.run", True, "runs the G:profiler service"),
+    # Gene set enrichment analysis
+    profile=("biorun.gprof.run", True, "submits genes from a count file to g:Profiler"),
+    enrichr=("biorun.enrichr.run", True, "submits genes from a count file to Enrichr"),
+
+    # Biostar Handbook code.
     code=("biorun.code.run", True, "downloads the Biostar Handbook code"),
 
     # Utilities
