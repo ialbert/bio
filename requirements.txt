@@ -1,6 +1,7 @@
-biopython >= 1.79
-more-itertools
+biopython >= 1.80
 requests
 tqdm
 pytest
 mygene
+gprofiler-official
+pandas

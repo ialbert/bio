@@ -27,6 +27,8 @@ setup(
         'requests',
         'tqdm',
         'mygene',
+        'pandas',
+        'gprofiler-official'
     ],
 
     entry_points={

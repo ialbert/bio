@@ -31,9 +31,13 @@ SUB_COMMANDS = dict(
     explain=("biorun.ontology.run", True, "explain biological terms"),
     meta=("biorun.meta.run", True, "download metadata by taxonomy ID"),
     mygene=("biorun.mygene.run", True, "connect to mygene interface"),
+
+    profile=("biorun.gprof.run", True, "runs the G:profiler service"),
+    code=("biorun.code.run", True, "downloads the Biostar Handbook code"),
+
+    # Utilities
     comm=("biorun.comm.run", True, "find common elements"),
     uniq=("biorun.uniq.run", True, "find unique elements"),
-    code=("biorun.code.run", True, "downloads the Biostar Handbook code"),
 
     # Features not yet implemented/under testing.
     gtf=("biorun.gtf.run", False, "parse GTF to create mappings"),
