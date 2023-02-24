@@ -34,7 +34,7 @@ def run(counts="edger.csv", organism='mmusculus', colname='gene', pval_cutoff=0.
     # Get rid of version numbers if these exists
     genes = list(map(strip_dot, genes))
 
-    print(f"# Running g:Profiler")
+    print(f"# Running Enrichr")
     # print(f"# https://biit.cs.ut.ee/gprofiler/gost")
     print(f"# Counts: {counts}")
     print(f"# Organism: {organism}")
