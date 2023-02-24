@@ -18,18 +18,26 @@ def run(counts="edger.csv", organism='mmusculus', colname='gene', pval_cutoff=0.
     Valid organisms: https://biit.cs.ut.ee/gprofiler/page/organism-list
     """
     ct = pd.read_csv(counts)
+
     ct = ct[ct[pval_column] < pval_cutoff]
 
     query = ct[colname].tolist()
+
+    def strip_dot(x):
+        return x.split('.')[0]
+
+    # Get rid of version numbers if these exists
+    query = list(map(strip_dot, query))
 
     print(f"# Running g:Profiler")
     #print(f"# https://biit.cs.ut.ee/gprofiler/gost")
     print(f"# Counts: {counts}")
     print(f"# Organism: {organism}")
-    print(f"# Filtering: {colname} < {pval_cutoff}")
-    print(f"# Using {len(query)} genes")
-    print(f"# First five {','.join(query[:5])}")
-    print(f"# Submitting query to g:Profiler")
+    print(f"# Name column: {colname}")
+    print(f"# Pval column: {pval_column} < {pval_cutoff}")
+    print(f"# Gene count: {len(query)}")
+    print(f"# Genes: {','.join(query[:5])},[...]")
+    print(f"# Submitting to gProfiler")
 
     # Submit the query to g:Profiler.
     gp = GProfiler(return_dataframe=True)
