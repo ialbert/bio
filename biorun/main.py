@@ -33,7 +33,7 @@ SUB_COMMANDS = dict(
     mygene=("biorun.mygene.run", True, "connect to mygene interface"),
 
     # Gene set enrichment analysis
-    profile=("biorun.gprof.run", True, "submits genes from a count file to g:Profiler"),
+    gprofiler=("biorun.gprof.run", True, "submits genes from a count file to g:Profiler"),
     enrichr=("biorun.enrichr.run", True, "submits genes from a count file to Enrichr"),
 
     # Biostar Handbook code.
