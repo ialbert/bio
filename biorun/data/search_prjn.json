@@ -2,10 +2,13 @@
     {
         "run_accession": "SRR12586154",
         "sample_accession": "SAMN16055651",
+        "sample_alias": "GSM4766535",
+        "sample_description": "WT-rep1",
         "first_public": "2021-01-28",
         "country": "",
-        "sample_alias": "GSM4766535",
+        "scientific_name": "Plasmodium yoelii yoelii",
         "fastq_bytes": "1726964557;1829685621",
+        "base_count": "7280855400",
         "read_count": "24269518",
         "library_name": "",
         "library_strategy": "RNA-Seq",
@@ -14,15 +17,19 @@
         "instrument_platform": "ILLUMINA",
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
-        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/054/SRR12586154/SRR12586154_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/054/SRR12586154/SRR12586154_2.fastq.gz"
+        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/054/SRR12586154/SRR12586154_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/054/SRR12586154/SRR12586154_2.fastq.gz",
+        "info": "1.7 GB file, 24 million reads, 7.3 billion sequenced bases (x2, paired)"
     },
     {
         "run_accession": "SRR12586155",
         "sample_accession": "SAMN16055650",
+        "sample_alias": "GSM4766536",
+        "sample_description": "WT-rep2",
         "first_public": "2021-01-28",
         "country": "",
-        "sample_alias": "GSM4766536",
+        "scientific_name": "Plasmodium yoelii yoelii",
         "fastq_bytes": "1574594715;1671613667",
+        "base_count": "6682982400",
         "read_count": "22276608",
         "library_name": "",
         "library_strategy": "RNA-Seq",
@@ -31,15 +38,19 @@
         "instrument_platform": "ILLUMINA",
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
-        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/055/SRR12586155/SRR12586155_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/055/SRR12586155/SRR12586155_2.fastq.gz"
+        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/055/SRR12586155/SRR12586155_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/055/SRR12586155/SRR12586155_2.fastq.gz",
+        "info": "1.6 GB file, 22 million reads, 6.7 billion sequenced bases (x2, paired)"
     },
     {
         "run_accession": "SRR12586156",
         "sample_accession": "SAMN16055649",
+        "sample_alias": "GSM4766537",
+        "sample_description": "WT-rep3",
         "first_public": "2021-01-28",
         "country": "",
-        "sample_alias": "GSM4766537",
+        "scientific_name": "Plasmodium yoelii yoelii",
         "fastq_bytes": "1865627797;1989157927",
+        "base_count": "7879524300",
         "read_count": "26265081",
         "library_name": "",
         "library_strategy": "RNA-Seq",
@@ -48,15 +59,19 @@
         "instrument_platform": "ILLUMINA",
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
-        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/056/SRR12586156/SRR12586156_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/056/SRR12586156/SRR12586156_2.fastq.gz"
+        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/056/SRR12586156/SRR12586156_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/056/SRR12586156/SRR12586156_2.fastq.gz",
+        "info": "1.9 GB file, 26 million reads, 7.9 billion sequenced bases (x2, paired)"
     },
     {
         "run_accession": "SRR12586157",
         "sample_accession": "SAMN16055648",
+        "sample_alias": "GSM4766538",
+        "sample_description": "KO-rep1",
         "first_public": "2021-01-28",
         "country": "",
-        "sample_alias": "GSM4766538",
+        "scientific_name": "Plasmodium yoelii yoelii",
         "fastq_bytes": "1712230363;1813461029",
+        "base_count": "7105905600",
         "read_count": "23686352",
         "library_name": "",
         "library_strategy": "RNA-Seq",
@@ -65,15 +80,19 @@
         "instrument_platform": "ILLUMINA",
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
-        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/057/SRR12586157/SRR12586157_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/057/SRR12586157/SRR12586157_2.fastq.gz"
+        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/057/SRR12586157/SRR12586157_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/057/SRR12586157/SRR12586157_2.fastq.gz",
+        "info": "1.7 GB file, 24 million reads, 7.1 billion sequenced bases (x2, paired)"
     },
     {
         "run_accession": "SRR12586158",
         "sample_accession": "SAMN16055647",
+        "sample_alias": "GSM4766539",
+        "sample_description": "KO-rep2",
         "first_public": "2021-01-28",
         "country": "",
-        "sample_alias": "GSM4766539",
+        "scientific_name": "Plasmodium yoelii yoelii",
         "fastq_bytes": "1754210270;1860388206",
+        "base_count": "7302733200",
         "read_count": "24342444",
         "library_name": "",
         "library_strategy": "RNA-Seq",
@@ -82,15 +101,19 @@
         "instrument_platform": "ILLUMINA",
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
-        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/058/SRR12586158/SRR12586158_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/058/SRR12586158/SRR12586158_2.fastq.gz"
+        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/058/SRR12586158/SRR12586158_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/058/SRR12586158/SRR12586158_2.fastq.gz",
+        "info": "1.8 GB file, 24 million reads, 7.3 billion sequenced bases (x2, paired)"
     },
     {
         "run_accession": "SRR12586159",
         "sample_accession": "SAMN16055652",
+        "sample_alias": "GSM4766540",
+        "sample_description": "KO-rep3",
         "first_public": "2021-01-28",
         "country": "",
-        "sample_alias": "GSM4766540",
+        "scientific_name": "Plasmodium yoelii yoelii",
         "fastq_bytes": "2065014634;2215465488",
+        "base_count": "8531160000",
         "read_count": "28437200",
         "library_name": "",
         "library_strategy": "RNA-Seq",
@@ -99,6 +122,7 @@
         "instrument_platform": "ILLUMINA",
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
-        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/059/SRR12586159/SRR12586159_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/059/SRR12586159/SRR12586159_2.fastq.gz"
+        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/059/SRR12586159/SRR12586159_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/059/SRR12586159/SRR12586159_2.fastq.gz",
+        "info": "2.1 GB file, 28 million reads, 8.5 billion sequenced bases (x2, paired)"
     }
 ]
