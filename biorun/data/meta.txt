@@ -4,6 +4,7 @@ MW620427.1,502104,10090,2020,South America; Brazil: Campinas-SP,UNICAMP,Murine c
 NC_048217.1,11138,,,,,Murine hepatitis virus
 MF618252.1,11138,10090,2014-01-16,North America; USA,WT-MHV P250,Murine hepatitis virus
 MF618253.1,11138,10090,2014-01-16,North America; USA,MHV-ExoN(-) P250,Murine hepatitis virus
+AC_000192.1,11144,,,,,Murine hepatitis virus strain JHM
 JQ173883.1,1163669,,,,,Murine hepatitis virus strain S/3239-17
 GU593319.1,11138,10090,,North America; USA,,Murine hepatitis virus
 AB551247.1,11138,10090,1994,Oceania; Australia:Melbourne,,Murine hepatitis virus

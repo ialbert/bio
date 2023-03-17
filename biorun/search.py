@@ -100,16 +100,20 @@ def get_srr(text, all=False, sep=None):
         fields = [
             'run_accession',
             "sample_accession",
+            "sample_alias",
+            "sample_description",
             'first_public',
             'country',
-            'sample_alias',
+            'scientific_name',
             'fastq_bytes',
+            'base_count',
             'read_count',
             'library_name',
             "library_strategy",
             "library_source",
             'library_layout',
-            'instrument_platform', 'instrument_model',
+            'instrument_platform',
+            'instrument_model',
             'study_title',
             'fastq_ftp',
         ]
@@ -123,6 +127,15 @@ def get_srr(text, all=False, sep=None):
     )
 
     stream = get_request(url, params=params, sep=sep)
+
+
+    # Add more fields to each entry.
+    def add_field(entry):
+        entry["fastq_GB"] = round(float(entry['fastq_bytes'])/1024/1024/1024, 1)
+        entry["basecount_Gb"] = round(float(entry['base_count']) / 1E9, 0)
+        return entry
+
+    stream = map(add_field, stream)
 
     return stream, None
 
