@@ -18,7 +18,7 @@
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
         "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/054/SRR12586154/SRR12586154_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/054/SRR12586154/SRR12586154_2.fastq.gz",
-        "info": "1.7 GB file, 24 million reads, 7.3 billion sequenced bases (x2, paired)"
+        "info": "2 GB, 2 GB file; 24 million reads; 7.3 billion sequenced bases"
     },
     {
         "run_accession": "SRR12586155",
@@ -39,7 +39,7 @@
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
         "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/055/SRR12586155/SRR12586155_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/055/SRR12586155/SRR12586155_2.fastq.gz",
-        "info": "1.6 GB file, 22 million reads, 6.7 billion sequenced bases (x2, paired)"
+        "info": "2 GB, 2 GB file; 22 million reads; 6.7 billion sequenced bases"
     },
     {
         "run_accession": "SRR12586156",
@@ -60,7 +60,7 @@
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
         "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/056/SRR12586156/SRR12586156_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/056/SRR12586156/SRR12586156_2.fastq.gz",
-        "info": "1.9 GB file, 26 million reads, 7.9 billion sequenced bases (x2, paired)"
+        "info": "2 GB, 2 GB file; 26 million reads; 7.9 billion sequenced bases"
     },
     {
         "run_accession": "SRR12586157",
@@ -81,7 +81,7 @@
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
         "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/057/SRR12586157/SRR12586157_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/057/SRR12586157/SRR12586157_2.fastq.gz",
-        "info": "1.7 GB file, 24 million reads, 7.1 billion sequenced bases (x2, paired)"
+        "info": "2 GB, 2 GB file; 24 million reads; 7.1 billion sequenced bases"
     },
     {
         "run_accession": "SRR12586158",
@@ -102,7 +102,7 @@
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
         "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/058/SRR12586158/SRR12586158_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/058/SRR12586158/SRR12586158_2.fastq.gz",
-        "info": "1.8 GB file, 24 million reads, 7.3 billion sequenced bases (x2, paired)"
+        "info": "2 GB, 2 GB file; 24 million reads; 7.3 billion sequenced bases"
     },
     {
         "run_accession": "SRR12586159",
@@ -123,6 +123,6 @@
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Plasmodium transcription repressor AP2-O3 regulates sex-specific identity of gene expression in female gametocytes [RNA-seq]",
         "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/059/SRR12586159/SRR12586159_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR125/059/SRR12586159/SRR12586159_2.fastq.gz",
-        "info": "2.1 GB file, 28 million reads, 8.5 billion sequenced bases (x2, paired)"
+        "info": "2 GB, 2 GB file; 28 million reads; 8.5 billion sequenced bases"
     }
 ]

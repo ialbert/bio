@@ -85,7 +85,7 @@ def get_ncbi(text, db="protein", format="json"):
         collect = [dict(error="invalid genbank id", db=db, value=f"{text}")]
     return collect, None
 
-def human_size(size, decimal_places=1, units=['bytes', 'KB', 'MB', 'GB', 'TB'], suffix=''):
+def human_size(size, decimal_places=0, units=['bytes', 'KB', 'MB', 'GB', 'TB'], suffix=''):
 
     for unit in units:
         if size < 1000:
@@ -145,12 +145,13 @@ def get_srr(text, all=False, sep=None):
 
         # Just ignore if data is missing.
         try:
-            bytes_val = float(entry['fastq_bytes'].split(";")[0])
+            bytes_val = map(float, entry['fastq_bytes'].split(";"))
+            bytes_val = map(human_size, bytes_val)
             base_val = float(entry['base_count'])
             count_val = float(entry['read_count'])
             units = ['', 'thousand', 'million', 'billion', 'trillion']
 
-            bytes_val = human_size(bytes_val)
+            bytes_val = ", ".join(bytes_val)
             base_val = human_size(base_val, units=units, decimal_places=1)
             count_val = human_size(count_val, units=units, decimal_places=0)
 
@@ -160,10 +161,7 @@ def get_srr(text, all=False, sep=None):
             bytes_val = count_val = base_vale = paired = 0
             entry["bio_error"] = f"invalid data: {exc}"
 
-        info = f"{bytes_val} file, {count_val} reads, {base_val} sequenced bases"
-
-        if paired:
-            info += " (x2, paired)"
+        info = f"{bytes_val} file; {count_val} reads; {base_val} sequenced bases"
 
         entry["info"] = info
 
