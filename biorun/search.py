@@ -162,7 +162,8 @@ def get_srr(text, all=False, sep=None):
             entry["bio_error"] = f"invalid data: {exc}"
 
         info = f"{bytes_val} file; {count_val} reads; {base_val} sequenced bases"
-
+        entry['fastq_url'] = [ f"https://{u}" for u in entry['fastq_ftp'].split(";") ]
+        del entry['fastq_ftp']
         entry["info"] = info
 
         return entry

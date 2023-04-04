@@ -17,7 +17,10 @@
         "instrument_platform": "ILLUMINA",
         "instrument_model": "Illumina HiSeq 2500",
         "study_title": "Zaire ebolavirus Genome sequencing",
-        "fastq_ftp": "ftp.sra.ebi.ac.uk/vol1/fastq/SRR197/006/SRR1972976/SRR1972976_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR197/006/SRR1972976/SRR1972976_2.fastq.gz",
+        "fastq_url": [
+            "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR197/006/SRR1972976/SRR1972976_1.fastq.gz",
+            "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR197/006/SRR1972976/SRR1972976_2.fastq.gz"
+        ],
         "info": "699 MB, 606 MB file; 8 million reads; 1.7 billion sequenced bases"
     }
 ]
