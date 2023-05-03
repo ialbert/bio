@@ -147,21 +147,18 @@ def get_srr(text, all=False, sep=None):
         try:
             bytes_val = map(float, entry['fastq_bytes'].split(";"))
             bytes_val = map(human_size, bytes_val)
-            base_val = float(entry['base_count'])
-            count_val = float(entry['read_count'])
-            units = ['', 'thousand', 'million', 'billion', 'trillion']
-
             bytes_val = ", ".join(bytes_val)
-            base_val = human_size(base_val, units=units, decimal_places=1)
-            count_val = human_size(count_val, units=units, decimal_places=0)
+
+            count_val = entry['read_count']
+            base_count = entry['base_count']
 
             paired =  entry.get('library_layout') == 'PAIRED'
 
         except Exception as exc:
-            bytes_val = count_val = base_vale = paired = 0
+            bytes_val = count_val = base_count = paired = 0
             entry["bio_error"] = f"invalid data: {exc}"
 
-        info = f"{bytes_val} file; {count_val} reads; {base_val} sequenced bases"
+        info = f"{bytes_val} file; {count_val} reads; {base_count} sequenced bases"
         entry['fastq_url'] = [ f"https://{u}" for u in entry['fastq_ftp'].split(";") ]
         del entry['fastq_ftp']
         entry["info"] = info

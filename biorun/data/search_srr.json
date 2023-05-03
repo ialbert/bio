@@ -6,10 +6,11 @@
         "sample_description": "Zaire ebolavirus genome sequencing from 2014 outbreak in Sierra Leone",
         "first_public": "2015-06-05",
         "country": "Sierra Leone",
+        "tax_id": "186538",
         "scientific_name": "Zaire ebolavirus",
         "fastq_bytes": "699204879;605646780",
-        "base_count": "1685747974",
-        "read_count": "8345287",
+        "base_count": "1Gb",
+        "read_count": "8,345,287",
         "library_name": "W220.0.l1",
         "library_strategy": "RNA-Seq",
         "library_source": "TRANSCRIPTOMIC",
@@ -21,6 +22,6 @@
             "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR197/006/SRR1972976/SRR1972976_1.fastq.gz",
             "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR197/006/SRR1972976/SRR1972976_2.fastq.gz"
         ],
-        "info": "699 MB, 606 MB file; 8 million reads; 1.7 billion sequenced bases"
+        "info": "699 MB, 606 MB file; 8,345,287 reads; 1Gb sequenced bases"
     }
 ]
