@@ -10,7 +10,7 @@ except ImportError as exc:
     print(f"# Install: conda install -y biopython>=1.79", file=sys.stderr)
     sys.exit(-1)
 
-from biorun import search
+from biorun import search, srrlib
 
 from biorun.libs import placlib as plac
 from tqdm import tqdm
@@ -55,7 +55,7 @@ def parse_ncbi(text):
 
 
 def is_srr(text):
-    patt = re.compile("(S|E)RR\d+")
+    patt = re.compile(r"(S|E)RR\d+")
     return bool(patt.search(text))
 
 
@@ -297,7 +297,8 @@ def fetch_ensembl(ids, ftype='genomic'):
 @plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default", "gff"])
 @plac.opt("type_", "get CDS/CDNA (Ensembl only)")
 @plac.opt("limit", "limit results")
-def run(db="", type_='', format_='', limit=None, *acc):
+@plac.opt("prefix", "file prefix (SRR numbers only)")
+def run(db="", type_='', format_='', limit=None, prefix='', *acc):
     ids = []
     for num in acc:
         ids.extend(num.split(","))
@@ -305,6 +306,12 @@ def run(db="", type_='', format_='', limit=None, *acc):
     if not sys.stdin.isatty():
         lines = utils.read_lines(sys.stdin, sep=None)
         ids.extend(lines)
+
+    srrs = list(map(srrlib.match_srr, ids))
+    if all(srrs):
+        for srr in ids:
+            srrlib.run(srr=srr, prefix=prefix, limit=limit)
+        return
 
     # Dealing with Ensembl
     ensmbl = list(map(is_ensembl, ids))

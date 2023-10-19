@@ -113,19 +113,24 @@ def test_metadata(srr='ERR12058121'):
 
 
 @plac.pos("srr", help="the srr numbers", )
-@plac.opt("dname", help="the directory name", abbrev='d')
 @plac.opt("prefix", help="optional prefix to the filenames", abbrev='p')
-@plac.opt("n", help="how many reads to download", abbrev='n')
-@plac.flg("all", help="download all reads", abbrev='a')
-def run(srr='ERR12058121', dname='reads', n=12, prefix='', all=False):
+@plac.opt("limit", help="how many reads to download", abbrev='l')
+def run(srr='ERR12058121', limit=12, prefix=''):
+
+    all = limit == None
 
     # Set the prefix
-    prefix = prefix or srr
+    prefix = prefix if prefix else srr
+
+    # The name of the directory
+    dname = os.path.dirname(prefix)
 
     logger.setLevel("INFO")
 
     # Make directory dname
-    os.makedirs(dname, exist_ok=True)
+    if dname:
+        logger.info(f"Creating directory: {dname}")
+        os.makedirs(dname, exist_ok=True)
 
     meta = get_metadata(srr=srr)
     urls = meta[0]['fastq_ftp'].split(';')
@@ -157,7 +162,7 @@ def run(srr='ERR12058121', dname='reads', n=12, prefix='', all=False):
 
         else:
             # Stream to a file
-            logger.info(f"Limit to {n} reads")
+            logger.info(f"Limit to {limit} reads")
 
             logger.info(f"Downloading {url}")
 
