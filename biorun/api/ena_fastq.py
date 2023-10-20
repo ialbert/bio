@@ -60,91 +60,22 @@ def test_metadata(srr='ERR12058121'):
 
 
 @plac.pos("srr", help="the srr numbers", )
-@plac.opt("out", help="optional output to the file", abbrev='o')
-@plac.opt("limit", help="how many reads to download", abbrev='l', type=int)
-def run(srr='ERR12058121', limit=10, out=''):
-
-    # Sets the logger lever.
-    logger.setLevel("INFO")
-
-    # Set the prefix
-    out = out or srr
-
-    # The name of the directory
-    dname = os.path.dirname(out)
-
-    # Make directory dname
-    if dname and not os.path.isdir(dname):
-        logger.info(f"Creating directory: {dname}")
-        os.makedirs(dname, exist_ok=True)
-
-    # Is the limit set
-    all = not limit
+def run(srr, **kwargs):
 
     # Obtain the metadata.
     meta = get_metadata(srr=srr)
 
-    # Bad metadata may make this fail
     try:
-        if all:
-            n = int(meta[0].get('read_count', 0))
-            b = meta[0].get('fastq_bytes', "0;0").split(";")
-            b = map(float, b)
-            b = map(lambda x: float(x)/(1024**3), b)
-            b = ", ".join(map(lambda x: f"{x:.1f} GB", b))
-            logger.info(f"Downloading {b} GB with {n:,} reads for {srr}")
-        else:
-            logger.info(f"Downloading {limit:,} reads for {srr}")
+        # Create URLs from metadata.
+        urls = meta[0]['fastq_ftp'].split(';')
+        urls = map(lambda x: f"https://{x}", urls)
+        urls = list(urls)
+
+        # Display the urls for the data.
+        for url in urls:
+            print(url)
     except Exception as exc:
-        logger.warning("metadata parsing problem, might still work ...")
-
-    # Create URLs from metadata.
-    urls = meta[0]['fastq_ftp'].split(';')
-    urls = map(lambda x: f"https://{x}", urls)
-    urls = list(urls)
-
-    # Iterate over urls and downlad each file.
-    for idx, url in enumerate(urls):
-
-        fpath = f"{out}_{idx + 1}.fastq.gz"
-
-        if all:
-            # Download all reads
-            pname = CMD.split()[0]
-            exit_code = os.system(f"command -v {pname} > /dev/null 2>&1")
-            if exit_code != 0:
-                utils.error(f"Unable to run: {pname}", stop=False)
-                utils.error(f"Installation: micromamba install aria2c")
-
-            # Form the download command.
-            cmd = f"{CMD} -o {fpath} {url}"
-            logger.info(f"Running: {cmd}")
-            #sys.stderr.flush()
-
-            #continue
-
-            # Run the download command.
-            exit_code = os.system(cmd)
-            if exit_code != 0:
-                utils.error(f"Error when running: {cmd}")
-
-        else:
-            # Stream to a file
-
-
-            # logger.info(f"Downloading {url}")
-
-            # Open stream to remote gzipped files.
-            stream = utils.get_gz_lines(url, limit=limit*4)
-
-            # Open local gzip file.
-            fp = gzip.open(fpath, mode='wb')
-
-            logger.info(f"Saving to {fpath}")
-
-            for line in stream:
-                line = line.encode("utf-8")
-                fp.write(line)
+        utils.error(f"Metadata parsing error: {exc}")
 
 
 if __name__ == '__main__':
