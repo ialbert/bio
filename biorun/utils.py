@@ -218,6 +218,42 @@ def plural(target, val=0, end='ies'):
 
     return output
 
+#
+def get_url(url, params={}):
+    """
+    Downloads a url with GET
+    """
+    try:
+        r = requests.get(url, params=params)
+        r.raise_for_status()
+        return r.text
+    except requests.exceptions.HTTPError as e:
+        error(f"HTTP error: {e}")
+    except requests.exceptions.RequestException as e:
+        error(f"Request error: {e}")
+    except Exception as exc:
+        error(f"Error: {exc}")
+
+def get_gz_lines(url, limit=100):
+    """
+    Reads the gzipped remote file line by line
+    """
+    try:
+        r = requests.get(url, stream=True)
+        r.raise_for_status()
+        stream = gzip.open(r.raw, mode='rt', encoding='utf-8')
+        stream = islice(stream, limit)
+
+        for line in stream:
+            yield (line)
+
+    except requests.exceptions.HTTPError as e:
+        error(f"HTTP error: {e}")
+    except requests.exceptions.RequestException as e:
+        error(f"Request error: {e}")
+    except Exception as exc:
+        error(f"Error: {exc}")
+
 
 def urlopen(url, params={}):
     # Open request to file
@@ -478,3 +514,6 @@ def error(msg, logger=logger, stop=True):
     logger.error(f"{msg}")
     if stop:
         sys.exit(1)
+
+# Alias for logging info
+info = logger.info

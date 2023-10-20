@@ -10,7 +10,8 @@ except ImportError as exc:
     print(f"# Install: conda install -y biopython>=1.79", file=sys.stderr)
     sys.exit(-1)
 
-from biorun import search, srrlib
+from biorun import search, patterns
+from biorun.api import ena_fastq
 
 from biorun.libs import placlib as plac
 from tqdm import tqdm
@@ -52,11 +53,6 @@ def parse_ncbi(text):
     refseq = m.group("under") if m else ''
     version = m.group("version") if m else ''
     return code, digits, refseq, version
-
-
-def is_srr(text):
-    patt = re.compile(r"(S|E)RR\d+")
-    return bool(patt.search(text))
 
 
 def is_GCF(text):
@@ -297,8 +293,8 @@ def fetch_ensembl(ids, ftype='genomic'):
 @plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default", "gff"])
 @plac.opt("type_", "get CDS/CDNA (Ensembl only)")
 @plac.opt("limit", "limit results")
-@plac.opt("prefix", "file prefix (SRR numbers only)")
-def run(db="", type_='', format_='', limit=None, prefix='', *acc):
+@plac.opt("out", "output file (used as prefix in for FASTQ)")
+def run(db="", type_='', format_='', limit=100, out='', *acc):
     ids = []
     for num in acc:
         ids.extend(num.split(","))
@@ -307,10 +303,10 @@ def run(db="", type_='', format_='', limit=None, prefix='', *acc):
         lines = utils.read_lines(sys.stdin, sep=None)
         ids.extend(lines)
 
-    srrs = list(map(srrlib.match_srr, ids))
+    srrs = list(map(patterns.is_srr, ids))
     if all(srrs):
         for srr in ids:
-            srrlib.run(srr=srr, prefix=prefix, limit=limit)
+            ena_fastq.run(srr=srr, out=out, limit=limit)
         return
 
     # Dealing with Ensembl

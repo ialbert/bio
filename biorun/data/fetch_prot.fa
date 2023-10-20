@@ -10,7 +10,8 @@ SOURCE      Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2)
   ORGANISM  Severe acute respiratory syndrome coronavirus 2
             Viruses; Riboviria; Orthornavirae; Pisuviricota; Pisoniviricetes;
             Nidovirales; Cornidovirineae; Coronaviridae; Orthocoronavirinae;
-            Betacoronavirus; Sarbecovirus.
+            Betacoronavirus; Sarbecovirus; Severe acute respiratory
+            syndrome-related coronavirus.
 REFERENCE   1  (residues 1 to 1273)
   AUTHORS   Wu,F., Zhao,S., Yu,B., Chen,Y.M., Wang,W., Song,Z.G., Hu,Y.,
             Tao,Z.W., Tian,J.H., Pei,Y.Y., Yuan,M.L., Zhang,Y.L., Dai,F.H.,

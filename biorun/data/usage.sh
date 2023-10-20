@@ -9,6 +9,12 @@
 # Stop on errors.
 set -uex
 
+# Get a protein.
+bio fetch YP_009724390 > fetch_prot.fa
+
+# Get data from NCBI
+bio fetch NC_045512 MN996532 > genomes.gb
+
 # Selecting by gene id
 bio fasta genomes.gb --type gene --id N --end 10 > fasta_ids.fa
 
@@ -155,7 +161,7 @@ cat file1.txt file2.txt | bio  uniq -c -f 2  > uniq3.txt
 bio search SRR1972976 > search_srr.json
 
 # Get bioproject information
-bio search PRJNA661333 > search_prjn.json
+#bio search PRJNA661333 | wc -l > search_prjn.json
 
 # Get assembly information
 bio search GCF_000003085 > search_assembly.json
@@ -169,8 +175,3 @@ bio fetch ENST00000288602  > fetch_enst.txt
 # Get a GFF from NCBI
 bio fetch NC_045512 --format gff > fetch_gff.gff
 
-# Get a protein.
-bio fetch YP_009724390 > fetch_prot.fa
-
-# Get data from NCBI
-bio fetch NC_045512 MN996532 > genomes.gb

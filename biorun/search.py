@@ -149,8 +149,8 @@ def get_srr(text, all=False, sep=None):
             bytes_val = map(human_size, bytes_val)
             bytes_val = ", ".join(bytes_val)
 
-            count_val = entry['read_count']
-            base_count = entry['base_count']
+            count_val = int(entry['read_count'])
+            base_count = int(entry['base_count'])
 
             paired =  entry.get('library_layout') == 'PAIRED'
 
@@ -158,7 +158,7 @@ def get_srr(text, all=False, sep=None):
             bytes_val = count_val = base_count = paired = 0
             entry["bio_error"] = f"invalid data: {exc}"
 
-        info = f"{bytes_val} file; {count_val} reads; {base_count} sequenced bases"
+        info = f"{bytes_val} files; {count_val/1E6:0.1f} million reads; {base_count/1E6:.1f} million sequenced bases"
         entry['fastq_url'] = [ f"https://{u}" for u in entry['fastq_ftp'].split(";") ]
         del entry['fastq_ftp']
         entry["info"] = info
