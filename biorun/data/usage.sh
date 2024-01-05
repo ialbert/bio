@@ -164,7 +164,7 @@ bio search SRR1972976 > search_srr.json
 #bio search PRJNA661333 | wc -l > search_prjn.json
 
 # Get assembly information
-bio search GCF_000003085 > search_assembly.json
+# bio search GCF_000003085 > search_assembly.json
 
 # Search mygene info
 bio search symbol:HAD --species 1316788 > search_mygene.json
