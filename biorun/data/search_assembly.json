@@ -20,7 +20,7 @@
         "gbrs_paired_asm": "GCF_000003085.2",
         "paired_asm_comp": "identical",
         "ftp_path": "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/003/085/GCA_000003085.2_ASM308v2",
-        "excluded_from_refseq": "superseded by newer assembly for species",
+        "excluded_from_refseq": "",
         "relation_to_type_materialasm_not_live_date": ""
     }
 ]

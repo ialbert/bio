@@ -6,7 +6,6 @@
         "sample_description": "Zaire ebolavirus genome sequencing from 2014 outbreak in Sierra Leone",
         "first_public": "2015-06-05",
         "country": "Sierra Leone",
-        "tax_id": "186538",
         "scientific_name": "Zaire ebolavirus",
         "fastq_bytes": "699204879;605646780",
         "base_count": "1685747974",
