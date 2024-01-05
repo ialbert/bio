@@ -393,7 +393,7 @@ def record_generator(rec):
                 brec = BioRec(id=uid, ann=ann, parent=parent, seq=seq, type=ftype, desc=desc, source=rec.id)
 
                 # Correct the feature coordinates.
-                brec.strand = feat.strand
+                brec.strand = feat.location.strand
 
                 brec.start, brec.end = int(feat.location.start) + 1, int(feat.location.end)
                 brec.locs = [(loc.start + 1, loc.end, loc.strand) for loc in
