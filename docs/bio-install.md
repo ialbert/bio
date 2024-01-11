@@ -16,6 +16,10 @@ If you have other questions/suggestions on how to use  `bio` use the discussion 
 
 Installation:
 
+    pipx install bio --upgrade
+
+or with:
+
     pip install bio --upgrade
 
 Some tasks (`bio taxon`, `bio explain`) need access to additional data. Install the required databases with:

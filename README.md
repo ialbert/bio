@@ -52,7 +52,15 @@ Detailed documentation is maintained at
     
 `bio` works on Linux and Mac computers and on Windows when using the Linux Subsystem. 
 
-    pip install bio --upgrade
+As a rule, all Python based command line utilities should be installed via [pipx][pipx] to avoid conflicts with other Python packages:
+
+[pipx]: https://pipx.pypa.io/stable/
+
+    pipx install bio 
+
+Alternatively, if you can also use `pip` to install:
+
+    pip install bio 
             
 See more details in the [documentation][docs].
 
