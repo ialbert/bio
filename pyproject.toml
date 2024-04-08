@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bio"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Istvan Albert", email = "istvan.albert@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+        'biopython >= 1.80',
+        'requests',
+        'tqdm',
+        'mygene',
+        'pandas',
+        'pooch',
+        'gprofiler-official'
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "src/biorun",
+]
+
+[tool.hatch.build.targets.scripts]
+packages = [
+  "src/biorun",
+]
+
+[project.urls]
+Documentation = "https://github.com/ialbert/bio#readme"
+Issues = "https://github.com/ialbert/bio/issues"
+Source = "https://github.com/ialbert/bio/"
+
+[tool.hatch.version]
+path = "src/biorun/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.types]
+dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/biorun tests}"
+
+[tool.coverage.run]
+source_pkgs = ["src/biorun", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/biorun/__about__.py",
+]
+
+[tool.coverage.paths]
+bio = ["src/biorun", ]
+tests = ["tests", ]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]

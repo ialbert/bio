@@ -12,7 +12,7 @@ from biorun import utils
 # Module level logger
 logger = utils.logger
 
-from biorun import VERSION
+from biorun import __version__ as VERSION
 
 #
 # Subcommand registration:
