@@ -7,7 +7,7 @@ all: serve
 
 # Run the tests.
 test:
-	@python biorun/test.py
+	@python src/biorun/test.py
 
 # Update the usage data.
 testdata:
@@ -47,16 +47,14 @@ push:
 
 # Build Python package.
 build:
-	python setup.py sdist bdist_wheel
+	rm -rf build dist
+	hatch build
+	ls -lh dist
 
-# Upload new version to PyPI.
-pypi: test build
-	rm -rf dist build
-	python setup.py bdist_wheel
-	#python -m twine upload --repository testpypi dist/*
-	python -m twine upload --repository pypi dist/*
-
-
+# Publish the package
+publish: test build
+	hatch publish
+	
 #REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
 
 # Upload prebuilt data to distribution site.

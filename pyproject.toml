@@ -31,7 +31,17 @@ dependencies = [
         'gprofiler-official'
 ]
 
+[tool.hatch.metadata]
+include = [
+  'src/biorun/*',
+]
+
+[project.scripts]
+"bio" = "biorun.__main__:run"
+"fasta_filter.py" = "biorun.scripts.fasta_filter:run"
+
 [tool.hatch.build.targets.wheel]
+include = ["src/biorun/data/*"]
 packages = [
   "src/biorun",
 ]
@@ -54,6 +64,8 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
 ]
+path=".venv"
+
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"

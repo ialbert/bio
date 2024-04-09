@@ -1,7 +1,0 @@
-biopython >= 1.80
-requests
-tqdm
-pytest
-mygene
-gprofiler-official
-pandas
