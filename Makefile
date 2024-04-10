@@ -54,7 +54,7 @@ build:
 # Publish the package
 publish: test build
 	hatch publish
-	
+
 #REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
 
 # Upload prebuilt data to distribution site.
