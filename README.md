@@ -122,7 +122,7 @@ You can either use `hatch` or `pip` to install the software in editable mode:
 
 Tests are automatically built from a shell script that mimics real-life usage scenarios.
 
-* https://github.com/ialbert/bio/blob/master/test/usage.sh
+* https://github.com/ialbert/bio/blob/master/src/biorun/data/usage.sh
 
 ## Generating documentation
 

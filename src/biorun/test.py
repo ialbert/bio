@@ -88,6 +88,7 @@ def main():
 
     cmds = tqdm(cmds)
 
+    # Run the commands.
     for cmd in cmds:
         fname = cmd.split(">")[1].strip()
         try:
