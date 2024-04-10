@@ -106,9 +106,13 @@ The ideas and motivations fueling `bio` have been developed while educating the 
 
 ## Development
 
-If you clone the repository, we recommend that you install it as a development package with:
+We use the `hatch` build system to manage the software:
 
-    python setup.py develop
+https://github.com/pypa/hatch
+
+You can either use `hatch` or `pip` to install the software in editable mode:
+
+    pip install --editable .
     
 ## Testing
 
@@ -131,4 +135,3 @@ To run the docs in a browse:
     make 
     
 then visit http://localhost:8000
-
