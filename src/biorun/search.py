@@ -24,7 +24,6 @@ ENA_API = "https://www.ebi.ac.uk/ena/portal/api"
 ENA_FIELDS = f"{ENA_API}/returnFields"
 ENA_REPORT = f"{ENA_API}/filereport"
 
-
 # The assembly summary file
 ASSEMBLY_SUMMARY_URL = 'https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt'
 ASSEMBLY_SUMMARY_PATH = "assembly_summary_genbank.txt"
