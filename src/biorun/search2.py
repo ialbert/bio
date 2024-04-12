@@ -2,6 +2,7 @@
 Bio search : search for information using accession numbers
 """
 import re
+from biorun.api import ena
 
 # SRR numbers: SRR5260547
 SRR_PATT = re.compile(r'(ERR|SRR|DRR|SRP|ERP)\d+')
@@ -57,11 +58,17 @@ def run(acc):
 
     dtype = get_match(acc)
 
-
     if not dtype:
         print(f"# No match for: {acc}")
     else:
         print (acc, dtype)
+
+    if dtype == ENS_TYPE:
+        #ena.lookup(acc, url=ena.LOOKUP_URL)
+        pass
+
+    if dtype == ASM_TYPE:
+        ena.lookup(acc, url=ena.ASSEMBLY_URL)
 
     print("-"* 10)
 

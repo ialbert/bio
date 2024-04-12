@@ -56,7 +56,7 @@ def execute(query, fields, species='', scopes='', size=3):
 def run(limit=5, species='', fields='', scopes='symbol', *query):
     limit = int(limit) if limit else None
 
-    fields = ",".join(['symbol', 'name', 'taxid', fields])
+    fields = ",".join(['symbol', 'name', 'taxid', "refseq", fields])
 
     query = ' '.join(query)
 
