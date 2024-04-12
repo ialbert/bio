@@ -1,7 +1,8 @@
 import csv
 import json
 import re
-import sys, os
+import sys, os, sqlite3
+from itertools import islice
 
 import requests
 
@@ -219,29 +220,10 @@ def update_assembly_stats():
 
 
 def search_assemblies(word):
-    headers = ["assembly_accession", "bioproject", "biosample", "wgs_master", "refseq_category",
-               "taxid", "species_taxid", "organism_name", "infraspecific_name", "isolate", "version_status",
-               "assembly_level", "release_type", "genome_rep", "seq_rel_date", "asm_name", "submitter",
-               "gbrs_paired_asm", "paired_asm_comp", "ftp_path", "excluded_from_refseq",
-               "relation_to_type_material" "asm_not_live_date",
-               ]
-    if not os.path.isfile(ASSEMBLY_SUMMARY_PATH):
-        utils.error(f"Data not found: {ASSEMBLY_SUMMARY_PATH} ", stop=False)
-        utils.error("Run: bio --download ")
-        sys.exit()
 
-    patt = re.compile(word, flags=re.IGNORECASE)
-    stream = open(ASSEMBLY_SUMMARY_PATH, encoding="utf-8")
-    stream = filter(lambda x: not x.startswith("#"), stream)
-    stream = filter(lambda x: x.strip(), stream)
-    coll = []
-    for line in stream:
-        if patt.search(line):
-            elems = line.split("\t")
-            data = dict(zip(headers, elems))
-            coll.append(data)
+    data = utils.search_db(word)
 
-    return coll, None
+    return data, None
 
 def match_genbank_nucleotide(text):
     """

@@ -26,7 +26,8 @@ if __name__ == '__main__':
 
     elems = [
            'ENSG00000157764',
-            #'ENST00000361390', 'ENSP00000354686',
+            'ENST00000361390',
+            'ENSP00000354686',
     ]
 
     for acc in elems:

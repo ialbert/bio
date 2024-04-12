@@ -28,13 +28,14 @@ dependencies = [
         'mygene',
         'pandas',
         'pooch',
-        'gprofiler-official'
+        'gprofiler-official',
 ]
 
 [tool.hatch.metadata]
 include = [
   'src/biorun/*',
 ]
+
 
 [project.scripts]
 "bio" = "biorun.__main__:run"

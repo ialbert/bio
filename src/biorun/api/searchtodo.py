@@ -1,8 +1,9 @@
 """
 Bio search : search for information using accession numbers
 """
-import re
+import re, os, json, csv, sqlite3
 from biorun.api import ena
+from itertools import islice
 
 # SRR numbers: SRR5260547
 SRR_PATT = re.compile(r'(ERR|SRR|DRR|SRP|ERP)\d+')
@@ -68,12 +69,13 @@ def run(acc):
         pass
 
     if dtype == ASM_TYPE:
-        ena.lookup(acc, url=ena.ASSEMBLY_URL)
+        ena.search(acc, url=ena.ASSEMBLY_URL)
 
     print("-"* 10)
 
 
 if __name__ == '__main__':
+
     accs = [
             "NP_001191", "SRR5260547", "PRJNA374918", "HAD3:gene",
             "ENSG00000157764", "GSM123456", "GSE123456",
@@ -83,5 +85,7 @@ if __name__ == '__main__':
             ]
     for acc in accs:
         run(acc)
+
+
 
 

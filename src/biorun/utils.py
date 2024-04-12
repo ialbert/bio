@@ -11,10 +11,11 @@ import tempfile
 from io import StringIO
 from itertools import *
 from os.path import expanduser
-
+import sqlite3, csv
 import requests
 from biorun.libs.sqlitedict import SqliteDict
 from tqdm import tqdm
+from itertools import islice
 
 # The path to the current file.
 __CURR_DIR = os.path.dirname(__file__)
@@ -514,6 +515,103 @@ def error(msg, logger=logger, stop=True):
     logger.error(f"{msg}")
     if stop:
         sys.exit(1)
+
+ASSEMBLY_SUMMARY_PATH = "assembly_summary_genbank.txt"
+ASSEMBLY_SUMMARY_PATH = cache_path(ASSEMBLY_SUMMARY_PATH)
+
+def init_db(fpath=ASSEMBLY_SUMMARY_PATH, db_path=None, reset=False, limit=None):
+    """
+    Initialize the database.
+    """
+
+    db_path = db_path or f"{fpath}.db"
+
+    # If the date of the fpath is newer than the database, then reset the database
+    if os.path.exists(db_path):
+        db_mtime = os.path.getmtime(db_path)
+        f_mtime = os.path.getmtime(fpath)
+        if f_mtime > db_mtime:
+            reset = True
+
+    # Remove the database if it exists
+    if reset and os.path.exists(db_path):
+        apply_debug_logger(name="main")
+        info(f"removing database: {db_path}")
+        os.remove(db_path)
+    else:
+        info(f"database path {db_path}")
+
+    # Connect to the database
+    conn = sqlite3.connect(db_path)
+    curs = conn.cursor()
+
+    # Check if table needs to be created
+    curs.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='data_table'")
+
+    # Determine if the table exists
+    if not curs.fetchone():
+        info(f"creating sqlite database: {db_path}")
+
+        # Create table and index
+        curs.execute('''
+                CREATE TABLE data_table (
+                    key TEXT NOT NULL,
+                    json_line TEXT NOT NULL
+                )
+            ''')
+        curs.execute('''
+                CREATE INDEX idx_key ON data_table (key)
+            ''')
+
+        # Insert the data into the database
+
+        headers = ["assembly_accession", "bioproject", "biosample", "wgs_master", "refseq_category",
+                   "taxid", "species_taxid", "organism_name", "infraspecific_name", "isolate", "version_status",
+                   "assembly_level", "release_type", "genome_rep", "seq_rel_date", "asm_name", "submitter",
+                   "gbrs_paired_asm", "paired_asm_comp", "ftp_path", "excluded_from_refseq",
+                   "relation_to_type_material" "asm_not_live_date",
+                   ]
+
+        info(f"parsing assembly file: {fpath}")
+
+        # open the stream to the database
+        stream = open(fpath, encoding="utf-8")
+        stream = filter(lambda x: not x.startswith("#"), stream)
+        stream = filter(lambda x: x.strip(), stream)
+
+        to_insert = []
+        stream = islice(stream, limit)
+        reader = csv.DictReader(stream, fieldnames=headers, delimiter="\t")
+        ind = 0
+        for ind, line in enumerate(reader):
+            select = [ "organism_name", "isolate", "strain", "infraspecific_name", "asm_name"]
+            keys = [line.get(key, '') for key in select]
+            keys = filter(None, keys)
+            key = " ".join(keys)
+            text = json.dumps(line)
+            to_insert.append((key, text))
+
+        info(f"loading {ind:,} rows into the database")
+        curs.executemany('INSERT INTO data_table (key, json_line) VALUES (?, ?)', to_insert)
+        conn.commit()
+
+    return conn, curs
+
+def search_db(patt):
+
+    patt = f"%{patt}%"
+
+    conn, curs = init_db()
+
+    # Query the database
+    curs.execute('SELECT * FROM data_table WHERE key LIKE ? COLLATE NOCASE', (patt,))
+    results = curs.fetchall()
+    data = []
+    for res in results:
+        data.append(json.loads(res[1]))
+    conn.close()
+
+    return data
 
 # Alias for logging info
 info = logger.info

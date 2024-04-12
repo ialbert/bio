@@ -161,6 +161,7 @@ def router():
     # Trigger the download if needed
     if DOWNLOAD_CMD in sys.argv:
         utils.download_prebuilt()
+        utils.init_db()
         sys.exit()
 
     # Lowercase the subcommand.
