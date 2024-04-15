@@ -337,6 +337,8 @@ def download_prebuilt(fname='biodata.tar.gz'):
     """
     import tarfile
 
+    print("# downloading search database")
+
     # This is also store as prebuilt to match the database.
     url = f"{ROOT_URL}{fname}"
     path = cache_path(fname)
@@ -524,6 +526,8 @@ def init_db(fpath=ASSEMBLY_SUMMARY_PATH, db_path=None, reset=False, limit=None):
     Initialize the database.
     """
 
+
+
     db_path = db_path or f"{fpath}.db"
 
     # If the date of the fpath is newer than the database, then reset the database
@@ -550,6 +554,8 @@ def init_db(fpath=ASSEMBLY_SUMMARY_PATH, db_path=None, reset=False, limit=None):
 
     # Determine if the table exists
     if not curs.fetchone():
+        apply_debug_logger(name="main")
+        
         info(f"creating sqlite database: {db_path}")
 
         # Create table and index

@@ -4,7 +4,7 @@ The main job runner. Register additional functions here.
 
 import importlib
 import logging
-import sys
+import sys, os
 
 import biorun.libs.placlib as plac
 from biorun import utils
@@ -158,10 +158,14 @@ def router():
         print(USAGE)
         sys.exit(1)
 
+    # Automatically download the prebuilt database if it does not exist.
+    if not os.path.isfile(utils.ASSEMBLY_SUMMARY_PATH):
+        sys.argv.append(DOWNLOAD_CMD)
+
     # Trigger the download if needed
     if DOWNLOAD_CMD in sys.argv:
         utils.download_prebuilt()
-        utils.init_db()
+        utils.init_db(reset=True)
         sys.exit()
 
     # Lowercase the subcommand.

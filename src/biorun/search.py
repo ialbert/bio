@@ -217,6 +217,7 @@ def update_assembly_stats():
     Downloads the latest assembly summary file
     """
     utils.download(url=ASSEMBLY_SUMMARY_URL, fname=ASSEMBLY_SUMMARY_PATH)
+    utils.init_db(reset=True)
 
 
 def search_assemblies(word):
