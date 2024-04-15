@@ -555,7 +555,7 @@ def init_db(fpath=ASSEMBLY_SUMMARY_PATH, db_path=None, reset=False, limit=None):
     # Determine if the table exists
     if not curs.fetchone():
         apply_debug_logger(name="main")
-        
+
         info(f"creating sqlite database: {db_path}")
 
         # Create table and index

@@ -49,6 +49,10 @@ def build_database(limit=None):
     # The location of the taxdump file.
     path = TAXDB_PATH
 
+    print(f"# building a new taxonomy database")
+
+    print(f"# download taxonomy: {TAXDB_URL}")
+
     # Download the latest taxdump file.
     utils.download(url=TAXDB_URL, fname=path)
 
