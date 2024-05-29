@@ -40,6 +40,12 @@ include = [
 "bio" = "biorun.__main__:run"
 "fasta_filter.py" = "biorun.scripts.fasta_filter:run"
 
+[tool.hatch.build.targets.sdist]
+include = ["src/biorun/data/*"]
+packages = [
+  "src/biorun",
+]
+
 [tool.hatch.build.targets.wheel]
 include = ["src/biorun/data/*"]
 packages = [
