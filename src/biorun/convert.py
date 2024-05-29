@@ -318,7 +318,7 @@ def feature2gff(source, ftype, start, end, strand, uid, name, pid=None):
     Returns a Record as an 11 element  GFF3 list .
     """
     # Reformat the strand
-    strand = "+" if strand > 0 else "-"
+    strand = "+" if strand else "-"
 
     # TODO: is this the phase?
     # phase = feat.get("codon_start", [1])[0] - 1
