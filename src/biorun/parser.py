@@ -100,12 +100,7 @@ class Peeker:
         return line
 
     def __iter__(self):
-        data = self.buffer.read()
-        if data:
-            yield data
-        else:
-            for line in self.stream:
-                yield line
+        return self
 
     def __next__(self):
         data = self.buffer.read() or next(self.stream)
@@ -149,7 +144,17 @@ def parse_json(stream):
     text = stream.read()
     json_list = json.loads(text)
 
-    for record in json_list:
+    yield from _parse_json(json_list)
+
+
+def parse_jsonlines(stream):
+    json_lines = map(json.loads, stream)
+
+    yield from _parse_json(json_lines)
+
+
+def _parse_json(records):
+    for record in records:
 
         # The features in the record
         features = record[FEATURES]
@@ -198,15 +203,19 @@ def parse_stream(stream):
         format = 'embl'
     elif start == '[':
         format = 'json'
+    elif start == '{':
+        format = 'jsonlines'
     else:
         format = 'genbank'
 
     logger.debug(f"parsing: {format}")
 
-    if format != 'json':
-        recs = SeqIO.parse(stream, format)
-    else:
+    if format == 'json':
         recs = parse_json(stream)
+    elif format == 'jsonlines':
+        recs = parse_jsonlines(stream)
+    else:
+        recs = SeqIO.parse(stream, format)
 
     return recs
 
