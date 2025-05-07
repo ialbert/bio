@@ -100,12 +100,7 @@ class Peeker:
         return line
 
     def __iter__(self):
-        data = self.buffer.read()
-        if data:
-            yield data
-        else:
-            for line in self.stream:
-                yield line
+        return self
 
     def __next__(self):
         data = self.buffer.read() or next(self.stream)
