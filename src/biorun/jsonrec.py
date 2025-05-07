@@ -23,8 +23,9 @@ def as_json(rec):
     return data
 
 
+@plac.flg("lines", "line-delimited JSON (default is a JSON array)", abbrev="l")
 @plac.pos("fnames", "input files")
-def run(*fnames):
+def run(lines=False, *fnames):
     """
     Generates a json output.
     """
@@ -38,14 +39,21 @@ def run(*fnames):
     for rec in recs:
 
         if rec.type == SOURCE:
+            if lines and entry:
+                print(json.dumps(entry, indent=None, separators=(',', ':')))
+
             # Create a new entry
             entry = {RECORD: rec.parent, FEATURES: [], SOURCE: str(rec.seq)}
-            data.append(entry)
+
+            if not lines:
+                data.append(entry)
 
         target = entry.get(FEATURES, [])
         row = as_json(rec)
         target.append(row)
 
-    text = json.dumps(data, indent=4)
-
-    print(text)
+    if lines:
+        if entry:
+            print(json.dumps(entry, indent=None, separators=(',', ':')))
+    else:
+        print(json.dumps(data, indent=4))

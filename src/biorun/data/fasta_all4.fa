@@ -1,0 +1,152 @@
+>five_prime_UTR-1 {"type": "five_prime_UTR", "gene": "", "product": "", "locus": ""}
+ATTAAAGGTT
+>ORF1ab {"type": "gene", "gene": "ORF1ab", "product": "", "locus": "GU280_gp01"}
+ATGGAGAGCC
+>YP_009724389.1 {"type": "CDS", "gene": "ORF1ab", "product": "ORF1ab polyprotein", "locus": "GU280_gp01"}
+ATGGAGAGCC
+>mature_protein_region-1 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "leader protein", "locus": "GU280_gp01"}
+ATGGAGAGCC
+>mature_protein_region-2 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp2", "locus": "GU280_gp01"}
+GCATACACTC
+>mature_protein_region-3 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp3", "locus": "GU280_gp01"}
+GCACCAACAA
+>mature_protein_region-4 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp4", "locus": "GU280_gp01"}
+AAAATTGTTA
+>mature_protein_region-5 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "3C-like proteinase", "locus": "GU280_gp01"}
+AGTGGTTTTA
+>mature_protein_region-6 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp6", "locus": "GU280_gp01"}
+AGTGCAGTGA
+>mature_protein_region-7 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp7", "locus": "GU280_gp01"}
+TCTAAAATGT
+>mature_protein_region-8 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp8", "locus": "GU280_gp01"}
+GCTATAGCCT
+>mature_protein_region-9 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp9", "locus": "GU280_gp01"}
+AATAATGAGC
+>mature_protein_region-10 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp10", "locus": "GU280_gp01"}
+GCTGGTAATG
+>mature_protein_region-11 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "RNA-dependent RNA polymerase", "locus": "GU280_gp01"}
+TCAGCTGATG
+>mature_protein_region-12 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "helicase", "locus": "GU280_gp01"}
+GCTGTTGGGG
+>mature_protein_region-13 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "3'-to-5' exonuclease", "locus": "GU280_gp01"}
+GCTGAAAATG
+>mature_protein_region-14 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "endoRNAse", "locus": "GU280_gp01"}
+AGTTTAGAAA
+>mature_protein_region-15 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "2'-O-ribose methyltransferase", "locus": "GU280_gp01"}
+TCTAGTCAAG
+>YP_009725295.1 {"type": "CDS", "gene": "ORF1ab", "product": "ORF1a polyprotein", "locus": "GU280_gp01"}
+ATGGAGAGCC
+>mature_protein_region-16 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "leader protein", "locus": "GU280_gp01"}
+ATGGAGAGCC
+>mature_protein_region-17 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp2", "locus": "GU280_gp01"}
+GCATACACTC
+>mature_protein_region-18 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp3", "locus": "GU280_gp01"}
+GCACCAACAA
+>mature_protein_region-19 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp4", "locus": "GU280_gp01"}
+AAAATTGTTA
+>mature_protein_region-20 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "3C-like proteinase", "locus": "GU280_gp01"}
+AGTGGTTTTA
+>mature_protein_region-21 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp6", "locus": "GU280_gp01"}
+AGTGCAGTGA
+>mature_protein_region-22 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp7", "locus": "GU280_gp01"}
+TCTAAAATGT
+>mature_protein_region-23 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp8", "locus": "GU280_gp01"}
+GCTATAGCCT
+>mature_protein_region-24 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp9", "locus": "GU280_gp01"}
+AATAATGAGC
+>mature_protein_region-25 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp10", "locus": "GU280_gp01"}
+GCTGGTAATG
+>mature_protein_region-26 {"type": "mature_protein_region", "gene": "ORF1ab", "product": "nsp11", "locus": "GU280_gp01"}
+TCAGCTGATG
+>stem_loop-1 {"type": "stem_loop", "gene": "ORF1ab", "product": "", "locus": "GU280_gp01"}
+CGGTGTAAGT
+>stem_loop-2 {"type": "stem_loop", "gene": "ORF1ab", "product": "", "locus": "GU280_gp01"}
+AGCCCGTCTT
+>S {"type": "gene", "gene": "S", "product": "", "locus": "GU280_gp02"}
+ATGTTTGTTT
+>YP_009724390.1 {"type": "CDS", "gene": "S", "product": "surface glycoprotein", "locus": "GU280_gp02"}
+ATGTTTGTTT
+>ORF3a {"type": "gene", "gene": "ORF3a", "product": "", "locus": "GU280_gp03"}
+ATGGATTTGT
+>YP_009724391.1 {"type": "CDS", "gene": "ORF3a", "product": "ORF3a protein", "locus": "GU280_gp03"}
+ATGGATTTGT
+>E {"type": "gene", "gene": "E", "product": "", "locus": "GU280_gp04"}
+ATGTACTCAT
+>YP_009724392.1 {"type": "CDS", "gene": "E", "product": "envelope protein", "locus": "GU280_gp04"}
+ATGTACTCAT
+>M {"type": "gene", "gene": "M", "product": "", "locus": "GU280_gp05"}
+ATGGCAGATT
+>YP_009724393.1 {"type": "CDS", "gene": "M", "product": "membrane glycoprotein", "locus": "GU280_gp05"}
+ATGGCAGATT
+>ORF6 {"type": "gene", "gene": "ORF6", "product": "", "locus": "GU280_gp06"}
+ATGTTTCATC
+>YP_009724394.1 {"type": "CDS", "gene": "ORF6", "product": "ORF6 protein", "locus": "GU280_gp06"}
+ATGTTTCATC
+>ORF7a {"type": "gene", "gene": "ORF7a", "product": "", "locus": "GU280_gp07"}
+ATGAAAATTA
+>YP_009724395.1 {"type": "CDS", "gene": "ORF7a", "product": "ORF7a protein", "locus": "GU280_gp07"}
+ATGAAAATTA
+>ORF7b {"type": "gene", "gene": "ORF7b", "product": "", "locus": "GU280_gp08"}
+ATGATTGAAC
+>YP_009725318.1 {"type": "CDS", "gene": "ORF7b", "product": "ORF7b", "locus": "GU280_gp08"}
+ATGATTGAAC
+>ORF8 {"type": "gene", "gene": "ORF8", "product": "", "locus": "GU280_gp09"}
+ATGAAATTTC
+>YP_009724396.1 {"type": "CDS", "gene": "ORF8", "product": "ORF8 protein", "locus": "GU280_gp09"}
+ATGAAATTTC
+>N {"type": "gene", "gene": "N", "product": "", "locus": "GU280_gp10"}
+ATGTCTGATA
+>YP_009724397.2 {"type": "CDS", "gene": "N", "product": "nucleocapsid phosphoprotein", "locus": "GU280_gp10"}
+ATGTCTGATA
+>ORF10 {"type": "gene", "gene": "ORF10", "product": "", "locus": "GU280_gp11"}
+ATGGGCTATA
+>YP_009725255.1 {"type": "CDS", "gene": "ORF10", "product": "ORF10 protein", "locus": "GU280_gp11"}
+ATGGGCTATA
+>stem_loop-3 {"type": "stem_loop", "gene": "ORF10", "product": "", "locus": "GU280_gp11"}
+TTGTGCAGAA
+>stem_loop-4 {"type": "stem_loop", "gene": "ORF10", "product": "", "locus": "GU280_gp11"}
+TAACTACATA
+>three_prime_UTR-1 {"type": "three_prime_UTR", "gene": "", "product": "", "locus": ""}
+CAATCTTTAA
+>stem_loop-5 {"type": "stem_loop", "gene": "", "product": "", "locus": ""}
+TTCACCGAGG
+>orf1ab {"type": "gene", "gene": "orf1ab", "product": "", "locus": ""}
+ATGGAGAGCC
+>QHR63299.2 {"type": "CDS", "gene": "orf1ab", "product": "orf1ab polyprotein", "locus": ""}
+ATGGAGAGCC
+>S {"type": "gene", "gene": "S", "product": "", "locus": ""}
+ATGTTTGTTT
+>QHR63300.2 {"type": "CDS", "gene": "S", "product": "spike glycoprotein", "locus": ""}
+ATGTTTGTTT
+>NS3 {"type": "gene", "gene": "NS3", "product": "", "locus": ""}
+ATGGATTTGT
+>QHR63301.1 {"type": "CDS", "gene": "NS3", "product": "nonstructural protein NS3", "locus": ""}
+ATGGATTTGT
+>E {"type": "gene", "gene": "E", "product": "", "locus": ""}
+ATGTACTCAT
+>QHR63302.1 {"type": "CDS", "gene": "E", "product": "envelope protein", "locus": ""}
+ATGTACTCAT
+>M {"type": "gene", "gene": "M", "product": "", "locus": ""}
+ATGGCAGATA
+>QHR63303.1 {"type": "CDS", "gene": "M", "product": "membrane protein", "locus": ""}
+ATGGCAGATA
+>NS6 {"type": "gene", "gene": "NS6", "product": "", "locus": ""}
+ATGTTTCATC
+>QHR63304.1 {"type": "CDS", "gene": "NS6", "product": "nonstructural protein NS6", "locus": ""}
+ATGTTTCATC
+>NS7a {"type": "gene", "gene": "NS7a", "product": "", "locus": ""}
+ATGAAAATTA
+>QHR63305.1 {"type": "CDS", "gene": "NS7a", "product": "nonstructural protein NS7a", "locus": ""}
+ATGAAAATTA
+>NS7b {"type": "gene", "gene": "NS7b", "product": "", "locus": ""}
+ATGAGTGAAC
+>QHR63306.1 {"type": "CDS", "gene": "NS7b", "product": "nonstructural protein NS7b", "locus": ""}
+ATGAGTGAAC
+>NS8 {"type": "gene", "gene": "NS8", "product": "", "locus": ""}
+ATGAAACTTC
+>QHR63307.1 {"type": "CDS", "gene": "NS8", "product": "nonstructural protein NS8", "locus": ""}
+ATGAAACTTC
+>N {"type": "gene", "gene": "N", "product": "", "locus": ""}
+ATGTCTGATA
+>QHR63308.1 {"type": "CDS", "gene": "N", "product": "nucleocapsid protein", "locus": ""}
+ATGTCTGATA

@@ -39,6 +39,15 @@ cat genomes.json | bio fasta -end 10  --features > fasta_all3.fa
 # No muterence between outputs.
 diff fasta_all1.fa fasta_all3.fa > nodiff.txt
 
+# Generate a JSON Lines output
+cat genomes.gb | bio json --lines > genomes.jsonl
+
+# Last ten sequences of all entries.
+cat genomes.jsonl | bio fasta -end 10  --features > fasta_all4.fa
+
+# No difference between outputs.
+diff fasta_all1.fa fasta_all4.fa > nodiff.txt
+
 # Renaming with patterns
 bio fasta genomes.gb --end 100  --rename {isolate} > fasta_rename1.fa
 
