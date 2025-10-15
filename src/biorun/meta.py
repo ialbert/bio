@@ -24,17 +24,18 @@ def print_metadata(terms, limit=None, header=False):
         for line in lines:
             print(line)
 
-# https://api.ncbi.nlm.nih.gov/datasets/docs/v1/reference-docs/rest-api/
+# https://api.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/rest-api/
 
 def get_metadata(taxid, limit=None, complete=True):
     """
-    Returns all accessions
+    Returns all accessions using NCBI datasets API 
     """
     import requests
 
-    url = f"https://api.ncbi.nlm.nih.gov/datasets/v1alpha/virus/taxon/{taxid}/genome/table"
+    url = f"https://api.ncbi.nlm.nih.gov/datasets/v2/virus/taxon/{taxid}/genome/table"
 
     complete_only = "true" if complete else "false"
+    
     params = {
         'format': 'csv',
         'refseq_only': "false",
@@ -51,12 +52,21 @@ def get_metadata(taxid, limit=None, complete=True):
     }
 
     conn = requests.get(url, stream=True, params=params)
+    
+    # Print the actual complete URL that was submitted
+    print(f"Actual URL submitted: {conn.url}")
+    
     lines = conn.iter_lines()
 
     lines = islice(lines, limit)
 
+
     if conn.status_code != 200:
-        msg = f"HTTP status code: {conn.status_code}"
+        try:
+            error_text = conn.text
+            msg = f"HTTP status code: {conn.status_code}\nError message: {error_text}"
+        except:
+            msg = f"HTTP status code: {conn.status_code}"
         utils.error(msg)
 
     lines = map(decode, lines)

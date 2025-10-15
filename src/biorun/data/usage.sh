@@ -145,7 +145,7 @@ bio taxon 117565 -d 5 > taxon1.txt
 #bio taxon genomes.gb --lineage > lineage.txt
 
 # Getting some metadata for taxon 11138 (Murine hepatitis virus)
-bio meta 11138 -H > meta.txt
+# bio meta 11138 -H > meta.txt
 
 # Define exact SO term
 bio explain exon > explain_exon.txt

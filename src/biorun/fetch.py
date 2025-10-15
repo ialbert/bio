@@ -199,14 +199,14 @@ def format_runinfo(stream, ftype=None):
         print("")
 
 
-def fetch_ncbi_gff(ids, db="nuccore"):
+def fetch_ncbi_gff(ids, db="nuccore", chunk_size=1024*1024*10):
     url = "https://www.ncbi.nlm.nih.gov/sviewer/viewer.cgi"
     params = dict(db=db, report='gff3', id=ids)
     try:
         r = requests.get(url, params=params)
-        for chunk in r.iter_content(chunk_size=1024):
+        for chunk in r.iter_content(chunk_size=chunk_size):
             text = chunk.decode("utf8")
-            print(text)
+            print(text, sep='')
     except Exception as exc:
         utils.error(f"Error for {ids}, {db} : {exc}")
 
