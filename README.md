@@ -2,16 +2,26 @@
 
 `bio` - command-line utilities to make bioinformatics explorations more enjoyable.
 
-`bio` is a bioinformatics toy to play with.
+Like LEGO pieces that match one another `bio` aims to provide you with commands that naturally fit together and let you express your intent with short, explicit and simple commands. 
 
-Like LEGO pieces that match one another `bio` aims to provide you with commands that naturally fit together and let you express your intent with short, explicit and simple commands. It is a project in an exploratory phase, we'd welcome input and suggestions on what it should grow up into.
+Note: bio is being redesigned for version `2.0.0`. The last stable old version is `1.8.1`.
 
 ## What does this software do?
 
-
 If you've ever done bioinformatics, you know how even seemingly straightforward tasks require multiple steps, arcane incantations, and various other preparations that slow down progress. 
 
-Even well-defined, supposedly simple tasks can take a seemingly inordinate number of complicated steps. The `bio` package is meant to solve that tedium. 
+Even well-defined, supposedly simple tasks can take a seemingly inordinate number of complicated steps. 
+
+The `bio` package is meant to solve that tedium. 
+
+## Search for information
+
+With `bio search`, you can search for information in a variety of databases, including GenBank, Ensembl, Gene Ontology, Sequence Ontology, NCBI Taxonomy, and more.
+
+```bash
+bio search AF086833
+```
+
 
 ## Usage examples
 
@@ -42,11 +52,6 @@ Even well-defined, supposedly simple tasks can take a seemingly inordinate numbe
     # Define a gene ontology terms
     bio explain food vacuole
 
-## Documentation
-
-Detailed documentation is maintained at
-
-* https://www.bioinfo.help/
 
 ## Quick install
     
@@ -58,11 +63,10 @@ As a rule, all Python based command line utilities should be installed via [pipx
 
     pipx install bio 
 
-Alternatively, if you can also use `pip` to install:
+Alternatively, you can also use `pip` to install:
 
     pip install bio 
             
-See more details in the [documentation][docs].
 
 ## `bio` is stream oriented
 
@@ -106,13 +110,20 @@ The ideas and motivations fueling `bio` have been developed while educating the 
 
 ## Development
 
-We use the `hatch` build system to manage the software:
+We use the `uv` build system to manage the software:
 
-https://github.com/pypa/hatch
+https://docs.astral.sh/uv/
 
-You can either use `hatch` or `pip` to install the software in editable mode:
+Typical steps:
 
-    pip install --editable .
+    # Create a virtual environment
+    uv venv
+
+    # Activate the virtual environment
+    source .venv/bin/activate
+
+    # Install the software in editable mode
+    uv pip install .
     
 ## Testing
 

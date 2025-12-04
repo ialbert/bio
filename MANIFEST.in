@@ -1,1 +1,1 @@
-include biorun/data/*
+include src/biorun/data/*
