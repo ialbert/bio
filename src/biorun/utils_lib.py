@@ -1,6 +1,9 @@
 import json
 import csv
 import sys
+from biorun import logger
+
+
 
 def as_json(reader, indent=4, lines=False, stream=sys.stdout):
     """
@@ -14,6 +17,8 @@ def as_json(reader, indent=4, lines=False, stream=sys.stdout):
     else:
         data = list(reader)
         stream.write(json.dumps(data, indent=indent))
+        if indent:
+            stream.write("\n")
 
 
 def as_csv(reader, stream=sys.stdout, sep=','):
@@ -23,6 +28,9 @@ def as_csv(reader, stream=sys.stdout, sep=','):
     writer = csv.DictWriter(stream, fieldnames=reader.fieldnames, delimiter=sep)
     writer.writeheader()
     writer.writerows(reader)
+
+
+
 
 if __name__ == '__main__':
     

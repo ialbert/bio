@@ -47,13 +47,22 @@ push:
 
 # Build Python package.
 build:
-	rm -rf build dist
-	hatch build
-	ls -lh dist
+	uv build --clear --verbose
 
 # Publish the package
-publish: test build
-	hatch publish
+publish: 
+
+#
+# Install the package in editable mode.
+#
+# Create an activate virtual environment
+#
+# 	uv venv
+# 	source .venv/bin/activate
+#
+install:
+	uv pip install -e .
+
 
 #REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
 

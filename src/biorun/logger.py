@@ -1,4 +1,10 @@
 import logging
+import sys
+
+DEBUG = logging.DEBUG
+WARNING = logging.WARNING
+INFO = logging.INFO
+ERROR = logging.ERROR
 
 def get_logger(name="bio", hnd=None, fmt=None, terminator='\n'):
     """
@@ -11,11 +17,11 @@ def get_logger(name="bio", hnd=None, fmt=None, terminator='\n'):
     log.setLevel(logging.WARNING)
 
     # The log handler.
-    hnd = hnd or logging.StreamHandler()
+    hnd = hnd or logging.StreamHandler(sys.stderr)
     hnd.terminator = terminator
 
     # The logging formatter.
-    fmt = fmt or logging.Formatter('# %(message)s')
+    fmt = fmt or logging.Formatter('# %(levelname)s\t%(module)s.%(funcName)s\t%(message)s')
 
     # Add formatter to handler
     hnd.setFormatter(fmt)
@@ -24,3 +30,6 @@ def get_logger(name="bio", hnd=None, fmt=None, terminator='\n'):
     log.addHandler(hnd)
 
     return log
+
+# Default logger.
+default = get_logger("main")

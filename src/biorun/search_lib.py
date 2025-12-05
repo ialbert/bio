@@ -2,14 +2,16 @@
 Bio search : search for information using accession numbers
 """
 import re
+from typing import Any
 import requests
 import sys
 import json
 import csv
+from io import StringIO
 from biorun import logger, utils_lib
 
 # Initialize the logger.
-logger = logger.get_logger("main")
+logger = logger.default
 
 # SRR numbers: SRR5260547
 SRR_PATT = re.compile(r'(ERR|SRR|DRR|SRP|ERP)\d+')
@@ -52,29 +54,30 @@ PATTERNS = [
     (GBK_TYPE, GBK_PATT),
 ]
 
-# ENA PortalAPI urls.
 # Documentation at https://www.ebi.ac.uk/ena/portal/api
 ENA_PORTAL_API = "https://www.ebi.ac.uk/ena/portal/api"
 ENA_PORTAL_FIELDS = f"{ENA_PORTAL_API}/returnFields"
 ENA_PORTAL_REPORT = f"{ENA_PORTAL_API}/filereport"
 
 # Default fields for ENA report.
-ENA_DEFAULT_FIELDS = ['run_accession', 'sample_accession', 'sample_alias', 'sample_description', 
-    'country', 'scientific_name',  'fastq_bytes',
+ENA_DEFAULT_FIELDS = ['first_public', 'study_title', 'sample_alias', 'run_accession', 'sample_accession', 'sample_description', 
+    'tax_id', 'scientific_name', 
     'library_name', 'library_strategy', 'library_source', 'library_layout', 'instrument_platform', 
-    'instrument_model', 'study_title', 'first_public', 'base_count', 'read_count', 'fastq_ftp', ]
+    'instrument_model', 'fastq_bytes', 'base_count', 'read_count', 'fastq_ftp', ]
 
-def get_valid_fields( url=ENA_PORTAL_FIELDS, db='ena'):
+def get_all_fields(url=ENA_PORTAL_FIELDS, db='ena'):
     """
     Returns all valid ENA fields for a database
     """
     params = dict(dataPortal=db, result='read_run')
 
+
+    logger.debug(f"url: {url} params: {params}")
     r = requests.get(url, params=params)
 
     if not r.ok:
+        logger.error(f"URL: {url}")
         logger.error(f"Connection error: {r.status_code}")
-        #r.raise_for_status()
         sys.exit(1)
 
     stream = r.iter_lines(decode_unicode=True)
@@ -82,115 +85,125 @@ def get_valid_fields( url=ENA_PORTAL_FIELDS, db='ena'):
     return reader
 
 def parse_fields(url=ENA_PORTAL_FIELDS):
-    reader = get_valid_fields(url=url)
+    """
+    Parse the fields from the ENA Portal API.
+    """
+    reader = get_all_fields(url=url)
     fields = [r.get('columnId') for r in reader]
     fields = filter(lambda x: x, fields)
     fields = list(fields)
     return fields
 
-def ena_srr_report(acc, all=False):
+def ena_srr(acc, all=False, url=ENA_PORTAL_REPORT):
     """
     Get the ENA SRR report for an accession.
     """
   
-    fields = parse_fields() if all else ENA_DEFAULT_FIELDS
-    fields = ",".join(fields)
-    params = dict(accession=acc, fields=fields, result='read_run')
-    r = requests.get(ENA_PORTAL_REPORT, params=params)
-    stream = r.iter_lines(decode_unicode=True)
-    reader = csv.DictReader(stream, delimiter="\t")
-
-    def add_field(entry):
-        try:
-            fastq_ftp = entry.get('fastq_ftp', ';')
-            entry['fastq_ftp'] = fastq_ftp.split(";")
-
-            fastq_bytes = entry.get('fastq_bytes', ';').split(";")
-            fastq_bytes = map(lambda x: round(float(x)/1024/1024/1024,1), fastq_bytes)
-            fastq_bytes = map(lambda x: f"{x} GB", fastq_bytes)
-            fastq_bytes = list(fastq_bytes)
-            fastq_bytes = ", ".join(fastq_bytes)
-            entry['fastq_size'] = fastq_bytes
-        except Exception as exc:
-            logger.error(f"Error adding fields: {exc}")
-        return entry
-
-    reader = map(add_field, reader)
-    return reader
-
-# ENA ID lookup URL
-ENA_ID_LOOKUP_URL = f"https://rest.ensembl.org/lookup/id"
-def ena_lookup(acc, url=ENA_ID_LOOKUP_URL):
-    """
-    Connect to the lookup service.
-    """
-    conn = f"{url}/{acc}"
-    
-    try:    
-        r = requests.get(conn, headers={"Content-Type": "application/json"})
+    try:
+        fields = parse_fields() if all else ENA_DEFAULT_FIELDS
+        fields = ",".join(fields)
+        params = dict(accession=acc, fields=fields, result='read_run')
+        logger.debug(f"url: {url} params: {params}")
+        r = requests.get(url, params=params)
+        stream = r.iter_lines(decode_unicode=True)
+        reader = csv.DictReader(stream, delimiter="\t")
     except Exception as exc:
+        logger.error(f"ACC: {acc}")
+        logger.error(f"URL: {ENA_PORTAL_REPORT}")
         logger.error(f"Error: {exc}")
-        return None
-
-    if not r.ok:
-        logger.error(f"Connection error: {r.status_code}")
-        #r.raise_for_status()
         sys.exit(1)
 
-    data = r.json()
-    
+    return reader
+
+def update_ftp_fields(entry):
+    """
+    Update the FTP fields in an SRR report entry.
+    """
+    try:
+        fastq_ftp = entry.get('fastq_ftp', ';')
+        entry['fastq_ftp'] = fastq_ftp.split(";")
+        fastq_bytes = entry.get('fastq_bytes', ';').split(";")
+        fastq_bytes = map(lambda x: round(float(x)/1024/1024/1024,1), fastq_bytes)
+        fastq_bytes = map(lambda x: f"{x} GB", fastq_bytes)
+        fastq_bytes = list(fastq_bytes)
+        fastq_bytes = ", ".join(fastq_bytes)
+        entry['file_size'] = fastq_bytes
+    except Exception as exc:
+        logger.error(f"Error adding fields: {exc}")
+    return entry
+
+
+def request_json(url, status='status'):
+    """
+    Submit a request to a URL and return the JSON data.
+    """
+
+    try: 
+        logger.debug(f"url: {url}")
+        r = requests.get(url, headers={"Content-Type": "application/json"})
+
+        if r.ok:
+            text = r.json()
+            data = json.dumps(text)
+            if status not in data:
+                data[status] = r.status_code
+        else:
+            data = {'url': url, status: r.status_code, 'error': f"{r.status_code}"}
+            logger.error(f"{data}")
+
+    except Exception as exc:
+        data = {'url': url, status: 'exception', 'error': f"{exc}"}
+        logger.error(f"{data}")
+
     return data
+
+  # ENA ID lookup URL
+ENA_ID_LOOKUP_URL = f"https://rest.ensembl.org/lookup/id"
+def ena_lookup(acc, url=ENA_ID_LOOKUP_URL):
+    conn_url = f"{url}/{acc}"
+    data = request_json(conn_url)
+    return data
+
 
 def get_type(acc):
     """
-    Get the type of the accession.
+    Identify the type of the accession.
     """
     for dtype, pattern in PATTERNS:
         if pattern.match(acc):
             return dtype
     return GENERIC_TYPE
 
-def as_json(data, indent=4):
-    try:
-        text = json.dumps(data, indent=indent)
-    except Exception as exc:
-        print(f"# JSON decoding error: {exc}")
-        data = dict(error=f"{exc}")
-        text = json.dumps(data, indent=indent)
-       
-    return text
 
 PATT_FUNC = {
     NCBI_ASM_TYPE: None,
     GEO_TYPE: None,
     GENE_TYPE: None,
-    SRR_TYPE: None,
-    PRJ_TYPE: None,
+    SRR_TYPE: ena_srr,
+    PRJ_TYPE: ena_srr,
     ENS_TYPE: ena_lookup,
     GBK_TYPE: None,
 }
 
-def run_single(acc):
+def search(acc):
+    logger.debug(f"acc: {acc}")
 
+    # Identify the type of the accession.
     dtype = get_type(acc)
+
+    # Get the function to use for the accession.
     func = PATT_FUNC.get(dtype, None)
 
-    if not func:
+    if func is None:
         logger.error(f"# Can't recognize the accession: {acc}")
-        return {}
-
-    data = {}
-    #data = func(acc)
-
-    #print (data)
-
+        data = {}
+    else:
+        data = func(acc)
+        
     return data
 
-
-def run_all(accs):
-    results = map(run_single, accs)
-    results = list(results)
-    return results
+def run():
+    pass
 
 if __name__ == '__main__':
     accs = [
@@ -211,9 +224,14 @@ if __name__ == '__main__':
 
     #fields = get_valid_fields()
     #print(fields)
-    reader = ena_srr_report("SRR5260547")
+ 
+    reader = search("PRJNA374918")
 
     #utils_lib.as_csv(reader)
+    
+    reader = map(update_ftp_fields, reader)
+
+
     utils_lib.as_json(reader)
     
 
