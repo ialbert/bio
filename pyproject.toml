@@ -22,7 +22,7 @@ classifiers = [
 ]
 
 dependencies = [
-        'biopython >= 1.86',
+        'biopython >= 1.80',
         'requests',
         'tqdm',
         'mygene',
@@ -43,12 +43,7 @@ Source = "https://github.com/ialbert/bio/"
 [tool.hatch.version]
 path = "src/biorun/__about__.py"
 
-[tool.hatch.build.targets.sdist]
-include = ["src/biorun/data/*"]
-packages = ["src/biorun"]
-
 [tool.hatch.build.targets.wheel]
-include = ["src/biorun/data/*"]
 packages = ["src/biorun"]
 
 [dependency-groups]

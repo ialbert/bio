@@ -7,7 +7,7 @@ from biorun.libs import placlib as plac
 from . import models
 
 try:
-    from Bio import SeqIO
+    from Bio import __version__ as VERSION
     from Bio.Seq import Seq
     from Bio.SeqRecord import SeqRecord
     from Bio.Align import PairwiseAligner
@@ -99,8 +99,14 @@ def align(target, query, par: models.Param):
 
     # Semiglobal alignment.
     elif par.mode == SEMIGLOBAL_ALIGN:
-        aligner.end_insertion_score = 0.0
-        aligner.end_deletion_score = 0.0
+
+        # Fixes deprecation warnings in Biopython 1.86
+        if VERSION >= '1.86':
+            aligner.end_insertion_score = 0.0
+            aligner.end_deletion_score = 0.0
+        else:
+            aligner.target_end_gap_score = 0.0
+            aligner.query_end_gap_score = 0.0
 
     # Performs the alignment
     alns = aligner.align(t, q)
