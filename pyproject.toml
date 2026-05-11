@@ -7,7 +7,7 @@ name = "bio"
 dynamic = ["version"]
 description = ''
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.15"
 license = "MIT"
 keywords = []
 authors = [
@@ -22,7 +22,7 @@ classifiers = [
 ]
 
 dependencies = [
-        'biopython >= 1.80',
+        'biopython >= 1.86',
         'requests',
         'tqdm',
         'mygene',
@@ -31,31 +31,9 @@ dependencies = [
         'gprofiler-official'
 ]
 
-[tool.hatch.metadata]
-include = [
-  'src/biorun/*',
-]
-
 [project.scripts]
 "bio" = "biorun.__main__:run"
 "fasta_filter.py" = "biorun.scripts.fasta_filter:run"
-
-[tool.hatch.build.targets.sdist]
-include = ["src/biorun/data/*"]
-packages = [
-  "src/biorun",
-]
-
-[tool.hatch.build.targets.wheel]
-include = ["src/biorun/data/*"]
-packages = [
-  "src/biorun",
-]
-
-[tool.hatch.build.targets.scripts]
-packages = [
-  "src/biorun",
-]
 
 [project.urls]
 Documentation = "https://github.com/ialbert/bio#readme"
@@ -65,34 +43,20 @@ Source = "https://github.com/ialbert/bio/"
 [tool.hatch.version]
 path = "src/biorun/__about__.py"
 
-[tool.hatch.envs.default]
-dependencies = [
+[tool.hatch.build.targets.sdist]
+include = ["src/biorun/data/*"]
+packages = ["src/biorun"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/biorun/data/*"]
+packages = ["src/biorun"]
+
+[dependency-groups]
+dev = [
   "coverage[toml]>=6.5",
   "pytest",
-]
-path=".venv"
-
-[tool.hatch.envs.default.scripts]
-test = "pytest {args:tests}"
-test-cov = "coverage run -m pytest {args:tests}"
-cov-report = [
-  "- coverage combine",
-  "coverage report",
-]
-cov = [
-  "test-cov",
-  "cov-report",
-]
-
-[[tool.hatch.envs.all.matrix]]
-python = ["3.10", "3.11", "3.12"]
-
-[tool.hatch.envs.types]
-dependencies = [
   "mypy>=1.0.0",
 ]
-[tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive {args:src/biorun tests}"
 
 [tool.coverage.run]
 source_pkgs = ["src/biorun", "tests"]

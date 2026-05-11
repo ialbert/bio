@@ -99,8 +99,8 @@ def align(target, query, par: models.Param):
 
     # Semiglobal alignment.
     elif par.mode == SEMIGLOBAL_ALIGN:
-        aligner.target_end_gap_score = 0.0
-        aligner.query_end_gap_score = 0.0
+        aligner.end_insertion_score = 0.0
+        aligner.end_deletion_score = 0.0
 
     # Performs the alignment
     alns = aligner.align(t, q)

@@ -106,19 +106,19 @@ The ideas and motivations fueling `bio` have been developed while educating the 
 
 ## Development
 
-We use the `hatch` build system to manage the software:
+We use the [uv][uv] package system to manage the software:
 
-https://github.com/pypa/hatch
+[uv]: https://docs.astral.sh/uv/
 
-You can either use `hatch` or `pip` to install the software in editable mode:
+```bash 
+uv venv
 
-    pip install --editable .
-    
-## Testing
+# Run the software
+uv run bio
 
-`bio` can test itself, to run all tests execute:
-
-    bio test
+# Run the tests.
+uv run bio test
+```
 
 Tests are automatically built from a shell script that mimics real-life usage scenarios.
 

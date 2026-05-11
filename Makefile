@@ -7,7 +7,7 @@ all: serve
 
 # Run the tests.
 test:
-	@python src/biorun/test.py
+	uv run python src/biorun/test.py
 
 # Update the usage data.
 testdata:
@@ -48,12 +48,12 @@ push:
 # Build Python package.
 build:
 	rm -rf build dist
-	hatch build
+	uv build
 	ls -lh dist
 
 # Publish the package
-publish: test build
-	hatch publish
+publish: build
+	uv publish
 
 #REMOTE=www@biostarhandbook.com:/home/www/book/data_www/bio
 
