@@ -216,21 +216,28 @@ def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
 
     try:
         stream = Entrez.efetch(db=db, id=ids, rettype=rettype, retmode=retmode, retmax=limit)
+        bar = None
+        use_bar = sys.stdout.isatty() and sys.stderr.isatty()
 
-        try:
-            stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5,
-                          leave=False)
-        except Exception as exc:
-            # Older version of tqdm does not have the delay parameter.
-            stream = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, leave=False)
+        if use_bar:
+            try:
+                bar = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, delay=5,
+                           leave=False)
+            except Exception as exc:
+                # Older version of tqdm does not have the delay parameter.
+                bar = tqdm(stream, unit='B', unit_divisor=1024, desc='# downloaded', unit_scale=True, leave=False)
 
     except Exception as exc:
         utils.error(f"Error for {ids}, {db}, {rettype}, {retmode}: {exc}")
 
-    for line in stream:
+    data = bar if bar else stream
+    for line in data:
         print(line, end='')
-        stream.update(len(line))
-    stream.close()
+        if bar:
+            bar.update(len(line))
+
+    if bar:
+        bar.close()
 
 
 def fetch_gcf(ids, format_=''):
