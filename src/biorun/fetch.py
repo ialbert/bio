@@ -1,6 +1,10 @@
 import csv
+import os
 import re
 import sys
+import tempfile
+import zipfile
+from pathlib import Path
 
 try:
     from Bio import Entrez
@@ -10,7 +14,7 @@ except ImportError as exc:
     print(f"# Install: conda install -y biopython>=1.79", file=sys.stderr)
     sys.exit(-1)
 
-from biorun import search, patterns
+from biorun import patterns
 from biorun.api import ena_fastq
 
 from biorun.libs import placlib as plac
@@ -56,9 +60,7 @@ def parse_ncbi(text):
 
 
 def is_GCF(text):
-    patt = text.split("_")[0]
-    cond = patt in ("GCA", "GCF")
-    return cond
+    return bool(re.fullmatch(r"GC[AF]_\d{9}(?:\.\d+)?", text, re.IGNORECASE))
 
 
 def is_bioproject(text):
@@ -240,38 +242,130 @@ def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
         bar.close()
 
 
-def fetch_gcf(ids, format_=''):
-    import gzip
+DATASETS_URL = "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession"
 
-    coll = []
+ASSEMBLY_FILES = {
+    "GENOME_FASTA": ("genomic.fna", "genome.fna"),
+    "GENOME_GBFF": ("genomic.gbff", "genbank.gbff"),
+    "GENOME_GFF": ("genomic.gff", "ann.gff"),
+    "GENOME_GTF": ("genomic.gtf", "ann.gtf"),
+    "CDS_FASTA": ("cds_from_genomic.fna", "cds.fna"),
+    "RNA_FASTA": ("rna.fna", "rna.fna"),
+    "PROT_FASTA": ("protein.faa", "protein.faa"),
+    "SEQUENCE_REPORT": ("sequence_report.jsonl", "sequence_report.jsonl"),
+}
+
+DEFAULT_ASSEMBLY_INCLUDE = "genome,gff,gtf"
+
+ASSEMBLY_INCLUDES = {
+    "genome": "GENOME_FASTA",
+    "gbff": "GENOME_GBFF",
+    "genbank": "GENOME_GBFF",
+    "gff": "GENOME_GFF",
+    "gtf": "GENOME_GTF",
+    "cds": "CDS_FASTA",
+    "rna": "RNA_FASTA",
+    "protein": "PROT_FASTA",
+    "prot": "PROT_FASTA",
+    "report": "SEQUENCE_REPORT",
+    "sequence_report": "SEQUENCE_REPORT",
+}
+
+def assembly_types(include=DEFAULT_ASSEMBLY_INCLUDE):
+    """Return NCBI Datasets annotation types selected by a comma-separated list."""
+    names = [name.strip().lower() for name in include.split(",") if name.strip()]
+    invalid = sorted(set(names) - set(ASSEMBLY_INCLUDES))
+    if invalid:
+        valid = ", ".join(sorted(ASSEMBLY_INCLUDES))
+        utils.error(f"Invalid --include value: {', '.join(invalid)}. Valid values: {valid}")
+    if not names:
+        utils.error("--include requires at least one value")
+    return {ASSEMBLY_INCLUDES[name] for name in names}
+
+
+def format_mb(size):
+    return f"{round(size / (1024 * 1024)):,}Mb"
+
+
+def assembly_dir(suffix):
+    ext = Path(suffix).suffix.removeprefix(".")
+    if ext in {"fna", "faa"}:
+        return "fasta"
+    return "gff" if ext == "gtf" else ext
+
+
+def save_assembly(zip_path, acc, out, types, rename=""):
+    """Copy selected assembly files from a Datasets ZIP to normalized paths."""
+    names = {src: dest for kind, (src, dest) in ASSEMBLY_FILES.items() if kind in types}
+    saved = []
+
+    with zipfile.ZipFile(zip_path) as archive:
+        for member in archive.infolist():
+            src = Path(member.filename).name
+            suffix = names.get(src)
+            if not suffix and re.fullmatch(
+                    r"GC[AF]_\d{9}(?:\.\d+)?_.+_genomic\.fna", src, re.IGNORECASE):
+                suffix = names.get("genomic.fna")
+            if not suffix or member.is_dir():
+                continue
+
+            match = re.search(r"/(GC[AF]_\d{9}(?:\.\d+)?)/", member.filename, re.IGNORECASE)
+            name = rename or (match.group(1).upper() if match else acc)
+            folder = out or Path(assembly_dir(suffix))
+            folder.mkdir(parents=True, exist_ok=True)
+            dest = folder / f"{name}.{suffix}"
+            with archive.open(member) as inp, open(dest, "wb") as stream:
+                while chunk := inp.read(1024 * 1024):
+                    stream.write(chunk)
+            saved.append(dest)
+
+    return saved
+
+
+def fetch_gcf(ids, include=DEFAULT_ASSEMBLY_INCLUDE, out="", rename=""):
+    """Download GCF/GCA assemblies with the NCBI Datasets API."""
+    if rename and len(ids) != 1:
+        utils.error("--rename requires exactly one GCF/GCA accession")
+    if rename and Path(rename).name != rename:
+        utils.error("--rename must be a file name, not a path")
+
+    out = Path(out) if out else None
+    if out:
+        out.mkdir(parents=True, exist_ok=True)
+    types = assembly_types(include)
+    params = [("include_annotation_type", value) for value in sorted(types)]
+    downloads = []
+
     for value in ids:
-        data, warn = search.search_assemblies(value)
-        coll.extend(data)
-
-    # Maps file extensions to formats
-    EXTMAP = dict(
-        gff="gff",
-        gtf="gtf",
-        fasta="fna",
-        prot="prot",
-    )
-
-    ext = EXTMAP.get(format_) or "gbff"
-
-    for elem in coll:
-        url = elem.get("ftp_path")
-        name = url.split("/")[-1]
-
-        url = f"{url}/{name}_genomic.{ext}.gz"
-
+        acc = value.upper()
+        url = f"{DATASETS_URL}/{acc}/download"
+        temp = None
         try:
-            r = requests.get(url, stream=True)
-            f = gzip.GzipFile(fileobj=r.raw)
-            for row in f.readlines():
-                text = row.decode("utf8")
-                print(text, end='')
-        except Exception as exc:
-            utils.error(f"Error for {url}: {exc}")
+            with requests.get(url, params=params, headers={"Accept": "application/zip"},
+                              stream=True, timeout=120) as response:
+                response.raise_for_status()
+                size = int(response.headers.get("content-length", 0))
+                bar = tqdm(total=size or None, unit="B", unit_scale=True, unit_divisor=1024,
+                           desc=f"# downloading {acc}")
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".zip") as stream, bar:
+                    temp = stream.name
+                    for chunk in response.iter_content(chunk_size=1024 * 1024):
+                        if chunk:
+                            stream.write(chunk)
+                            bar.update(len(chunk))
+
+            saved = save_assembly(temp, acc, out, types, rename=rename)
+            if not saved:
+                utils.error(f"No requested files found for {acc}")
+            downloads.extend(saved)
+        except (requests.RequestException, OSError, zipfile.BadZipFile) as exc:
+            utils.error(f"Error downloading {acc}: {exc}")
+        finally:
+            if temp and os.path.exists(temp):
+                os.unlink(temp)
+
+    for path in downloads:
+        print(f"# {path} ({format_mb(path.stat().st_size)})")
 
 
 def fetch_ensembl(ids, ftype='genomic'):
@@ -297,11 +391,15 @@ def fetch_ensembl(ids, ftype='genomic'):
 
 @plac.pos("acc", "accession numbers")
 @plac.opt("db", "database", choices=["nuccore", "protein"])
-@plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default", "gff"])
+@plac.opt("format_", "return format", choices=["gbwithparts", "fasta", "gb", "csv", "tsv", "default",
+                                               "gff", "gtf", "cds", "rna", "prot", "protein"])
 @plac.opt("type_", "get CDS/CDNA (Ensembl only)")
 @plac.opt("limit", "limit results")
-@plac.opt("out", "output file (used as prefix in for FASTQ)")
-def run(db="", type_='', format_='', limit=100, out='', *acc):
+@plac.opt("out", "output directory for GCF/GCA files")
+@plac.opt("rename", "rename the GCF/GCA output prefix")
+@plac.opt("include", "GCF/GCA files: genome,gff,gtf,gbff,cds,rna,protein,report")
+def run(db="", type_='', format_='', limit=100, out='', rename='',
+        include=DEFAULT_ASSEMBLY_INCLUDE, *acc):
     ids = []
     for num in acc:
         ids.extend(num.split(","))
@@ -325,7 +423,7 @@ def run(db="", type_='', format_='', limit=100, out='', *acc):
     # Downloads GCF data
     gcfs = list(map(is_GCF, ids))
     if all(gcfs):
-        fetch_gcf(ids=ids, format_=format_)
+        fetch_gcf(ids=ids, include=include, out=out, rename=rename)
         return
 
     # Detects nucleotides

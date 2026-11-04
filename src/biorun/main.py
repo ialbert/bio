@@ -21,7 +21,7 @@ from biorun import __version__ as VERSION
 #
 SUB_COMMANDS = dict(
     search=("biorun.search.run", True, "search for information"),
-    fetch=("biorun.fetch.run", True, "download GenBank/ENSEMBL data"),
+    fetch=("biorun.fetch.run", True, "download NCBI/Ensembl data"),
     fasta=("biorun.fasta.run", True, "convert to FASTA"),
     gff=("biorun.gff.run", True, "convert to GFF"),
     table=("biorun.table.run", True, "convert to table"),
@@ -73,6 +73,7 @@ Run each command for more help.
 Examples:
 
   bio fetch NC_045512 MN996532 > genomes.gb
+  bio fetch GCF_000005845.2 --out ncbi
   bio fasta genomes.gb --gene S | bio align
   bio gff genomes.gb --type CDS
   bio taxon 2697049 --lineage
