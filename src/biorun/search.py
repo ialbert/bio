@@ -229,13 +229,16 @@ def get_ncbi_assembly(text, full=False):
     return ([data] if full else summary_reports(data)), None
 
 
-def get_taxon(name, limit=5, full=False):
+def get_taxon(name, limit=5, full=False, strain=""):
     """Fetch complete-genome reports for an organism name or taxonomy ID."""
     url = f"{TAXON_API}/{quote(name)}/dataset_report"
     params = [
         ("filters.assembly_level", "complete_genome"),
         ("page_size", int(limit)),
     ]
+    if strain:
+        params.append(("filters.search_text", strain))
+    label = f"{name} {strain}" if strain else name
 
     try:
         response = requests.get(
@@ -247,12 +250,12 @@ def get_taxon(name, limit=5, full=False):
         response.raise_for_status()
         data = response.json()
     except (requests.RequestException, ValueError):
-        utils.error(f"no complete genomes found: {name}")
+        utils.error(f"no complete genomes found: {label}")
 
     reports = data.get("reports") or []
     total = data.get("total_count", 0)
     if not total:
-        utils.error(f"no complete genomes found: {name}")
+        utils.error(f"no complete genomes found: {label}")
 
     warn = None
     if total > len(reports):
@@ -444,7 +447,7 @@ def search_mygene(query, fields, species='', scopes='', limit=5):
 
     return hits, warn
 
-def dispatch(word, all=False, fields='', limit=5, species='', scopes='', full=False):
+def dispatch(word, all=False, fields='', limit=5, species='', scopes='', full=False, strain=''):
     if match_ncbi_assembly(word):
         values, warn = get_ncbi_assembly(word, full=full)
 
@@ -461,7 +464,7 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes='', full=Fa
         fields = ",".join(['symbol', 'name', 'taxid', fields])
         values, warn = search_mygene(word, fields=fields, limit=limit, species=species, scopes=scopes)
     else:
-        values, warn = get_taxon(word, limit=limit, full=full)
+        values, warn = get_taxon(word, limit=limit, full=full, strain=strain)
 
     return values, warn
 
@@ -474,10 +477,11 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes='', full=Fa
 @plac.opt('limit', "download limit", abbrev='l')
 @plac.opt('fields', "fields", abbrev='f')
 @plac.opt('species', "species", abbrev='s')
+@plac.opt('strain', "strain name", abbrev='n')
 @plac.opt('scopes', "scopes", abbrev='S')
 @plac.pos('query', "query terms")
 @plac.flg('update', "download the latest assebmly summary")
-def run(all=False, csv_=False, tab=False, header=False, full=False, species='', scopes='symbol', update=False, limit=5,
+def run(all=False, csv_=False, tab=False, header=False, full=False, species='', strain='', scopes='symbol', update=False, limit=5,
         fields='refseq', *words):
 
     if update:
@@ -494,7 +498,8 @@ def run(all=False, csv_=False, tab=False, header=False, full=False, species='', 
     warns = []
 
     for word in group_queries(words):
-        values, warn = dispatch(word, all=all, limit=limit, fields=fields, species=species, scopes=scopes, full=full)
+        values, warn = dispatch(word, all=all, limit=limit, fields=fields, species=species, scopes=scopes,
+                                full=full, strain=strain)
         collect.extend(values)
         warns.append(warn)
 
