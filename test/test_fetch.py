@@ -38,6 +38,14 @@ class Response:
         yield self.data
 
 
+class CheckResponse:
+    def raise_for_status(self):
+        return None
+
+    def json(self):
+        return {"valid_assemblies": ["GCF_000005845.2"]}
+
+
 def test_is_gcf():
     assert fetch.is_GCF("GCF_000005845.2")
     assert fetch.is_GCF("GCA_000001405")
@@ -48,7 +56,7 @@ def test_is_gcf():
 
 @patch("biorun.fetch.requests.get")
 def test_fetch_gcf(mock_get, tmp_path, capsys, monkeypatch):
-    mock_get.return_value = Response(make_dataset())
+    mock_get.side_effect = [CheckResponse(), Response(make_dataset())]
     monkeypatch.chdir(tmp_path)
 
     fetch.fetch_gcf(["gcf_000005845.2"])
@@ -63,14 +71,16 @@ def test_fetch_gcf(mock_get, tmp_path, capsys, monkeypatch):
     output = {f"# {path.relative_to(tmp_path)} (0Mb)" for path in expected}
     assert set(capsys.readouterr().out.splitlines()) == output
 
-    _, kwargs = mock_get.call_args
+    check, download = mock_get.call_args_list
+    assert check.args[0].endswith("/GCF_000005845.2/check")
+    _, kwargs = download
     assert kwargs["headers"] == {"Accept": "application/zip"}
     assert len(kwargs["params"]) == 3
 
 
 @patch("biorun.fetch.requests.get")
 def test_fetch_gcf_rename(mock_get, tmp_path, capsys):
-    mock_get.return_value = Response(make_dataset())
+    mock_get.side_effect = [CheckResponse(), Response(make_dataset())]
 
     fetch.fetch_gcf(["GCF_000005845.2"], include="gff,cds", out=tmp_path, rename="e-coli")
 

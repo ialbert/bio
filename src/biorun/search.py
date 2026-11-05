@@ -6,6 +6,7 @@ import sys, os
 import requests
 
 from biorun import utils
+from biorun.api import ncbi_datasets
 from biorun.libs import placlib as plac
 
 logger = utils.logger
@@ -23,6 +24,8 @@ GBK = re.compile(r'(?P<letters>[a-zA-Z]+)(?P<under>_?)(?P<digits>\d+)(\.(?P<vers
 ENA_API = "https://www.ebi.ac.uk/ena/portal/api"
 ENA_FIELDS = f"{ENA_API}/returnFields"
 ENA_REPORT = f"{ENA_API}/filereport"
+
+DATASETS_API = ncbi_datasets.DATASETS_API
 
 # The assembly summary file
 ASSEMBLY_SUMMARY_URL = 'https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt'
@@ -180,9 +183,31 @@ def match_ncbi_assembly(text):
     """
     Pattern for NCBI assembly numbers
     """
-    pieces = text.split("_")
-    cond = pieces[0] == 'GCF' if len(pieces) > 1 else False
-    return cond
+    return bool(re.fullmatch(r"GC[AF]_\d{9}(?:\.\d+)?", text, re.IGNORECASE))
+
+
+def get_ncbi_assembly(text):
+    """Fetch an assembly report from the NCBI Datasets API."""
+    acc = ncbi_datasets.check_accession(text)
+    url = f"{DATASETS_API}/{acc}/dataset_report"
+    params = [
+        ("filters.assembly_level", "chromosome"),
+        ("filters.assembly_level", "complete_genome"),
+    ]
+
+    try:
+        response = requests.get(
+            url,
+            params=params,
+            headers={"Accept": "application/json"},
+            timeout=60,
+        )
+        response.raise_for_status()
+        data = response.json()
+    except (requests.RequestException, ValueError) as exc:
+        utils.error(f"Error for {acc}: {exc}")
+
+    return [data], None
 
 
 def parse_genbank(text):
@@ -340,7 +365,10 @@ def search_mygene(query, fields, species='', scopes='', limit=5):
     return hits, warn
 
 def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
-    if match_srr(word) or match_bioproject(word):
+    if match_ncbi_assembly(word):
+        values, warn = get_ncbi_assembly(word)
+
+    elif match_srr(word) or match_bioproject(word):
         values, warn = get_srr(word, all=all, sep="\t")
 
     elif match_genbank_nucleotide(word):

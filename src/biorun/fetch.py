@@ -15,7 +15,7 @@ except ImportError as exc:
     sys.exit(-1)
 
 from biorun import patterns
-from biorun.api import ena_fastq
+from biorun.api import ena_fastq, ncbi_datasets
 
 from biorun.libs import placlib as plac
 from tqdm import tqdm
@@ -242,7 +242,7 @@ def fetch_ncbi(ids, db, rettype='gbwithparts', retmode='text', limit=None):
         bar.close()
 
 
-DATASETS_URL = "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession"
+DATASETS_URL = ncbi_datasets.DATASETS_API
 
 ASSEMBLY_FILES = {
     "GENOME_FASTA": ("genomic.fna", "genome.fna"),
@@ -320,14 +320,14 @@ def fetch_gcf(ids, include=DEFAULT_ASSEMBLY_INCLUDE, out="ncbi", rename=""):
     if rename and Path(rename).name != rename:
         utils.error("--rename must be a file name, not a path")
 
+    ids = [ncbi_datasets.check_accession(value) for value in ids]
     out = Path(out or "ncbi")
     out.mkdir(parents=True, exist_ok=True)
     types = assembly_types(include)
     params = [("include_annotation_type", value) for value in sorted(types)]
     downloads = []
 
-    for value in ids:
-        acc = value.upper()
+    for acc in ids:
         url = f"{DATASETS_URL}/{acc}/download"
         temp = None
         try:
