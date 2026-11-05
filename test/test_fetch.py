@@ -44,10 +44,6 @@ def test_is_gcf():
     assert not fetch.is_GCF("GCF_bad")
     assert not fetch.is_GCF("prefix_GCF_000005845.2")
     assert fetch.format_mb(1234 * 1024 * 1024) == "1,234Mb"
-    assert fetch.assembly_dir("genome.fna") == "fasta"
-    assert fetch.assembly_dir("protein.faa") == "fasta"
-    assert fetch.assembly_dir("ann.gff") == "gff"
-    assert fetch.assembly_dir("ann.gtf") == "gff"
 
 
 @patch("biorun.fetch.requests.get")
@@ -58,12 +54,12 @@ def test_fetch_gcf(mock_get, tmp_path, capsys, monkeypatch):
     fetch.fetch_gcf(["gcf_000005845.2"])
 
     expected = {
-        tmp_path / "fasta/GCF_000005845.2.genome.fna",
-        tmp_path / "gff/GCF_000005845.2.ann.gff",
-        tmp_path / "gff/GCF_000005845.2.ann.gtf",
+        tmp_path / "ncbi/GCF_000005845.2.genome.fna",
+        tmp_path / "ncbi/GCF_000005845.2.ann.gff",
+        tmp_path / "ncbi/GCF_000005845.2.ann.gtf",
     }
     assert all(path.exists() for path in expected)
-    assert (tmp_path / "fasta/GCF_000005845.2.genome.fna").read_text() == ">seq\nACGT\n"
+    assert (tmp_path / "ncbi/GCF_000005845.2.genome.fna").read_text() == ">seq\nACGT\n"
     output = {f"# {path.relative_to(tmp_path)} (0Mb)" for path in expected}
     assert set(capsys.readouterr().out.splitlines()) == output
 

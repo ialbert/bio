@@ -287,13 +287,6 @@ def format_mb(size):
     return f"{round(size / (1024 * 1024)):,}Mb"
 
 
-def assembly_dir(suffix):
-    ext = Path(suffix).suffix.removeprefix(".")
-    if ext in {"fna", "faa"}:
-        return "fasta"
-    return "gff" if ext == "gtf" else ext
-
-
 def save_assembly(zip_path, acc, out, types, rename=""):
     """Copy selected assembly files from a Datasets ZIP to normalized paths."""
     names = {src: dest for kind, (src, dest) in ASSEMBLY_FILES.items() if kind in types}
@@ -311,9 +304,7 @@ def save_assembly(zip_path, acc, out, types, rename=""):
 
             match = re.search(r"/(GC[AF]_\d{9}(?:\.\d+)?)/", member.filename, re.IGNORECASE)
             name = rename or (match.group(1).upper() if match else acc)
-            folder = out or Path(assembly_dir(suffix))
-            folder.mkdir(parents=True, exist_ok=True)
-            dest = folder / f"{name}.{suffix}"
+            dest = out / f"{name}.{suffix}"
             with archive.open(member) as inp, open(dest, "wb") as stream:
                 while chunk := inp.read(1024 * 1024):
                     stream.write(chunk)
@@ -322,16 +313,15 @@ def save_assembly(zip_path, acc, out, types, rename=""):
     return saved
 
 
-def fetch_gcf(ids, include=DEFAULT_ASSEMBLY_INCLUDE, out="", rename=""):
+def fetch_gcf(ids, include=DEFAULT_ASSEMBLY_INCLUDE, out="ncbi", rename=""):
     """Download GCF/GCA assemblies with the NCBI Datasets API."""
     if rename and len(ids) != 1:
         utils.error("--rename requires exactly one GCF/GCA accession")
     if rename and Path(rename).name != rename:
         utils.error("--rename must be a file name, not a path")
 
-    out = Path(out) if out else None
-    if out:
-        out.mkdir(parents=True, exist_ok=True)
+    out = Path(out or "ncbi")
+    out.mkdir(parents=True, exist_ok=True)
     types = assembly_types(include)
     params = [("include_annotation_type", value) for value in sorted(types)]
     downloads = []
@@ -395,7 +385,7 @@ def fetch_ensembl(ids, ftype='genomic'):
                                                "gff", "gtf", "cds", "rna", "prot", "protein"])
 @plac.opt("type_", "get CDS/CDNA (Ensembl only)")
 @plac.opt("limit", "limit results")
-@plac.opt("out", "output directory for GCF/GCA files")
+@plac.opt("out", "output directory for GCF/GCA files (default: ncbi)")
 @plac.opt("rename", "rename the GCF/GCA output prefix")
 @plac.opt("include", "GCF/GCA files: genome,gff,gtf,gbff,cds,rna,protein,report")
 def run(db="", type_='', format_='', limit=100, out='', rename='',
@@ -423,7 +413,7 @@ def run(db="", type_='', format_='', limit=100, out='', rename='',
     # Downloads GCF data
     gcfs = list(map(is_GCF, ids))
     if all(gcfs):
-        fetch_gcf(ids=ids, include=include, out=out, rename=rename)
+        fetch_gcf(ids=ids, include=include, out=out or "ncbi", rename=rename)
         return
 
     # Detects nucleotides
