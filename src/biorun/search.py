@@ -2,6 +2,7 @@ import csv
 import json
 import re
 import sys, os
+from urllib.parse import quote
 
 import requests
 
@@ -26,6 +27,7 @@ ENA_FIELDS = f"{ENA_API}/returnFields"
 ENA_REPORT = f"{ENA_API}/filereport"
 
 DATASETS_API = ncbi_datasets.DATASETS_API
+TAXON_API = "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/taxon"
 
 # The assembly summary file
 ASSEMBLY_SUMMARY_URL = 'https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt'
@@ -186,7 +188,24 @@ def match_ncbi_assembly(text):
     return bool(re.fullmatch(r"GC[AF]_\d{9}(?:\.\d+)?", text, re.IGNORECASE))
 
 
-def get_ncbi_assembly(text):
+REPORT_FIELDS = (
+    "accession",
+    "current_accession",
+    "paired_accession",
+    "source_database",
+    "organism",
+)
+
+
+def summary_reports(data):
+    """Keep the accession and organism fields from each Datasets report."""
+    reports = []
+    for report in data.get("reports") or []:
+        reports.append({key: report[key] for key in REPORT_FIELDS if key in report})
+    return reports
+
+
+def get_ncbi_assembly(text, full=False):
     """Fetch an assembly report from the NCBI Datasets API."""
     acc = ncbi_datasets.check_accession(text)
     url = f"{DATASETS_API}/{acc}/dataset_report"
@@ -207,7 +226,68 @@ def get_ncbi_assembly(text):
     except (requests.RequestException, ValueError) as exc:
         utils.error(f"Error for {acc}: {exc}")
 
-    return [data], None
+    return ([data] if full else summary_reports(data)), None
+
+
+def get_taxon(name, limit=5, full=False):
+    """Fetch complete-genome reports for an organism name or taxonomy ID."""
+    url = f"{TAXON_API}/{quote(name)}/dataset_report"
+    params = [
+        ("filters.assembly_level", "complete_genome"),
+        ("page_size", int(limit)),
+    ]
+
+    try:
+        response = requests.get(
+            url,
+            params=params,
+            headers={"Accept": "application/json"},
+            timeout=60,
+        )
+        response.raise_for_status()
+        data = response.json()
+    except (requests.RequestException, ValueError):
+        utils.error(f"no complete genomes found: {name}")
+
+    reports = data.get("reports") or []
+    total = data.get("total_count", 0)
+    if not total:
+        utils.error(f"no complete genomes found: {name}")
+
+    warn = None
+    if total > len(reports):
+        warn = f'#  showing {len(reports)} out of {total} results.'
+
+    return ([data] if full else summary_reports(data)), warn
+
+
+def is_specific_query(word):
+    """Return true when a token has its own accession search."""
+    return any((
+        match_ncbi_assembly(word),
+        match_srr(word),
+        match_bioproject(word),
+        match_genbank_nucleotide(word),
+        match_genbank_protein(word),
+        match_mygene(word),
+    ))
+
+
+def group_queries(words):
+    """Join consecutive organism-name words into one taxon query."""
+    groups = []
+    name = []
+    for word in words:
+        if is_specific_query(word):
+            if name:
+                groups.append(" ".join(name))
+                name = []
+            groups.append(word)
+        else:
+            name.append(word)
+    if name:
+        groups.append(" ".join(name))
+    return groups
 
 
 def parse_genbank(text):
@@ -364,9 +444,9 @@ def search_mygene(query, fields, species='', scopes='', limit=5):
 
     return hits, warn
 
-def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
+def dispatch(word, all=False, fields='', limit=5, species='', scopes='', full=False):
     if match_ncbi_assembly(word):
-        values, warn = get_ncbi_assembly(word)
+        values, warn = get_ncbi_assembly(word, full=full)
 
     elif match_srr(word) or match_bioproject(word):
         values, warn = get_srr(word, all=all, sep="\t")
@@ -381,7 +461,7 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
         fields = ",".join(['symbol', 'name', 'taxid', fields])
         values, warn = search_mygene(word, fields=fields, limit=limit, species=species, scopes=scopes)
     else:
-        values, warn = search_assemblies(word)
+        values, warn = get_taxon(word, limit=limit, full=full)
 
     return values, warn
 
@@ -389,6 +469,7 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
 @plac.flg('csv_', "produce comma separated output")
 @plac.flg('tab', "produce tab separated output")
 @plac.flg('all', "get all possible fields")
+@plac.flg('full', "return the full NCBI Datasets report", abbrev='F')
 @plac.flg('header', "show headers", abbrev="H")
 @plac.opt('limit', "download limit", abbrev='l')
 @plac.opt('fields', "fields", abbrev='f')
@@ -396,7 +477,7 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes=''):
 @plac.opt('scopes', "scopes", abbrev='S')
 @plac.pos('query', "query terms")
 @plac.flg('update', "download the latest assebmly summary")
-def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symbol', update=False, limit=5,
+def run(all=False, csv_=False, tab=False, header=False, full=False, species='', scopes='symbol', update=False, limit=5,
         fields='refseq', *words):
 
     if update:
@@ -412,8 +493,8 @@ def run(all=False, csv_=False, tab=False, header=False, species='', scopes='symb
     collect = []
     warns = []
 
-    for word in words:
-        values, warn = dispatch(word, all=all, limit=limit, fields=fields, species=species, scopes=scopes)
+    for word in group_queries(words):
+        values, warn = dispatch(word, all=all, limit=limit, fields=fields, species=species, scopes=scopes, full=full)
         collect.extend(values)
         warns.append(warn)
 

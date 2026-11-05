@@ -27,7 +27,6 @@ Entrez.email = 'foo@foo.com'
 
 logger = utils.logger
 
-
 #
 # Genbank and Refseq accession numbers
 #
