@@ -238,7 +238,6 @@ def get_taxon(name, limit=5, full=False, strain=""):
     ]
     if strain:
         params.append(("filters.search_text", strain))
-    label = f"{name} {strain}" if strain else name
 
     try:
         response = requests.get(
@@ -250,12 +249,12 @@ def get_taxon(name, limit=5, full=False, strain=""):
         response.raise_for_status()
         data = response.json()
     except (requests.RequestException, ValueError):
-        utils.error(f"no complete genomes found: {label}")
+        data = {}
 
     reports = data.get("reports") or []
     total = data.get("total_count", 0)
     if not total:
-        utils.error(f"no complete genomes found: {label}")
+        return [{"status": "no match", "query": name, "strain": strain}], None
 
     warn = None
     if total > len(reports):
