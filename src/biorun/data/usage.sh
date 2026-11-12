@@ -173,13 +173,13 @@ bio search SRR1972976 > search_srr.json
 #bio search PRJNA661333 > search_prjn.json
 
 # Get assembly information
-bio search GCF_000003085 > search_assembly.json
+bio search GCF_000005845.2 > search_assembly.json
 
 # Search mygene info
 bio search symbol:HAD --species 1316788 > search_mygene.json
 
 # Access a transcript from ensembl.
-bio fetch ENST00000288602  > fetch_enst.txt
+#bio fetch ENST00000288602  > fetch_enst.txt
 
 # Get a GFF from NCBI
 bio fetch NC_045512 --format gff > fetch_gff.gff

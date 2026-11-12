@@ -52,3 +52,6 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+# pixi environments
+.pixi/*
+!.pixi/config.toml
