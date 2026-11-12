@@ -427,7 +427,7 @@ def run(db="", type_='', format_='', limit=100, out='', rename='',
     # Select protein database
     if all(prots):
         default = "protein"
-    if all(nucs):
+    elif all(nucs):
         default = "nuccore"
     else:
         # Select the invalid accessions

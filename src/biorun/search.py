@@ -3,6 +3,7 @@ import json
 import re
 import sys, os
 from urllib.parse import quote
+from itertools import islice
 
 import requests
 
@@ -101,7 +102,7 @@ def human_size(size, decimal_places=0, units=['bytes', 'KB', 'MB', 'GB', 'TB'], 
     text = " ".join(data)
     return text
 
-def get_srr(text, all=False, sep=None):
+def get_srr(text, all=False, sep=None, limit=None):
     """
     Returns a list of SRR data.
     """
@@ -170,7 +171,7 @@ def get_srr(text, all=False, sep=None):
         return entry
 
     stream = map(add_field, stream)
-
+    stream = islice(stream, limit)
     return stream, None
 
 
@@ -451,7 +452,7 @@ def dispatch(word, all=False, fields='', limit=5, species='', scopes='', full=Fa
         values, warn = get_ncbi_assembly(word, full=full)
 
     elif match_srr(word) or match_bioproject(word):
-        values, warn = get_srr(word, all=all, sep="\t")
+        values, warn = get_srr(word, all=all, sep="\t", limit=limit)
 
     elif match_genbank_nucleotide(word):
         values, warn = get_ncbi(word, db="nuccore")

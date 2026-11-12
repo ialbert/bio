@@ -72,13 +72,37 @@ Run each command for more help.
 
 Examples:
 
+  # Download from Genbank/Refseq by accession number
   bio fetch NC_045512 MN996532 > genomes.gb
+
+  # Download genome assembly by accession number
   bio fetch GCF_000005845.2 --rename ecoli.K12.MG1655
-  bio fasta genomes.gb --gene S | bio align
-  bio gff genomes.gb --type CDS
-  bio taxon 2697049 --lineage
+
+  # Search for genome assemblies by organism name and strain
+  bio search Escherichia --strain sakai
+
+  # Find information on SRA or BioProjects by accession numbers
+  bio search SRR14575325 
+
+  # Find information on a BioProject by accession number and CSV format
+  bio search  PRJNA257197 --limit 10 --H --csv 
+
+  # Convert Genbank file to GFF3
+  bio gff genomes.gb --type CDS > genomes.gff3
+  
+  # Align sequences
   bio align GATTACA GATCA  
+
+  # Align sequences by gene name 
+  bio fasta genomes.gb --gene S | bio align
+
+  # Get the lineage of a taxon
+  bio taxon 2697049 --lineage
+
+  # Explain a biological term
   bio explain exon 
+
+  # Get information on a gene
   bio mygene HAD3 -fields refseq
  
 See also: https://www.bioinfo.help
