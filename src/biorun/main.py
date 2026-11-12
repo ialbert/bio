@@ -73,7 +73,7 @@ Run each command for more help.
 Examples:
 
   bio fetch NC_045512 MN996532 > genomes.gb
-  bio fetch GCF_000005845.2 --out ncbi
+  bio fetch GCF_000005845.2 --rename ecoli.K12.MG1655
   bio fasta genomes.gb --gene S | bio align
   bio gff genomes.gb --type CDS
   bio taxon 2697049 --lineage
